@@ -1,7 +1,39 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
+});
+
+// Authentication Routes
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+    
+    Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
+    Route::post('/forgot-password', [AuthController::class, 'sendOtp'])->name('password.email');
+    
+    Route::get('/verify-otp', [AuthController::class, 'showVerifyOtp'])->name('password.verify');
+    Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('password.verify.post');
+    
+    Route::get('/reset-password', [AuthController::class, 'showResetPassword'])->name('password.reset');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset.post');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Placeholder dashboard
+    Route::get('/dashboard', function() {
+        return "<h2>Welcome to Dashboard!</h2>
+                <form method='POST' action='".route('logout')."'>
+                    ".csrf_field()."
+                    <button type='submit' style='padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;'>تسجيل خروج (Logout)</button>
+                </form>";
+    })->name('dashboard');
 });

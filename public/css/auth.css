@@ -1,0 +1,241 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+:root {
+    --primary-color: #193e6a; /* Dark Blue from Logo */
+    --hover-color: #27568f;
+    --bg-light: #eff4f8; /* Light blueish grey for inputs */
+    --text-primary: #333;
+    --text-secondary: #666;
+    --border-color: #193e6a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background-image: url('../IMGs/HU IMG.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    direction: rtl;
+    background-attachment: fixed;
+}
+
+/* Add a very subtle overlay on background if it's too bright */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 255, 255, 0.4); /* slight white overlay */
+    z-index: -1;
+    backdrop-filter: blur(2px); /* ensure it looks soft */
+}
+
+/* Centered Card */
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Logo & Headers */
+.auth-logo {
+    max-width: 150px;
+    margin-bottom: 20px;
+}
+
+.auth-title {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.auth-description {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.input-wrapper {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+    height: 50px;
+    background-color: var(--bg-light);
+}
+
+.input-icon-right {
+    background-color: var(--primary-color);
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.input-field {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    padding: 0 15px;
+    font-size: 15px;
+    color: var(--text-primary);
+    outline: none;
+    width: 100%;
+}
+
+.input-field::placeholder {
+    color: #999;
+}
+
+.input-icon-left {
+    width: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+    cursor: pointer;
+    background: transparent;
+}
+.input-icon-left:hover {
+    color: var(--primary-color);
+}
+
+
+/* Submit Button */
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 100%;
+    height: 50px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn-primary:hover {
+    background-color: var(--hover-color);
+    box-shadow: 0 4px 15px rgba(25, 62, 106, 0.3);
+}
+
+/* Links */
+.auth-links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: -10px;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.auth-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.auth-link:hover {
+    color: var(--hover-color);
+    text-decoration: underline;
+}
+
+.auth-footer {
+    margin-top: 25px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Error/Alert box */
+.alert {
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.alert i {
+    font-size: 20px;
+}
+
+.alert-danger {
+    background-color: #fcebeb;
+    color: #dc3545;
+    border: 1.5px solid #dc3545;
+}
+.alert-warning {
+    background-color: #fff8e6;
+    color: #856404;
+    border: 1.5px solid #ffeeba;
+}
+.alert-success {
+    background-color: #f2fcf9;
+    color: #008767;
+    border: 1.5px solid #008767;
+}
+
+.password-requirements {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-align: right;
+    margin-top: -15px;
+    margin-bottom: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .auth-card {
+        margin: 20px;
+        padding: 30px 20px;
+    }
+}
