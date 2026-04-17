@@ -28,12 +28,11 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     
-    // Placeholder dashboard
+    // Dashboard
     Route::get('/dashboard', function() {
-        return "<h2>Welcome to Dashboard!</h2>
-                <form method='POST' action='".route('logout')."'>
-                    ".csrf_field()."
-                    <button type='submit' style='padding: 8px 16px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;'>تسجيل خروج (Logout)</button>
-                </form>";
+        return view('dashboard.index');
     })->name('dashboard');
+
+    // Members
+    Route::get('/members', [\App\Http\Controllers\Membership\MemberController::class, 'index'])->name('members.index');
 });
