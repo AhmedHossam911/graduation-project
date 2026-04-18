@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <div class="auth-links" style="justify-content: flex-start;">
+        <div class="auth-links" style="justify-content: flex-end;">
             <a href="{{ route('password.request') }}" class="auth-link">هل نسيت كلمة المرور ؟</a>
         </div>
 

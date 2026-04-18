@@ -5,10 +5,10 @@
 @section('content')
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-[24px] font-bold text-primary">قائمة الأعضاء</h2>
-        <button class="inline-flex items-center gap-2 bg-primary text-white py-2.5 px-5 rounded-md font-semibold transition-colors duration-150 hover:bg-primary-light">
+        <a href="{{ route('members.create') }}" class="inline-flex items-center gap-2 bg-primary text-white py-2.5 px-5 rounded-md font-semibold transition-colors duration-150 hover:bg-primary-light">
             <i class="fa-solid fa-user-plus"></i>
             تسجيل عضو جديد
-        </button>
+        </a>
     </div>
 
     <div class="flex flex-wrap gap-4 mb-6">

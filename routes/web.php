@@ -35,4 +35,8 @@ Route::middleware('auth')->group(function () {
 
     // Members
     Route::get('/members', [\App\Http\Controllers\Membership\MemberController::class, 'index'])->name('members.index');
+    Route::get('/members/create', [\App\Http\Controllers\Membership\MemberController::class, 'create'])->name('members.create');
+    Route::post('/members', [\App\Http\Controllers\Membership\MemberController::class, 'store'])->name('members.store');
+    Route::get('/members/{member}/print', [\App\Http\Controllers\Membership\MemberController::class, 'print'])->name('members.print');
+    Route::post('/members/{member}/signed-form', [\App\Http\Controllers\Membership\MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
 });

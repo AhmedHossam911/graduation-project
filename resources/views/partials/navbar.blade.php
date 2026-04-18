@@ -26,10 +26,17 @@
 
         {{-- Right side: Brand --}}
         <div class="flex items-center gap-3 order-1">
-            {{-- Hamburger (to the right of the logo in RTL) --}}
-            <button class="flex items-center justify-center w-10 h-10 rounded-md text-primary text-[22px] transition-all duration-150 hover:bg-[#193e6a0f] hover:text-primary-light" id="btn-sidebar-toggle" title="القائمة">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+            @hasSection('navbar_back_url')
+                <a href="@yield('navbar_back_url')" class="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-[14px] font-bold text-white transition-all duration-150 hover:bg-primary-light" title="رجوع">
+                    <i class="fa-solid fa-chevron-right text-[12px]"></i>
+                    <span>رجوع</span>
+                </a>
+            @else
+                {{-- Hamburger (to the right of the logo in RTL) --}}
+                <button class="flex items-center justify-center w-10 h-10 rounded-md text-primary text-[22px] transition-all duration-150 hover:bg-[#193e6a0f] hover:text-primary-light" id="btn-sidebar-toggle" title="القائمة">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            @endif
             {{-- Logo + Title --}}
             <div class="flex items-center gap-2.5">
                 <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="شعار جامعة العاصمة" class="w-[42px] h-[42px] object-contain rounded">

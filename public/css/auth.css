@@ -1,9 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
 :root {
-    --primary-color: #193e6a; /* Dark Blue from Logo */
+    --primary-color: #193e6a;
+    /* Dark Blue from Logo */
     --hover-color: #27568f;
-    --bg-light: #eff4f8; /* Light blueish grey for inputs */
+    --bg-light: #eff4f8;
+    /* Light blueish grey for inputs */
     --text-primary: #333;
     --text-secondary: #666;
     --border-color: #193e6a;
@@ -27,48 +29,54 @@ body {
     align-items: center;
     direction: rtl;
     background-attachment: fixed;
+    overflow: hidden;
 }
 
 /* Add a very subtle overlay on background if it's too bright */
 body::before {
     content: '';
     position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(255, 255, 255, 0.4); /* slight white overlay */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: hsla(0, 0%, 100%, 0.10);
+    /* slight white overlay */
     z-index: -1;
-    backdrop-filter: blur(2px); /* ensure it looks soft */
+    backdrop-filter: blur(2px);
+    /* ensure it looks soft */
+    height: 105%;
 }
 
 /* Centered Card */
 .auth-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: hsla(80, 100%, 99%, 0.9);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 40px;
+    border-radius: 16px;
+    padding: 20px 56px;
     width: 100%;
-    max-width: 450px;
+    max-width: 568px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
 /* Logo & Headers */
 .auth-logo {
-    max-width: 150px;
-    margin-bottom: 20px;
+    max-width: 120px;
 }
 
 .auth-title {
     color: var(--primary-color);
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 .auth-subtitle {
     color: var(--text-primary);
     font-size: 18px;
     font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
 }
 
 .auth-description {
@@ -88,7 +96,7 @@ body::before {
     display: flex;
     flex-direction: row;
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
     height: 50px;
     background-color: var(--bg-light);
@@ -128,7 +136,9 @@ body::before {
     color: #888;
     cursor: pointer;
     background: transparent;
+    margin-left: 5px;
 }
+
 .input-icon-left:hover {
     color: var(--primary-color);
 }
@@ -157,10 +167,11 @@ body::before {
 /* Links */
 .auth-links {
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     margin-top: -10px;
     margin-bottom: 25px;
     font-size: 14px;
+    text-align: left;
 }
 
 .auth-link {
@@ -172,7 +183,6 @@ body::before {
 
 .auth-link:hover {
     color: var(--hover-color);
-    text-decoration: underline;
 }
 
 .auth-footer {
@@ -213,11 +223,13 @@ body::before {
     color: #dc3545;
     border: 1.5px solid #dc3545;
 }
+
 .alert-warning {
     background-color: #fff8e6;
     color: #856404;
     border: 1.5px solid #ffeeba;
 }
+
 .alert-success {
     background-color: #f2fcf9;
     color: #008767;

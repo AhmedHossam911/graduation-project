@@ -1,76 +1,71 @@
-<style>
-    .flash-container {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        max-width: 350px;
-        direction: rtl;
-    }
-    .flash-container .alert {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        border-radius: 8px;
-        margin-bottom: 0;
-        animation: slideInLeft 0.3s ease-out forwards;
-        position: relative;
-        padding-left: 30px;
-    }
-    .flash-close-btn {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        cursor: pointer;
-        opacity: 0.6;
-        transition: opacity 0.2s;
-        font-size: 16px;
-    }
-    .flash-close-btn:hover {
-        opacity: 1;
-    }
-    @keyframes slideInLeft {
-        from { transform: translateX(-100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-    }
-</style>
+@php
+    $flashMessage = null;
 
-<div class="flash-container">
-    @if(session('success'))
-    <div class="alert alert-success">
-        <i class="fa-solid fa-xmark flash-close-btn" onclick="this.parentElement.remove()"></i>
-        <i class="fa-solid fa-circle-info"></i>
-        <span>{{ session('success') }}</span>
-    </div>
-    @endif
+    if (session('success')) {
+        $flashMessage = [
+            'icon' => 'success',
+            'title' => 'تم بنجاح',
+            'text' => session('success'),
+        ];
+    } elseif ($errors->has('throttle') || session('error') === 'suspended') {
+        $flashMessage = [
+            'icon' => 'error',
+            'title' => 'تم إيقاف الحساب مؤقتًا',
+            'html' => 'تم إيقاف الحساب مؤقتًا بسبب تكرار محاولات تسجيل الدخول غير الصحيحة.<br>يرجى المحاولة مرة أخرى بعد قليل.',
+        ];
+    } elseif (session('error')) {
+        $flashMessage = [
+            'icon' => 'error',
+            'title' => 'حدث خطأ',
+            'text' => session('error'),
+        ];
+    } elseif ($errors->any()) {
+        $flashMessage = [
+            'icon' => 'error',
+            'title' => 'يرجى التأكد من البيانات المدخلة',
+            'html' => '<ul class="swal-errors-list">'.collect($errors->all())->map(fn ($error) => '<li>'.e($error).'</li>')->implode('').'</ul>',
+        ];
+    }
+@endphp
 
-    @if($errors->has('throttle') || session('error') == 'suspended')
-    <div class="alert alert-danger" style="text-align: center; justify-content: center; flex-direction: column; gap: 5px;">
-        <i class="fa-solid fa-xmark flash-close-btn" onclick="this.parentElement.remove()"></i>
-        <strong>تم إيقاف الحساب مؤقتًا بسبب تكرار محاولات تسجيل الدخول غير الصحيحة.</strong>
-        <span>يُرجى المحاولة مرة أخرى بعد قليل.</span>
-    </div>
-    @elseif(session('error') && session('error') !== 'suspended')
-    <div class="alert alert-danger">
-        <i class="fa-solid fa-xmark flash-close-btn" onclick="this.parentElement.remove()"></i>
-        <i class="fa-solid fa-circle-xmark"></i>
-        <span>{{ session('error') }}</span>
-    </div>
-    @endif
+@if ($flashMessage)
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-popup {
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            border-radius: 8px;
+        }
 
-    @if($errors->any() && !session('error') && !($errors->has('throttle')))
-    <div class="alert alert-danger" style="display: block; text-align: right;">
-        <i class="fa-solid fa-xmark flash-close-btn" onclick="this.parentElement.remove()"></i>
-        <div style="margin-bottom: 10px;">
-            <i class="fa-solid fa-circle-xmark" style="margin-left: 5px;"></i>
-            <strong style="margin-right: 5px;">يرجى التأكد من البيانات المدخلة:</strong>
-        </div>
-        <ul style="margin: 0; padding-right: 30px;">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-</div>
+        .swal2-confirm {
+            border-radius: 8px !important;
+            background-color: #193e6a !important;
+        }
+
+        .swal-errors-list {
+            margin: 0;
+            padding-right: 22px;
+            text-align: right;
+        }
+
+        .swal-errors-list li {
+            margin-bottom: 6px;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Swal.fire({
+                icon: @json($flashMessage['icon']),
+                title: @json($flashMessage['title']),
+                @if (isset($flashMessage['html']))
+                    html: @json($flashMessage['html']),
+                @else
+                    text: @json($flashMessage['text']),
+                @endif
+                confirmButtonText: 'حسنًا',
+                timer: @json($flashMessage['icon'] === 'success' ? 3000 : null),
+                timerProgressBar: @json($flashMessage['icon'] === 'success'),
+            });
+        });
+    </script>
+@endif
