@@ -1,3 +1,10 @@
-<footer class="py-4 px-6 text-center border-t-[2.5px] border-[#193e6a] bg-navbar text-primary text-[14px] font-semibold relative z-10 w-full shrink-0">
-    <p>جميع الحقوق محفوظة لجامعة العاصمة لعام 2026 <i class="fa-solid fa-copyright mr-1"></i></p>
-</footer>
+    <!-- start footer -->
+    <footer class="bg-[#EEF7FF] text-sm text-[#124375] font-normal text-center py-4 border border-[#124375]">
+        <div class="flex items-center justify-center gap-2">
+            <p>
+                جميع الحقوق محفوظة لجامعة العاصمة لعام {{ date('Y') }}
+            </p>
+            <iconify-icon icon="tabler:copyright-filled" class="text-lg"></iconify-icon>
+        </div>
+    </footer>
+    <!-- end footer -->

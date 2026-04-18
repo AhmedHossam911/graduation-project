@@ -50,12 +50,15 @@ class AuthController extends Controller
         }
 
         // Check status / suspension
-        if ($user->status === 'pending') {
+        if ($user->is_active === false) {
             return back()->withInput()->with('error', 'الحساب قيد المراجعة بواسطة الإدارة.');
         }
         if (!$user->is_active || $user->status === 'suspended') {
             return back()->withInput()->with('error', 'suspended'); 
         }
+
+        $operations = Operation::where('user_id', $user->id)->get();
+        $operationsCount = $operations->count();
 
         Auth::login($user);
         $user->update(['last_login_at' => now()]);
