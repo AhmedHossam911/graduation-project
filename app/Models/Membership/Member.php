@@ -32,4 +32,9 @@ class Member extends Model
     {
         return $this->morphMany(\App\Models\System\Document::class, 'documentable');
     }
+
+    public function membership()
+    {
+        return $this->hasOne(\App\Models\Services\Membership::class, 'member_id');
+    }
 }

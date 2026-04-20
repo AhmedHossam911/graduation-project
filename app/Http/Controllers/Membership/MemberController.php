@@ -102,6 +102,14 @@ class MemberController extends Controller
                 'updated_by' => auth()->id(),
             ]);
 
+            \App\Models\Services\Membership::create([
+                'member_id' => $member->id,
+                'start_date' => now()->toDateString(),
+                'status' => 'active',
+                'subscription_amount' => 0, // Default for now
+                'created_by' => auth()->id(),
+            ]);
+
             Employment::create([
                 'member_id' => $member->id,
                 'job_title' => $validated['job_title'],
@@ -181,7 +189,7 @@ class MemberController extends Controller
     {
         $departments = Department::all();
         
-        $query = Member::with(['person', 'divisions.department', 'employments']);
+        $query = Member::with(['person', 'divisions.department', 'employments', 'membership']);
         
         // Search Filter
         if ($request->filled('search')) {
@@ -198,7 +206,10 @@ class MemberController extends Controller
         
         // Status Filter
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $status = $request->status;
+            $query->whereHas('membership', function($q) use ($status) {
+                $q->where('status', $status);
+            });
         }
         
         // Department Filter
@@ -209,7 +220,7 @@ class MemberController extends Controller
             });
         }
         
-        $members = $query->paginate(25)->withQueryString();
+        $members = $query->paginate(10)->withQueryString();
         
         $statusMap = [
             'active' => ['label' => 'نشط', 'class' => 'active'],

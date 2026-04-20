@@ -29,9 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('log-out');
     
     // Dashboard
-    Route::get('/dashboard', function() {
-        return view('dashboard.index');
-    })->name('dashboard');
+    Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     // Members
     Route::get('/members', [\App\Http\Controllers\Membership\MemberController::class, 'index'])->name('members.index');

@@ -4,113 +4,139 @@
 
 @section('content')
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-[24px] font-bold text-primary">قائمة الأعضاء</h2>
-        <a href="{{ route('members.create') }}" class="inline-flex items-center gap-2 bg-primary text-white py-2.5 px-5 rounded-md font-semibold transition-colors duration-150 hover:bg-primary-light">
-            <i class="fa-solid fa-user-plus"></i>
+        <h2 class="text-[24px] font-bold text-[#124375]">قائمة الأعضاء</h2>
+        <a href="{{ route('members.create') }}"
+            class="inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-8 px-5 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[322px] h-[50px] justify-center">
+            <iconify-icon icon="ic:round-group-add" width="24" height="24"></iconify-icon>
             تسجيل عضو جديد
         </a>
     </div>
 
-    <div class="flex flex-wrap gap-4 mb-6">
-        <div class="flex-1 min-w-[300px] relative">
-            <input type="text" placeholder="الاسم أو رقم العضوية أو الرقم القومي" class="w-full py-2.5 pr-10 pl-3 border border-slate-200 rounded-md outline-none focus:border-primary text-sm text-slate-800">
-            <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-        </div>
+    <form action="{{ route('members.index') }}" method="GET">
+        <div class="flex flex-wrap gap-4 mb-6">
+            <!-- start search -->
+            <div class="flex-1 items-center gap-5">
+                <input type="search" name="search" value="{{ request('search') }}"
+                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" icon="bitcoin-icons:search-outline"
+                    class="w-full rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
+            </div>
+            <!-- end search -->
 
-        <div class="relative min-w-[200px]">
-            <select class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                <option value="all">الجهة : جميع الجهات</option>
-                @if(isset($departments) && $departments->count() > 0)
-                    @foreach($departments as $department)
-                        <option value="{{ $department->id }}">{{ $department->name }}</option>
+            <div class="relative min-w-[200px]">
+                <select name="department"
+                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
+                    <option value="all">الجهة : جميع الجهات</option>
+                    @if (isset($departments) && $departments->count() > 0)
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}"
+                                {{ request('department') == $department->id ? 'selected' : '' }}>{{ $department->name }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <div class="relative min-w-[200px]">
+                <select name="status"
+                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
+                    <option value="all">الحالة : الكل</option>
+                    @foreach ($statusMap as $key => $status)
+                        <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>
+                            {{ $status['label'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
+            </button>
+        </div>
+    </form>
+
+    <!-- start table -->
+    <section>
+        <div class="rounded-2xl overflow-hidden surface-shadow">
+            <table class="w-full">
+                <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                    <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الرقم القومي</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الجهة</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">رقم الهاتف</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الحالة</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">تاريخ الانضمام</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الإجراءات</th>
+                </tr>
+                @if ($members->count() > 0)
+                    @foreach ($members as $item)
+                        <tr class="text-center even:bg-[#F4F7F9] odd:bg-[#EFEFEF]">
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->member_number }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->person->full_name }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->person->national_id }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ $item->divisions->first()?->department?->name ?? '-' }}
+                            </td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->person->phone }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                @php
+                                    $status = $item->membership->status ?? null;
+                                @endphp
+                                @if ($status == null)
+                                    <span
+                                        class="text-[#067647] bg-[#067647]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#067647]">غير
+                                        معروف</span>
+                                @elseif ($status == 'active')
+                                    <span
+                                        class="text-[#067647] bg-[#067647]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#067647]">نشط</span>
+                                @elseif($status == 'registering')
+                                    <span
+                                        class="text-[#175CD3] bg-[#175CD3]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#175CD3]">قيد
+                                        التسجيل</span>
+                                @elseif($status == 'loan' || $status == 'another_entity')
+                                    <span
+                                        class="text-[#5925DC] bg-[#5925DC]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#5925DC]">إعارة</span>
+                                @elseif($status == 'pension')
+                                    <span
+                                        class="text-[#E6B800] bg-[#E6B800]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#E6B800]">محال
+                                        للمعاش</span>
+                                @elseif($status == 'withdrawn')
+                                    <span
+                                        class="text-[#F79009] bg-[#F79009]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#F79009]">منسحب</span>
+                                @elseif($status == 'dismissed')
+                                    <span
+                                        class="text-[#D92D20] bg-[#D92D20]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#D92D20]">مفصول</span>
+                                @elseif($status == 'unpaid_leave')
+                                    <span
+                                        class="text-[#4B5A70] bg-[#4B5A70]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#4B5A70]">إجازة
+                                        بدون راتب</span>
+                                @elseif($status == 'expired' || $status == 'terminated')
+                                    <span
+                                        class="text-[#021219] bg-[#021219]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#021219]">منتهي
+                                        العضوية</span>
+                                @elseif($status == 'suspended')
+                                    <span
+                                        class="text-[#D92D20] bg-[#D92D20]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#D92D20]">موقوف</span>
+                                @endif
+                            </td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ $item->membership->start_date ?? $item->join_date }}</td>
+                            <td class="p-3 border-l border-b border-[#6D6D6D]">
+                                <a href="#">
+                                    <iconify-icon
+                                        class="text-[#124375] hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                        icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon> </a>
+                            </td>
+                        </tr>
                     @endforeach
                 @else
-                    <option value="tagara">كلية تجارة وإدارة أعمال</option>
-                @endif
-            </select>
-        </div>
-
-        <div class="relative min-w-[200px]">
-            <select class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                <option value="all">الحالة : الكل</option>
-                <option value="active">نشط</option>
-                <option value="registering">قيد التسجيل</option>
-                <option value="loan">إعارة</option>
-                <option value="pension">محال للمعاش</option>
-                <option value="withdrawn">منسحب</option>
-                <option value="dismissed">مفصول</option>
-                <option value="unpaid_leave">إجازة بدون راتب</option>
-                <option value="expired">منتهي العضوية</option>
-            </select>
-        </div>
-    </div>
-
-    <div class="bg-white rounded-xl border border-slate-200 overflow-x-auto mb-6">
-        <table class="w-full border-collapse min-w-[900px] text-right">
-            <thead>
-                <tr>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">رقم العضوية</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">اسم العضو</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">الرقم القومي</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">الجهة</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">رقم الهاتف</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">الحالة</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">تاريخ الانضمام</th>
-                    <th class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 bg-slate-50 text-slate-500 font-semibold text-sm">إجراءات</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($members as $member)
-                    @php
-                        $statusLabel = $statusMap[$member->status]['label'] ?? $member->status;
-                        
-                        $departmentName = 'غير محدد';
-                        if($member->divisions->first() && $member->divisions->first()->department) {
-                            $departmentName = $member->divisions->first()->department->name;
-                        } elseif ($member->employments->where('is_current', true)->first()) {
-                            $departmentName = $member->employments->where('is_current', true)->first()->department ?? 'غير محدد';
-                        }
-                        
-                        $statusColors = [
-                            'active' => 'text-green-600 border-green-600 bg-green-50',
-                            'registering' => 'text-blue-600 border-blue-600 bg-blue-50',
-                            'loan' => 'text-purple-600 border-purple-600 bg-purple-50',
-                            'pension' => 'text-slate-600 border-slate-600 bg-slate-100',
-                            'withdrawn' => 'text-orange-600 border-orange-600 bg-orange-50',
-                            'dismissed' => 'text-red-700 border-red-700 bg-red-100',
-                            'unpaid_leave' => 'text-amber-600 border-amber-600 bg-amber-50',
-                            'expired' => 'text-red-600 border-red-600 bg-red-50',
-                        ];
-                        
-                        $mappedStatus = $member->status; // or if db differs map it
-                        $twClass = $statusColors[$mappedStatus] ?? 'text-slate-600 border-slate-600 bg-slate-50';
-                    @endphp
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">{{ $member->member_number }}</td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">{{ $member->person->full_name ?? 'غير متوفر' }}</td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">{{ $member->person->national_id ?? 'غير متوفر' }}</td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">{{ $departmentName }}</td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">{{ $member->person->phone ?? 'غير متوفر' }}</td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">
-                            <span class="inline-block py-1 px-3 rounded-full text-xs font-semibold text-center border {{ $twClass }}">
-                                {{ $statusLabel }}
-                            </span>
-                        </td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">{{ \Carbon\Carbon::parse($member->join_date)->translatedFormat('j F Y') }}</td>
-                        <td class="py-3.5 px-4 border-b border-l border-slate-200 last:border-l-0 text-sm align-middle">
-                            <button class="text-primary-light text-lg transition-colors hover:text-primary"><i class="fa-regular fa-eye"></i></button>
-                        </td>
-                    </tr>
-                @empty
                     <tr>
-                        <td colspan="8" class="py-6 text-center text-slate-500">لا يوجد أعضاء مضافين بعد.</td>
+                        <td colspan="8" class="py-4 text-center text-gray-500">لا توجد بيانات</td>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+                @endif
+            </table>
+        </div>
+    </section>
 
-    <div class="mt-4">
+    <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
         {{ $members->links() }}
     </div>
 

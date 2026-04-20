@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date')->nullable();
             $table->decimal('subscription_amount', 12, 2);
-            $table->enum('status', ['active', 'expired', 'cancelled']);
+            $table->enum('status', ['active','another_entity','withdrawn','pension','dismissed','expired', 'unpaid_leave']);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();

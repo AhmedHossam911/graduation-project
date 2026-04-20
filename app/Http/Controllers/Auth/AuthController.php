@@ -57,9 +57,6 @@ class AuthController extends Controller
             return back()->withInput()->with('error', 'suspended'); 
         }
 
-        $operations = Operation::where('user_id', $user->id)->get();
-        $operationsCount = $operations->count();
-
         Auth::login($user);
         $user->update(['last_login_at' => now()]);
         return redirect()->intended('/dashboard');
