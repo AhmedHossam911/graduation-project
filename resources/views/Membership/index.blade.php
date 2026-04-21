@@ -1,0 +1,147 @@
+@extends('layouts.app')
+
+@section('title', 'قائمة الاشتراكات')
+
+@section('content')
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-[24px] font-bold text-[#124375]">الاشتراكات</h2>
+        <div class="flex gap-5">
+            <a href="#"
+                class="inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[334px] h-[50px] justify-center">
+                <iconify-icon icon="material-symbols:add-notes" width="24" height="24"></iconify-icon>
+                تسجيل سداد اشتراك
+            </a>
+            <a href="#"
+                class="inline-flex items-center surface-shadow gap-2 bg-[#F4F7F9] text-[#124375] py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[150px] h-[50px] justify-center">
+                <iconify-icon icon="mdi:file-excel" width="24" height="24"></iconify-icon>
+                تنزيل
+            </a>
+        </div>
+    </div>
+
+    <form action="{{ route('memberships.index') }}" method="GET">
+        <div class="flex flex-wrap gap-4 mb-6">
+            <!-- start search -->
+            <div class="flex-1 items-center gap-5">
+                <input type="search" name="search" value="{{ request('search') }}"
+                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" icon="bitcoin-icons:search-outline"
+                    class="w-full rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
+            </div>
+            <!-- end search -->
+
+            <div class="relative min-w-[200px]">
+                <select name="department"
+                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
+                    <option value="all">الجهة : جميع الجهات</option>
+                    @if (isset($departments) && $departments->count() > 0)
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}"
+                                {{ request('department') == $department->id ? 'selected' : '' }}>{{ $department->name }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <div class="relative min-w-[200px]">
+                <select name="status"
+                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
+                    <option value="all">الحالة : الكل</option>
+                </select>
+            </div>
+            <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
+            </button>
+        </div>
+    </form>
+
+    <!-- start cards -->
+    <div class="py-4 grid grid-cols-3 gap-4 ">
+        <div
+            class="shadow-[0_0_5px_1px_rgba(18,67,117,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
+            <div>
+                <iconify-icon icon="fa7-solid:money-bill-wave" width="48" height="48"
+                    class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg"></iconify-icon>
+            </div>
+            <div class="flex flex-col items-center text-[#124375] gap-2">
+                <p class="text-[36px] font-extrabold">5</p>
+                <p class="text-[14px] font-medium">محصلات الشهر</p>
+            </div>
+        </div>
+        <div
+            class="shadow-[0_0_5px_1px_rgba(212,175,55,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#D4AF37]">
+            <div>
+                <iconify-icon icon="material-symbols:calendar-check" width="48" height="48"
+                    class="surface-shadow text-4xl text-[#D4AF37] bg-[#FFFCEF] rounded-lg"></iconify-icon>
+            </div>
+            <div class="flex flex-col items-center text-[#124375] gap-2">
+                <p class="text-[36px] font-extrabold">5</p>
+                <p class="text-[14px] font-medium">عمليات اليوم</p>
+            </div>
+        </div>
+        <div
+            class="shadow-[0_0_5px_1px_rgba(217,45,32,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-[#D92D20]">
+            <div>
+                <iconify-icon icon="mdi:calendar-warning" width="48" height="48"
+                    class="surface-shadow text-4xl text-[#D92D20] bg-[#FFEAE880] rounded-lg"></iconify-icon>
+            </div>
+            <div class="flex flex-col items-center text-[#124375] gap-2">
+                <p class="text-[36px] font-extrabold">5</p>
+                <p class="text-[14px] font-medium">متأخرات الشهر</p>
+            </div>
+        </div>
+    </div>
+    <!-- end cards -->
+
+    <!-- start table -->
+    <section>
+        <div class="rounded-2xl overflow-hidden surface-shadow">
+            <table class="w-full text-center">
+                <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                    <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">المبلغ</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الحالة</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الشهر</th>
+                    <th class="py-3 border-l border-[#6D6D6D]">الإجراءات</th>
+                </tr>
+                @if ($subscriptions->count() > 0)
+                    @foreach ($subscriptions as $subscription)
+                        <tr class="even:bg-[#F4F7F9] odd:bg-[#EFEFEF]">
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">
+                                {{ $subscription->membership->membership_number ?? '---' }}</td>
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">
+                                {{ $subscription->membership->member->full_name ?? 'حدث خطأ' }}</td>
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">{{ number_format($subscription->amount, 2) }}
+                                ج.م</td>
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">
+                                @if ($subscription->status == 'paid')
+                                    <span class="text-green-500">مدفوع</span>
+                                @else
+                                    <span class="text-red-500">غير مدفوع</span>
+                                @endif
+                            </td>
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">{{ $subscription->due_date->format('M Y') }}
+                            </td>
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">
+                                <a href="#" class="text-[#124375] hover:underline">
+                                    <iconify-icon
+                                        class="text-[#124375] hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                        icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon> </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="8" class="py-4 text-center text-gray-500">لا توجد بيانات</td>
+                    </tr>
+                @endif
+            </table>
+        </div>
+        <div
+            class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+            {{ $subscriptions->links() }}
+        </div>
+    </section>
+
+@endsection

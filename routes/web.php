@@ -37,4 +37,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/members', [\App\Http\Controllers\Membership\MemberController::class, 'store'])->name('members.store');
     Route::get('/members/{member}/print', [\App\Http\Controllers\Membership\MemberController::class, 'print'])->name('members.print');
     Route::post('/members/{member}/signed-form', [\App\Http\Controllers\Membership\MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
+
+    // Memberships
+    Route::get('/memberships', [\App\Http\Controllers\Membership\MembershipController::class, 'index'])->name('memberships.index');
+    Route::get('/memberships/create', [\App\Http\Controllers\Membership\MembershipController::class, 'create'])->name('memberships.create');
+    Route::post('/memberships', [\App\Http\Controllers\Membership\MembershipController::class, 'store'])->name('memberships.store');
+    Route::get('/memberships/{membership}/print', [\App\Http\Controllers\Membership\MembershipController::class, 'print'])->name('memberships.print');
+    Route::post('/memberships/{membership}/signed-form', [\App\Http\Controllers\Membership\MembershipController::class, 'uploadSignedForm'])->name('memberships.signed-form');
+        
 });

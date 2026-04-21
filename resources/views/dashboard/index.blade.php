@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'الصفحة الرئيسية')
 
@@ -78,52 +78,55 @@
             <div class="col-span-2 space-y-5">
                 <div class="flex items-center gap-2">
                     <iconify-icon icon="material-symbols:edit-notifications-rounded" class="text-2xl"></iconify-icon>
-                    <h2 class="text-base font-medium">المهام المطلوبة اليوم <span class="text-[#124375]">({{ $dueTodayInstallmentsCount + $todaySubscriptionsCount }})</span>
+                    <h2 class="text-base font-medium">المهام المطلوبة اليوم <span
+                            class="text-[#124375]">({{ $dueTodayInstallmentsCount + $todaySubscriptionsCount }})</span>
                     </h2>
                 </div>
                 <div class="py-2 surface-shadow rounded-2xl py-4 px-5 divide-y-2 divide-[#6D6D6D]">
-                    @if($todaySubscriptionsCount > 0)
-                    <div class="flex justify-between py-5">
-                        <div class="flex items-center gap-2">
-                            <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#175CD3]"></iconify-icon>
-                            <div>
-                                <h3 class="text-[#021219] text-sm font-medium">اشتراكات مستحقة اليوم</h3>
-                                <p class="text-[#6D6D6D] text-sm font-normal">{{ $todaySubscriptionsCount }} اشتراك</p>
+                    @if ($todaySubscriptionsCount > 0)
+                        <div class="flex justify-between py-5">
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#175CD3]"></iconify-icon>
+                                <div>
+                                    <h3 class="text-[#021219] text-sm font-medium">اشتراكات مستحقة اليوم</h3>
+                                    <p class="text-[#6D6D6D] text-sm font-normal">{{ $todaySubscriptionsCount }} اشتراك</p>
+                                </div>
                             </div>
+                            <button
+                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
+                                التفاصيل</button>
                         </div>
-                        <button
-                            class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
-                            التفاصيل</button>
-                    </div>
                     @endif
-                    @if($dueTodayInstallmentsCount > 0)
-                    <div class="flex justify-between py-5">
-                        <div class="flex items-center gap-2">
-                            <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#D92D20]"></iconify-icon>
-                            <div>
-                                <h3 class="text-[#021219] text-sm font-medium">أقساط مستحقة اليوم</h3>
-                                <p class="text-[#6D6D6D] text-sm font-normal">{{ $dueTodayInstallmentsCount }} قسط</p>
+                    @if ($dueTodayInstallmentsCount > 0)
+                        <div class="flex justify-between py-5">
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#D92D20]"></iconify-icon>
+                                <div>
+                                    <h3 class="text-[#021219] text-sm font-medium">أقساط مستحقة اليوم</h3>
+                                    <p class="text-[#6D6D6D] text-sm font-normal">{{ $dueTodayInstallmentsCount }} قسط</p>
+                                </div>
                             </div>
+                            <button
+                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
+                                التفاصيل</button>
                         </div>
-                        <button
-                            class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
-                            التفاصيل</button>
-                    </div>
                     @endif
-                    @if($todaySubscriptionsCount == 0 && $dueTodayInstallmentsCount == 0)
-                    <div class="flex justify-center py-5">
-                        <p class="text-[#6D6D6D] text-sm font-normal">لا توجد مهام مطلوبة اليوم</p>
-                    </div>
+                    @if ($todaySubscriptionsCount == 0 && $dueTodayInstallmentsCount == 0)
+                        <div class="flex justify-center py-5">
+                            <p class="text-[#6D6D6D] text-sm font-normal">لا توجد مهام مطلوبة اليوم</p>
+                        </div>
                     @endif
                 </div>
             </div>
             <div class="col-span-1">
                 <div class="grid grid-cols-2 gap-4">
-                    <div
-                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
-                        <iconify-icon icon="mdi:account-multiple-plus" class="text-5xl text-[#124375]"></iconify-icon>
-                        <h3 class="text-base font-medium text-[#124375]">تسجيل عضو جديد</h3>
-                    </div>
+                    <a href="{{ route('members.create') }}">
+                        <div
+                            class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
+                            <iconify-icon icon="mdi:account-multiple-plus" class="text-5xl text-[#124375]"></iconify-icon>
+                            <h3 class="text-base font-medium text-[#124375]">تسجيل عضو جديد</h3>
+                        </div>
+                    </a>
                     <div
                         class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
                         <iconify-icon icon="material-symbols:list-alt-check-rounded"
@@ -145,35 +148,35 @@
         </div>
         <!-- end tasks -->
 
-            <!-- start table -->
-            <section>
-                <div class="flex items-center gap-2 py-3">
-                    <iconify-icon icon="mingcute:time-fill" class="text-2xl"></iconify-icon>
-                    <h3 class="text-base font-medium ">
-                        العمليات التي تمت اليوم
-                    </h3>
-                </div>
-                <div class="rounded-2xl overflow-hidden  surface-shadow">
-                    <table class="w-full">
-                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                            <th class="py-3 border-l border-[#6D6D6D]">العملية</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">تفاصيل العملية</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">الحالة</th>
-                            <th class="py-3">التوقيت</th>
-                        </tr>
-                        <tr class="text-center">
-                            <td class="py-3 border-l border-[#6D6D6D]">تم تسجيل إسلام مستند ناقص </td>
-                            <td class="py-3 border-l border-[#6D6D6D]">هاجر المعتز</td>
-                            <td class="py-3 border-l border-[#6D6D6D]">5123456789</td>
-                            <td class="py-3 border-l border-[#6D6D6D]">إستلام مستند ناقص</td>
-                            <td class="py-3 border-l border-[#6D6D6D]">تمت العملية</td>
-                            <td class="py-3">منذ ساعتين</td>
-                        </tr>
-                    </table>
-                </div>
-            </section>
+        <!-- start table -->
+        <section>
+            <div class="flex items-center gap-2 py-3">
+                <iconify-icon icon="mingcute:time-fill" class="text-2xl"></iconify-icon>
+                <h3 class="text-base font-medium ">
+                    العمليات التي تمت اليوم
+                </h3>
+            </div>
+            <div class="rounded-2xl overflow-hidden  surface-shadow">
+                <table class="w-full">
+                    <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                        <th class="py-3 border-l border-[#6D6D6D]">العملية</th>
+                        <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
+                        <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
+                        <th class="py-3 border-l border-[#6D6D6D]">تفاصيل العملية</th>
+                        <th class="py-3 border-l border-[#6D6D6D]">الحالة</th>
+                        <th class="py-3">التوقيت</th>
+                    </tr>
+                    <tr class="text-center">
+                        <td class="py-3 border-l border-[#6D6D6D]">تم تسجيل إسلام مستند ناقص </td>
+                        <td class="py-3 border-l border-[#6D6D6D]">هاجر المعتز</td>
+                        <td class="py-3 border-l border-[#6D6D6D]">5123456789</td>
+                        <td class="py-3 border-l border-[#6D6D6D]">إستلام مستند ناقص</td>
+                        <td class="py-3 border-l border-[#6D6D6D]">تمت العملية</td>
+                        <td class="py-3">منذ ساعتين</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
     </main>
     </div>
     <!-- end table -->

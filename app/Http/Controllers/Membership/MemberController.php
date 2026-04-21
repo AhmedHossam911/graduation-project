@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Membership;
 
 use App\Http\Controllers\Controller;
-use App\Models\Membership\Employment;
-use App\Models\Membership\FamilyMember;
 use Illuminate\Http\Request;
 use App\Models\System\Department;
-use App\Models\System\Document;
 use App\Models\Membership\Member;
-use App\Models\Membership\Person;
+use App\Models\Membership\EmploymentInfo;
+use App\Models\Membership\FamilyInfo;
+use App\Models\Membership\Attachment;
+use App\Models\Services\Membership;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 class MemberController extends Controller
 {
@@ -39,6 +38,7 @@ class MemberController extends Controller
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
+            'department_id' => ['nullable', 'exists:departments,id'], // fallback gracefully if view misses it
             'national_id_digits' => ['required', 'array', 'size:14'],
             'national_id_digits.*' => ['required', 'digits:1'],
             'phone_digits' => ['nullable', 'array'],
@@ -46,8 +46,6 @@ class MemberController extends Controller
             'birth_day' => ['nullable', 'integer', 'between:1,31'],
             'birth_month' => ['nullable', 'integer', 'between:1,12'],
             'birth_year' => ['nullable', 'integer', 'between:1900,2100'],
-            'gender' => ['required', Rule::in(['male', 'female'])],
-            'marital_status' => ['nullable', Rule::in(['single', 'married', 'divorced', 'widowed'])],
             'address' => ['nullable', 'string', 'max:1000'],
             'employer_name' => ['required', 'string', 'max:255'],
             'job_title' => ['required', 'string', 'max:255'],
@@ -66,7 +64,7 @@ class MemberController extends Controller
         $request->validate([
             'national_id_digits' => [
                 function ($attribute, $value, $fail) use ($nationalId) {
-                    if (Person::where('national_id', $nationalId)->exists()) {
+                    if (Member::where('national_id', $nationalId)->exists()) {
                         $fail('الرقم القومي مسجل من قبل.');
                     }
                 },
@@ -74,82 +72,51 @@ class MemberController extends Controller
         ]);
 
         $member = DB::transaction(function () use ($request, $validated, $nationalId) {
-            $nameParts = $this->splitArabicName($validated['full_name']);
-
-            $person = Person::create([
-                'first_name' => $nameParts[0],
-                'second_name' => $nameParts[1],
-                'third_name' => $nameParts[2],
-                'fourth_name' => $nameParts[3],
-                'national_id' => $nationalId,
-                'date_of_birth' => $this->dateFromParts($request, 'birth'),
-                'gender' => $validated['gender'],
-                'marital_status' => $validated['marital_status'] ?? null,
-                'nationality' => 'Egyptian',
-                'email' => $validated['email'] ?? null,
-                'phone' => $request->filled('phone_digits') ? implode('', array_filter($request->input('phone_digits', []), 'strlen')) : null,
-                'address' => $validated['address'] ?? null,
-                'created_by' => auth()->id(),
-                'updated_by' => auth()->id(),
-            ]);
+            
+            $department = null;
+            if(!empty($validated['department_id'])) {
+                $department = $validated['department_id'];
+            } else {
+                $deptRecord = Department::firstOrCreate(['name' => 'Pending Registration']);
+                $department = $deptRecord->id;
+            }
 
             $member = Member::create([
-                'person_id' => $person->id,
-                'member_number' => $this->nextMemberNumber(),
-                'status' => 'active',
-                'join_date' => now()->toDateString(),
-                'created_by' => auth()->id(),
-                'updated_by' => auth()->id(),
+                'user_id' => auth()->id(), 
+                'department_id' => $department,
+                'full_name' => $validated['full_name'],
+                'national_id' => $nationalId,
+                'birth_date' => $this->dateFromParts($request, 'birth'),
+                'phone' => $request->filled('phone_digits') ? implode('', array_filter($request->input('phone_digits', []), 'strlen')) : null,
+                'address' => $validated['address'] ?? null,
             ]);
 
-            \App\Models\Services\Membership::create([
+            Membership::create([
                 'member_id' => $member->id,
-                'start_date' => now()->toDateString(),
-                'status' => 'active',
-                'subscription_amount' => 0, // Default for now
-                'created_by' => auth()->id(),
+                'membership_number' => 'MS-' . str_pad($member->id, 5, '0', STR_PAD_LEFT),
+                'status' => 'pending',
+                'declaration_accepted' => true,
+                'approved_by' => null,
             ]);
 
-            Employment::create([
+            EmploymentInfo::create([
                 'member_id' => $member->id,
+                'workplace' => $validated['employer_name'],
                 'job_title' => $validated['job_title'],
-                'employer_name' => $validated['employer_name'],
-                'hire_date' => $this->dateFromParts($request, 'hire'),
-                'salary' => $validated['salary'] ?? null,
-                'employment_type' => 'full_time',
-                'is_current' => true,
-                'created_by' => auth()->id(),
-                'updated_by' => auth()->id(),
+                'join_date' => $this->dateFromParts($request, 'hire'),
+                'starting_salary' => $validated['salary'] ?? null,
             ]);
 
-            if (!empty($validated['spouse_name']) && $validated['spouse_name'] !== 'لا يوجد') {
-                FamilyMember::create([
-                    'member_id' => $member->id,
-                    'name' => $validated['spouse_name'],
-                    'relationship' => 'spouse',
-                    'is_beneficiary' => true,
-                    'created_by' => auth()->id(),
-                    'updated_by' => auth()->id(),
-                ]);
-            }
-
-            if (!empty($validated['child_name']) && $validated['child_name'] !== 'لا يوجد') {
-                FamilyMember::create([
-                    'member_id' => $member->id,
-                    'name' => $validated['child_name'],
-                    'relationship' => 'son',
-                    'is_beneficiary' => true,
-                    'created_by' => auth()->id(),
-                    'updated_by' => auth()->id(),
-                ]);
-            }
+            FamilyInfo::create([
+                'member_id' => $member->id,
+                'spouse_name' => ($validated['spouse_name'] === 'لا يوجد') ? null : $validated['spouse_name'],
+                'child_name' => ($validated['child_name'] === 'لا يوجد') ? null : $validated['child_name'],
+            ]);
 
             foreach (self::INITIAL_DOCUMENT_TYPES as $type => $label) {
-                if (!$request->hasFile("documents.$type")) {
-                    continue;
+                if ($request->hasFile("documents.$type")) {
+                    $this->storeDocument($member, $request->file("documents.$type"), $type);
                 }
-
-                $this->storeDocument($member, $request->file("documents.$type"), $type);
             }
 
             return $member;
@@ -157,12 +124,12 @@ class MemberController extends Controller
 
         return redirect()
             ->route('members.print', $member)
-            ->with('success', 'تم حفظ بيانات العضو. يمكنك طباعة الاستمارة الآن بدون المرفقات.');
+            ->with('success', 'تم حفظ بيانات العضو.');
     }
 
-    public function print(Member $member)
+    public function print($id)
     {
-        $member->load(['person', 'employments', 'familyMembers', 'documents']);
+        $member = Member::with(['user', 'department', 'employmentInfo', 'familyInfo', 'attachments'])->findOrFail($id);
 
         return view('members.create', [
             'member' => $member,
@@ -172,84 +139,53 @@ class MemberController extends Controller
         ]);
     }
 
-    public function uploadSignedForm(Request $request, Member $member)
+    public function uploadSignedForm(Request $request, $id)
     {
         $request->validate([
             'signed_form' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
+        $member = Member::findOrFail($id);
         $this->storeDocument($member, $request->file('signed_form'), 'signed_membership_form');
 
         return redirect()
-            ->route('members.print', $member)
-            ->with('success', 'تم رفع الاستمارة بعد التوقيع بنجاح.');
+            ->route('members.print', $member->id)
+            ->with('success', 'تم رفع الاستمارة بنجاح.');
     }
 
     public function index(Request $request)
     {
         $departments = Department::all();
         
-        $query = Member::with(['person', 'divisions.department', 'employments', 'membership']);
+        $query = Member::with(['user', 'department', 'employmentInfo', 'membershipInfo']);
         
-        // Search Filter
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('member_number', 'like', "%{$search}%")
-                  ->orWhereHas('person', function($q) use ($search) {
-                      $q->where('national_id', 'like', "%{$search}%")
-                        ->orWhere('first_name', 'like', "%{$search}%")
-                        ->orWhere('second_name', 'like', "%{$search}%")
-                        ->orWhere('third_name', 'like', "%{$search}%")
-                        ->orWhere('fourth_name', 'like', "%{$search}%");
-                  });
+            $query->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('national_id', 'like', "%{$search}%");
         }
         
-        // Status Filter
         if ($request->filled('status') && $request->status !== 'all') {
             $status = $request->status;
-            $query->whereHas('membership', function($q) use ($status) {
+            $query->whereHas('membershipInfo', function($q) use ($status) {
                 $q->where('status', $status);
             });
         }
         
-        // Department Filter
         if ($request->filled('department') && $request->department !== 'all') {
-            $departmentId = $request->department;
-            $query->whereHas('divisions', function($q) use ($departmentId) {
-                $q->where('department_id', $departmentId);
-            });
+            $query->where('department_id', $request->department);
         }
         
         $members = $query->paginate(10)->withQueryString();
         
         $statusMap = [
             'active' => ['label' => 'نشط', 'class' => 'active'],
-            'registering' => ['label' => 'قيد التسجيل', 'class' => 'registering'],
-            'loan' => ['label' => 'إعارة', 'class' => 'loan'],
-            'pension' => ['label' => 'محال للمعاش', 'class' => 'pension'],
-            'withdrawn' => ['label' => 'منسحب', 'class' => 'withdrawn'],
-            'dismissed' => ['label' => 'مفصول', 'class' => 'dismissed'],
-            'unpaid_leave' => ['label' => 'إجازة بدون راتب', 'class' => 'unpaid-leave'],
-            'expired' => ['label' => 'منتهي العضوية', 'class' => 'expired'],
-            // Fallbacks for DB enums if they differ
+            'inactive' => ['label' => 'منسحب', 'class' => 'withdrawn'],
             'suspended' => ['label' => 'موقوف', 'class' => 'expired'],
-            'terminated' => ['label' => 'منتهي', 'class' => 'expired'],
-            'deceased' => ['label' => 'متوفي', 'class' => 'expired'],
+            'pending' => ['label' => 'قيد التسجيل', 'class' => 'registering'],
         ];
         
         return view('members.index', compact('departments', 'members', 'statusMap'));
-    }
-
-    private function splitArabicName(string $fullName): array
-    {
-        $parts = preg_split('/\s+/', trim($fullName)) ?: [];
-
-        return [
-            $parts[0] ?? $fullName,
-            $parts[1] ?? '-',
-            $parts[2] ?? null,
-            implode(' ', array_slice($parts, 3)) ?: null,
-        ];
     }
 
     private function dateFromParts(Request $request, string $prefix): ?string
@@ -265,25 +201,14 @@ class MemberController extends Controller
         return sprintf('%04d-%02d-%02d', $year, $month, $day);
     }
 
-    private function nextMemberNumber(): string
-    {
-        $nextId = ((int) Member::max('id')) + 1;
-
-        return 'M-' . str_pad((string) $nextId, 5, '0', STR_PAD_LEFT);
-    }
-
     private function storeDocument(Member $member, $file, string $type): void
     {
         $path = $file->store("members/{$member->id}", 'public');
 
-        Document::create([
-            'documentable_type' => Member::class,
-            'documentable_id' => $member->id,
+        Attachment::create([
+            'member_id' => $member->id,
             'type' => $type,
             'file_path' => $path,
-            'original_name' => $file->getClientOriginalName(),
-            'file_size' => $file->getSize(),
-            'uploaded_by' => auth()->id(),
         ]);
     }
 }

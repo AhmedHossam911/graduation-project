@@ -16,13 +16,13 @@
                         <p>الأعضاء</p>
                     </div>
                 </a>
+                <a href="{{ route('memberships.index') }}">
                 <div
                     class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
-                    <a>
                         <iconify-icon icon="material-symbols:list-alt-check-rounded" class="text-3xl"></iconify-icon>
-                    </a>
-                    <p>الاشتراكات</p>
-                </div>
+                        <p>الاشتراكات</p>
+                    </div>
+                </a>
                 <div
                     class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                     <a>

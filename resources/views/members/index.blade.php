@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.app')
 
 @section('title', 'قائمة الأعضاء')
 
@@ -67,18 +67,18 @@
                     <th class="py-3 border-l border-[#6D6D6D]">الإجراءات</th>
                 </tr>
                 @if ($members->count() > 0)
-                    @foreach ($members as $item)
+                    @foreach ($members as $member)
                         <tr class="text-center even:bg-[#F4F7F9] odd:bg-[#EFEFEF]">
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->member_number }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->person->full_name }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->person->national_id }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->membership->membership_number }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->user->name }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $item->divisions->first()?->department?->name ?? '-' }}
+                                {{ $member->user->department?->name ?? '-' }}
                             </td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $item->person->phone }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->user->phone }}</td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">
                                 @php
-                                    $status = $item->membership->status ?? null;
+                                    $status = $member->membership->status ?? null;
                                 @endphp
                                 @if ($status == null)
                                     <span
@@ -118,7 +118,7 @@
                                 @endif
                             </td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $item->membership->start_date ?? $item->join_date }}</td>
+                                {{ $member->membership->start_date ?? $member->join_date }}</td>
                             <td class="p-3 border-l border-b border-[#6D6D6D]">
                                 <a href="#">
                                     <iconify-icon

@@ -15,21 +15,23 @@ class DashboardController extends Controller
     {
         $today = Carbon::today();
 
-        // Card 1: Active members count
-        $activeMembersCount = Member::where('status', 'active')->count();
+        // Active members count (status now located dynamically through Membership)
+        $activeMembersCount = Member::whereHas('membershipInfo', function($q) {
+            $q->where('status', 'active');
+        })->count();
 
-        // Card 2: Today's subscriptions (payments/subscriptions created today)
+        // Today's subscriptions created
         $todaySubscriptionsCount = Subscription::whereDate('created_at', $today)->count();
 
-        // Card 3: Installments due today
+        // Installments due today
         $dueTodayInstallmentsCount = Installment::where('status', '!=', 'paid')
             ->whereDate('due_date', $today)
             ->count();
 
-        // Card 4: Pending claims (under review)
+        // Pending claims
         $pendingClaimsCount = Claim::where('status', 'pending')->count();
 
-        // Recent audit logs (today's operations) with the user who performed them
+        // Recent audit logs
         $auditLogs = AuditLog::with('user')
             ->whereDate('created_at', $today)
             ->latest()

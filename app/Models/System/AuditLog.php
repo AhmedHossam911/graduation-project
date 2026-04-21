@@ -2,49 +2,31 @@
 
 namespace App\Models\System;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Auth\User;
 
 class AuditLog extends Model
 {
-    protected $guarded = [];
+    use HasFactory;
 
-    /**
-     * Get the user who performed this action.
-     */
+    protected $fillable = [
+        'user_id', 'impersonator_id', 'action', 'table_name', 'record_id',
+        'old_values', 'new_values', 'ip_address'
+    ];
+
+    protected $casts = [
+        'old_values' => 'json',
+        'new_values' => 'json',
+    ];
+
     public function user()
     {
-        return $this->belongsTo(\App\Models\Auth\User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Get a human-readable label for the action.
-     */
-    public function getActionLabelAttribute(): string
+    public function impersonator()
     {
-        return match ($this->action) {
-            'create' => 'إنشاء',
-            'update' => 'تعديل',
-            'delete' => 'حذف',
-            'login'  => 'تسجيل دخول',
-            'logout' => 'تسجيل خروج',
-            default  => $this->action,
-        };
-    }
-
-    /**
-     * Get a human-readable label for the entity type.
-     */
-    public function getEntityLabelAttribute(): string
-    {
-        return match ($this->entity_type) {
-            'member'       => 'عضو',
-            'subscription' => 'اشتراك',
-            'loan'         => 'قرض',
-            'installment'  => 'قسط',
-            'claim'        => 'مطالبة',
-            'payment'      => 'دفعة',
-            'user'         => 'مستخدم',
-            default        => $this->entity_type ?? '—',
-        };
+        return $this->belongsTo(User::class, 'impersonator_id');
     }
 }

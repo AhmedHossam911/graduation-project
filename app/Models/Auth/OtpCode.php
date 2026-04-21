@@ -2,16 +2,22 @@
 
 namespace App\Models\Auth;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class OtpCode extends Model
 {
-    protected $fillable = [
-        'user_id',
-        'type',
-        'code',
-        'expires_at',
-        'is_used',
-        'used_at',
+    use HasFactory;
+
+    protected $fillable = ['user_id', 'code', 'expires_at', 'is_used'];
+
+    protected $casts = [
+        'is_used' => 'boolean',
+        'expires_at' => 'datetime',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -1,445 +1,483 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>استمارة العضوية - صندوق الزمالة</title>
-
-    <link rel="icon" href="{{ asset('IMGs/Hu Logo 1.png') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Cairo', 'sans-serif']
-                    },
-                    colors: {
-                        primary: '#124375',
-                        'primary-light': '#27568f',
-                        'primary-dark': '#0f2a4a',
-                        navbar: '#eef7ff',
-                        body: '#f4f7f9',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-        }
-
-        @media print {
-            .no-print {
-                display: none !important;
-            }
-
-            body {
-                background: #fff !important;
-            }
-
-            .print-page {
-                max-width: none !important;
-                padding: 0 !important;
-            }
-
-            .form-section {
-                break-inside: avoid;
-            }
-        }
-    </style>
-</head>
-
-<body class="min-h-screen bg-body text-primary antialiased">
-    @section('navbar_back_url', route('members.index'))
-    <div class="no-print">
-        @include('partials.navbar')
-    </div>
-
-    @if (false)
-        <header class="hidden">
-            <div class="mx-auto flex h-[68px] max-w-[1220px] items-center justify-between px-5">
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('members.index') }}"
-                        class="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-bold text-white transition hover:bg-primary-light">
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
-                        رجوع
-                    </a>
-                    <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="شعار جامعة العاصمة"
-                        class="h-11 w-11 rounded object-contain">
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <span class="text-lg font-extrabold">صندوق الزمالة</span>
-                    <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="شعار صندوق الزمالة"
-                        class="h-10 w-10 rounded object-contain">
-                </div>
-
-                <div class="flex items-center gap-2 text-primary">
-                    <button type="button"
-                        class="relative flex h-10 w-10 items-center justify-center rounded-md transition hover:bg-primary/10"
-                        title="الإشعارات">
-                        <i class="fa-solid fa-bell text-xl"></i>
-                        <span class="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500"></span>
-                    </button>
-                    <button type="button"
-                        class="flex h-10 w-10 items-center justify-center rounded-md transition hover:bg-primary/10"
-                        title="الملف الشخصي">
-                        <i class="fa-solid fa-user text-xl"></i>
-                    </button>
-                </div>
-            </div>
-        </header>
-    @endif
-
-    @php
-        $printMode = $printMode ?? false;
-        $person = $member->person ?? null;
-        $employment = isset($member) ? $member->employments->first() : null;
-        $spouse = isset($member) ? $member->familyMembers->firstWhere('relationship', 'spouse') : null;
-        $child = isset($member) ? $member->familyMembers->whereIn('relationship', ['son', 'daughter'])->first() : null;
-        $birthParts = $person && $person->date_of_birth ? explode('-', $person->date_of_birth) : [null, null, null];
-        $hireParts = $employment && $employment->hire_date ? explode('-', $employment->hire_date) : [null, null, null];
-        $nationalDigits = old('national_id_digits', $person ? str_split($person->national_id) : []);
-        $phoneDigits = old('phone_digits', $person && $person->phone ? str_split($person->phone) : []);
-    @endphp
-
-    <main class="print-page mx-auto max-w-[1220px] px-5 py-5 pb-10">
-        @if (session('success'))
-            <div
-                class="no-print mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm font-bold text-green-700">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div
-                class="no-print mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700">
-                برجاء مراجعة البيانات المطلوبة قبل الحفظ.
-            </div>
-        @endif
-
-        <div class="mb-5 grid grid-cols-3 items-center gap-4 no-print">
-            <a href="{{ route('members.index') }}"
-                class="inline-flex h-11 w-32 items-center justify-center rounded-md border border-red-200 text-sm font-bold text-red-600 transition hover:bg-red-50">
+@extends('layouts.app')
+@section('title', 'إستمارة العضوية')
+@section('content')
+    <style src="{{ asset('CSS/MembershipForm.css') }}"></style>
+    <!-- start Header -->
+    <div class="flex justify-between items-center py-5 px-7">
+        <div class="logo surface-shadow">
+            <img src="../IMGs/Hu Logo 2.png" alt="Logo">
+        </div>
+        <div class="title text-xl font-semibold text-[#124375]">
+            <h1>
+                إستمارة العضوية
+            </h1>
+        </div>
+        <div class="btn-close">
+            <button class="bg-[#F4F7F9] text-[#D92D20] rounded-2xl py-2 px-12 text-base font-medium">
                 إلغاء
-            </a>
-            <h1 class="text-center text-xl font-extrabold underline underline-offset-4">استمارة العضوية</h1>
-            <div class="flex justify-end">
-                <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="شعار جامعة العاصمة"
-                    class="h-14 w-14 rounded border border-primary/20 bg-white object-contain p-1">
+            </button>
+        </div>
+    </div>
+    <!-- end Header -->
+
+    <!-- start Form -->
+    <!-- start personalData section -->
+    <section class="px-6 py-7">
+        <div class="personal-data rounded-2xl border-2 border-[#124375] py-7 px-7 relative">
+            <h2 class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+                البيانات الشخصية
+            </h2>
+            <div class="space-y-7">
+                <!-- START FULL NAME & EMAIL -->
+                <div class="flex gap-5">
+                    <div class="w-full relative">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]"> الأسم
+                            رباعي <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : أحمد محمد إسماعيل محمود"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                    <div class="relative w-full">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+                            البريد الإلكتروني <span class="text-[#D92D20]">*</span></label>
+                        <input type="email" placeholder="ahmed@gmail.com : مثال"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                </div>
+                <!-- END FULL NAME & EMAIL -->
+                <!-- START LANDLINE & PHONE -->
+                <div class="flex gap-6">
+                    <div class="phone relative border border-[#124375] rounded-xl flex-1 min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
+                            التليفون <span class="text-[#D92D20]">*</span></label>
+                        <div class="flex gap-3 justify-end py-3 px-3">
+                            <input type="tel" placeholder="10" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="9" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="8" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="7" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="6" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="5" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="4" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="3" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="2" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="1" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="0" maxlength="1"
+                                class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                    <div class="HomePhone relative border border-[#124375]  rounded-xl min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
+                            هاتف المنزل</label>
+                        <div class="flex gap-2 justify-end py-3 px-3">
+                            <input type="tel" placeholder="7" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="6" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="5" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="4" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="3" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="2" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="1" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="0" maxlength="1"
+                                class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                </div>
+                <!-- END LANDLINE & PHONE -->
+                <!-- START DATE OF BIRTH -->
+                <div class="flex gap-5">
+                    <div class=" relative border border-[#124375] rounded-xl flex-1 min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الرقم
+                            القومي <span class="text-[#D92D20]">*</span></label>
+                        <div class="flex gap-3 justify-end py-3 px-3">
+                            <input type="text" placeholder="14" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="13" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="12" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="11" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="10" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="9" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="8" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="7" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="6" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="5" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="4" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="3" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="2" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="1" maxlength="1"
+                                class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                    <div class="relative border border-[#124375] rounded-xl  min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">تاريخ
+                            الميلاد <span class="text-[#D92D20]">*</span></label>
+                        <div class="flex gap-3 justify-end py-3 px-3">
+                            <input type="text" placeholder="اليوم" maxlength="1"
+                                class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="الشهر" maxlength="1"
+                                class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="السنة" maxlength="1"
+                                class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                </div>
+                <!-- END LANDLINE & PHONE -->
+                <!-- START SOCIAL STATUS & PLACE OF RESIDENCE -->
+                <div class="flex gap-5">
+                    <div class=" relative flex-1 min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">محل
+                            الاقامة <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="كما البطاقة"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                    <div class="border border-[#124375] rounded-xl py-2 w-80 bg-[#F4F7F9] relative">
+                        <label
+                            class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الحالة
+                            الاجتماعية <span class="text-[#D92D20]">*</span></label>
+                        <span id="status-text" class="px-3 text-[#6D6D6D] text-sm font-medium">أختر</span>
+                        <iconify-icon id="dropdown-btn" icon="oui:arrow-down"
+                            class="cursor-pointer absolute left-[5px] top-[12px] text-xl text-[#124375]"></iconify-icon>
+                        <!-- Dropdown -->
+                        <div
+                            class="dropdown hidden absolute top-[calc(100%+8px)]  left-0 w-fit bg-[#F4F7F9] py-4 px-4 rounded-2xl surface-shadow z-50">
+                            <div class="flex flex-col gap-3">
+                                <label
+                                    class="flex items-center justify-between gap-6 bg-white rounded-xl border border-gray-300 px-5 py-4 cursor-pointer">
+                                    <span class="text-xl font-semibold text-[#124375]">متزوج</span>
+                                    <input type="radio" name="gender" class="peer hidden" value="متزوج">
+                                    <span
+                                        class="inline-block w-5 h-5 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                </label>
+                                <label
+                                    class="flex items-center justify-between gap-6 bg-white rounded-xl border border-gray-300 px-5 py-4 cursor-pointer">
+                                    <span class="text-xl font-semibold text-[#124375]">مطلق</span>
+                                    <input type="radio" name="gender" class="peer hidden" value="مطلق">
+                                    <span
+                                        class="inline-block w-5 h-5 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                </label>
+                                <label
+                                    class="flex items-center justify-between gap-6 bg-white rounded-xl border border-gray-300 px-5 py-4 cursor-pointer">
+                                    <span class="text-xl font-semibold text-[#124375]">أعزب</span>
+                                    <input type="radio" name="gender" class="peer hidden" value="أعزب">
+                                    <span
+                                        class="inline-block w-5 h-5 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                </label>
+                                <label
+                                    class="flex items-center justify-between gap-6 bg-white rounded-xl border border-gray-300 px-5 py-4 cursor-pointer">
+                                    <span class="text-xl font-semibold text-[#124375]">أرمل</span>
+                                    <input type="radio" name="gender" class="peer hidden" value="أرمل">
+                                    <span
+                                        class="inline-block w-5 h-5 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                </label>
+                                <button type="button" id="confirm-status-btn"
+                                    class="surface-shadow bg-[#124375] text-white text-lg font-semibold py-3 rounded-xl mt-1 hover:bg-[#0e3560] transition-colors">تأكيد</button>
+                            </div>
+                        </div>
+                        <!-- end dropdown -->
+                    </div>
+                </div>
+                <!-- END SOCIAL STATUS & PLACE OF RESIDENCE -->
             </div>
         </div>
+    </section>
+    <!-- end PersonalData section -->
 
-        <form method="POST" action="{{ route('members.store') }}" enctype="multipart/form-data" class="space-y-7">
-            @csrf
-
-            <section
-                class="form-section relative rounded-md border-[1.5px] border-primary bg-body px-4 pb-5 pt-6 shadow-[inset_0_0_0_1px_rgba(18,67,117,0.04)]">
-                <h2 class="absolute -top-3 right-5 w-fit bg-body px-3 text-sm font-bold">البيانات الشخصية</h2>
-
-                <div class="grid grid-cols-1 gap-4 pt-2 lg:grid-cols-12">
-                    <div class="lg:col-span-6">
-                        <label class="mb-1 block text-sm font-bold">الاسم رباعي <span
-                                class="text-red-600">*</span></label>
-                        <input name="full_name" type="text" value="{{ old('full_name', $person?->full_name) }}"
-                            placeholder="مثال : أحمد محمد إبراهيم محمود"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-6">
-                        <label class="mb-1 block text-sm font-bold">البريد الإلكتروني <span
-                                class="text-red-600">*</span></label>
-                        <input name="email" type="email" value="{{ old('email', $person?->email) }}"
-                            placeholder="مثال : ahmed@gmail.com"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-
-                    <div class="lg:col-span-7">
-                        <label class="mb-1 block text-sm font-bold">الرقم القومي <span
-                                class="text-red-600">*</span></label>
-                        <div class="grid grid-cols-7 gap-1 sm:grid-cols-[repeat(14,minmax(0,1fr))]">
-                            @for ($i = 1; $i <= 14; $i++)
-                                <input name="national_id_digits[]" inputmode="numeric" maxlength="1"
-                                    value="{{ $nationalDigits[$i - 1] ?? '' }}"
-                                    class="h-8 rounded-md border border-primary/25 bg-white/50 text-center text-sm outline-none focus:border-primary">
-                            @endfor
-                        </div>
-                    </div>
-                    <div class="lg:col-span-5 ">
-                        <label class="mb-1 block text-sm font-bold">رقم هاتف العضو <span
-                                class="text-red-600">*</span></label>
-                        <div class="grid grid-cols-5 gap-1 sm:grid-cols-10">
-                            @for ($i = 1; $i <= 10; $i++)
-                                <input name="phone_digits[]" inputmode="numeric" maxlength="1"
-                                    value="{{ $phoneDigits[$i - 1] ?? '' }}"
-                                    class="h-8 rounded-md border border-primary/25 bg-white/50 text-center text-sm outline-none focus:border-primary">
-                            @endfor
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-9">
-                        <label class="mb-1 block text-sm font-bold">تاريخ الميلاد <span
-                                class="text-red-600">*</span></label>
-                        <div class="grid grid-cols-3 gap-1">
-                            <input name="birth_day" inputmode="numeric"
-                                value="{{ old('birth_day', $birthParts[2] ?? null) }}" placeholder="اليوم"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                            <input name="birth_month" inputmode="numeric"
-                                value="{{ old('birth_month', $birthParts[1] ?? null) }}" placeholder="الشهر"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                            <input name="birth_year" inputmode="numeric"
-                                value="{{ old('birth_year', $birthParts[0] ?? null) }}" placeholder="السنة"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2">
-                        <label class="mb-1 block text-sm font-bold">الحالة الاجتماعية <span
-                                class="text-red-600">*</span></label>
-                        <select name="marital_status"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                            <option value="">اختر</option>
-                            <option value="single" @selected(old('marital_status', $person?->marital_status) === 'single')>أعزب</option>
-                            <option value="married" @selected(old('marital_status', $person?->marital_status) === 'married')>متزوج</option>
-                            <option value="divorced" @selected(old('marital_status', $person?->marital_status) === 'divorced')>مطلق</option>
-                            <option value="widowed" @selected(old('marital_status', $person?->marital_status) === 'widowed')>أرمل</option>
-                        </select>
-                    </div>
-
-                    <div class="lg:col-span-1">
-                        <label class="mb-1 block text-sm font-bold">النوع <span class="text-red-600">*</span></label>
-                        <select name="gender"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                            <option value="male" @selected(old('gender', $person?->gender) === 'male')>ذكر</option>
-                            <option value="female" @selected(old('gender', $person?->gender) === 'female')>أنثى</option>
-                        </select>
-                    </div>
-
-                    <div class="lg:col-span-12">
-                        <label class="mb-1 block text-sm font-bold">عنوان محل الإقامة <span
-                                class="text-red-600">*</span></label>
-                        <input name="address" type="text" value="{{ old('address', $person?->address) }}"
-                            placeholder="كما في البطاقة"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                </div>
-            </section>
-
-            <section
-                class="form-section relative rounded-md border-[1.5px] border-primary bg-body px-4 pb-5 pt-6 shadow-[inset_0_0_0_1px_rgba(18,67,117,0.04)]">
-                <h2 class="absolute -top-3 right-5 w-fit bg-body px-3 text-sm font-bold">البيانات الوظيفية</h2>
-
-                <div class="grid grid-cols-1 gap-4 pt-2 lg:grid-cols-12">
-                    <div class="lg:col-span-9">
-                        <label class="mb-1 block text-sm font-bold">جهة العمل <span
-                                class="text-red-600">*</span></label>
-                        <input name="employer_name" type="text"
-                            value="{{ old('employer_name', $employment?->employer_name) }}"
-                            placeholder="مثال : كلية تجارة وإدارة أعمال"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-3">
-                        <label class="mb-1 block text-sm font-bold">تاريخ استلام العمل <span
-                                class="text-red-600">*</span></label>
-                        <div class="grid grid-cols-3 gap-1">
-                            <input name="hire_day" value="{{ old('hire_day', $hireParts[2] ?? null) }}"
-                                placeholder="اليوم"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                            <input name="hire_month" value="{{ old('hire_month', $hireParts[1] ?? null) }}"
-                                placeholder="الشهر"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                            <input name="hire_year" value="{{ old('hire_year', $hireParts[0] ?? null) }}"
-                                placeholder="السنة"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-9">
-                        <label class="mb-1 block text-sm font-bold">الوظيفة <span
-                                class="text-red-600">*</span></label>
-                        <input name="job_title" type="text"
-                            value="{{ old('job_title', $employment?->job_title) }}"
-                            placeholder="مثال : مدرس مساعد مادة المحاسبة"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-3">
-                        <label class="mb-1 block text-sm font-bold">تاريخ الإحالة إلى المعاش <span
-                                class="text-red-600">*</span></label>
-                        <div class="grid grid-cols-3 gap-1">
-                            <input name="retirement_day" placeholder="اليوم"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                            <input name="retirement_month" placeholder="الشهر"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                            <input name="retirement_year" placeholder="السنة"
-                                class="h-9 rounded-md border border-primary/25 bg-white/50 px-2 text-center text-sm outline-none focus:border-primary">
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-5">
-                        <label class="mb-1 block text-sm font-bold">الفئة المالية الحالية <span
-                                class="text-red-600">*</span></label>
-                        <input name="current_financial_grade" type="text" placeholder="مثال : الفئة الثالثة"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-7">
-                        <label class="mb-1 block text-sm font-bold">المرتب الشهري الأساسي عند التعيين <span
-                                class="text-red-600">*</span></label>
-                        <input name="salary" type="number" step="0.01"
-                            value="{{ old('salary', $employment?->salary) }}" placeholder="مثال : 360"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                </div>
-            </section>
-
-            <section
-                class="form-section relative rounded-md border-[1.5px] border-primary bg-body px-4 pb-5 pt-6 shadow-[inset_0_0_0_1px_rgba(18,67,117,0.04)]">
-                <h2 class="absolute -top-3 right-5 w-fit bg-body px-3 text-sm font-bold">البيانات العائلية</h2>
-
-                <div class="grid grid-cols-1 gap-4 pt-2 lg:grid-cols-12">
-                    <div class="lg:col-span-3">
-                        <label class="mb-1 block text-sm font-bold">عدد الأبناء <span
-                                class="text-red-600">*</span></label>
-                        <input name="children_count" inputmode="numeric" placeholder="0"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-9">
-                        <label class="mb-1 block text-sm font-bold">رقم تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد
-                            الأقارب <span class="text-red-600">*</span></label>
-                        <div class="grid grid-cols-5 gap-1 sm:grid-cols-10">
-                            @for ($i = 1; $i <= 10; $i++)
-                                <input name="relative_phone_digits[]" inputmode="numeric" maxlength="1"
-                                    class="h-8 rounded-md border border-primary/25 bg-white/50 text-center text-sm outline-none focus:border-primary">
-                            @endfor
-                        </div>
-                    </div>
-
-                    <div class="lg:col-span-6">
-                        <label class="mb-1 block text-sm font-bold">اسم الزوج أو الزوجة <span
-                                class="text-red-600">*</span></label>
-                        <input name="spouse_name" type="text" value="{{ old('spouse_name', $spouse?->name) }}"
-                            placeholder="مثال : رباب عبد الحليم أحمد محمد"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-6">
-                        <label class="mb-1 block text-sm font-bold">وظيفته أو جهة عمله <span
-                                class="text-red-600">*</span></label>
-                        <input name="spouse_job" type="text" placeholder="مثال : محاسبة بشركة الحديد والصلب"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-
-                    <div class="lg:col-span-6">
-                        <label class="mb-1 block text-sm font-bold">اسم أحد الأبناء <span
-                                class="text-red-600">*</span></label>
-                        <input name="child_name" type="text" value="{{ old('child_name', $child?->name) }}"
-                            placeholder="مثال : لا يوجد"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    <div class="lg:col-span-6">
-                        <label class="mb-1 block text-sm font-bold">وظيفته أو جهة عمله <span
-                                class="text-red-600">*</span></label>
-                        <input name="child_job" type="text" placeholder="مثال : لا يوجد"
-                            class="h-10 w-full rounded-md border border-primary bg-white/40 px-3 text-center text-sm outline-none transition focus:ring-2 focus:ring-primary/20">
-                    </div>
-                </div>
-            </section>
-
-            @unless ($printMode)
-                <section
-                    class="form-section relative rounded-md border-[1.5px] border-primary bg-body px-4 pb-5 pt-6 shadow-[inset_0_0_0_1px_rgba(18,67,117,0.04)]">
-                    <h2 class="absolute -top-3 right-5 w-fit bg-body px-3 text-sm font-bold">المرفقات</h2>
-
-                    <div class="grid grid-cols-1 gap-4 pt-2 md:grid-cols-2">
-                        @foreach ($documentTypes ?? [] as $type => $document)
-                            <label class="block">
-                                <span class="mb-1 block text-sm font-bold">{{ $document }} <span
-                                        class="text-red-600">*</span></span>
-                                <span
-                                    class="flex h-10 cursor-pointer items-center justify-center gap-2 rounded-md border border-primary bg-white/40 text-sm font-bold transition hover:bg-primary/5">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    إرفاق المستند المطلوب
-                                </span>
-                                <input type="file" name="documents[{{ $type }}]" class="sr-only">
-                            </label>
-                        @endforeach
-                    </div>
-                </section>
-            @endunless
-
-            <section class="form-section space-y-5 py-2 text-slate-950">
-                <p class="font-bold">توقيع طالب العضوية بصحة البيانات</p>
-                <h2 class="text-center text-base font-extrabold underline underline-offset-4">إقرار</h2>
-                <p class="leading-9">
-                    أقر أنا / <span class="inline-block min-w-[190px] border-b border-slate-500"></span>
-                    باطلاعي على اللائحة التنفيذية الخاصة بصندوق التأمين الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين
-                    بجامعة حلوان، وأقبل عضويتي في الصندوق اعتبارا من
-                    <span class="inline-block min-w-[90px] border-b border-slate-500"></span> /
-                    <span class="inline-block min-w-[90px] border-b border-slate-500"></span> /
-                    <span class="inline-block min-w-[90px] border-b border-slate-500"></span>
-                    وأوافق على خصم قيمة قسط المشاركة خصما من مكافآت الامتحانات المستحقة لي كل عام بما يعادل قيمة جملة
-                    الأقساط السنوية.
-                </p>
-                <p class="text-left">تحريرا في : <span
-                        class="inline-block min-w-[90px] border-b border-slate-500"></span> مارس 2026</p>
-
-                <div class="grid grid-cols-1 gap-6 pt-2 md:grid-cols-4">
-                    <div>الاسم / <span class="inline-block min-w-[140px] border-b border-slate-500"></span></div>
-                    <div>الوظيفة / <span class="inline-block min-w-[140px] border-b border-slate-500"></span></div>
-                    <div>الرقم القومي / <span class="inline-block min-w-[140px] border-b border-slate-500"></span>
-                    </div>
-                    <div>التوقيع / <span class="inline-block min-w-[140px] border-b border-slate-500"></span></div>
-                </div>
-
-                <div class="pt-3">
-                    <p class="mb-6">المقر بما فيه</p>
-                    <p class="mr-12">مدير الإدارة</p>
-                    <p class="mt-6">ويعتمد ، <span
-                            class="inline-block min-w-[180px] border-b border-slate-500"></span></p>
-                </div>
-            </section>
-
-            <div class="no-print flex justify-center pt-1">
-                <button type="{{ $printMode ? 'button' : 'submit' }}"
-                    @if ($printMode) onclick="window.print()" @endif
-                    class="inline-flex h-11 w-full max-w-[840px] items-center justify-center gap-3 rounded-md bg-slate-300 text-sm font-bold text-slate-600 transition hover:bg-slate-400 hover:text-slate-800">
-                    {{ $printMode ? 'طباعة الاستمارة' : 'حفظ البيانات وطباعة الاستمارة' }}
-                    <i class="fa-solid fa-print"></i>
-                </button>
+    <!-- start FunctionalData section -->
+    <section class="px-6">
+        <div class="functional-data rounded-2xl border-2 border-[#124375] py-7 px-7 relative">
+            <div class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">البيانات الوظيفية
             </div>
-        </form>
-
-        @if ($printMode && isset($member))
-            <form method="POST" action="{{ route('members.signed-form', $member) }}" enctype="multipart/form-data"
-                class="no-print mt-6 rounded-md border-[1.5px] border-primary bg-body px-4 py-5">
-                @csrf
-                <label class="mb-2 block text-sm font-bold">رفع الاستمارة بعد التوقيع</label>
-                <div class="flex flex-col gap-3 md:flex-row">
-                    <input type="file" name="signed_form"
-                        class="h-11 flex-1 rounded-md border border-primary bg-white/50 px-3 py-2 text-sm">
-                    <button type="submit"
-                        class="h-11 rounded-md bg-primary px-6 text-sm font-bold text-white transition hover:bg-primary-light">
-                        حفظ الاستمارة الموقعة
-                    </button>
+            <div class="flex gap-5">
+                <div class="flex-1 min-w-0 space-y-7">
+                    <div class="w-full relative">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">جهة
+                            العمل <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : كلية تجارة و إدارة أعمال"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                    <div class="w-full relative">
+                        <label
+                            class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الوظيفة
+                            <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : مدرس مساعد مادة المحاسبة"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                    <div class="flex gap-5">
+                        <div class="w-full relative">
+                            <label
+                                class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الفئة
+                                المالية الحالية <span class="text-[#D92D20]">*</span></label>
+                            <input type="text" placeholder="مثال : الفئة الثالثة"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                        </div>
+                        <div class="w-full relative">
+                            <label
+                                class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">المرتب
+                                الشهري الأساسي عند التعيين <span class="text-[#D92D20]">*</span></label>
+                            <input type="text" placeholder="مثال : 360 "
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                        </div>
+                    </div>
                 </div>
-            </form>
-        @endif
-    </main>
+                <div class="space-y-12">
+                    <div class="relative border border-[#124375] rounded-xl flex-1 min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">تاريخ
+                            إستلام العمل <span class="text-[#D92D20]">*</span></label>
+                        <div class="flex gap-3 justify-end py-3 px-3">
+                            <input type="text" placeholder="اليوم" maxlength="1"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="الشهر" maxlength="1"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="السنة" maxlength="1"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                    <div class="relative border border-[#124375] rounded-xl flex-1 min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">تاريخ
+                            الإحالة إلي المعاش <span class="text-[#D92D20]">*</span></label>
+                        <div class="flex gap-3 justify-end py-3 px-3">
+                            <input type="text" placeholder="اليوم" maxlength="1"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="الشهر" maxlength="1"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="text" placeholder="السنة" maxlength="1"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end FunctionalData section -->
 
-    <footer class="border-t-[2.5px] border-primary bg-navbar px-6 py-3 text-center text-sm font-bold text-primary">
-        جميع الحقوق محفوظة لجامعة العاصمة لعام 2026 <i class="fa-solid fa-copyright mr-1"></i>
-    </footer>
+    <!-- start familyData section -->
+    <section class="px-6 py-7">
+        <div class="family-data rounded-2xl border-2 border-[#124375] py-7 px-7 relative">
+            <div class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">البيانات العائلية
+            </div>
+            <div class="wrapper space-y-5">
+                <div class="flex gap-5">
+                    <div class="childern flex-1 min-w-0 relative border border-[#124375]  rounded-xl">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">عدد
+                            الأبناء <span class="text-[#D92D20]">*</span></label>
+                        <div class="py-3 text-center">
+                            <input type="text" placeholder="0"
+                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                    <div class="phone relative border border-[#124375] rounded-xl min-w-0">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
+                            تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب <span
+                                class="text-[#D92D20]">*</span></label>
+                        <div class="flex gap-2 justify-end py-3 px-3">
+                            <input type="tel" placeholder="10" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24  min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="9" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="8" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="7" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="6" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="5" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="4" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="3" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="2" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="1" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                            <input type="tel" placeholder="0" maxlength="1"
+                                class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="w-full relative">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">اسم
+                            الزوج أو الزوجة <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : رباب عبدالعليم أحمد محمد"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                    <div class="w-full relative">
+                        <label
+                            class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">وظيفته
+                            أو جهة عمله <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : محاسبة بشركة الحديد و الصلب"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="w-full relative">
+                        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">اسم
+                            أحد الأبناء <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : لا يوجد"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                    <div class="w-full relative">
+                        <label
+                            class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">وظيفته
+                            أو جهة عمله <span class="text-[#D92D20]">*</span></label>
+                        <input type="text" placeholder="مثال : لا يوجد"
+                            class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end familyData section -->
 
-    @if ($printMode && session('success'))
-        <script>
-            window.addEventListener('load', function() {
-                window.print();
-            });
-        </script>
-    @endif
-</body>
+    <!-- start files section -->
+    <section class="px-6 ">
+        <div class="files rounded-2xl border-2 border-[#124375] py-7 px-7 relative">
+            <h2 class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+                المرفقات
+            </h2>
+            <div class="wrapper space-y-7">
+                <div class="flex gap-5">
+                    <div class="w-full relative">
+                        <span class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]"> صورة
+                            بطاقة الرقم القومي <span class="text-[#D92D20]">*</span></span>
+                        <label for="file-1"
+                            class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border border-[#124375]  rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                            <span class="text-base file-name">ارفاق المستند المطلوب</span>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
+                            <input type="file" id="file-1" class="input-file hidden text-[#6D6D6D] font-medium ">
+                        </label>
+                    </div>
+                    <div class="w-full relative">
+                        <span class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">طلب
+                            تجاوز لفوق سن 21 عاماً <span class="text-[#D92D20]">*</span></span>
+                        <label for="file-2"
+                            class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border border-[#124375]  rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                            <span class="text-base file-name">ارفاق المستند المطلوب</span>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
+                            <input type="file" id="file-2" class="input-file hidden text-[#6D6D6D] font-medium ">
+                        </label>
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="w-full relative">
+                        <span class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]"> خطاب
+                            الأجر الأساسي <span class="text-[#D92D20]">*</span></span>
+                        <label for="file-3"
+                            class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border border-[#124375]  rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                            <span class="text-base file-name">ارفاق المستند المطلوب</span>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
+                            <input type="file" id="file-3" class="input-file hidden text-[#6D6D6D] font-medium ">
+                        </label>
+                    </div>
+                    <div class="w-full relative">
+                        <span class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">قرار
+                            التعين <span class="text-[#D92D20]">*</span></span>
+                        <label for="file-4"
+                            class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border border-[#124375]  rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                            <span class="text-base file-name">ارفاق المستند المطلوب</span>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
+                            <input type="file" id="file-4" class="input-file hidden text-[#6D6D6D] font-medium ">
+                        </label>
+                    </div>
+                </div>
+                <div class="flex gap-5">
+                    <div class="w-full relative">
+                        <span class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">اقرار
+                            القيام بالعمل <span class="text-[#D92D20]">*</span></span>
+                        <label for="file-5"
+                            class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border border-[#124375]  rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                            <span class="text-base file-name">ارفاق المستند المطلوب</span>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
+                            <input type="file" id="file-5" class="input-file hidden text-[#6D6D6D] font-medium ">
+                        </label>
+                    </div>
+                    <div class="w-full relative">
+                        <span
+                            class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الاستمارة
+                            بعد التوقيع</span>
+                        <label for="file-6"
+                            class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border border-[#124375]  rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                            <span class="text-base file-name">ارفاق المستند المطلوب</span>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
+                            <input type="file" id="file-6" class="input-file hidden text-[#6D6D6D] font-medium">
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end files section -->
 
-</html>
+    <!-- start declaration section -->
+    <section class="px-6 py-14">
+        <h3 class=" text-base font-medium text-end">
+            توقيع طالب العضوية بصحة البيانات
+        </h3>
+        <div class="mt-8 space-y-7 font-medium">
+            <h4 class="text-lg text-center underline underline-offset-8">
+                إقرار
+            </h4>
+            <p class="leading-loose">
+                أقر أنا / ______________________ بإطلاعي علي الائحة التنفيذية الخاصة بصندوق التأمين الخاص بأعضاء هيئة
+                التدريس و معانيهم و العاملين بجامعة العاصمة و أقبل عضويتي في الصندوق اعتباراً من
+                &ensp;&ensp;&ensp;&ensp;/&ensp;&ensp;&ensp;&ensp;/&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp; و أوافق علي خصم
+                قيمة قسط المشاركة خصماً من مكافأت الامتحانات المستحقة لي كل عام بما يعادل قيمة جملة الأقساط السنوية.
+            </p>
+            <h5 class="text-end text-base " id="date">
+                تحريراً في :
+            </h5>
+            <h5>
+                المقر بما فيه
+            </h5>
+            <div class="flex gap-5">
+                <p class="flex-1 flex items-end gap-1">الأسم / <span class="flex-1 border-b border-black"></span></p>
+                <p class="flex-1 flex items-end gap-1">الوظيفة / <span class="flex-1 border-b border-black"></span></p>
+                <p class="flex-1 flex items-end gap-1">الرقم القومي / <span class="flex-1 border-b border-black"></span>
+                </p>
+                <p class="flex-1 flex items-end gap-1">التوقيع / <span class="flex-1 border-b border-black"></span></p>
+            </div>
+            <div class="flex flex-col gap-5 items-end">
+                <p class="px-12">
+                    مدير الادارة
+                </p>
+                <p>
+                    و يعتمد ، / ___________________
+                </p>
+            </div>
+        </div>
+        <div class="flex justify-center mt-16">
+            <button
+                class="flex gap-3 py-3 w-2/4 justify-center rounded-2xl surface-shadow items-center bg-[#124375] text-white text-base font-medium hover:bg-[#0e3560] transition-colors"><iconify-icon
+                    icon="material-symbols:print-rounded" class="text-2xl"></iconify-icon> حفظ البيانات و طباعة
+                الاستمارة</button>
+        </div>
+    </section>
+    <script src="{{ asset('JS/MembershipForm.js') }}"></script>
+@endsection
