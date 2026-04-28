@@ -13,10 +13,10 @@
                 </a>
             </div>
             <div class="flex items-center gap-4 text-[#124375] text-4xl">
-                <a class="cursor-pointer">
+                <a class="cursor-pointer" href="{{ route('notifications.index') }}">
                     <iconify-icon icon="ion:notifcations"></iconify-icon>
                 </a>
-                <a class="cursor-pointer">
+                <a class="cursor-pointer" href="{{ route('profile.index') }}">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>

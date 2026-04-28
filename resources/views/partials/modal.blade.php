@@ -12,6 +12,7 @@
             </h2>
         </div>
         <form class="px-7">
+            @csrf
             <div class="modal-body flex flex-col gap-5 ">
                 <p class="px-2 text-[#021219] text-sm font-medium ">يرجى إدخال كلمة المرور الحالية ثم تعيين كلمة مرور جديدة.
                 </p>

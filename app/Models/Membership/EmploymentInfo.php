@@ -12,7 +12,7 @@ class EmploymentInfo extends Model
     protected $table = 'employment_info';
 
     protected $fillable = [
-        'member_id', 'workplace', 'job_title', 'join_date',
+        'member_id', 'workplace', 'job_title', 'financial_category', 'join_date',
         'retirement_date', 'starting_salary'
     ];
 

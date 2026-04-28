@@ -15,13 +15,13 @@
         <!-- end header main -->
 
         <!-- start search -->
-        <div class="flex items-center gap-5 mt-6 ">
-            <input type="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض"
+        <form action="{{ route('members.index') }}" method="GET" class="flex items-center gap-5 mt-6 ">
+            <input type="search" name="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض"
                 class="w-full  rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
-            <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
+            <button type="submit" class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
                 <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
             </button>
-        </div>
+        </form>
         <!-- end search -->
 
         <!-- start cards -->
@@ -127,19 +127,21 @@
                             <h3 class="text-base font-medium text-[#124375]">تسجيل عضو جديد</h3>
                         </div>
                     </a>
+                    <a href="{{ route('memberships.create') }}">
+                        <div
+                            class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
+                            <iconify-icon icon="material-symbols:list-alt-check-rounded"
+                                class="text-5xl text-[#124375]"></iconify-icon>
+                            <h3 class="text-base font-medium text-[#124375]">تسجيل سداد إشتراك</h3>
+                        </div>
+                    </a>
                     <div
-                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
-                        <iconify-icon icon="material-symbols:list-alt-check-rounded"
-                            class="text-5xl text-[#124375]"></iconify-icon>
-                        <h3 class="text-base font-medium text-[#124375]">تسجيل سداد إشتراك</h3>
-                    </div>
-                    <div
-                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
+                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] cursor-not-allowed opacity-70">
                         <iconify-icon icon="ion:cash" class="text-5xl text-[#124375]"></iconify-icon>
                         <h3 class="text-base font-medium text-[#124375]">تسجيل سداد قسط</h3>
                     </div>
                     <div
-                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
+                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] cursor-not-allowed opacity-70">
                         <iconify-icon icon="mdi:account-file" class="text-5xl text-[#124375]"></iconify-icon>
                         <h3 class="text-base font-medium text-[#124375]">إنشاء مطالبة</h3>
                     </div>
@@ -153,7 +155,7 @@
             <div class="flex items-center gap-2 py-3">
                 <iconify-icon icon="mingcute:time-fill" class="text-2xl"></iconify-icon>
                 <h3 class="text-base font-medium ">
-                    العمليات التي تمت اليوم
+                    العمليات التي تمت مؤخراً
                 </h3>
             </div>
             <div class="rounded-2xl overflow-hidden  surface-shadow">
@@ -166,18 +168,25 @@
                         <th class="py-3 border-l border-[#6D6D6D]">الحالة</th>
                         <th class="py-3">التوقيت</th>
                     </tr>
-                    <tr class="text-center">
-                        <td class="py-3 border-l border-[#6D6D6D]">تم تسجيل إسلام مستند ناقص </td>
-                        <td class="py-3 border-l border-[#6D6D6D]">هاجر المعتز</td>
-                        <td class="py-3 border-l border-[#6D6D6D]">5123456789</td>
-                        <td class="py-3 border-l border-[#6D6D6D]">إستلام مستند ناقص</td>
-                        <td class="py-3 border-l border-[#6D6D6D]">تمت العملية</td>
-                        <td class="py-3">منذ ساعتين</td>
-                    </tr>
+                    @forelse ($auditLogs as $log)
+                        <tr class="text-center even:bg-[#F4F7F9]">
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $log->action }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $log->member_name }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $log->membership_number }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">تعديل في جدول {{ $log->table_name }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">تمت العملية</td>
+                            <td class="py-3 border-1 border-b border-[#6D6D6D]">{{ $log->created_at->diffForHumans() }}</td>
+                        </tr>
+                    @empty
+                        <tr class="text-center">
+                            <td colspan="6" class="py-6 text-gray-500">لا توجد عمليات مسجلة حالياً</td>
+                        </tr>
+                    @endforelse
                 </table>
             </div>
         </section>
     </main>
     </div>
+    <script src="{{ asset('js/Dashboard.js') }}"></script>
     <!-- end table -->
 @endsection

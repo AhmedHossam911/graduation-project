@@ -3,22 +3,22 @@
         <aside class="SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375]">
             <div class="sidebar-pages flex flex-col  gap-5">
                 <a href="{{ route('dashboard') }}">
-                <div
-                    class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="mdi:home" class="text-3xl"></iconify-icon>
                         <p>الصفحة الرئيسية</p>
                     </div>
                 </a>
                 <a href="{{ route('members.index') }}">
-                <div
-                    class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="mdi:account-group" class="text-3xl"></iconify-icon>
                         <p>الأعضاء</p>
                     </div>
                 </a>
                 <a href="{{ route('memberships.index') }}">
-                <div
-                    class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="material-symbols:list-alt-check-rounded" class="text-3xl"></iconify-icon>
                         <p>الاشتراكات</p>
                     </div>
@@ -50,9 +50,10 @@
                     class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                     <form method="POST" action="{{ route('log-out') }}" class="flex items-center gap-2 w-full">
                         @csrf
-                        <button type="submit" class="flex items-center gap-2 w-full bg-transparent border-none cursor-pointer text-inherit text-lg font-medium">
+                        <button type="submit"
+                            class="flex items-center gap-2 w-full bg-transparent border-none cursor-pointer text-inherit text-lg font-medium">
                             <iconify-icon icon="ic:round-logout" class="text-3xl text-[#D92D20]"></iconify-icon>
-                            تسجيل الخروج
+                            <p>تسجيل الخروج</p>
                         </button>
                     </form>
                 </div>

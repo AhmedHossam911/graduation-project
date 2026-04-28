@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-[24px] font-bold text-[#124375]">قائمة الأعضاء</h2>
         <a href="{{ route('members.create') }}"
-            class="inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-8 px-5 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[322px] h-[50px] justify-center">
+            class="inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-4 px-5 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[322px] h-[50px] justify-center">
             <iconify-icon icon="ic:round-group-add" width="24" height="24"></iconify-icon>
             تسجيل عضو جديد
         </a>
@@ -17,34 +17,49 @@
             <!-- start search -->
             <div class="flex-1 items-center gap-5">
                 <input type="search" name="search" value="{{ request('search') }}"
-                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" icon="bitcoin-icons:search-outline"
+                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي" icon="bitcoin-icons:search-outline"
                     class="w-full rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             </div>
             <!-- end search -->
 
             <div class="relative min-w-[200px]">
-                <select name="department"
-                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                    <option value="all">الجهة : جميع الجهات</option>
-                    @if (isset($departments) && $departments->count() > 0)
-                        @foreach ($departments as $department)
-                            <option value="{{ $department->id }}"
-                                {{ request('department') == $department->id ? 'selected' : '' }}>{{ $department->name }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
+                @php
+                    $deptOptions = ['all' => 'جميع الجهات'];
+                    if (isset($departments) && $departments->count() > 0) {
+                        foreach ($departments as $department) {
+                            $deptOptions[$department->id] = $department->name;
+                        }
+                    }
+                @endphp
+                @include('partials.dropdown', [
+                    'name' => 'department',
+                    'label' => 'الجهة',
+                    'options' => $deptOptions,
+                    'selected' => request('department', 'all'),
+                    'required' => false,
+                    'clearable' => true,
+                    'autoSubmitClear' => true,
+                ])
             </div>
 
             <div class="relative min-w-[200px]">
-                <select name="status"
-                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                    <option value="all">الحالة : الكل</option>
-                    @foreach ($statusMap as $key => $status)
-                        <option value="{{ $key }}" {{ request('status') == $key ? 'selected' : '' }}>
-                            {{ $status['label'] }}</option>
-                    @endforeach
-                </select>
+                @php
+                    $statusOptions = ['all' => 'الكل'];
+                    if (isset($statusMap)) {
+                        foreach ($statusMap as $key => $statusData) {
+                            $statusOptions[$key] = $statusData['label'];
+                        }
+                    }
+                @endphp
+                @include('partials.dropdown', [
+                    'name' => 'status',
+                    'label' => 'الحالة',
+                    'options' => $statusOptions,
+                    'selected' => request('status', 'all'),
+                    'clearable' => true,
+                    'required' => false,
+                    'autoSubmitClear' => true,
+                ])
             </div>
             <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
                 <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
@@ -69,67 +84,53 @@
                 @if ($members->count() > 0)
                     @foreach ($members as $member)
                         <tr class="text-center even:bg-[#F4F7F9] odd:bg-[#EFEFEF]">
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->membership->membership_number }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->user->name }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ $member->membershipInfo->membership_number ?? '-' }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->full_name }}</td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $member->user->department?->name ?? '-' }}
+                                {{ $member->department?->name ?? '-' }}
                             </td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->user->phone }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->phone }}</td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">
                                 @php
-                                    $status = $member->membership->status ?? null;
+                                    $statusCode = $member->membershipInfo->status ?? 'unknown';
+                                    $statusData = $statusMap[$statusCode] ?? [
+                                        'label' => 'غير معروف',
+                                        'class' => 'unknown',
+                                    ];
+                                    // Map CSS classes for visual consistency
+                                    $classMap = [
+                                        'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
+                                        'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
+                                        'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#5925DC]',
+                                        'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
+                                        'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#F79009]',
+                                        'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+                                        'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#4B5A70]',
+                                        'expired' => 'text-[#021219] border-[#021219] bg-[#021219]',
+                                        'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+                                    ];
+                                    $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400';
                                 @endphp
-                                @if ($status == null)
-                                    <span
-                                        class="text-[#067647] bg-[#067647]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#067647]">غير
-                                        معروف</span>
-                                @elseif ($status == 'active')
-                                    <span
-                                        class="text-[#067647] bg-[#067647]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#067647]">نشط</span>
-                                @elseif($status == 'registering')
-                                    <span
-                                        class="text-[#175CD3] bg-[#175CD3]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#175CD3]">قيد
-                                        التسجيل</span>
-                                @elseif($status == 'loan' || $status == 'another_entity')
-                                    <span
-                                        class="text-[#5925DC] bg-[#5925DC]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#5925DC]">إعارة</span>
-                                @elseif($status == 'pension')
-                                    <span
-                                        class="text-[#E6B800] bg-[#E6B800]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#E6B800]">محال
-                                        للمعاش</span>
-                                @elseif($status == 'withdrawn')
-                                    <span
-                                        class="text-[#F79009] bg-[#F79009]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#F79009]">منسحب</span>
-                                @elseif($status == 'dismissed')
-                                    <span
-                                        class="text-[#D92D20] bg-[#D92D20]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#D92D20]">مفصول</span>
-                                @elseif($status == 'unpaid_leave')
-                                    <span
-                                        class="text-[#4B5A70] bg-[#4B5A70]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#4B5A70]">إجازة
-                                        بدون راتب</span>
-                                @elseif($status == 'expired' || $status == 'terminated')
-                                    <span
-                                        class="text-[#021219] bg-[#021219]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#021219]">منتهي
-                                        العضوية</span>
-                                @elseif($status == 'suspended')
-                                    <span
-                                        class="text-[#D92D20] bg-[#D92D20]/10 w-[90%] py-1 block mx-auto rounded-2xl border-[1px] border-[#D92D20]">موقوف</span>
-                                @endif
+                                <span class="{{ $badgeClass }} w-[127px] py-1 block mx-auto rounded-full border bg-white text-center font-medium">
+                                    {{ $statusData['label'] }}
+                                </span>
                             </td>
                             <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $member->membership->start_date ?? $member->join_date }}</td>
+                                {{ $member->created_at->isoFormat('D MMMM YYYY', 'ar') }}
+                            </td>
                             <td class="p-3 border-l border-b border-[#6D6D6D]">
-                                <a href="#">
+                                <a href="{{ route('members.show', $member->id) }}">
                                     <iconify-icon
-                                        class="text-[#124375] hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                        class="text-[#124375] hover:scale-110 hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
                                         icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon> </a>
                             </td>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="8" class="py-4 text-center text-gray-500">لا توجد بيانات</td>
+                        <td colspan="8" class="py-4 text-center text-gray-500 text-lg">لا توجد بيانات متاحة حالياً</td>
                     </tr>
                 @endif
             </table>

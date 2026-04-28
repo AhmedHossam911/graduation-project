@@ -24,7 +24,8 @@
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             {{-- Page Content --}}
-            <main class="flex-1 p-6 overflow-y-auto">
+            <main class="flex-1 p-6 overflow-y-auto relative">
+                @include('partials.components')
                 @yield('content')
             </main>
         </div>
@@ -34,6 +35,7 @@
     @include('partials.footer')
 
     @stack('scripts')
-    <script src="{{ asset('JS/Dashboard.js') }}"></script>
+    <script src="{{ asset('JS/Dashboard.js') }}?v={{ time() }}"></script>
 </body>
+
 </html>

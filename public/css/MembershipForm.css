@@ -5,12 +5,13 @@
 }
 body{
     background-color: #F4F7F9;
+    position: relative;
 }
 .surface-shadow{
     box-shadow: 0px 0px 4px 0px rgba(2, 47, 92, 1);
 }
 
-.btn-close button{
+.btn-close a{
     box-shadow: 0px 0px 4px 0px rgba(217, 45, 32, 1);
 }
 

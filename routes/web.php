@@ -37,12 +37,37 @@ Route::middleware('auth')->group(function () {
     Route::post('/members', [\App\Http\Controllers\Membership\MemberController::class, 'store'])->name('members.store');
     Route::get('/members/{member}/print', [\App\Http\Controllers\Membership\MemberController::class, 'print'])->name('members.print');
     Route::post('/members/{member}/signed-form', [\App\Http\Controllers\Membership\MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
+    Route::post('/members/{member}/suspend', [\App\Http\Controllers\Membership\MemberController::class, 'suspend'])->name('members.suspend');
+    Route::get('/members/{member}', [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=retirement' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=resignation' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=early_retirement' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=withdrawal' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=expulsion' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=professional_disability' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=transfer' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+    Route::get('/members/{member}claim_type=death' , [\App\Http\Controllers\Membership\MemberController::class, 'show'])->name('members.show');
+
 
     // Memberships
+    Route::get('/memberships/export', [\App\Http\Controllers\Membership\MembershipController::class, 'export'])->name('memberships.export');
     Route::get('/memberships', [\App\Http\Controllers\Membership\MembershipController::class, 'index'])->name('memberships.index');
     Route::get('/memberships/create', [\App\Http\Controllers\Membership\MembershipController::class, 'create'])->name('memberships.create');
     Route::post('/memberships', [\App\Http\Controllers\Membership\MembershipController::class, 'store'])->name('memberships.store');
     Route::get('/memberships/{membership}/print', [\App\Http\Controllers\Membership\MembershipController::class, 'print'])->name('memberships.print');
     Route::post('/memberships/{membership}/signed-form', [\App\Http\Controllers\Membership\MembershipController::class, 'uploadSignedForm'])->name('memberships.signed-form');
         
+    // Profile
+    Route::get('/profile', [\App\Http\Controllers\ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile', [\App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/change-password', [\App\Http\Controllers\ProfileController::class, 'changePassword'])->name('profile.change-password');
+    
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [\App\Http\Controllers\NotificationController::class, 'readAll'])->name('notifications.read-all');
+    Route::delete('/notifications/{notification}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('/notifications', [\App\Http\Controllers\NotificationController::class, 'clear'])->name('notifications.clear');
+
+    
 });

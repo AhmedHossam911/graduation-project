@@ -15,7 +15,7 @@ class Member extends Model
 
     protected $fillable = [
         'user_id', 'department_id', 'full_name', 'national_id', 'birth_date',
-        'phone', 'address'
+        'phone', 'address', 'marital_status', 'landline'
     ];
 
     protected $casts = [

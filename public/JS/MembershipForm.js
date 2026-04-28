@@ -30,25 +30,6 @@ const today = date.toLocaleDateString('ar-EG' , {
 dateElement.textContent += today;
 // Dynamic date
 
-// DropDown
-dropdownBtn.addEventListener('click', () => {
-    dropdown.classList.toggle('hidden');
-});
-// DropDown
-const statusText = document.getElementById('status-text');
-const confirmStatusBtn = document.getElementById('confirm-status-btn');
-
-if (confirmStatusBtn && statusText) {
-    confirmStatusBtn.addEventListener('click', () => {
-        const selectedInput = document.querySelector('input[name="gender"]:checked');
-        if (selectedInput) {
-            statusText.textContent = selectedInput.value;
-            statusText.classList.remove('text-[#6D6D6D]');
-            statusText.classList.add('text-[#124375]', 'font-bold', 'text-base');
-            dropdown.classList.add('hidden');
-        }
-    });
-}
 
 // Handle Inputs
 function handleInputs (Inputs) {

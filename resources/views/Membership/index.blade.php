@@ -11,7 +11,7 @@
                 <iconify-icon icon="material-symbols:add-notes" width="24" height="24"></iconify-icon>
                 تسجيل سداد اشتراك
             </a>
-            <a href="#"
+            <a href="{{ route('memberships.export', request()->query()) }}"
                 class="inline-flex items-center surface-shadow gap-2 bg-[#F4F7F9] text-[#124375] py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[150px] h-[50px] justify-center">
                 <iconify-icon icon="mdi:file-excel" width="24" height="24"></iconify-icon>
                 تنزيل
@@ -32,11 +32,11 @@
             <div class="relative min-w-[200px]">
                 <select name="department"
                     class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                    <option value="all">الجهة : جميع الجهات</option>
-                    @if (isset($departments) && $departments->count() > 0)
-                        @foreach ($departments as $department)
-                            <option value="{{ $department->id }}"
-                                {{ request('department') == $department->id ? 'selected' : '' }}>{{ $department->name }}
+                    <option value="all">التاريخ : جميع الشهور</option>
+                    @if (isset($months) && $months->count() > 0)
+                        @foreach ($months as $month)
+                            <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
+                                {{ $month }}
                             </option>
                         @endforeach
                     @endif
@@ -47,6 +47,8 @@
                 <select name="status"
                     class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
                     <option value="all">الحالة : الكل</option>
+                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوع</option>
+                    <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوع</option>
                 </select>
             </div>
             <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
@@ -64,7 +66,7 @@
                     class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg"></iconify-icon>
             </div>
             <div class="flex flex-col items-center text-[#124375] gap-2">
-                <p class="text-[36px] font-extrabold">5</p>
+                <p class="text-[36px] font-extrabold">{{ $stats['month_total'] }}</p>
                 <p class="text-[14px] font-medium">محصلات الشهر</p>
             </div>
         </div>
@@ -75,7 +77,7 @@
                     class="surface-shadow text-4xl text-[#D4AF37] bg-[#FFFCEF] rounded-lg"></iconify-icon>
             </div>
             <div class="flex flex-col items-center text-[#124375] gap-2">
-                <p class="text-[36px] font-extrabold">5</p>
+                <p class="text-[36px] font-extrabold">{{ $stats['today_total'] }}</p>
                 <p class="text-[14px] font-medium">عمليات اليوم</p>
             </div>
         </div>
@@ -86,7 +88,7 @@
                     class="surface-shadow text-4xl text-[#D92D20] bg-[#FFEAE880] rounded-lg"></iconify-icon>
             </div>
             <div class="flex flex-col items-center text-[#124375] gap-2">
-                <p class="text-[36px] font-extrabold">5</p>
+                <p class="text-[36px] font-extrabold">{{ $stats['late_total'] }}</p>
                 <p class="text-[14px] font-medium">متأخرات الشهر</p>
             </div>
         </div>
@@ -116,14 +118,32 @@
                                 ج.م</td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
                                 @if ($subscription->status == 'paid')
-                                    <span class="text-green-500">مدفوع</span>
+                                    <div
+                                        class="border-[#067647] text-[#067647] bg-[#ECFDF3] rounded-xl border-[1px] flex items-center justify-right gap-2 px-4 py-1.5 w-full max-w-[160px] mx-auto">
+                                        <iconify-icon icon="mdi:check-circle" width="20" height="20"></iconify-icon>
+                                        <span class="font-bold">مسدد</span>
+                                    </div>
+                                @elseif ($subscription->status == 'unpaid')
+                                    <div
+                                        class="border-[#D92D20] text-[#D92D20] bg-[#FEE4E2] rounded-xl border-[1px] flex items-center justify-right gap-2 px-2 py-1.5 w-full max-w-[160px] mx-auto">
+                                        <iconify-icon icon="mdi:alert-circle" width="20" height="20"></iconify-icon>
+                                        <span class="font-bold">غير مسدد</span>
+                                    </div>
+                                @elseif($subscription->status == 'overdue')
+                                    <div
+                                        class="border-[#124375] text-[#124375] bg-[#EEF7FF] rounded-xl border-[1px] flex items-center justify-right gap-2 px-4 py-1.5 w-full max-w-[160px] mx-auto">
+                                        <iconify-icon icon="mdi:information" width="20" height="20"></iconify-icon>
+                                        <span class="font-bold">متأخر</span>
+                                    </div>
                                 @else
-                                    <span class="text-red-500">غير مدفوع</span>
+                                    <span class="text-gray-500">---</span>
                                 @endif
                             </td>
-                            <td class="px-3 py-3 border-l border-[#6D6D6D]">{{ $subscription->due_date->format('M Y') }}
+                            <td class="px-3 py-3 border-l border-[#6D6D6D]">
+                                {{ $subscription->due_date->isoFormat('MMMM YYYY') }}
                             </td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
+
                                 <a href="#" class="text-[#124375] hover:underline">
                                     <iconify-icon
                                         class="text-[#124375] hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"

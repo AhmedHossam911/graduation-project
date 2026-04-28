@@ -12,6 +12,7 @@ use App\Models\Membership\Attachment;
 use App\Models\Services\Membership;
 use Illuminate\Support\Facades\DB;
 
+
 class MemberController extends Controller
 {
     private const INITIAL_DOCUMENT_TYPES = [
@@ -38,23 +39,35 @@ class MemberController extends Controller
         $validated = $request->validate([
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['nullable', 'email', 'max:255'],
-            'department_id' => ['nullable', 'exists:departments,id'], // fallback gracefully if view misses it
+            'department_id' => ['nullable', 'exists:departments,id'],
             'national_id_digits' => ['required', 'array', 'size:14'],
             'national_id_digits.*' => ['required', 'digits:1'],
             'phone_digits' => ['nullable', 'array'],
             'phone_digits.*' => ['nullable', 'digits:1'],
+            'landline_digits' => ['nullable', 'array'],
+            'landline_digits.*' => ['nullable', 'digits:1'],
             'birth_day' => ['nullable', 'integer', 'between:1,31'],
             'birth_month' => ['nullable', 'integer', 'between:1,12'],
             'birth_year' => ['nullable', 'integer', 'between:1900,2100'],
             'address' => ['nullable', 'string', 'max:1000'],
+            'marital_status' => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
             'employer_name' => ['required', 'string', 'max:255'],
             'job_title' => ['required', 'string', 'max:255'],
+            'financial_category' => ['required', 'string', 'max:255'],
             'hire_day' => ['nullable', 'integer', 'between:1,31'],
             'hire_month' => ['nullable', 'integer', 'between:1,12'],
             'hire_year' => ['nullable', 'integer', 'between:1900,2100'],
+            'retirement_day' => ['nullable', 'integer', 'between:1,31'],
+            'retirement_month' => ['nullable', 'integer', 'between:1,12'],
+            'retirement_year' => ['nullable', 'integer', 'between:1900,2100'],
             'salary' => ['nullable', 'numeric', 'min:0'],
+            'children_count' => ['nullable', 'integer', 'min:0'],
+            'spouse_phone_digits' => ['nullable', 'array'],
+            'spouse_phone_digits.*' => ['nullable', 'digits:1'],
             'spouse_name' => ['nullable', 'string', 'max:255'],
+            'spouse_workplace' => ['nullable', 'string', 'max:255'],
             'child_name' => ['nullable', 'string', 'max:255'],
+            'child_workplace' => ['nullable', 'string', 'max:255'],
             'documents' => ['nullable', 'array'],
             'documents.*' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
@@ -88,7 +101,9 @@ class MemberController extends Controller
                 'national_id' => $nationalId,
                 'birth_date' => $this->dateFromParts($request, 'birth'),
                 'phone' => $request->filled('phone_digits') ? implode('', array_filter($request->input('phone_digits', []), 'strlen')) : null,
+                'landline' => $request->filled('landline_digits') ? implode('', array_filter($request->input('landline_digits', []), 'strlen')) : null,
                 'address' => $validated['address'] ?? null,
+                'marital_status' => $validated['marital_status'],
             ]);
 
             Membership::create([
@@ -103,14 +118,20 @@ class MemberController extends Controller
                 'member_id' => $member->id,
                 'workplace' => $validated['employer_name'],
                 'job_title' => $validated['job_title'],
+                'financial_category' => $validated['financial_category'],
                 'join_date' => $this->dateFromParts($request, 'hire'),
+                'retirement_date' => $this->dateFromParts($request, 'retirement'),
                 'starting_salary' => $validated['salary'] ?? null,
             ]);
 
             FamilyInfo::create([
                 'member_id' => $member->id,
+                'children_count' => $validated['children_count'] ?? 0,
                 'spouse_name' => ($validated['spouse_name'] === 'لا يوجد') ? null : $validated['spouse_name'],
+                'spouse_phone' => $request->filled('spouse_phone_digits') ? implode('', array_filter($request->input('spouse_phone_digits', []), 'strlen')) : null,
+                'spouse_workplace' => ($validated['spouse_workplace'] === 'لا يوجد') ? null : $validated['spouse_workplace'],
                 'child_name' => ($validated['child_name'] === 'لا يوجد') ? null : $validated['child_name'],
+                'child_workplace' => ($validated['child_workplace'] === 'لا يوجد') ? null : $validated['child_workplace'],
             ]);
 
             foreach (self::INITIAL_DOCUMENT_TYPES as $type => $label) {
@@ -161,8 +182,13 @@ class MemberController extends Controller
         
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('national_id', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('full_name', 'like', "%{$search}%")
+                  ->orWhere('national_id', 'like', "%{$search}%")
+                  ->orWhereHas('membershipInfo', function($sq) use ($search) {
+                      $sq->where('membership_number', 'like', "%{$search}%");
+                  });
+            });
         }
         
         if ($request->filled('status') && $request->status !== 'all') {
@@ -180,9 +206,15 @@ class MemberController extends Controller
         
         $statusMap = [
             'active' => ['label' => 'نشط', 'class' => 'active'],
-            'inactive' => ['label' => 'منسحب', 'class' => 'withdrawn'],
-            'suspended' => ['label' => 'موقوف', 'class' => 'expired'],
-            'pending' => ['label' => 'قيد التسجيل', 'class' => 'registering'],
+            'registering' => ['label' => 'قيد التسجيل', 'class' => 'registering'],
+            'pending' => ['label' => 'قيد الانتظار', 'class' => 'pending'],
+            'loan' => ['label' => 'إعارة', 'class' => 'loan'],
+            'pension' => ['label' => 'محال للمعاش', 'class' => 'pension'],
+            'withdrawn' => ['label' => 'منسحب', 'class' => 'withdrawn'],
+            'dismissed' => ['label' => 'مفصول', 'class' => 'dismissed'],
+            'unpaid_leave' => ['label' => 'إجازة بدون راتب', 'class' => 'unpaid_leave'],
+            'expired' => ['label' => 'منتهي العضوية', 'class' => 'expired'],
+            'suspended' => ['label' => 'موقوف', 'class' => 'suspended'],
         ];
         
         return view('members.index', compact('departments', 'members', 'statusMap'));
@@ -210,5 +242,44 @@ class MemberController extends Controller
             'type' => $type,
             'file_path' => $path,
         ]);
+    }
+
+    public function show($id)
+    {
+        $member = Member::with(['user', 'department', 'employmentInfo', 'membershipInfo.claims'])->findOrFail($id);
+        $statusMap = [
+            'active' => ['label' => 'نشط', 'class' => 'active'],
+            'registering' => ['label' => 'قيد التسجيل', 'class' => 'registering'],
+            'pending' => ['label' => 'قيد الانتظار', 'class' => 'pending'],
+            'loan' => ['label' => 'إعارة', 'class' => 'loan'],
+            'pension' => ['label' => 'محال للمعاش', 'class' => 'pension'],
+            'withdrawn' => ['label' => 'منسحب', 'class' => 'withdrawn'],
+            'dismissed' => ['label' => 'مفصول', 'class' => 'dismissed'],
+            'unpaid_leave' => ['label' => 'إجازة بدون راتب', 'class' => 'unpaid_leave'],
+            'expired' => ['label' => 'منتهي العضوية', 'class' => 'expired'],
+            'suspended' => ['label' => 'موقوف', 'class' => 'suspended'],
+        ];
+
+        return view('members.show', compact('member', 'statusMap'));
+    }
+
+    public function suspend(Request $request, $id)
+    {
+        $request->validate([
+            'reason' => ['required', 'string', 'max:1000'],
+            'suspension_file' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $member = Member::with('membershipInfo')->findOrFail($id);
+
+        if ($member->membershipInfo) {
+            $member->membershipInfo->update(['status' => 'suspended']);
+        }
+
+        if ($request->hasFile('suspension_file')) {
+            $this->storeDocument($member, $request->file('suspension_file'), 'suspension_document');
+        }
+
+        return redirect()->route('members.show', $member->id)->with('success', 'تم إيقاف العضوية بنجاح.');
     }
 }
