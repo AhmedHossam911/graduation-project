@@ -37,13 +37,13 @@
                     </a>
                     <p>المالية</p>
                 </div>
-                <div
-                    class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
-                    <a>
+                <a href="{{ route('claims.index') }}">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="mdi:account-file" class="text-3xl"></iconify-icon>
-                    </a>
-                    <p>المطالبات</p>
-                </div>
+                        <p>المطالبات</p>
+                    </div>
+                </a>
             </div>
             <div>
                 <div

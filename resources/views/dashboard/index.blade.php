@@ -127,7 +127,7 @@
                             <h3 class="text-base font-medium text-[#124375]">تسجيل عضو جديد</h3>
                         </div>
                     </a>
-                    <a href="{{ route('memberships.create') }}">
+                    <a href="{{ route('subscriptions.create') }}">
                         <div
                             class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
                             <iconify-icon icon="material-symbols:list-alt-check-rounded"

@@ -44,4 +44,27 @@ class Membership extends Model
     {
         return $this->hasMany(Claim::class);
     }
+
+    public function getRemainingLoanBalanceAttribute()
+    {
+        return $this->loans->where('status', 'active')->sum(function ($loan) {
+            return $loan->remaining_loan_balance;
+        });
+    }
+
+    public function getActiveLoansCountAttribute()
+    {
+        return $this->loans->where('status', 'active')->count();
+    }
+
+    public function getFeesPaidAttribute()
+    {
+        // Default to 100 if the user has any subscriptions, or keep 0
+        return $this->subscriptions()->exists() ? 100 : 0;
+    }
+
+    public function getSubscriptionTotalAttribute()
+    {
+        return $this->subscriptions()->where('status', 'paid')->sum('amount') ?? 0;
+    }
 }

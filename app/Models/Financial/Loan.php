@@ -34,4 +34,9 @@ class Loan extends Model
     {
         return $this->hasMany(Installment::class);
     }
+    
+        public function getRemainingLoanBalanceAttribute()
+        {
+            return $this->total_amount - $this->installments()->sum('amount');
+        }
 }

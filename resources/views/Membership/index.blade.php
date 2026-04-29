@@ -3,7 +3,7 @@
 @section('title', 'قائمة الاشتراكات')
 
 @section('content')
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center mb-2">
         <h2 class="text-[24px] font-bold text-[#124375]">الاشتراكات</h2>
         <div class="flex gap-5">
             <a href="#"
@@ -11,7 +11,7 @@
                 <iconify-icon icon="material-symbols:add-notes" width="24" height="24"></iconify-icon>
                 تسجيل سداد اشتراك
             </a>
-            <a href="{{ route('memberships.export', request()->query()) }}"
+            <a href="{{ route('subscriptions.export', request()->query()) }}"
                 class="inline-flex items-center surface-shadow gap-2 bg-[#F4F7F9] text-[#124375] py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[150px] h-[50px] justify-center">
                 <iconify-icon icon="mdi:file-excel" width="24" height="24"></iconify-icon>
                 تنزيل
@@ -19,46 +19,8 @@
         </div>
     </div>
 
-    <form action="{{ route('memberships.index') }}" method="GET">
-        <div class="flex flex-wrap gap-4 mb-6">
-            <!-- start search -->
-            <div class="flex-1 items-center gap-5">
-                <input type="search" name="search" value="{{ request('search') }}"
-                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" icon="bitcoin-icons:search-outline"
-                    class="w-full rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
-            </div>
-            <!-- end search -->
-
-            <div class="relative min-w-[200px]">
-                <select name="department"
-                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                    <option value="all">التاريخ : جميع الشهور</option>
-                    @if (isset($months) && $months->count() > 0)
-                        @foreach ($months as $month)
-                            <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
-                                {{ $month }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
-            <div class="relative min-w-[200px]">
-                <select name="status"
-                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                    <option value="all">الحالة : الكل</option>
-                    <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>مدفوع</option>
-                    <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>غير مدفوع</option>
-                </select>
-            </div>
-            <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
-                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
-            </button>
-        </div>
-    </form>
-
     <!-- start cards -->
-    <div class="py-4 grid grid-cols-3 gap-4 ">
+    <div class="py-4 grid grid-cols-3 gap-4 mb-2">
         <div
             class="shadow-[0_0_5px_1px_rgba(18,67,117,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
             <div>
@@ -94,6 +56,62 @@
         </div>
     </div>
     <!-- end cards -->
+
+    <form action="{{ route('subscriptions.index') }}" method="GET">
+        <div class="flex flex-wrap gap-4 mb-6">
+            <!-- start search -->
+            <div class="flex-1 items-center gap-5">
+                <input type="search" name="search" value="{{ request('search') }}"
+                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" 
+                    icon="bitcoin-icons:search-outline"
+                    class="w-full rounded-xl py-2 px-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
+            </div>
+            <!-- end search -->
+
+            <div class="relative min-w-[200px]">
+                <select name="department"
+                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
+                    <option value="all">التاريخ : جميع الشهور</option>
+                    @if (isset($months) && $months->count() > 0)
+                        @foreach ($months as $month)
+                            <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
+                                {{ $month }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <div class="relative min-w-[200px]">
+                @php
+                    $statusOptions = [
+                        'all' => 'الكل',
+                        'paid' => 'مسدد',
+                        'unpaid' => 'غير مسدد',
+                    ];
+                    if (isset($statusMap)) {
+                        foreach ($statusMap as $key => $statusData) {
+                            $statusOptions[$key] = $statusData['label'];
+                        }
+                    }
+                @endphp
+                @include('partials.dropdown', [
+                    'name' => 'status',
+                    'label' => 'الحالة',
+                    'options' => $statusOptions,
+                    'selected' => request('status', 'all'),
+                    'clearable' => true,
+                    'required' => false,
+                    'autoSubmitClear' => true,
+                ])
+            </div>
+
+            <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
+            </button>
+        </div>
+    </form>
+
 
     <!-- start table -->
     <section>
@@ -144,16 +162,19 @@
                             </td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
 
-                                <a href="#" class="text-[#124375] hover:underline">
+                                <a href="{{ route('members.show', $subscription->membership->member_id) }}"
+                                    class="text-[#124375] hover:underline">
                                     <iconify-icon
-                                        class="text-[#124375] hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                        class="text-[#124375] hover:rounded-md hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
                                         icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon> </a>
                             </td>
                         </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="8" class="py-4 text-center text-gray-500">لا توجد بيانات</td>
+                        <td colspan="8" class="py-4 text-center text-gray-500">
+                            <img src="{{ asset('IMGs/No-results.png') }}" alt="" class="w-[15%] mx-auto">
+                        </td>
                     </tr>
                 @endif
             </table>

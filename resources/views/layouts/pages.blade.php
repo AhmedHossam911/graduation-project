@@ -17,7 +17,7 @@
     <header class="bg-[#EEF7FF] border border-[#124375] px-7 py-3">
         <nav class="flex items-center justify-between  ">
             <div class="flex items-center gap-3 text-[#124375]">
-                <a href="{{ route('members.index') }}"
+                <a href="{{ back()->getTargetUrl() }}"
                     class="text-lg w-[76px] h-[42px] bg-[#124375] text-[#EEF7FF] text-center rounded-lg flex items-center justify-center shadow-md cursor-pointer px-12 py-6">
                     <iconify-icon icon="ooui:previous-rtl" class="text-lg"></iconify-icon>
                     <span class="text-lg mr-2">رجوع</span>

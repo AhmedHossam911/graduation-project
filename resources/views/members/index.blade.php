@@ -38,7 +38,8 @@
                     'selected' => request('department', 'all'),
                     'required' => false,
                     'clearable' => true,
-                    'autoSubmitClear' => true,
+                    'autoSubmit' => true,
+                    'showConfirm' => false,
                 ])
             </div>
 
@@ -58,7 +59,8 @@
                     'selected' => request('status', 'all'),
                     'clearable' => true,
                     'required' => false,
-                    'autoSubmitClear' => true,
+                    'autoSubmit' => true,
+                    'showConfirm' => false,
                 ])
             </div>
             <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">

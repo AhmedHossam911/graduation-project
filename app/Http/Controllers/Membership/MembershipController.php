@@ -1,83 +1,124 @@
 <?php
 
-namespace App\Http\Controllers\Membership;  
+namespace App\Http\Controllers\Membership;
 
 use App\Http\Controllers\Controller;
-use App\Models\Membership\Member;
 use App\Models\Services\Membership;
-use App\Models\Services\Subscription;
+use App\Models\Membership\Member;
+use App\Models\System\AuditLog;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\SubscriptionsExport;
 
 class MembershipController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * Allowed membership statuses based on the migration enum.
+     */
+    private const ALLOWED_STATUSES = ['active', 'inactive', 'suspended', 'pending', 'deleted'];
+
+    /**
+     * Approve a pending membership — set status to active and record approver.
+     */
+    public function approve(Request $request, $id)
     {
-        $departments = \App\Models\System\Department::all();
-        
-        $query = Subscription::with(['membership.member.user', 'membership.member.department']);
-        
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('membership.member', function($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('national_id', 'like', "%{$search}%")
-                  ->orWhereHas('membershipInfo', function($sq) use ($search) {
-                      $sq->where('membership_number', 'like', "%{$search}%");
-                  });
-            });
-        }
-        
-        if ($request->filled('department') && $request->department !== 'all') {
-            $query->whereHas('membership.member', function($q) use ($request) {
-                $q->where('department_id', $request->department);
-            });
-        }
+        $membership = Membership::with('member')->findOrFail($id);
 
-        if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
+        $oldStatus = $membership->status;
 
-        $subscriptions = $query->latest('due_date')->paginate(10)->withQueryString();
-        
-        // Stats for cards (dummy for now, but could be calculated)
-        $stats = [
-            'month_total' => Subscription::whereMonth('due_date', now()->month)->count(),
-            'today_total' => Subscription::whereDate('created_at', now()->toDateString())->count(),
-            'late_total' => Subscription::where('status', 'unpaid')->where('due_date', '<', now())->count(),
-        ];
-        
-        return view('Membership.index', compact('departments', 'subscriptions', 'stats'));
+        $membership->update([
+            'status'      => 'active',
+            'approved_by' => auth()->id(),
+        ]);
+
+        $this->logAudit('approve', 'memberships', $membership->id, [
+            'status'      => $oldStatus,
+            'approved_by' => null,
+        ], [
+            'status'      => 'active',
+            'approved_by' => auth()->id(),
+        ]);
+
+        return redirect()
+            ->route('members.show', $membership->member_id)
+            ->with('success', 'تم اعتماد العضوية بنجاح.');
     }
 
-    public function export(Request $request)
+    /**
+     * Reject a pending membership — set status to inactive.
+     */
+    public function reject(Request $request, $id)
     {
-        $query = Subscription::with(['membership.member.user', 'membership.member.department']);
-        
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->whereHas('membership.member', function($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('national_id', 'like', "%{$search}%")
-                  ->orWhereHas('membershipInfo', function($sq) use ($search) {
-                      $sq->where('membership_number', 'like', "%{$search}%");
-                  });
-            });
-        }
-        
-        if ($request->filled('department') && $request->department !== 'all') {
-            $query->whereHas('membership.member', function($q) use ($request) {
-                $q->where('department_id', $request->department);
-            });
-        }
+        $request->validate([
+            'reason' => ['required', 'string', 'max:1000'],
+        ]);
 
-        if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
-        }
+        $membership = Membership::with('member')->findOrFail($id);
 
-        $query->latest('due_date');
+        $oldStatus = $membership->status;
 
-        return Excel::download(new SubscriptionsExport($query), 'subscriptions.xlsx');
+        $membership->update([
+            'status' => 'inactive',
+        ]);
+
+        $this->logAudit('reject', 'memberships', $membership->id, [
+            'status' => $oldStatus,
+        ], [
+            'status' => 'inactive',
+            'reason' => $request->reason,
+        ]);
+
+        return redirect()
+            ->route('members.show', $membership->member_id)
+            ->with('success', 'تم رفض العضوية.');
+    }
+
+    /**
+     * Change membership status (generic status transition).
+     */
+    public function changeStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => ['required', 'string', 'in:' . implode(',', self::ALLOWED_STATUSES)],
+            'reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $membership = Membership::with('member')->findOrFail($id);
+
+        $oldStatus = $membership->status;
+
+        $membership->update([
+            'status' => $request->status,
+        ]);
+
+        $this->logAudit('change_status', 'memberships', $membership->id, [
+            'status' => $oldStatus,
+        ], [
+            'status' => $request->status,
+            'reason' => $request->reason,
+        ]);
+
+        $statusLabels = MemberController::STATUS_MAP;
+        $newLabel = $statusLabels[$request->status]['label'] ?? $request->status;
+
+        return redirect()
+            ->route('members.show', $membership->member_id)
+            ->with('success', "تم تغيير حالة العضوية إلى: {$newLabel}");
+    }
+
+    // ─── Private Helpers ─────────────────────────────────────────────
+
+    /**
+     * Create an audit log entry.
+     */
+    private function logAudit(string $action, string $tableName, int $recordId, ?array $oldValues, ?array $newValues): void
+    {
+        AuditLog::create([
+            'user_id'    => auth()->id(),
+            'action'     => $action,
+            'table_name' => $tableName,
+            'record_id'  => $recordId,
+            'old_values' => $oldValues,
+            'new_values' => $newValues,
+            'ip_address' => request()->ip(),
+        ]);
     }
 }

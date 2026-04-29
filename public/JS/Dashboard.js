@@ -26,6 +26,7 @@ document.querySelectorAll('.custom-dropdown-container').forEach(container => {
     const clearBtn = container.querySelector('.custom-dropdown-clear');
     const clearValue = container.getAttribute('data-clear-value') || 'all';
     const autoSubmit = container.getAttribute('data-auto-submit') === 'true';
+    const hasConfirmBtn = container.getAttribute('data-has-confirm') === 'true';
     
     const toggleMenu = (e) => {
         e.stopPropagation();
@@ -61,6 +62,34 @@ document.querySelectorAll('.custom-dropdown-container').forEach(container => {
             }
         });
     }
+
+    const radioInputs = menu.querySelectorAll('input[type="radio"]');
+    radioInputs.forEach(input => {
+        input.addEventListener('change', (e) => {
+            if (!hasConfirmBtn) {
+                e.stopPropagation();
+                const labelText = input.previousElementSibling.textContent;
+                textElement.textContent = labelText;
+                textElement.classList.remove('text-[#6D6D6D]', 'text-sm');
+                textElement.classList.add('text-[#124375]', 'font-bold', 'text-base');
+                menu.classList.add('hidden');
+
+                // Manage clear button visibility
+                if (clearBtn) {
+                    if (input.value !== clearValue) {
+                        clearBtn.classList.remove('hidden');
+                    } else {
+                        clearBtn.classList.add('hidden');
+                    }
+                }
+
+                if (autoSubmit) {
+                    const form = container.closest('form');
+                    if (form) form.submit();
+                }
+            }
+        });
+    });
 
     if (clearBtn) {
         clearBtn.addEventListener('click', (e) => {

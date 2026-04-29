@@ -30,6 +30,29 @@ const today = date.toLocaleDateString('ar-EG' , {
 dateElement.textContent += today;
 // Dynamic date
 
+// DropDown
+dropdownBtn.addEventListener('click', () => {
+    dropdown.classList.toggle('hidden');
+});
+// DropDown
+const statusText = document.getElementById('status-text');
+const confirmStatusBtn = document.getElementById('confirm-status-btn');
+
+if (confirmStatusBtn && statusText) {
+    confirmStatusBtn.addEventListener('click', () => {
+        const selectedInput = document.querySelector('input[name="gender"]:checked');
+        const hiddenInput = document.getElementById('marital_status_hidden');
+        if (selectedInput) {
+            statusText.textContent = selectedInput.value;
+            statusText.classList.remove('text-[#6D6D6D]');
+            statusText.classList.add('text-[#124375]', 'font-bold', 'text-base');
+            if (hiddenInput) {
+                hiddenInput.value = selectedInput.value;
+            }
+            dropdown.classList.add('hidden');
+        }
+    });
+}
 
 // Handle Inputs
 function handleInputs (Inputs) {
@@ -57,3 +80,30 @@ btnClose.addEventListener('click', () => {
     successModal.classList.add('hidden');
 });
 // close button
+
+// Handle Print Button
+const printBtn = document.getElementById('print-btn');
+const memberIdInput = document.getElementById('member_id');
+
+if (printBtn && memberIdInput && memberIdInput.value) {
+    printBtn.addEventListener('click', () => {
+        // trigger print
+        window.print();
+        
+        const redirectUrl = `/members/${memberIdInput.value}/upload-signed`;
+        let redirected = false;
+
+        const handleRedirect = () => {
+            if (!redirected) {
+                redirected = true;
+                window.location.href = redirectUrl;
+            }
+        };
+
+        // standard event
+        window.addEventListener('afterprint', handleRedirect);
+        
+        // fallback (setTimeout runs after print dialog unblocks in most browsers)
+        setTimeout(handleRedirect, 1000); 
+    });
+}

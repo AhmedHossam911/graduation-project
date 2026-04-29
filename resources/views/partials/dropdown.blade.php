@@ -9,6 +9,8 @@
     $clearable = $clearable ?? false;
     $clearValue = $clearValue ?? 'all';
     $autoSubmitClear = $autoSubmitClear ?? false;
+    $autoSubmit = $autoSubmit ?? $autoSubmitClear;
+    $showConfirm = $showConfirm ?? false;
 
     $selectedLabel = $placeholder;
     if ($selected && isset($options[$selected])) {
@@ -20,7 +22,16 @@
 @endphp
 
 <div class="border border-slate-200 rounded-xl py-2 w-full min-w-[200px] bg-white relative custom-dropdown-container flex items-center pr-3 surface-shadow"
-    data-clear-value="{{ $clearValue }}" data-auto-submit="{{ $autoSubmitClear ? 'true' : 'false' }}">
+    data-clear-value="{{ $clearValue }}" data-auto-submit="{{ $autoSubmit ? 'true' : 'false' }}"
+    data-has-confirm="{{ $showConfirm ? 'true' : 'false' }}">
+
+    @if ($clearable)
+        <div
+            class="custom-dropdown-clear absolute right-[10px] cursor-pointer transition {{ $selected && (string) $selected !== (string) $clearValue ? 'flex' : 'hidden' }} items-center justify-center w-8 h-8 rounded-lg border border-[#D92D20] bg-white hover:bg-red-50 z-10">
+            <iconify-icon icon="mingcute:close-fill" width="20" height="20" class="text-[#D92D20]">
+            </iconify-icon>
+        </div>
+    @endif
 
     @if ($floatingLabel)
         <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">
@@ -29,25 +40,22 @@
             @endif
         </label>
         <span
-            class="custom-dropdown-text cursor-pointer block px-3 flex-1 {{ $selected ? 'text-[#124375] font-bold text-base' : 'text-[#6D6D6D] text-sm font-medium' }}">
+            class="custom-dropdown-text cursor-pointer block px-12 flex-1 truncate {{ $selected ? 'text-[#124375] font-bold text-base' : 'text-[#6D6D6D] text-sm font-medium' }}">
             {{ $selectedLabel }}
         </span>
     @else
-        @if ($label)
-            <span class="text-[#124375] font-medium text-base ml-1">{{ $label }} : </span>
-        @endif
-        <span
-            class="custom-dropdown-text cursor-pointer block flex-1 {{ $selected ? 'text-[#124375] font-bold text-base' : 'text-[#6D6D6D] text-sm font-medium' }}">
-            {{ $selectedLabel }}
-        </span>
+        <div class="flex-1 flex items-center px-12 overflow-hidden">
+            @if ($label)
+                <span class="text-[#124375] font-medium text-base ml-1 shrink-0">{{ $label }} : </span>
+            @endif
+            <span
+                class="custom-dropdown-text cursor-pointer block flex-1 truncate {{ $selected ? 'text-[#124375] font-bold text-base' : 'text-[#6D6D6D] text-sm font-medium' }}">
+                {{ $selectedLabel }}
+            </span>
+        </div>
     @endif
 
     <div class="absolute left-[15px] flex items-center gap-2 bg-white pl-1">
-        @if ($clearable)
-            <iconify-icon icon="mdi:close-circle"
-                class="custom-dropdown-clear cursor-pointer text-xl text-[#D92D20] hover:text-red-700 transition {{ $selected && (string) $selected !== (string) $clearValue ? '' : 'hidden' }}">
-            </iconify-icon>
-        @endif
         <iconify-icon icon="oui:arrow-down"
             class="custom-dropdown-btn cursor-pointer text-xl text-[#124375]"></iconify-icon>
     </div>
@@ -66,8 +74,10 @@
                         class="inline-block w-5 h-5 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
                 </label>
             @endforeach
-            <button type="button"
-                class="custom-dropdown-confirm surface-shadow bg-[#124375] text-white text-lg font-semibold py-3 rounded-xl mt-1 hover:bg-[#0e3560] transition-colors w-full">تأكيد</button>
+            @if ($showConfirm)
+                <button type="button"
+                    class="custom-dropdown-confirm surface-shadow bg-[#124375] text-white text-lg font-semibold py-3 rounded-xl mt-1 hover:bg-[#0e3560] transition-colors w-full">تأكيد</button>
+            @endif
         </div>
     </div>
 </div>

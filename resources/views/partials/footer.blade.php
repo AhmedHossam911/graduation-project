@@ -1,5 +1,5 @@
     <!-- start footer -->
-    <footer class="bg-[#EEF7FF] text-sm text-[#124375] font-normal text-center py-4 border border-[#124375]">
+    <footer class="bg-[#EEF7FFB2] text-sm text-[#124375] font-normal text-center py-4 border border-[#124375]">
         <div class="flex items-center justify-center gap-2">
             <p>
                 جميع الحقوق محفوظة لجامعة العاصمة لعام {{ date('Y') }}
