@@ -28,6 +28,9 @@
                 @include('partials.components')
                 @yield('content')
             </main>
+
+            {{-- Pagination (always above footer) --}}
+            @yield('pagination')
         </div>
     </div>
 

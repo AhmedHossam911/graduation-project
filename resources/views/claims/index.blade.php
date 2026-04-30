@@ -5,7 +5,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/claims-approve.css') }}">
     <!-- start header -->
-    <div class="flex justify-between px-12 py-5">
+    <div class="flex justify-between px-4 py-5">
         <div>
             <h1 class="text-[32px] font-medium text-[#124375]">
                 المطالبات
@@ -25,7 +25,7 @@
     <!-- end header -->
 
     <!-- start cards -->
-    <div class="py-4 grid grid-cols-3 gap-4 px-12">
+    <div class="py-4 grid grid-cols-3 gap-4 px-4">
         <div
             class="navy-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
             <div>
@@ -63,9 +63,10 @@
     <!-- end cards -->
 
     <!-- filteration buttons -->
-    <form action="{{ route('claims.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5">
+    <form action="{{ route('claims.index') }}" method="GET" class="px-4 flex items-center justify-between gap-5">
         <div class="relative flex-1">
-            <input type="search" name="search" value="{{ request('search') }}" placeholder="الاسم أو رقم العضوية أو رقم المطالبة"
+            <input type="search" name="search" value="{{ request('search') }}"
+                placeholder="الاسم أو رقم العضوية أو رقم المطالبة"
                 class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
             <iconify-icon icon="mynaui:search"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
@@ -73,13 +74,13 @@
         <div class="relative min-w-[240px]">
             <label for="datepicker"
                 class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
-                : <span class="text-[#021219]">{{ request('date') ?: 'يوم/شهر/ سنة' }}</span><span class="flex items-center"><iconify-icon
-                        icon="lucide:calendar" class="text-xl"></iconify-icon></span>
+                : <span class="text-[#021219]">{{ request('date') ?: 'يوم/شهر/ سنة' }}</span><span
+                    class="flex items-center"><iconify-icon icon="lucide:calendar" class="text-xl"></iconify-icon></span>
                 <input type="text" name="date" id="datepicker" value="{{ request('date') }}"
                     class="absolute left-0 top-full mt-3 opacity-0 w-0 h-0 pointer-events-none">
             </label>
         </div>
-        
+
         @php
             $statusMapping = [
                 'all' => 'الكل',
@@ -93,33 +94,42 @@
             <input type="hidden" name="status" id="statusInput" value="{{ $currentStatus }}">
             <button type="button"
                 class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">الحالة
-                : <span class="text-[#021219] ">{{ $statusMapping[$currentStatus] ?? 'الكل' }}</span><span class="flex items-center"><iconify-icon
-                        icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                : <span class="text-[#021219] ">{{ $statusMapping[$currentStatus] ?? 'الكل' }}</span><span
+                    class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                        class="text-xl"></iconify-icon></span></button>
             <div
                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" onclick="document.getElementById('statusInput').value='all';" class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">الكل</button>
-                <button type="button" onclick="document.getElementById('statusInput').value='pending';" class=" navy-shadow py-2  rounded-xl text-sm font-medium">بانتظار التسوية</button>
-                <button type="button" onclick="document.getElementById('statusInput').value='under_review';" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">تحت المراجعة</button>
-                <button type="button" onclick="document.getElementById('statusInput').value='approved';" class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">تم الصرف</button>
+                <button type="button" onclick="document.getElementById('statusInput').value='all';"
+                    class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">الكل</button>
+                <button type="button" onclick="document.getElementById('statusInput').value='pending';"
+                    class=" navy-shadow py-2  rounded-xl text-sm font-medium">بانتظار التسوية</button>
+                <button type="button" onclick="document.getElementById('statusInput').value='under_review';"
+                    class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">تحت المراجعة</button>
+                <button type="button" onclick="document.getElementById('statusInput').value='approved';"
+                    class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">تم الصرف</button>
             </div>
         </div>
 
         @php
             $currentType = request('type', 'all');
-            $typeLabel = $currentType === 'all' ? 'الكل' : ($claimTypes[$currentType] ?? 'الكل');
+            $typeLabel = $currentType === 'all' ? 'الكل' : $claimTypes[$currentType] ?? 'الكل';
         @endphp
         <div class="relative min-w-[150px]">
             <input type="hidden" name="type" id="typeInput" value="{{ $currentType }}">
             <button type="button"
                 class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">نوع
-                المطالبة :<span class="text-[#021219] ">{{ $typeLabel }}</span><span class="flex items-center"><iconify-icon
-                        icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                المطالبة :<span class="text-[#021219] ">{{ $typeLabel }}</span><span
+                    class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                        class="text-xl"></iconify-icon></span></button>
             <div
                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-3 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" onclick="document.getElementById('typeInput').value='all';" class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">الكل</button>
+                <button type="button" onclick="document.getElementById('typeInput').value='all';"
+                    class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">الكل</button>
                 @foreach ($claimTypes as $key => $val)
-                    @if (!in_array($key, ['Medical', 'End of Service', 'Death'])) <!-- Skip legacy duplicates for filters -->
-                        <button type="button" onclick="document.getElementById('typeInput').value='{{ $key }}';" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium ">{{ $val }}</button>
+                    @if (!in_array($key, ['Medical', 'End of Service', 'Death']))
+                        <!-- Skip legacy duplicates for filters -->
+                        <button type="button" onclick="document.getElementById('typeInput').value='{{ $key }}';"
+                            class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium ">{{ $val }}</button>
                     @endif
                 @endforeach
             </div>
@@ -134,7 +144,7 @@
     <!-- end filteration buttons -->
 
     <!-- start table -->
-    <section class="px-12 py-4">
+    <section class="px-4 py-4">
         <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">
             <table class="w-full">
                 <thead>
@@ -151,25 +161,33 @@
                     @forelse ($claims as $claim)
                         <tr class="text-center {{ $loop->odd ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claim->membership->member->name ?? 'غير متوفر' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ \Carbon\Carbon::parse($claim->created_at)->translatedFormat('d F Y') }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claimTypes[$claim->type] ?? $claim->type }}</td>
-                            
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ $claim->membership->member->name ?? 'غير متوفر' }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ \Carbon\Carbon::parse($claim->created_at)->translatedFormat('d F Y') }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ $claimTypes[$claim->type] ?? $claim->type }}</td>
+
                             @if ($claim->status === 'pending')
                                 <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">بانتظار التسوية</span></td>
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">بانتظار
+                                        التسوية</span></td>
                             @elseif ($claim->status === 'pending_approval')
                                 <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">بانتظار الأعتماد</span></td>
+                                        class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">بانتظار
+                                        الأعتماد</span></td>
                             @elseif ($claim->status === 'under_review')
                                 <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#124375] bg-[#EEF7FF] border border-[#124375] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">تحت المراجعة</span></td>
+                                        class="text-[#124375] bg-[#EEF7FF] border border-[#124375] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">تحت
+                                        المراجعة</span></td>
                             @elseif ($claim->status === 'approved')
                                 <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">تم الصرف</span></td>
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">تم
+                                        الصرف</span></td>
                             @else
                                 <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#6D6D6D] bg-[#EFEFEF] border border-[#6D6D6D] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">{{ $claim->status }}</span></td>
+                                        class="text-[#6D6D6D] bg-[#EFEFEF] border border-[#6D6D6D] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">{{ $claim->status }}</span>
+                                </td>
                             @endif
 
                             <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
@@ -196,7 +214,8 @@
                         </tr>
                     @empty
                         <tr class="text-center border-b border-[#6D6D6D]">
-                            <td colspan="6" class="py-5 text-[#124375] font-medium">لا توجد مطالبات متطابقة مع البحث</td>
+                            <td colspan="6" class="py-5 text-[#124375] font-medium">لا توجد مطالبات متطابقة مع البحث
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -204,53 +223,6 @@
         </div>
     </section>
     <!-- end table -->
-
-    <!-- start pagination -->
-    <div class="mt-auto">
-        <hr class="border border-[#A8A8A8] mt-5 mb-4">
-        <div class="pagination-container flex items-center justify-center gap-4 mb-4">
-            @if ($claims->hasMorePages())
-                <div class="next-arr">
-                    <a href="{{ $claims->nextPageUrl() }}" class="text-[#124375] text-[16px] font-medium hover:underline">
-                        التالي
-                    </a>
-                </div>
-            @else
-                <div class="next-arr">
-                    <span class="text-[#6D6D6D] text-[16px] font-medium">
-                        التالي
-                    </span>
-                </div>
-            @endif
-
-            <div class="pages-num flex items-center gap-2 text-[#124375] flex-row-reverse">
-                @foreach ($claims->links()->elements[0] as $page => $url)
-                    @if ($page == $claims->currentPage())
-                        <span
-                            class="cursor-default bg-[#124375] text-white navy-shadow rounded-[6px] px-3 py-1 font-medium">{{ $page }}</span>
-                    @else
-                        <a href="{{ $url }}"
-                            class="cursor-pointer bg-[#F4F7F9] navy-shadow rounded-[6px] px-3 py-1 font-medium hover:bg-[#124375] hover:text-white transition-colors">{{ $page }}</a>
-                    @endif
-                @endforeach
-            </div>
-
-            @if ($claims->onFirstPage())
-                <div class="prev-arr">
-                    <span class="text-[#6D6D6D] text-[16px] font-medium ">
-                        السابق
-                    </span>
-                </div>
-            @else
-                <div class="prev-arr">
-                    <a href="{{ $claims->previousPageUrl() }}" class="text-[#124375] text-[16px] font-medium hover:underline">
-                        السابق
-                    </a>
-                </div>
-            @endif
-        </div>
-    </div>
-    <!-- end pagination -->
 
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden  z-[60]"></div>
 
@@ -261,20 +233,13 @@
             class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
         </button>
-        <div class="modal-body space-y-7 px-12">
+        <div class="modal-body space-y-7 px-4">
             <div class="modal-title text-center">
                 <h1 class="text-xl font-semibold text-[#124375]">
                     إنشاء المطالبة
                 </h1>
             </div>
             <div class="space-y-3">
-                <!-- <div class="flex gap-3 items-center">
-                                                    <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                                                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
-                                                    <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                                    <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                                                </div> -->
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
@@ -357,7 +322,7 @@
                     <div class="flex flex-col gap-2">
                         <h2 class="text-[14px] text-[#6D6D6D] font-medium">حالة الصرف</h2>
                         <p
-                            class="text-[14px] text-[#067647] border border-[#067647] py-1 px-12 bg-[#ECFDF3] rounded-[8px] font-medium">
+                            class="text-[14px] text-[#067647] border border-[#067647] py-1 px-4 bg-[#ECFDF3] rounded-[8px] font-medium">
                             تم الصرف</p>
                     </div>
                 </div>
@@ -408,5 +373,11 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/claims.js') }}"></script>
+
+    <script src="{{ asset('JS/claims.js') }}"></script>
+@endsection
+@section('pagination')
+    <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+        {{ $claims->links() }}
+    </div>
 @endsection

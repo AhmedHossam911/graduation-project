@@ -12,11 +12,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('member_id')->unique()->constrained('members')->cascadeOnDelete();
             $table->integer('children_count')->default(0);
-            $table->string('spouse_name')->nullable();
-            $table->string('spouse_phone')->nullable();
-            $table->string('child_name')->nullable();
-            $table->string('spouse_workplace')->nullable();
-            $table->string('child_workplace')->nullable();
+            $table->string('spouse_name')->default('لا يوجد');
+            $table->string('spouse_phone')->default('لا يوجد');
+            $table->string('child_name')->default('لا يوجد');
+            $table->string('spouse_workplace')->default('لا يوجد');
+            $table->string('child_workplace')->default('لا يوجد');
             $table->timestamps();
         });
     }

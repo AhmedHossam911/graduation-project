@@ -405,5 +405,5 @@
 
 
 
-    <script src="{{ asset('js/loans.js') }}"></script>
+    <script src="{{ asset('JS/loans.js') }}"></script>
 @endsection

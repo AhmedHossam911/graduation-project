@@ -14,6 +14,33 @@
         } else {
             $formAction = route('members.store');
         }
+
+        // ── Prepare member data for edit/print/upload_signed modes ──
+        $m = $member ?? null;
+        $emp = $m?->employmentInfo;
+        $fam = $m?->familyInfo;
+
+        // Helper: split a string into individual characters array
+        $splitDigits = function(?string $value, int $count) {
+            if (!$value) return array_fill(0, $count, '');
+            return array_pad(str_split($value), $count, '');
+        };
+
+        // Helper: split a date into day/month/year
+        $splitDate = function($date) {
+            if (!$date) return ['day' => '', 'month' => '', 'year' => ''];
+            $d = \Carbon\Carbon::parse($date);
+            return ['day' => $d->day, 'month' => $d->month, 'year' => $d->year];
+        };
+
+        $nationalIdDigits = $splitDigits($m?->national_id, 14);
+        $phoneDigits = $splitDigits($m?->phone, 11);
+        $landlineDigits = $splitDigits($m?->landline, 8);
+        $spousePhoneDigits = $splitDigits($fam?->spouse_phone, 11);
+
+        $birthParts = $splitDate($m?->birth_date);
+        $hireParts = $splitDate($emp?->join_date);
+        $retirementParts = $splitDate($emp?->retirement_date);
     @endphp
     <!-- start Header -->
     <div class="flex justify-between items-center py-5 px-7">
@@ -62,7 +89,7 @@
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">
                                     الأسم
                                     رباعي <span class="text-[#D92D20]">*</span></label>
-                                <input type="text" name="full_name" value="{{ old('full_name') }}"
+                                <input type="text" name="full_name" value="{{ old('full_name', $m?->full_name) }}"
                                     placeholder="مثال : أحمد محمد إسماعيل محمود"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('full_name') ? 'border-[#D92D20]' : 'border-[#124375]' }} outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('full_name')
@@ -73,7 +100,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">
                                     البريد الإلكتروني <span class="text-[#D92D20]">*</span></label>
-                                <input type="email" name="email" value="{{ old('email') }}"
+                                <input type="email" name="email" value="{{ old('email', $m?->user?->email) }}"
                                     placeholder="ahmed@gmail.com : مثال"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('email') ? 'border-[#D92D20]' : 'border-[#124375]' }} outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('email')
@@ -90,37 +117,37 @@
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
                                     التليفون <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.0') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.0', $phoneDigits[0]) }}"
                                         placeholder="10" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.1') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.1', $phoneDigits[1]) }}"
                                         placeholder="9" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.2') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.2', $phoneDigits[2]) }}"
                                         placeholder="8" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.3') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.3', $phoneDigits[3]) }}"
                                         placeholder="7" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.4') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.4', $phoneDigits[4]) }}"
                                         placeholder="6" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.5') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.5', $phoneDigits[5]) }}"
                                         placeholder="5" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.6') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.6', $phoneDigits[6]) }}"
                                         placeholder="4" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.7') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.7', $phoneDigits[7]) }}"
                                         placeholder="3" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.8') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.8', $phoneDigits[8]) }}"
                                         placeholder="2" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.9') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.9', $phoneDigits[9]) }}"
                                         placeholder="1" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.10') }}"
+                                    <input type="number" min="0" max="9" name="phone_digits[]" value="{{ old('phone_digits.10', $phoneDigits[10]) }}"
                                         placeholder="0" maxlength="1"
                                         class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
@@ -138,28 +165,28 @@
                                     هاتف المنزل</label>
                                 <div class="flex gap-2 justify-end py-3 px-3">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.0') }}" placeholder="7" maxlength="1"
+                                        value="{{ old('landline_digits.0', $landlineDigits[0]) }}" placeholder="7" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.1') }}" placeholder="6" maxlength="1"
+                                        value="{{ old('landline_digits.1', $landlineDigits[1]) }}" placeholder="6" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.2') }}" placeholder="5" maxlength="1"
+                                        value="{{ old('landline_digits.2', $landlineDigits[2]) }}" placeholder="5" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.3') }}" placeholder="4" maxlength="1"
+                                        value="{{ old('landline_digits.3', $landlineDigits[3]) }}" placeholder="4" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.4') }}" placeholder="3" maxlength="1"
+                                        value="{{ old('landline_digits.4', $landlineDigits[4]) }}" placeholder="3" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.5') }}" placeholder="2" maxlength="1"
+                                        value="{{ old('landline_digits.5', $landlineDigits[5]) }}" placeholder="2" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.6') }}" placeholder="1" maxlength="1"
+                                        value="{{ old('landline_digits.6', $landlineDigits[6]) }}" placeholder="1" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="landline_digits[]"
-                                        value="{{ old('landline_digits.7') }}" placeholder="0" maxlength="1"
+                                        value="{{ old('landline_digits.7', $landlineDigits[7]) }}" placeholder="0" maxlength="1"
                                         class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
                                 @error('landline_digits')
@@ -180,46 +207,46 @@
                                     القومي <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.0') }}" placeholder="14" maxlength="1"
+                                        value="{{ old('national_id_digits.0', $nationalIdDigits[0]) }}" placeholder="14" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.1') }}" placeholder="13" maxlength="1"
+                                        value="{{ old('national_id_digits.1', $nationalIdDigits[1]) }}" placeholder="13" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.2') }}" placeholder="12" maxlength="1"
+                                        value="{{ old('national_id_digits.2', $nationalIdDigits[2]) }}" placeholder="12" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.3') }}" placeholder="11" maxlength="1"
+                                        value="{{ old('national_id_digits.3', $nationalIdDigits[3]) }}" placeholder="11" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.4') }}" placeholder="10" maxlength="1"
+                                        value="{{ old('national_id_digits.4', $nationalIdDigits[4]) }}" placeholder="10" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.5') }}" placeholder="9" maxlength="1"
+                                        value="{{ old('national_id_digits.5', $nationalIdDigits[5]) }}" placeholder="9" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.6') }}" placeholder="8" maxlength="1"
+                                        value="{{ old('national_id_digits.6', $nationalIdDigits[6]) }}" placeholder="8" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.7') }}" placeholder="7" maxlength="1"
+                                        value="{{ old('national_id_digits.7', $nationalIdDigits[7]) }}" placeholder="7" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.8') }}" placeholder="6" maxlength="1"
+                                        value="{{ old('national_id_digits.8', $nationalIdDigits[8]) }}" placeholder="6" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.9') }}" placeholder="5" maxlength="1"
+                                        value="{{ old('national_id_digits.9', $nationalIdDigits[9]) }}" placeholder="5" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.10') }}" placeholder="4" maxlength="1"
+                                        value="{{ old('national_id_digits.10', $nationalIdDigits[10]) }}" placeholder="4" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.11') }}" placeholder="3" maxlength="1"
+                                        value="{{ old('national_id_digits.11', $nationalIdDigits[11]) }}" placeholder="3" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.12') }}" placeholder="2" maxlength="1"
+                                        value="{{ old('national_id_digits.12', $nationalIdDigits[12]) }}" placeholder="2" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.13') }}" placeholder="1" maxlength="1"
+                                        value="{{ old('national_id_digits.13', $nationalIdDigits[13]) }}" placeholder="1" maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
                                 @error('national_id_digits')
@@ -235,13 +262,13 @@
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">تاريخ
                                     الميلاد <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
-                                    <input type="text" name="birth_day" value="{{ old('birth_day') }}"
+                                    <input type="text" name="birth_day" value="{{ old('birth_day', $birthParts['day']) }}"
                                         placeholder="اليوم" maxlength="2"
                                         class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" name="birth_month" value="{{ old('birth_month') }}"
+                                    <input type="text" name="birth_month" value="{{ old('birth_month', $birthParts['month']) }}"
                                         placeholder="الشهر" maxlength="2"
                                         class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" name="birth_year" value="{{ old('birth_year') }}"
+                                    <input type="text" name="birth_year" value="{{ old('birth_year', $birthParts['year']) }}"
                                         placeholder="السنة" maxlength="4"
                                         class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
@@ -266,7 +293,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">محل
                                     الاقامة <span class="text-[#D92D20]">*</span></label>
-                                <input type="text" name="address" value="{{ old('address') }}"
+                                <input type="text" name="address" value="{{ old('address', $m?->address) }}"
                                     placeholder="كما البطاقة"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('address') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('address')
@@ -276,11 +303,11 @@
                             <div
                                 class="border {{ $errors->has('marital_status') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl py-2 w-80 bg-[#F4F7F9] relative">
                                 <input type="hidden" name="marital_status" id="marital_status_hidden"
-                                    value="{{ old('marital_status') }}">
+                                    value="{{ old('marital_status', $m?->marital_status) }}">
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الحالة
                                     الاجتماعية <span class="text-[#D92D20]">*</span></label>
-                                <span id="status-text" class="px-3 text-[#6D6D6D] text-sm font-medium">أختر</span>
+                                <span id="status-text" class="px-3 text-[#6D6D6D] text-sm font-medium">{{ old('marital_status', $m?->marital_status) ?: 'أختر' }}</span>
                                 <iconify-icon id="dropdown-btn" icon="oui:arrow-down"
                                     class="cursor-pointer absolute left-[5px] top-[12px] text-xl text-[#124375]"></iconify-icon>
                                 <!-- Dropdown -->
@@ -344,7 +371,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">جهة
                                     العمل <span class="text-[#D92D20]">*</span></label>
-                                <input type="text" name="employer_name" value="{{ old('employer_name') }}"
+                                <input type="text" name="employer_name" value="{{ old('employer_name', $emp?->workplace) }}"
                                     placeholder="مثال : كلية تجارة و إدارة أعمال"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('employer_name') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('employer_name')
@@ -355,7 +382,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الوظيفة
                                     <span class="text-[#D92D20]">*</span></label>
-                                <input type="text" name="job_title" value="{{ old('job_title') }}"
+                                <input type="text" name="job_title" value="{{ old('job_title', $emp?->job_title) }}"
                                     placeholder="مثال : مدرس مساعد مادة المحاسبة"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('job_title') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('job_title')
@@ -368,7 +395,7 @@
                                         class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الفئة
                                         المالية الحالية <span class="text-[#D92D20]">*</span></label>
                                     <input type="text" name="financial_category"
-                                        value="{{ old('financial_category') }}" placeholder="مثال : الفئة الثالثة"
+                                        value="{{ old('financial_category', $emp?->financial_category) }}" placeholder="مثال : الفئة الثالثة"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('financial_category') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     @error('financial_category')
                                         <p class="absolute bottom-[-8px] bg-[#F4F7F9] right-5 text-[#D92D20] text-sm font-medium px-2">{{ $message }}</p>
@@ -378,7 +405,7 @@
                                     <label
                                         class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">المرتب
                                         الشهري الأساسي عند التعيين <span class="text-[#D92D20]">*</span></label>
-                                    <input type="text" name="salary" value="{{ old('salary') }}"
+                                    <input type="text" name="salary" value="{{ old('salary', $emp?->starting_salary) }}"
                                         placeholder="مثال : 360 "
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('salary') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     @error('salary')
@@ -394,13 +421,13 @@
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">تاريخ
                                     إستلام العمل <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
-                                    <input type="text" name="hire_day" value="{{ old('hire_day') }}"
+                                    <input type="text" name="hire_day" value="{{ old('hire_day', $hireParts['day']) }}"
                                         placeholder="اليوم" maxlength="2"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" name="hire_month" value="{{ old('hire_month') }}"
+                                    <input type="text" name="hire_month" value="{{ old('hire_month', $hireParts['month']) }}"
                                         placeholder="الشهر" maxlength="2"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" name="hire_year" value="{{ old('hire_year') }}"
+                                    <input type="text" name="hire_year" value="{{ old('hire_year', $hireParts['year']) }}"
                                         placeholder="السنة" maxlength="4"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
@@ -420,13 +447,13 @@
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">تاريخ
                                     الإحالة إلي المعاش <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
-                                    <input type="text" name="retirement_day" value="{{ old('retirement_day') }}"
+                                    <input type="text" name="retirement_day" value="{{ old('retirement_day', $retirementParts['day']) }}"
                                         placeholder="اليوم" maxlength="2"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" name="retirement_month" value="{{ old('retirement_month') }}"
+                                    <input type="text" name="retirement_month" value="{{ old('retirement_month', $retirementParts['month']) }}"
                                         placeholder="الشهر" maxlength="2"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" name="retirement_year" value="{{ old('retirement_year') }}"
+                                    <input type="text" name="retirement_year" value="{{ old('retirement_year', $retirementParts['year']) }}"
                                         placeholder="السنة" maxlength="4"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
@@ -462,7 +489,7 @@
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">عدد
                                     الأبناء </label>
                                 <div class="py-3 text-center">
-                                    <input type="number" name="children_count" value="{{ old('children_count', 0) }}"
+                                    <input type="number" name="children_count" value="{{ old('children_count', $fam?->children_count ?? 0) }}"
                                         placeholder="0"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
@@ -478,37 +505,37 @@
                                         class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-2 justify-end py-3 px-3">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.0') }}" placeholder="10" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.0', $spousePhoneDigits[0]) }}" placeholder="10" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24  min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.1') }}" placeholder="9" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.1', $spousePhoneDigits[1]) }}" placeholder="9" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.2') }}" placeholder="8" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.2', $spousePhoneDigits[2]) }}" placeholder="8" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.3') }}" placeholder="7" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.3', $spousePhoneDigits[3]) }}" placeholder="7" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.4') }}" placeholder="6" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.4', $spousePhoneDigits[4]) }}" placeholder="6" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.5') }}" placeholder="5" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.5', $spousePhoneDigits[5]) }}" placeholder="5" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.6') }}" placeholder="4" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.6', $spousePhoneDigits[6]) }}" placeholder="4" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.7') }}" placeholder="3" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.7', $spousePhoneDigits[7]) }}" placeholder="3" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.8') }}" placeholder="2" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.8', $spousePhoneDigits[8]) }}" placeholder="2" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.9') }}" placeholder="1" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.9', $spousePhoneDigits[9]) }}" placeholder="1" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="number" min="0" max="9" name="spouse_phone_digits[]"
-                                        value="{{ old('spouse_phone_digits.10') }}" placeholder="0" maxlength="1"
+                                        value="{{ old('spouse_phone_digits.10', $spousePhoneDigits[10]) }}" placeholder="0" maxlength="1"
                                         class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
                                 @error('spouse_phone_digits')
@@ -524,7 +551,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">اسم
                                     الزوج أو الزوجة </label>
-                                <input type="text" name="spouse_name" value="{{ old('spouse_name') }}"
+                                <input type="text" name="spouse_name" value="{{ old('spouse_name', $fam?->spouse_name) }}"
                                     placeholder="مثال : رباب عبدالعليم أحمد محمد"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('spouse_name') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('spouse_name')
@@ -535,7 +562,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">وظيفته
                                     أو جهة عمله </label>
-                                <input type="text" name="spouse_workplace" value="{{ old('spouse_workplace') }}"
+                                <input type="text" name="spouse_workplace" value="{{ old('spouse_workplace', $fam?->spouse_workplace) }}"
                                     placeholder="مثال : محاسبة بشركة الحديد و الصلب"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('spouse_workplace') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('spouse_workplace')
@@ -548,7 +575,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">اسم
                                     أحد الأبناء </label>
-                                <input type="text" name="child_name" value="{{ old('child_name') }}"
+                                <input type="text" name="child_name" value="{{ old('child_name', $fam?->child_name) }}"
                                     placeholder="مثال : لا يوجد"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('child_name') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('child_name')
@@ -559,7 +586,7 @@
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">وظيفته
                                     أو جهة عمله </label>
-                                <input type="text" name="child_workplace" value="{{ old('child_workplace') }}"
+                                <input type="text" name="child_workplace" value="{{ old('child_workplace', $fam?->child_workplace) }}"
                                     placeholder="مثال : لا يوجد"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border {{ $errors->has('child_workplace') ? 'border-[#D92D20]' : 'border-[#124375]' }} rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('child_workplace')

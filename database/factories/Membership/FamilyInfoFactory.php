@@ -19,7 +19,7 @@ class FamilyInfoFactory extends Factory
             'spouse_phone' => fake()->phoneNumber(),
             'child_name' => fake('ar_EG')->firstName(),
             'spouse_workplace' => fake()->company(),
-            'child_workplace' => fake()->optional(0.3)->company(),
+            'child_workplace' => fake()->company(),
         ];
     }
 }

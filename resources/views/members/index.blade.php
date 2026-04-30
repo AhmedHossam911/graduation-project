@@ -84,63 +84,72 @@
                     <th class="py-3 border-l border-[#6D6D6D]">الإجراءات</th>
                 </tr>
                 @if ($members->count() > 0)
+                    {{-- @dd($members[0]->user->role_id) --}}
                     @foreach ($members as $member)
-                        <tr class="text-center even:bg-[#F4F7F9] odd:bg-[#EFEFEF]">
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $member->membershipInfo->membership_number ?? '-' }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->full_name }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $member->department?->name ?? '-' }}
-                            </td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->phone }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                @php
-                                    $statusCode = $member->membershipInfo->status ?? 'unknown';
-                                    $statusData = $statusMap[$statusCode] ?? [
-                                        'label' => 'غير معروف',
-                                        'class' => 'unknown',
-                                    ];
-                                    // Map CSS classes for visual consistency
-                                    $classMap = [
-                                        'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
-                                        'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
-                                        'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#5925DC]',
-                                        'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
-                                        'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#F79009]',
-                                        'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
-                                        'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#4B5A70]',
-                                        'expired' => 'text-[#021219] border-[#021219] bg-[#021219]',
-                                        'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
-                                    ];
-                                    $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400';
-                                @endphp
-                                <span class="{{ $badgeClass }} w-[127px] py-1 block mx-auto rounded-full border bg-white text-center font-medium">
-                                    {{ $statusData['label'] }}
-                                </span>
-                            </td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">
-                                {{ $member->created_at->isoFormat('D MMMM YYYY', 'ar') }}
-                            </td>
-                            <td class="p-3 border-l border-b border-[#6D6D6D]">
-                                <a href="{{ route('members.show', $member->id) }}">
-                                    <iconify-icon
-                                        class="text-[#124375] hover:scale-110 hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
-                                        icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon> </a>
-                            </td>
-                        </tr>
+                        @if ($member->user->role_id === 3)
+                            <tr class="text-center even:bg-[#EFEFEF] odd:bg-[#F4F7F9] text-[#021219] font-medium">
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                    {{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</td>
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->full_name }}</td>
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                    {{ $member->department?->name ?? 'لا يوجد بيانات' }}
+                                </td>
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->phone }}</td>
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                    @php
+                                        $statusCode = $member->membershipInfo->status ?? 'unknown';
+                                        $statusData = $statusMap[$statusCode] ?? [
+                                            'label' => 'غير معروف',
+                                            'class' => 'unknown',
+                                        ];
+                                        // Map CSS classes for visual consistency
+                                        $classMap = [
+                                            'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
+                                            'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
+                                            'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#F4F3FF]',
+                                            'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
+                                            'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]',
+                                            'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+                                            'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#F3F6FA]',
+                                            'expired' => 'text-[#021219] border-[#021219] bg-[#F2F4F7]',
+                                            'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+                                        ];
+                                        $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400';
+                                    @endphp
+                                    <span
+                                        class="{{ $badgeClass }} w-[127px] py-1 block mx-auto rounded-full border bg-white text-center font-medium">
+                                        {{ $statusData['label'] }}
+                                    </span>
+                                </td>
+                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                    {{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}
+                                </td>
+                                <td class="p-3 border-l border-b border-[#6D6D6D]">
+                                    <a href="{{ route('members.show', $member->id) }}">
+                                        <iconify-icon
+                                            class="text-[#124375] hover:scale-110 hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                            icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="8" class="py-4 text-center text-gray-500 text-lg">لا توجد بيانات متاحة حالياً</td>
+                        <td colspan="8" class="py-4 text-center text-gray-500 text-lg">
+                            <img class="mx-auto w-[20%]" src="{{ asset('IMGs/No-results.png') }}"
+                                alt="ممتاز! لا يوجد أعضاء متأخرين يستوجب إنذارهم حالياً.">
+                        </td>
                     </tr>
                 @endif
             </table>
         </div>
     </section>
 
+@endsection
+@section('pagination')
     <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
         {{ $members->links() }}
     </div>
-
 @endsection

@@ -43,8 +43,6 @@ class MemberController extends Controller
         'appointment_decision'=> 'قرار التعيين',
     ];
 
-
-
     // ─── Validation Rules ────────────────────────────────────────────
 
     /**
@@ -134,10 +132,8 @@ class MemberController extends Controller
 
     public function create()
     {
-        $departments = Department::all();
 
         return view('members.create', [
-            'departments'   => $departments,
             'documentTypes' => self::INITIAL_DOCUMENT_TYPES,
             'mode'          => 'create',
         ]);

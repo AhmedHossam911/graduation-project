@@ -17,12 +17,12 @@
         $classMap = [
             'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
             'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
-            'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#5925DC]',
+            'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#F4F3FF]',
             'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
-            'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#F79009]',
+            'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]',
             'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
-            'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#4B5A70]',
-            'expired' => 'text-[#021219] border-[#021219] bg-[#021219]',
+            'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#F3F6FA]',
+            'expired' => 'text-[#021219] border-[#021219] bg-[#F2F4F7]',
             'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
         ];
         $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400 bg-gray-100';

@@ -79,39 +79,99 @@
                 <div class="flex items-center gap-2">
                     <iconify-icon icon="material-symbols:edit-notifications-rounded" class="text-2xl"></iconify-icon>
                     <h2 class="text-base font-medium">المهام المطلوبة اليوم <span
-                            class="text-[#124375]">({{ $dueTodayInstallmentsCount + $todaySubscriptionsCount }})</span>
+                            class="text-[#124375]">({{ $totalTasksCount }})</span>
                     </h2>
                 </div>
                 <div class="py-2 surface-shadow rounded-2xl py-4 px-5 divide-y-2 divide-[#6D6D6D]">
-                    @if ($todaySubscriptionsCount > 0)
-                        <div class="flex justify-between py-5">
+                    {{-- Subscriptions due today --}}
+                    @foreach ($todaySubscriptions as $subscription)
+                        <div class="flex justify-between items-center py-5">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#175CD3]"></iconify-icon>
                                 <div>
-                                    <h3 class="text-[#021219] text-sm font-medium">اشتراكات مستحقة اليوم</h3>
-                                    <p class="text-[#6D6D6D] text-sm font-normal">{{ $todaySubscriptionsCount }} اشتراك</p>
+                                    <h3 class="text-[#021219] text-sm font-medium">اشتراك مستحق اليوم -
+                                        {{ $subscription->membership->member->full_name ?? 'عضو' }}</h3>
+                                    <p class="text-[#6D6D6D] text-sm font-normal">
+                                        @if ($subscription->status === 'paid')
+                                            تم السداد
+                                        @else
+                                            غير مسجل بعد
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
-                            <button
-                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
-                                التفاصيل</button>
+                            <a href="{{ route('members.show', $subscription->membership->member_id) }}"
+                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3 hover:bg-[#0e3560] transition-colors">عرض
+                                التفاصيل</a>
                         </div>
-                    @endif
-                    @if ($dueTodayInstallmentsCount > 0)
-                        <div class="flex justify-between py-5">
+                    @endforeach
+
+                    {{-- Overdue / due installments --}}
+                    @foreach ($dueTodayInstallments as $installment)
+                        @php
+                            $memberName = $installment->loan->membership->member->full_name ?? 'عضو';
+                            $daysLate = (int) \Carbon\Carbon::parse($installment->due_date)->diffInDays(now());
+                        @endphp
+                        <div class="flex justify-between items-center py-5">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#D92D20]"></iconify-icon>
                                 <div>
-                                    <h3 class="text-[#021219] text-sm font-medium">أقساط مستحقة اليوم</h3>
-                                    <p class="text-[#6D6D6D] text-sm font-normal">{{ $dueTodayInstallmentsCount }} قسط</p>
+                                    <h3 class="text-[#021219] text-sm font-medium">قسط قرض متأخر - {{ $memberName }}</h3>
+                                    <p class="text-[#6D6D6D] text-sm font-normal">
+                                        @if ($daysLate > 0)
+                                            متأخر منذ {{ $daysLate }} {{ $daysLate == 1 ? 'يوم' : 'ايام' }}
+                                        @else
+                                            مستحق اليوم
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
-                            <button
-                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
-                                التفاصيل</button>
+                            <a href="{{ route('loans.show', $installment->loan_id) }}"
+                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3 hover:bg-[#0e3560] transition-colors">عرض
+                                التفاصيل</a>
                         </div>
-                    @endif
-                    @if ($todaySubscriptionsCount == 0 && $dueTodayInstallmentsCount == 0)
+                    @endforeach
+
+                    {{-- Pending claims --}}
+                    @foreach ($pendingClaims as $claim)
+                        @php
+                            $claimMemberName = $claim->membership->member->full_name ?? 'عضو';
+                            $claimTypes = \App\Models\Services\Claim::CLAIM_TYPES;
+                        @endphp
+                        <div class="flex justify-between items-center py-5">
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#D4AF37]"></iconify-icon>
+                                <div>
+                                    <h3 class="text-[#021219] text-sm font-medium">طلب إعانة تحت المراجعة -
+                                        {{ $claimMemberName }}</h3>
+                                    <p class="text-[#6D6D6D] text-sm font-normal">في انتظار المراجعة</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('claims.show', $claim->id) }}"
+                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3 hover:bg-[#0e3560] transition-colors">عرض
+                                التفاصيل</a>
+                        </div>
+                    @endforeach
+
+                    {{-- Members with missing documents --}}
+                    @foreach ($membersWithMissingDocs as $member)
+                        <div class="flex justify-between items-center py-5">
+                            <div class="flex items-center gap-2">
+                                <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#F79009]"></iconify-icon>
+                                <div>
+                                    <h3 class="text-[#021219] text-sm font-medium">مستند ناقص - {{ $member->full_name }}
+                                    </h3>
+                                    <p class="text-[#6D6D6D] text-sm font-normal">مطلوب رفع خطاب الأجر الأساسي</p>
+                                </div>
+                            </div>
+                            <a href="{{ route('members.show', $member->id) }}"
+                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3 hover:bg-[#0e3560] transition-colors">عرض
+                                التفاصيل</a>
+                        </div>
+                    @endforeach
+
+                    {{-- Empty state --}}
+                    @if ($totalTasksCount == 0)
                         <div class="flex justify-center py-5">
                             <p class="text-[#6D6D6D] text-sm font-normal">لا توجد مهام مطلوبة اليوم</p>
                         </div>
@@ -135,16 +195,20 @@
                             <h3 class="text-base font-medium text-[#124375]">تسجيل سداد إشتراك</h3>
                         </div>
                     </a>
-                    <div
-                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] cursor-not-allowed opacity-70">
-                        <iconify-icon icon="ion:cash" class="text-5xl text-[#124375]"></iconify-icon>
-                        <h3 class="text-base font-medium text-[#124375]">تسجيل سداد قسط</h3>
-                    </div>
-                    <div
-                        class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] cursor-not-allowed opacity-70">
-                        <iconify-icon icon="mdi:account-file" class="text-5xl text-[#124375]"></iconify-icon>
-                        <h3 class="text-base font-medium text-[#124375]">إنشاء مطالبة</h3>
-                    </div>
+                    <a href="{{ route('loans.index') }}">
+                        <div
+                            class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
+                            <iconify-icon icon="ion:cash" class="text-5xl text-[#124375]"></iconify-icon>
+                            <h3 class="text-base font-medium text-[#124375]">تسجيل سداد قسط</h3>
+                        </div>
+                    </a>
+                    <a href="{{ route('claims.index') }}">
+                        <div
+                            class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
+                            <iconify-icon icon="mdi:account-file" class="text-5xl text-[#124375]"></iconify-icon>
+                            <h3 class="text-base font-medium text-[#124375]">إنشاء مطالبة</h3>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -153,33 +217,39 @@
         <!-- start table -->
         <section>
             <div class="flex items-center gap-2 py-3">
-                <iconify-icon icon="mingcute:time-fill" class="text-2xl"></iconify-icon>
-                <h3 class="text-base font-medium ">
-                    العمليات التي تمت مؤخراً
+                <iconify-icon class="text-[#E6B800]" icon="tdesign:error-triangle-filled" width="24"
+                    height="24"></iconify-icon>
+                <h3 class="text-base font-medium text-[#000000]">
+                    تنبيهات التأخيرات العاجلة
                 </h3>
             </div>
             <div class="rounded-2xl overflow-hidden  surface-shadow">
                 <table class="w-full">
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                        <th class="py-3 border-l border-[#6D6D6D]">العملية</th>
                         <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
                         <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
-                        <th class="py-3 border-l border-[#6D6D6D]">تفاصيل العملية</th>
-                        <th class="py-3 border-l border-[#6D6D6D]">الحالة</th>
-                        <th class="py-3">التوقيت</th>
+                        <th class="py-3 border-l border-[#6D6D6D]">المبلغ المستحق</th>
+                        <th class="py-3 border-l border-[#6D6D6D]">مدة التأخير</th>
                     </tr>
-                    @forelse ($auditLogs as $log)
+
+                    @forelse ($dueTodayInstallments as $installment)
                         <tr class="text-center even:bg-[#F4F7F9]">
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $log->action }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $log->member_name }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $log->membership_number }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">تعديل في جدول {{ $log->table_name }}</td>
-                            <td class="py-3 border-l border-b border-[#6D6D6D]">تمت العملية</td>
-                            <td class="py-3 border-1 border-b border-[#6D6D6D]">{{ $log->created_at->diffForHumans() }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ $installment->loan->membership->member->full_name }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ $installment->loan->membership->membership_number }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ $installment->loan->installment_amount }}</td>
+                            <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                {{ intval("\Carbon\Carbon::parse($installment->due_date)->diffInDays(now())") }} يومًا
+                            </td>
                         </tr>
                     @empty
                         <tr class="text-center">
-                            <td colspan="6" class="py-6 text-gray-500">لا توجد عمليات مسجلة حالياً</td>
+                            <td colspan="6" class="py-6 text-gray-500">
+                                <img class="mx-auto w-[30%]" src="{{ asset('IMGs/Dashboard-no-members.png') }}"
+                                    alt="ممتاز! لا يوجد أعضاء متأخرين يستوجب إنذارهم حالياً.">
+                            </td>
                         </tr>
                     @endforelse
                 </table>

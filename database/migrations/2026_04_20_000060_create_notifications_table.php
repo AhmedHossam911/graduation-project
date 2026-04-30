@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->string('title');
             $table->text('message');
-            $table->timestamp('read_at')->nullable();
+            $table->dateTime('read_at')->nullable();
             $table->timestamps();
         });
     }

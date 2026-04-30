@@ -155,13 +155,6 @@
         @endforelse
     </div>
 
-    {{-- Pagination --}}
-    @if ($notifications->hasPages())
-        <div class="px-7 py-5 border-t border-[#A8A8A8] mt-8">
-            {{ $notifications->links() }}
-        </div>
-    @endif
-
     @push('scripts')
         <script>
             // Toggle dropdowns
@@ -182,4 +175,11 @@
             });
         </script>
     @endpush
+@endsection
+@section('pagination')
+    @if ($notifications->hasPages())
+        <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+            {{ $notifications->links() }}
+        </div>
+    @endif
 @endsection

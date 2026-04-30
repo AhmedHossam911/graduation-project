@@ -52,6 +52,19 @@ if (confirmStatusBtn && statusText) {
             dropdown.classList.add('hidden');
         }
     });
+
+    // Pre-select marital status radio if a value is already set (edit mode)
+    const hiddenInput = document.getElementById('marital_status_hidden');
+    if (hiddenInput && hiddenInput.value) {
+        const radios = document.querySelectorAll('input[name="gender"]');
+        radios.forEach(radio => {
+            if (radio.value === hiddenInput.value) {
+                radio.checked = true;
+            }
+        });
+        statusText.classList.remove('text-[#6D6D6D]');
+        statusText.classList.add('text-[#124375]', 'font-bold', 'text-base');
+    }
 }
 
 // Handle Inputs

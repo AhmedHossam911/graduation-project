@@ -62,8 +62,7 @@
             <!-- start search -->
             <div class="flex-1 items-center gap-5">
                 <input type="search" name="search" value="{{ request('search') }}"
-                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" 
-                    icon="bitcoin-icons:search-outline"
+                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" icon="bitcoin-icons:search-outline"
                     class="w-full rounded-xl py-2 px-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             </div>
             <!-- end search -->
@@ -179,10 +178,11 @@
                 @endif
             </table>
         </div>
-        <div
-            class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
-            {{ $subscriptions->links() }}
-        </div>
     </section>
 
+@endsection
+@section('pagination')
+    <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+        {{ $subscriptions->links() }}
+    </div>
 @endsection
