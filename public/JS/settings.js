@@ -5,12 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const formTitleIconContainer = document.getElementById('form-title-icon-container');
 
     const tabIcons = {
-        basic: '<div class="w-5 h-7 left-[5.34px] top-[2.67px] absolute bg-[#1e5a97]"></div>',
-        subscriptions: '<div class="w-[26.67px] h-[26.67px] left-[4px] top-[4px] absolute bg-[#1e5a97]"></div>',
-        loans: '<div class="w-[26.67px] h-[18.67px] left-[2px] top-[6px] absolute bg-[#1e5a97]"></div>',
-        claims: '<div class="w-full h-full px-[1.33px] py-[5.33px] flex justify-center items-center gap-[10.67px] overflow-hidden"><div class="flex-1 h-[18.67px] bg-[#1e5a97]"></div></div>'
-
-
+        basic: '<iconify-icon icon="material-symbols:list-alt-check-rounded" width="28" height="28" class="text-[#1e5a97]"></iconify-icon>',
+        subscriptions: '<iconify-icon icon="tabler:clipboard-list-filled" width="28" height="28" class="text-[#1e5a97]"></iconify-icon>',
+        loans: '<iconify-icon icon="fluent:money-16-filled" width="28" height="28" class="text-[#1e5a97]"></iconify-icon>',
+        claims: '<iconify-icon icon="ph:user-list-fill" width="28" height="28" class="text-[#1e5a97]"></iconify-icon>'
     };
 
     tabs.forEach(tab => {

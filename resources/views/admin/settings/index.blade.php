@@ -5,15 +5,14 @@
 @include('partials.flash')
 
 @section('content')
-    link rel="stylesheet" href="{{ asset('css/settings.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/settings.css') }}">
     <main class="flex-1 py-5 px-3">
         <!-- start header main -->
         <div class="flex flex-col gap-2 mb-6">
-            <h2 class="text-[#021219] text-xl font-semibold flex items-center gap-2">
+            <h2 class="text-[#124375] text-[20px] font-bold font-semibold flex items-center gap-2">
                 <span>إعدادات اللائحة الأساسية</span>
-                <iconify-icon icon="mdi:cog-outline" class="text-2xl text-[#124375]"></iconify-icon>
             </h2>
-            <p class="text-[#6D6D6D] text-base font-normal">
+            <p class="text-[#6D6D6D] text-[16px] font-normal">
                 إدارة المتغيرات والمحددات الآلية لصندوق التأمين الخاص لأعضاء هيئة التدريس والعاملين بجامعة العاصمة
             </p>
         </div>
@@ -66,7 +65,7 @@
                     <!-- FORM TITLE -->
                     <div id="form-title" class="flex items-center gap-4 self-stretch justify-start mb-4">
                         <div id="form-title-icon-container" class="size-8 flex justify-center items-center flex-shrink-0">
-                            <iconify-icon icon="ph:user-list-fill" width="28" height="28"
+                            <iconify-icon icon="material-symbols:list-alt-check-rounded" width="28" height="28"
                                 class="text-[#1e5a97]"></iconify-icon>
                         </div>
                         <div id="form-title-text"
@@ -79,15 +78,14 @@
                         <!-- NAME -->
                         <div class="relative mb-12">
                             <label
-                                class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                اسم الصندوق
-                                <iconify-icon icon="mdi:pencil"
-                                    class="absolute left--8 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
+                                class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                <iconify-icon icon="mdi:pencil" class="text-primary text-[20px]"></iconify-icon>
+                                <span>اسم الصندوق</span>
                             </label>
                             <div class="relative">
                                 <input type="text" name="system_name"
                                     value="{{ old('system_name', $settings['system_name']) }}"
-                                    class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('system_name') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                    class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('system_name') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                     required>
                             </div>
                             <p class="mt-3 text-right text-[#b4b4b4] text-lg font-['Noto_Sans_Arabic']">
@@ -99,17 +97,14 @@
                             <!-- RETIREMENT -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    <span>
-                                        سن التقاعد القانوني
-                                    </span>
-                                    <iconify-icon icon="mdi:calendar"
-                                        class="absolute left--8 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:calendar" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>سن التقاعد القانوني</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="retirement_age"
                                         value="{{ old('retirement_age', $settings['retirement_age']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('retirement_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('retirement_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-4 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
@@ -120,17 +115,15 @@
                             <!-- CURRENCY -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    <span>
-                                        العملة الافتراضية
-                                    </span>
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:currency-usd-circle-outline"
-                                        class="absolute left--8 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
+                                        class="text-primary text-[20px]"></iconify-icon>
+                                    <span>العملة الافتراضية</span>
                                 </label>
                                 <div class="relative">
                                     <input type="text" name="default_currency"
                                         value="{{ old('default_currency', $settings['default_currency']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('default_currency') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('default_currency') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                 </div>
                             </div>
@@ -144,38 +137,37 @@
                             <!-- SUBSCRIPTION AMOUNT -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    قيمة الاشتراك الشهري
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:cash-multiple" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>قيمة الاشتراك الشهري</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="subscription_amount"
                                         value="{{ old('subscription_amount', $settings['subscription_amount']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('subscription_amount') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('subscription_amount') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         ج.م</div>
-                                    <iconify-icon icon="mdi:cash-multiple"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
 
                             <!-- JOIN FEE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    رسوم الانضمام للعضوية
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:card-account-details-outline"
+                                        class="text-primary text-[20px]"></iconify-icon>
+                                    <span>رسوم الانضمام للعضوية</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="membership_join_fee"
                                         value="{{ old('membership_join_fee', $settings['membership_join_fee']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('membership_join_fee') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_join_fee') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         ج.م</div>
-                                    <iconify-icon icon="mdi:card-account-details-outline"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -185,38 +177,38 @@
                             <!-- MIN AGE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    الحد الأدنى لسن التسجيل
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:account-arrow-up"
+                                        class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأدنى لسن التسجيل</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="membership_min_age"
                                         value="{{ old('membership_min_age', $settings['membership_min_age']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('membership_min_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_min_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         عاماً</div>
-                                    <iconify-icon icon="mdi:account-arrow-up"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
 
                             <!-- MAX AGE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    الحد الأقصى لسن التسجيل
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:account-arrow-down"
+                                        class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأقصى لسن التسجيل</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="membership_max_age"
                                         value="{{ old('membership_max_age', $settings['membership_max_age']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('membership_max_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_max_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         عاماً</div>
-                                    <iconify-icon icon="mdi:account-arrow-down"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -229,38 +221,36 @@
                             <!-- LOAN PERCENTAGE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    نسبة القرض من إجمالي الاشتراكات
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>نسبة القرض من إجمالي الاشتراكات</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_percentage"
                                         value="{{ old('loan_percentage', $settings['loan_percentage']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('loan_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         %</div>
-                                    <iconify-icon icon="mdi:percent"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
 
                             <!-- INTEREST RATE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    معدل الفائدة السنوية
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>معدل الفائدة السنوية</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_interest_rate"
                                         value="{{ old('loan_interest_rate', $settings['loan_interest_rate']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('loan_interest_rate') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_interest_rate') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         %</div>
-                                    <iconify-icon icon="mdi:percent"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -270,38 +260,37 @@
                             <!-- MAX AMOUNT -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    الحد الأقصى للقرض الشخصي
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:cash" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأقصى للقرض الشخصي</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_max_amount"
                                         value="{{ old('loan_max_amount', $settings['loan_max_amount']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('loan_max_amount') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_max_amount') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         ج.م</div>
-                                    <iconify-icon icon="mdi:cash"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
 
                             <!-- REPAYMENT MONTHS -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    أقصى فترة سداد للقرض
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:calendar-clock"
+                                        class="text-primary text-[20px]"></iconify-icon>
+                                    <span>أقصى فترة سداد للقرض</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_repayment_months"
                                         value="{{ old('loan_repayment_months', $settings['loan_repayment_months']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('loan_repayment_months') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_repayment_months') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         شهراً</div>
-                                    <iconify-icon icon="mdi:calendar-clock"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -310,19 +299,18 @@
                         <div class="grid grid-cols-2 gap-6 mb-12">
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    الحد الأدنى للاشتراك لطلب القرض
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:history" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأدنى للاشتراك لطلب القرض</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_min_years_subscribed"
                                         value="{{ old('loan_min_years_subscribed', $settings['loan_min_years_subscribed']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('loan_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         سنوات</div>
-                                    <iconify-icon icon="mdi:history"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                             <div class="relative"></div> <!-- Spacer column -->
@@ -336,38 +324,36 @@
                             <!-- BASIC PERCENTAGE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    نسبة الميزة التأمينية الأساسية
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>نسبة الميزة التأمينية الأساسية</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_basic_percentage"
                                         value="{{ old('claim_basic_percentage', $settings['claim_basic_percentage']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('claim_basic_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_basic_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         %</div>
-                                    <iconify-icon icon="mdi:percent"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
 
                             <!-- TRANSFER/RESIGNATION PERCENTAGE -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    نسبة الميزة في حالة النقل / الاستقالة
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>نسبة الميزة في حالة النقل / الاستقالة</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_transfer_resignation_percentage"
                                         value="{{ old('claim_transfer_resignation_percentage', $settings['claim_transfer_resignation_percentage']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('claim_transfer_resignation_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_transfer_resignation_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         %</div>
-                                    <iconify-icon icon="mdi:percent"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -377,38 +363,36 @@
                             <!-- FUNERAL EXPENSES -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    مصاريف الجنازة
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:cash" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>مصاريف الجنازة</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_funeral_expenses"
                                         value="{{ old('claim_funeral_expenses', $settings['claim_funeral_expenses']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('claim_funeral_expenses') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_funeral_expenses') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         ج.م</div>
-                                    <iconify-icon icon="mdi:cash"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
 
                             <!-- MIN YEARS -->
                             <div class="relative">
                                 <label
-                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-6 py-2 text-[#124375] text-[16px] font-bold z-10">
-                                    الحد الأدنى لسنوات الاشتراك لاستحقاق الميزة
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="mdi:history" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأدنى لسنوات الاشتراك لاستحقاق الميزة</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_min_years_subscribed"
                                         value="{{ old('claim_min_years_subscribed', $settings['claim_min_years_subscribed']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[16px] text-[#021219] text-center {{ $errors->has('claim_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[16px] font-bold outline-none"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                     <div
                                         class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
                                         سنوات</div>
-                                    <iconify-icon icon="mdi:history"
-                                        class="absolute left-5 top-1/2 -translate-y-1/2 text-primary text-[20px]"></iconify-icon>
                                 </div>
                             </div>
                         </div>
@@ -419,6 +403,8 @@
                 <div class="self-stretch inline-flex justify-between items-center mt-8 pt-6 border-t border-slate-200">
                     <!-- LAST UPDATE -->
                     <div class="flex justify-start items-center gap-2 text-[#6D6D6D]">
+                        <iconify-icon icon="mdi:clock-outline" class="text-lg"></iconify-icon>
+
                         <div class="justify-start text-sm font-medium font-['Noto_Sans_Arabic']">
                             آخر تعديل:
                             {{ $lastUpdate ? $lastUpdate->updated_at->timezone('Africa/Cairo')->locale('ar')->translatedFormat('j F Y \ف\ي h:i أ') : 'لا يوجد تعديلات سابقة' }}
@@ -426,19 +412,19 @@
                                 (بواسطة: {{ $lastUpdateUser }})
                             @endif
                         </div>
-                        <iconify-icon icon="mdi:clock-outline" class="text-lg"></iconify-icon>
                     </div>
 
                     <!-- BUTTONS -->
                     <div class="flex justify-center items-center gap-4">
                         <button type="button" onclick="submitResetForm()"
-                            class="w-64 h-12 p-2 bg-[#F4F7F9] hover:bg-red-50 text-[#D92D20] rounded-xl flex justify-center items-center gap-4 text-center text-base font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
+                            class="w-64 h-12 p-2 bg-[#EFEFEF] hover:bg-red-50 text-[#6D6D6D] rounded-xl flex justify-center items-center gap-4 text-center text-base font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
                             <span>استعادة قيم اللائحة الافتراضية</span>
                         </button>
+
                         <button type="submit"
-                            class="w-64 h-12 px-6 py-2 bg-[#124375] hover:bg-[#0e3560] text-white surface-shadow rounded-xl flex justify-center items-center gap-4 text-center text-base font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
+                            class="w-64 h-12 px-6 py-2 bg-[#124375] hover:bg-[#0e3560] text-white surface-shadow rounded-xl flex justify-center items-center gap-4 text-center text-[16px] font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
+                            <iconify-icon icon="fluent:save-16-filled" class="text-xl text-white"></iconify-icon>
                             <span>حفظ التعديلات</span>
-                            <iconify-icon icon="mdi:content-save-outline" class="text-xl text-white"></iconify-icon>
                         </button>
                     </div>
 
