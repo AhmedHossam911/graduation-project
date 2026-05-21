@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Membership;
+namespace App\Http\Controllers\Employee\Membership;
 
 use App\Http\Controllers\Controller;
 use App\Models\Services\Membership;

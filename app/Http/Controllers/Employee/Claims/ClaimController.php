@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Claims;
+namespace App\Http\Controllers\Employee\Claims;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -63,7 +63,7 @@ class ClaimController extends Controller
         $pendingApprovalCount = Claim::where('status', 'pending_approval')->count(); // بانتظار الأعتماد
         $pendingSettlementCount = Claim::where('status', 'pending')->count(); // بانتظار التسوية
 
-        return view('claims.index', compact('claims', 'claimTypes', 'paidCount', 'pendingApprovalCount', 'pendingSettlementCount'));
+        return view('employee.claims.index', compact('claims', 'claimTypes', 'paidCount', 'pendingApprovalCount', 'pendingSettlementCount'));
     }
 
     /**
@@ -127,7 +127,7 @@ class ClaimController extends Controller
 
         $claimTypes = Claim::CLAIM_TYPES;
 
-        return view('claims.show', compact('claim', 'claimTypes'));
+        return view('employee.claims.show', compact('claim', 'claimTypes'));
     }
 
     /**
@@ -144,7 +144,7 @@ class ClaimController extends Controller
         $oldValues = $claim->toArray();
 
         DB::transaction(function () use ($request, $validated, $claim, $oldValues) {
-            
+
             $updateData = [
                 'status' => 'approved',
                 'attachment_receipt' => $validated['receipt_number'], // Using this field for receipt number or we can add receipt_number to DB
@@ -157,7 +157,7 @@ class ClaimController extends Controller
             if ($request->hasFile('receipt_file')) {
                 $memberId = $claim->membership->member_id;
                 $path = $request->file('receipt_file')->store("members/{$memberId}/claims/{$claim->id}", 'public');
-                
+
                 Attachment::create([
                     'member_id' => $memberId,
                     'type'      => "claim_{$claim->id}_approval_receipt",

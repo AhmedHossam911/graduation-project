@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Membership;
+namespace App\Http\Controllers\Employee\Membership;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -121,7 +121,7 @@ class MemberController extends Controller
 
         $members = $query->paginate(10)->withQueryString();
 
-        return view('members.index', [
+        return view('employee.members.index', [
             'departments' => $departments,
             'members'     => $members,
             'statusMap'   => self::STATUS_MAP,
@@ -133,7 +133,7 @@ class MemberController extends Controller
     public function create()
     {
 
-        return view('members.create', [
+        return view('employee.members.create', [
             'documentTypes' => self::INITIAL_DOCUMENT_TYPES,
             'mode'          => 'create',
         ]);
@@ -238,7 +238,7 @@ class MemberController extends Controller
 
         $departments = Department::all();
 
-        return view('members.create', [
+        return view('employee.members.create', [
             'member'        => $member,
             'departments'   => $departments,
             'documentTypes' => self::INITIAL_DOCUMENT_TYPES,
@@ -337,7 +337,7 @@ class MemberController extends Controller
             'membershipInfo.loans.installments',
         ])->findOrFail($id);
 
-        return view('members.show', [
+        return view('employee.members.show', [
             'member'     => $member,
             'statusMap'  => self::STATUS_MAP,
             'claimTypes' => Claim::CLAIM_TYPES,
@@ -350,7 +350,7 @@ class MemberController extends Controller
     {
         $member = Member::with('attachments')->findOrFail($id);
 
-        return view('documents.index', [
+        return view('employee.documents.index', [
             'member' => $member,
         ]);
     }
@@ -377,11 +377,11 @@ class MemberController extends Controller
     {
         $attachment = Attachment::findOrFail($id);
         $path = storage_path('app/public/' . $attachment->file_path);
-        
+
         if (!file_exists($path)) {
             abort(404);
         }
-        
+
         return response()->file($path);
     }
 
@@ -389,11 +389,11 @@ class MemberController extends Controller
     {
         $attachment = Attachment::findOrFail($id);
         $path = storage_path('app/public/' . $attachment->file_path);
-        
+
         if (!file_exists($path)) {
             abort(404);
         }
-        
+
         return response()->download($path);
     }
 
@@ -402,7 +402,7 @@ class MemberController extends Controller
         $member = Member::with(['user', 'department', 'employmentInfo', 'familyInfo', 'attachments'])
             ->findOrFail($id);
 
-        return view('members.create', [
+        return view('employee.members.create', [
             'member'        => $member,
             'departments'   => Department::all(),
             'documentTypes' => self::INITIAL_DOCUMENT_TYPES,
@@ -417,7 +417,7 @@ class MemberController extends Controller
         $member = Member::with(['user', 'department', 'employmentInfo', 'familyInfo', 'attachments'])
             ->findOrFail($id);
 
-        return view('members.create', [
+        return view('employee.members.create', [
             'member'        => $member,
             'departments'   => Department::all(),
             'documentTypes' => self::INITIAL_DOCUMENT_TYPES,

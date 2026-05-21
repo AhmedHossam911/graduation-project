@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Auth\User;
 use App\Models\Membership\Member;
 use App\Models\System\Department;
+use App\Models\Membership\EmploymentInfo;
 use App\Models\Auth\OtpCode;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -56,6 +57,11 @@ class AuthController extends Controller
 
         Auth::login($user);
         $user->update(['last_login' => now()]);
+
+        if ($user->role_id == 3) {
+            return redirect()->intended('/member/dashboard');
+        }
+
         return redirect()->intended('/dashboard');
     }
 
@@ -64,7 +70,10 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'national_id' => 'required|string|size:14|unique:members,national_id',
-            'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/'
+            'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed',
+            'phone' => 'required|string|max:20',
+            'workplace' => 'required|string|max:255',
+            'job_title' => 'required|string|max:255',
         ], [
             'name.required' => 'يرجى إدخال الاسم.',
             'email.required' => 'يرجى إدخال البريد الإلكتروني.',
@@ -73,27 +82,88 @@ class AuthController extends Controller
             'national_id.size' => 'الرقم القومي يجب أن يكون 14 رقماً.',
             'national_id.unique' => 'الرقم القومي مسجل مسبقاً.',
             'password.required' => 'يرجى إدخال كلمة المرور.',
+            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
+            'phone.required' => 'يرجى إدخال رقم التليفون.',
+            'workplace.required' => 'يرجى إدخال جهة العمل.',
+            'job_title.required' => 'يرجى إدخال الوظيفة.',
         ]);
 
-        DB::transaction(function() use ($request) {
+        $user = null;
+        DB::transaction(function() use ($request, &$user) {
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
+                'role_id' => 3,
                 'is_restricted' => true 
             ]);
 
             $department = Department::firstOrCreate(['name' => 'Pending Registration']);
 
-            Member::create([
+            $member = Member::create([
                 'user_id' => $user->id,
                 'department_id' => $department->id,
                 'full_name' => $request->name,
-                'national_id' => $request->national_id
+                'national_id' => $request->national_id,
+                'phone' => $request->phone,
+            ]);
+
+            EmploymentInfo::create([
+                'member_id' => $member->id,
+                'workplace' => $request->workplace,
+                'job_title' => $request->job_title,
             ]);
         });
 
-        return redirect()->route('login')->with('success', 'تم إنشاء الحساب بنجاح، يرجى الانتظار لحين موافقة الإدارة.');
+        $otp = rand(100000, 999999);
+        OtpCode::create([
+            'user_id' => $user->id,
+            'code' => (string) $otp,
+            'expires_at' => Carbon::now()->addMinutes(10),
+            'is_used' => false
+        ]);
+
+        try {
+            Mail::raw("رقم المرور المؤقت لتفعيل حسابك هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
+                $msg->to($user->email)->subject('تفعيل الحساب');
+            });
+        } catch(\Exception $e) { }
+
+        session(['register_user_id' => $user->id]);
+        return redirect()->route('register.verify')->with('success', 'تم إرسال رمز التفعيل إلى بريدك الإلكتروني.');
+    }
+
+    public function showVerifyRegistrationOtp() {
+        if(!session('register_user_id')) return redirect()->route('register');
+        return view('auth.register-otp');
+    }
+
+    public function verifyRegistrationOtp(Request $request) {
+        $request->validate(['code' => 'required|digits:6']);
+        $userId = session('register_user_id');
+
+        $otpRecord = OtpCode::where('user_id', $userId)
+            ->where('code', $request->code)
+            ->where('is_used', false)
+            ->where('expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$otpRecord) return back()->with('error', 'الرمز غير صحيح أو منتهي الصلاحية.');
+
+        $otpRecord->update(['is_used' => true]);
+        
+        $user = User::find($userId);
+        $user->update([
+            'is_restricted' => false,
+            'email_verified_at' => now()
+        ]);
+
+        session()->forget('register_user_id');
+
+        Auth::login($user);
+        $user->update(['last_login' => now()]);
+
+        return redirect()->route('member.dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
     }
 
     public function sendOtp(Request $request) {

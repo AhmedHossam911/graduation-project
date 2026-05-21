@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Member;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Auth\Notification;
 use Illuminate\Http\Request;
@@ -53,7 +55,7 @@ class NotificationController extends Controller
         $unreadCount = Notification::where('user_id', $user->id)->whereNull('read_at')->count();
         $readCount   = Notification::where('user_id', $user->id)->whereNotNull('read_at')->count();
 
-        return view('notifications.index', compact(
+        return view('member.notifications.index', compact(
             'notifications',
             'totalCount',
             'unreadCount',

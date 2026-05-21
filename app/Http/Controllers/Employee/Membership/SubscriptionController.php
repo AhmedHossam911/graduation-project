@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Membership;
+namespace App\Http\Controllers\Employee\Membership;
 
 use App\Http\Controllers\Controller;
 use App\Models\Membership\Member;
@@ -32,7 +32,7 @@ class SubscriptionController extends Controller
             'late_total'  => Subscription::where('status', 'unpaid')->where('due_date', '<', now())->count(),
         ];
 
-        return view('Membership.index', compact('departments', 'subscriptions', 'stats'));
+        return view('employee.membership.index', compact('departments', 'subscriptions', 'stats'));
     }
 
     /**

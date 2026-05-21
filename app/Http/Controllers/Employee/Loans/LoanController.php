@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Loans;
+namespace App\Http\Controllers\Employee\Loans;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -95,7 +95,7 @@ class LoanController extends Controller
             ->whereDate('due_date', '<=', now()->toDateString())
             ->count();
 
-        return view('loans.index', compact(
+        return view('employee.loans.index', compact(
             'loans',
             'activeLoansThisMonth',
             'pendingLoansCount',
@@ -171,7 +171,7 @@ class LoanController extends Controller
             $q->orderBy('due_date');
         }]);
 
-        return view('loans.show', compact('loan'));
+        return view('employee.loans.show', compact('loan'));
     }
 
     /**
@@ -259,12 +259,12 @@ class LoanController extends Controller
     {
         \Log::info('Fetching loan data for ID: ' . $loan->id);
         $loan->load('membership.member');
-        
+
         $unpaidInstallments = $loan->installments()
             ->whereIn('status', ['unpaid', 'overdue'])
             ->orderBy('due_date')
             ->get();
-            
+
         $data = [
             'id' => $loan->id,
             'member_name' => $loan->membership->member->full_name ?? 'غير متوفر',
@@ -280,7 +280,7 @@ class LoanController extends Controller
                 ];
             })
         ];
-        
+
         \Log::info('Returning loan data: ' . json_encode($data));
         return response()->json($data);
     }

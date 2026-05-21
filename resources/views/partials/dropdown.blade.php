@@ -21,7 +21,7 @@
     }
 @endphp
 
-<div class="border border-slate-200 rounded-xl py-2 w-full min-w-[200px] bg-white relative custom-dropdown-container flex items-center pr-3 surface-shadow"
+<div class="border border-slate-200 rounded-xl py-2 w-full min-w-[200px] bg-[#F4F7F9] relative custom-dropdown-container flex items-center pr-3 surface-shadow"
     data-clear-value="{{ $clearValue }}" data-auto-submit="{{ $autoSubmit ? 'true' : 'false' }}"
     data-has-confirm="{{ $showConfirm ? 'true' : 'false' }}">
 

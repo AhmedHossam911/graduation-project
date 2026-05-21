@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Employee;
+
+use App\Http\Controllers\Controller;
 
 use App\Models\Membership\Member;
 use App\Models\Services\Subscription;
@@ -54,7 +56,7 @@ class DashboardController extends Controller
         // Total task count for the header
         $totalTasksCount = $todaySubscriptionsCount + $dueTodayInstallmentsCount + $pendingClaimsCount + $membersWithMissingDocs->count();
 
-        return view('dashboard.index', compact(
+        return view('employee.dashboard.index', compact(
             'activeMembersCount',
             'todaySubscriptionsCount',
             'todaySubscriptions',
