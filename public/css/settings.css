@@ -1,0 +1,23 @@
+        .text-primary {
+            color: #1e5a97 !important;
+        }
+
+        /* Hide HTML5 Up/Down arrows/spinners on number inputs */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* Ensure active and hovered tab icons inherit active color and override text-gray-500 */
+        .tab-button.text-\[\#124375\] iconify-icon {
+            color: #124375 !important;
+        }
+
+        .tab-button:hover iconify-icon {
+            color: #124375 !important;
+        }

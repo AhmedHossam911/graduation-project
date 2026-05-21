@@ -13,6 +13,8 @@ use App\Http\Controllers\Member\NotificationController;
 use App\Http\Controllers\Member\ProfileController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Middleware\EnsureEmployee;
+use App\Http\Middleware\EnsureAdmin;
+use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,28 +24,33 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-    
+
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-    
+
     Route::get('/forgot-password', [AuthController::class, 'showForgotPassword'])->name('password.request');
     Route::post('/forgot-password', [AuthController::class, 'sendOtp'])->name('password.email');
-    
+
     Route::get('/verify-otp', [AuthController::class, 'showVerifyOtp'])->name('password.verify');
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('password.verify.post');
-    
+
     Route::get('/reset-password', [AuthController::class, 'showResetPassword'])->name('password.reset');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset.post');
-    
+
     Route::get('/verify-registration-otp', [AuthController::class, 'showVerifyRegistrationOtp'])->name('register.verify');
     Route::post('/verify-registration-otp', [AuthController::class, 'verifyRegistrationOtp'])->name('register.verify.post');
 });
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('log-out');
-    
-    // Admin Dashboard (Placeholder)
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+    // Admin Routes (Admin Only)
+    Route::middleware([EnsureAdmin::class])->group(function () {
+        Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+        Route::post('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
+        Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
+    });
 
     // Member Dashboard
     Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
@@ -52,7 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
-    
+
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
@@ -112,4 +119,5 @@ Route::middleware('auth')->group(function () {
         Route::post('/loans/{loan}/payment', [LoanController::class, 'recordPayment'])->name('loans.recordPayment');
         Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
     });
+
 });

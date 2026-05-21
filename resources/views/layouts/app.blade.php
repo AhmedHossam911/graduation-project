@@ -13,7 +13,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-body text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-[#F4F7F9] text-slate-800 min-h-screen flex flex-col antialiased">
 
     {{-- Navbar --}}
     @include('partials.navbar')
@@ -22,7 +22,7 @@
     <div>
         {{-- Sidebar --}}
         @include('partials.sidebar')
-  
+
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             {{-- Page Content --}}
             <main class="flex-1 p-6 overflow-y-auto relative">

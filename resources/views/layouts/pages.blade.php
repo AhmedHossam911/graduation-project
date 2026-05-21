@@ -12,7 +12,7 @@
     <link rel="icon" href="{{ asset('IMGs/Hu Logo 1.png') }}">
 </head>
 
-<body class="bg-body text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-[#F4F7F9] text-slate-800 min-h-screen flex flex-col antialiased">
     <!-- start header -->
     <header class="bg-[#EEF7FF] border border-[#124375] px-7 py-3">
         <nav class="flex items-center justify-between  ">
