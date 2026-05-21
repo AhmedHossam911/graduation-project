@@ -344,6 +344,59 @@ class MemberController extends Controller
         ]);
     }
 
+    // ─── Documents ───────────────────────────────────────────────────
+
+    public function documents(Request $request, $id)
+    {
+        $member = Member::with('attachments')->findOrFail($id);
+
+        return view('documents.index', [
+            'member' => $member,
+        ]);
+    }
+
+    public function storeAdditionalDocument(Request $request, $id)
+    {
+        $request->validate([
+            'document_name' => ['required', 'string', 'max:255'],
+            'document_file' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $member = Member::findOrFail($id);
+
+        $this->storeDocument($member, $request->file('document_file'), $request->document_name);
+
+        $this->logAudit('upload_document', 'attachments', $member->id, null, [
+            'type' => $request->document_name,
+        ]);
+
+        return redirect()->back()->with('success', 'تم إرفاق المستند بنجاح.');
+    }
+
+    public function viewDocument($id)
+    {
+        $attachment = Attachment::findOrFail($id);
+        $path = storage_path('app/public/' . $attachment->file_path);
+        
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        
+        return response()->file($path);
+    }
+
+    public function downloadDocument($id)
+    {
+        $attachment = Attachment::findOrFail($id);
+        $path = storage_path('app/public/' . $attachment->file_path);
+        
+        if (!file_exists($path)) {
+            abort(404);
+        }
+        
+        return response()->download($path);
+    }
+
     public function print($id)
     {
         $member = Member::with(['user', 'department', 'employmentInfo', 'familyInfo', 'attachments'])

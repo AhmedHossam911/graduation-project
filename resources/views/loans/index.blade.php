@@ -175,7 +175,7 @@
                                 @endif
                             </td>
                             <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                <a href="{{ route('members.show', $loan->membership->member_id) }}"
+                                <a href="{{ route('members.show', ['member' => $loan->membership->member_id, 'tab' => 'loans']) }}"
                                     class="hover:text-[#0e3560] transition-colors">
                                     <iconify-icon icon="solar:eye-linear" class="text-2xl"></iconify-icon>
                                 </a>

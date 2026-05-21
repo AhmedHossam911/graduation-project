@@ -156,7 +156,7 @@
                             </td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
 
-                                <a href="{{ route('members.show', $subscription->membership->member_id) }}"
+                                <a href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}"
                                     class="text-[#124375] hover:underline">
                                     <iconify-icon
                                         class="text-[#124375] hover:rounded-md hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
