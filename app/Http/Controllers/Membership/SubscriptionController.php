@@ -11,6 +11,7 @@ use App\Models\System\Department;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SubscriptionsExport;
+use Carbon\Carbon;
 
 class SubscriptionController extends Controller
 {
@@ -118,6 +119,22 @@ class SubscriptionController extends Controller
 
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
+        }
+
+        if ($request->filled('date')) {
+            try {
+                $date = Carbon::createFromFormat('d/m/Y', $request->date)->toDateString();
+            } catch (\Exception $exception) {
+                try {
+                    $date = Carbon::parse($request->date)->toDateString();
+                } catch (\Exception $fallbackException) {
+                    $date = null;
+                }
+            }
+
+            if ($date) {
+                $query->whereDate('due_date', $date);
+            }
         }
 
         return $query;

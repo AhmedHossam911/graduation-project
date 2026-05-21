@@ -46,12 +46,30 @@ class LoanController extends Controller
             }
         }
 
-        // Filter by status
-        if ($request->filled('status') && $request->status !== 'all') {
-            $status = $request->status;
+        // Filter by status or department (combined in the 'department' parameter from view)
+        if ($request->filled('department') && $request->department !== 'all') {
+            $filterValue = $request->department;
 
-            if ($status === 'overdue') {
+            if (is_numeric($filterValue)) {
+                // Filter by department ID
+                $query->whereHas('membership.member', function ($q) use ($filterValue) {
+                    $q->where('department_id', $filterValue);
+                });
+            } elseif ($filterValue === 'overdue') {
                 // Loans that have overdue installments
+                $query->whereHas('installments', function ($q) {
+                    $q->where('status', 'overdue');
+                });
+            } else {
+                // Filter by status (pending, active, etc.)
+                $query->where('status', $filterValue);
+            }
+        }
+
+        // Keep legacy status filter support just in case
+        if ($request->filled('status') && $request->status !== 'all' && !$request->filled('department')) {
+            $status = $request->status;
+            if ($status === 'overdue') {
                 $query->whereHas('installments', function ($q) {
                     $q->where('status', 'overdue');
                 });
@@ -235,6 +253,39 @@ class LoanController extends Controller
     }
 
     /**
+     * Get loan data via AJAX (for the record payment modal).
+     */
+    public function getLoanData(Loan $loan)
+    {
+        \Log::info('Fetching loan data for ID: ' . $loan->id);
+        $loan->load('membership.member');
+        
+        $unpaidInstallments = $loan->installments()
+            ->whereIn('status', ['unpaid', 'overdue'])
+            ->orderBy('due_date')
+            ->get();
+            
+        $data = [
+            'id' => $loan->id,
+            'member_name' => $loan->membership->member->full_name ?? 'غير متوفر',
+            'membership_number' => $loan->membership->membership_number ?? '-',
+            'national_id' => $loan->membership->member->national_id ?? '-',
+            'unpaid_installments' => $unpaidInstallments->map(function ($inst) {
+                // Return formatted date like 'أبريل 2026'
+                $date = \Carbon\Carbon::parse($inst->due_date)->locale('ar');
+                return [
+                    'id' => $inst->id,
+                    'amount' => $inst->amount,
+                    'month_year' => $date->translatedFormat('F Y'),
+                ];
+            })
+        ];
+        
+        \Log::info('Returning loan data: ' . json_encode($data));
+        return response()->json($data);
+    }
+
+    /**
      * Search members via AJAX (for the create-loan modal).
      */
     public function searchMembers(Request $request)
@@ -254,7 +305,8 @@ class LoanController extends Controller
 
         return response()->json($members->map(function ($m) {
             return [
-                'id'                => $m->id,
+                'id'                => $m->membershipInfo->id ?? null,
+                'member_id'         => $m->id,
                 'full_name'         => $m->full_name,
                 'national_id'       => $m->national_id,
                 'membership_number' => $m->membershipInfo->membership_number ?? '-',

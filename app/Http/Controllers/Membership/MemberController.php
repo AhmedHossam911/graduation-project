@@ -333,6 +333,8 @@ class MemberController extends Controller
         $member = Member::with([
             'user', 'department', 'employmentInfo', 'familyInfo',
             'membershipInfo.claims',
+            'membershipInfo.subscriptions',
+            'membershipInfo.loans.installments',
         ])->findOrFail($id);
 
         return view('members.show', [

@@ -72,13 +72,12 @@
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
         </div>
         <div class="relative min-w-[240px]">
-            <label for="datepicker"
-                class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
-                : <span class="text-[#021219]">{{ request('date') ?: 'يوم/شهر/ سنة' }}</span><span
-                    class="flex items-center"><iconify-icon icon="lucide:calendar" class="text-xl"></iconify-icon></span>
-                <input type="text" name="date" id="datepicker" value="{{ request('date') }}"
-                    class="absolute left-0 top-full mt-3 opacity-0 w-0 h-0 pointer-events-none">
-            </label>
+            @include('partials.calendar', [
+                'name' => 'date',
+                'id' => 'subscriptions-datepicker',
+                'value' => request('date'),
+                'autoSubmit' => false,
+            ])
         </div>
 
         @php

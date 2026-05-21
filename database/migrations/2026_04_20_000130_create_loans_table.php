@@ -14,7 +14,7 @@ return new class extends Migration
             $table->decimal('total_amount', 10, 2);
             $table->integer('months');
             $table->decimal('installment_amount', 10, 2);
-            $table->enum('status', ['pending', 'approved', 'active', 'completed', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'active', 'completed', 'rejected'])->default('pending');
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
         });

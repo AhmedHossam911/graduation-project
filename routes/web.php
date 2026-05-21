@@ -9,11 +9,11 @@ use App\Http\Controllers\Loans\LoanController;
 use App\Http\Controllers\Membership\MemberController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Services\MembershipController;
+use App\Http\Controllers\Membership\MembershipController;
 
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('welcome');
 
 // Authentication Routes
 Route::middleware('guest')->group(function () {
@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
     Route::get('/loans/search-members', [LoanController::class, 'searchMembers'])->name('loans.searchMembers');
     Route::get('/loans/{loan}', [LoanController::class, 'show'])->name('loans.show');
+    Route::get('/loans/{loan}/data', [LoanController::class, 'getLoanData'])->name('loans.data');
     Route::post('/loans/{loan}/payment', [LoanController::class, 'recordPayment'])->name('loans.recordPayment');
     Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
 });

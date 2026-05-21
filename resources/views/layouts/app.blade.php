@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="icon" href="{{ asset('IMGs/Hu Logo 1.png') }}">
+    @stack('styles')
 </head>
 
 <body class="bg-body text-slate-800 min-h-screen flex flex-col antialiased">
@@ -21,11 +22,10 @@
     <div>
         {{-- Sidebar --}}
         @include('partials.sidebar')
-
+  
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             {{-- Page Content --}}
             <main class="flex-1 p-6 overflow-y-auto relative">
-                @include('partials.components')
                 @yield('content')
             </main>
 

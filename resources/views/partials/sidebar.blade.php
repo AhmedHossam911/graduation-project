@@ -23,13 +23,13 @@
                         <p>الاشتراكات</p>
                     </div>
                 </a>
-                <div
-                    class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
-                    <a>
+                <a href="{{ route('loans.index') }}">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="fluent:money-16-filled" class="text-3xl"></iconify-icon>
-                    </a>
-                    <p>القروض</p>
-                </div>
+                        <p>القروض</p>
+                    </div>
+                </a>
                 <div
                     class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                     <a>

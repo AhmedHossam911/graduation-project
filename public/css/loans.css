@@ -103,33 +103,58 @@
 }
 
 .ui-datepicker .ui-datepicker-next::after{
-    content: "";
+    content: "\203A";
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    background: url("../IMGs/solar--arrow-left-linear.png") no-repeat center;
-    background-size: contain;
-    transform: rotate(180deg);
+    color: #124375;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
 }
 
 .ui-datepicker .ui-datepicker-prev::after{
-    content: "";
+    content: "\2039";
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    background: url("../IMGs/solar--arrow-left-linear.png") no-repeat center;
-    background-size: contain;
+    color: #124375;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
 }
 
-.ui-datepicker .ui-datepicker-prev , .ui-datepicker-next {
+.ui-datepicker .ui-datepicker-prev,
+.ui-datepicker .ui-datepicker-next {
     background-color: #F4F7F9;
     border : 1px solid #DCE0E5;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 8px;
+    cursor: pointer;
+    height: 28px;
+    top: 2px;
+    width: 28px;
 }
 
+.ui-datepicker .ui-datepicker-prev span,
+.ui-datepicker .ui-datepicker-next span {
+    background: none;
+    color: #124375;
+    display: flex;
+    font-size: 18px;
+    font-weight: 700;
+    height: 100%;
+    inset: 0;
+    line-height: 1;
+    margin: 0;
+    overflow: visible;
+    position: absolute;
+    text-indent: 0;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
 
-
+.ui-datepicker .ui-datepicker-prev::after,
+.ui-datepicker .ui-datepicker-next::after {
+    content: none;
+}
 

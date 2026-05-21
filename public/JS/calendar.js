@@ -1,35 +1,59 @@
-// Generic Calendar Input Logic
-// Supports multiple calendar instances on a single page
-$(function () {
-    document.querySelectorAll('.calendar-container').forEach(function (container) {
-        const input = container.querySelector('.calendar-input');
-        const display = container.querySelector('.calendar-display');
-        const autoSubmit = container.dataset.autoSubmit === 'true';
+(function () {
+    function updateLabel(input, dateText) {
+        const label = input.closest('[data-calendar-label]');
+        const text = label ? label.querySelector('[data-calendar-text]') : null;
 
-        if (!input || !display) return;
+        if (text) {
+            text.textContent = dateText || text.dataset.placeholder || 'يوم/شهر/سنة';
+        }
+    }
 
-        $(input).datepicker({
-            showOtherMonths: true,
-            selectOtherMonths: true,
-            showButtonPanel: true,
-            currentText: "اليوم",
-            closeText: "إغلاق",
-            onSelect: function () {
-                const currentDate = $(input).datepicker("getDate");
-                const day = currentDate.getDate();
-                const month = currentDate.getMonth() + 1;
-                const year = currentDate.getFullYear();
-                const formatted = day + "/" + month + "/" + year;
+    function initDatepickers() {
+        if (typeof window.jQuery === 'undefined' || typeof window.jQuery.fn.datepicker === 'undefined') {
+            return;
+        }
 
-                display.textContent = formatted;
-                input.value = formatted;
+        const $ = window.jQuery;
 
-                // Auto-submit parent form if configured
-                if (autoSubmit) {
-                    const form = container.closest('form');
-                    if (form) form.submit();
+        $('[data-calendar-input]').each(function () {
+            const input = this;
+            const $input = $(input);
+            const label = input.closest('[data-calendar-label]');
+
+            if ($input.data('hasDatepicker')) {
+                return;
+            }
+
+            $input.datepicker({
+                dateFormat: 'dd/mm/yy',
+                showOtherMonths: true,
+                selectOtherMonths: true,
+                showButtonPanel: true,
+                prevText: '\u2039',
+                nextText: '\u203A',
+                currentText: 'اليوم',
+                closeText: 'إلغاء',
+                onSelect: function (dateText) {
+                    updateLabel(input, dateText);
+
+                    if (input.dataset.autoSubmit === 'true' && input.form) {
+                        input.form.submit();
+                    }
                 }
+            });
+
+            if (label) {
+                label.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    $input.datepicker('show');
+                });
             }
         });
-    });
-});
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initDatepickers);
+    } else {
+        initDatepickers();
+    }
+})();

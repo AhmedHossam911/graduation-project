@@ -21,7 +21,7 @@ class LoanFactory extends Factory
             'total_amount' => $totalAmount,
             'months' => $months,
             'installment_amount' => $totalAmount / $months,
-            'status' => fake()->randomElement(['pending', 'approved', 'active', 'active', 'completed', 'rejected']),
+            'status' => fake()->randomElement(['pending', 'active', 'active', 'completed', 'rejected']),
             'approved_by' => User::factory(),
         ];
     }

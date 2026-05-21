@@ -1,21 +1,44 @@
-@php
-    $name = $name ?? 'date';
-    $label = $label ?? 'التاريخ';
-    $value = $value ?? request($name);
-    $placeholder = $placeholder ?? 'يوم/شهر/سنة';
-    $autoSubmit = $autoSubmit ?? false;
-    $uniqueId = 'calendar_' . $name . '_' . uniqid();
-@endphp
+@props([
+    'name' => 'date',
+    'id' => 'datepicker',
+    'label' => 'التاريخ',
+    'value' => request('date'),
+    'placeholder' => 'يوم/شهر/سنة',
+    'autoSubmit' => false,
+])
 
-<div class="relative min-w-[240px] calendar-container" data-auto-submit="{{ $autoSubmit ? 'true' : 'false' }}">
-    <label for="{{ $uniqueId }}"
-        class="calendar-trigger navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center cursor-pointer">
-        {{ $label }} :
-        <span class="calendar-display text-[#021219]">{{ $value ?: $placeholder }}</span>
-        <span class="flex items-center">
-            <iconify-icon icon="lucide:calendar" class="text-xl"></iconify-icon>
-        </span>
-        <input type="text" name="{{ $name }}" id="{{ $uniqueId }}" value="{{ $value }}"
-            class="calendar-input absolute left-0 top-full mt-3 opacity-0 w-0 h-0 pointer-events-none">
-    </label>
+@once
+    @push('styles')
+        <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+        <link rel="stylesheet" href="{{ asset('css/calendar.css') }}?v={{ filemtime(public_path('css/calendar.css')) }}">
+    @endpush
+
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+        <script src="{{ asset('JS/calendar.js') }}?v={{ filemtime(public_path('JS/calendar.js')) }}"></script>
+    @endpush
+@endonce
+
+<div class="flex justify-center py-2">
+    <div class="relative min-w-[240px]">
+        <label for="{{ $id }}"
+            class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center cursor-pointer"
+            data-calendar-label>
+            {{ $label }} :
+            <span class="text-[#021219]" data-calendar-text>{{ $value ?: $placeholder }}</span>
+            <span class="flex items-center">
+                <iconify-icon icon="lucide:calendar" class="text-xl"></iconify-icon>
+            </span>
+            <input
+                type="text"
+                name="{{ $name }}"
+                id="{{ $id }}"
+                value="{{ $value }}"
+                data-calendar-input
+                data-auto-submit="{{ $autoSubmit ? 'true' : 'false' }}"
+                autocomplete="off"
+                class="absolute left-0 top-full mt-3 h-0 w-0 opacity-0 pointer-events-none">
+        </label>
+    </div>
 </div>

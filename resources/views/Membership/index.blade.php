@@ -68,17 +68,12 @@
             <!-- end search -->
 
             <div class="relative min-w-[200px]">
-                <select name="department"
-                    class="w-full appearance-none py-2.5 px-3 pl-9 border border-slate-200 rounded-md bg-white text-sm text-slate-800 outline-none focus:border-primary cursor-pointer">
-                    <option value="all">التاريخ : جميع الشهور</option>
-                    @if (isset($months) && $months->count() > 0)
-                        @foreach ($months as $month)
-                            <option value="{{ $month }}" {{ request('month') == $month ? 'selected' : '' }}>
-                                {{ $month }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
+                @include('partials.calendar', [
+                    'name' => 'date',
+                    'id' => 'subscriptions-datepicker',
+                    'value' => request('date'),
+                    'autoSubmit' => false,
+                ])
             </div>
 
             <div class="relative min-w-[200px]">

@@ -2,10 +2,12 @@ const menuBtn = document.getElementById("Nav-menu");
 const sideBar = document.querySelector(".SideBar");
 
 
-menuBtn.addEventListener("click", () => {
-    sideBar.classList.toggle("active");
-    sideBar.classList.toggle("side-bar");
-});
+if (menuBtn && sideBar) {
+    menuBtn.addEventListener("click", () => {
+        sideBar.classList.toggle("active");
+        sideBar.classList.toggle("side-bar");
+    });
+}
 
 // Dismiss flash messages
 document.querySelectorAll('.btn-close').forEach(button => {
@@ -120,4 +122,3 @@ document.addEventListener('click', (e) => {
         });
     }
 });
-
