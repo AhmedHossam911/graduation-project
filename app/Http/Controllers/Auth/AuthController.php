@@ -65,9 +65,7 @@ class AuthController extends Controller
             ]);
 
             try {
-                Mail::raw("رقم المرور المؤقت لتفعيل حسابك هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
-                    $msg->to($user->email)->subject('تفعيل الحساب');
-                });
+                Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تفعيل الحساب'));
             } catch(\Exception $e) { }
 
             session(['register_user_id' => $user->id]);
@@ -101,9 +99,7 @@ class AuthController extends Controller
         ]);
 
         try {
-            Mail::raw("رقم المرور المؤقت لتأكيد تسجيل الدخول هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
-                $msg->to($user->email)->subject('تأكيد تسجيل الدخول');
-            });
+            Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تأكيد تسجيل الدخول (2FA)'));
         } catch(\Exception $e) { }
 
         session(['login_2fa_otp_sent' => true]);
@@ -255,9 +251,7 @@ class AuthController extends Controller
         ]);
 
         try {
-            Mail::raw("رقم المرور المؤقت لتفعيل حسابك هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
-                $msg->to($user->email)->subject('تفعيل الحساب');
-            });
+            Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تفعيل الحساب الجديد'));
         } catch(\Exception $e) { }
 
         session(['register_user_id' => $user->id]);
@@ -320,9 +314,7 @@ class AuthController extends Controller
         ]);
 
         try {
-            Mail::raw("رقم المرور المؤقت الخاص بك هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
-                $msg->to($user->email)->subject('رمز استعادة كلمة المرور');
-            });
+            Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'رمز استعادة كلمة المرور'));
         } catch(\Exception $e) { }
 
         session(['reset_user_id' => $user->id]);
