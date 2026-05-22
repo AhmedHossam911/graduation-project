@@ -97,10 +97,12 @@ class AdminSettingsTest extends TestCase
             'system_name' => 'صندوق التأمين الجديد بجامعة العاصمة',
             'retirement_age' => 65,
             'default_currency' => 'جنيه مصري (EGP)',
-            'subscription_amount' => 150,
-            'membership_join_fee' => 600,
+            'subscription_percentage' => 15,
+            'employer_contribution_percentage' => 10,
+            'membership_join_fee' => '[{"years":"42","fee_months":"14"}]',
             'membership_min_age' => 22,
             'membership_max_age' => 60,
+            'dismissal_notice_months' => 3,
             'loan_percentage' => 80,
             'loan_interest_rate' => 10,
             'loan_max_amount' => 30000,
@@ -138,12 +140,14 @@ class AdminSettingsTest extends TestCase
         // Invalid percentage (greater than 100)
         $invalidData = [
             'system_name' => '', // Required
-            'retirement_age' => 100, // max is 80
+            'retirement_age' => 90, // max is 80
             'default_currency' => '', // Required
-            'subscription_amount' => -10, // Must be positive
-            'membership_join_fee' => -5,
+            'subscription_percentage' => 150, // Must be <= 100
+            'employer_contribution_percentage' => -10, // Must be >= 0
+            'membership_join_fee' => '', // Required string
             'membership_min_age' => 10,
             'membership_max_age' => 5, // Must be >= min_age and >= 18
+            'dismissal_notice_months' => 20, // Must be <= 12
             'loan_percentage' => 150, // Must be <= 100
             'loan_interest_rate' => -1,
             'loan_max_amount' => -100,

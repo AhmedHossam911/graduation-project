@@ -99,16 +99,13 @@
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:calendar" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>سن التقاعد القانوني</span>
+                                    <span>سن التقاعد القانوني (عاماً)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="retirement_age"
                                         value="{{ old('retirement_age', $settings['retirement_age']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('retirement_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-4 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        عاماً</div>
                                 </div>
                             </div>
 
@@ -132,42 +129,35 @@
 
                     <!-- TAB 2: Subscriptions -->
                     <div id="tab-subscriptions-content" class="tab-content w-full hidden">
-                        <!-- SUBSCRIPTION AND JOIN FEE -->
+                        <!-- SUBSCRIPTION -->
                         <div class="grid grid-cols-2 gap-6 mb-12">
-                            <!-- SUBSCRIPTION AMOUNT -->
+                            <!-- SUBSCRIPTION PERCENTAGE -->
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:cash-multiple" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>قيمة الاشتراك الشهري</span>
+                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>نسبة الاشتراك الشهري للعضو (%)</span>
                                 </label>
                                 <div class="relative">
-                                    <input type="number" name="subscription_amount"
-                                        value="{{ old('subscription_amount', $settings['subscription_amount']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('subscription_amount') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
+                                    <input type="number" name="subscription_percentage"
+                                        value="{{ old('subscription_percentage', $settings['subscription_percentage']) }}"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('subscription_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        ج.م</div>
                                 </div>
                             </div>
 
-                            <!-- JOIN FEE -->
+                            <!-- EMPLOYER CONTRIBUTION PERCENTAGE -->
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:card-account-details-outline"
-                                        class="text-primary text-[20px]"></iconify-icon>
-                                    <span>رسوم الانضمام للعضوية</span>
+                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>نسبة مساهمة جهة العمل (%)</span>
                                 </label>
                                 <div class="relative">
-                                    <input type="number" name="membership_join_fee"
-                                        value="{{ old('membership_join_fee', $settings['membership_join_fee']) }}"
-                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_join_fee') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
+                                    <input type="number" name="employer_contribution_percentage"
+                                        value="{{ old('employer_contribution_percentage', $settings['employer_contribution_percentage']) }}"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('employer_contribution_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        ج.م</div>
                                 </div>
                             </div>
                         </div>
@@ -180,16 +170,13 @@
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:account-arrow-up"
                                         class="text-primary text-[20px]"></iconify-icon>
-                                    <span>الحد الأدنى لسن التسجيل</span>
+                                    <span>الحد الأدنى لسن التسجيل (عاماً)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="membership_min_age"
                                         value="{{ old('membership_min_age', $settings['membership_min_age']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_min_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        عاماً</div>
                                 </div>
                             </div>
 
@@ -197,18 +184,54 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:account-arrow-down"
+                                    <iconify-icon icon="mdi:account-multiple-plus"
                                         class="text-primary text-[20px]"></iconify-icon>
-                                    <span>الحد الأقصى لسن التسجيل</span>
+                                    <span>الحد الأقصي لسن الانضمام (عاماً)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="membership_max_age"
                                         value="{{ old('membership_max_age', $settings['membership_max_age']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_max_age') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        عاماً</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MODAL & DISMISSAL NOTICE -->
+                        <div class="grid grid-cols-2 gap-6 mb-12">
+                            <!-- DISMISSAL NOTICE -->
+                            <div class="relative">
+                                <label
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="bxs:error" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>فترة الإنذار قبل الفصل (شهراً)</span>
+                                </label>
+                                <div class="relative">
+                                    <input type="number" name="dismissal_notice_months"
+                                        value="{{ old('dismissal_notice_months', $settings['dismissal_notice_months']) }}"
+                                        class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('dismissal_notice_months') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- JOIN FEE (BUTTON MODAL) -->
+                            <div class="relative">
+                                <label
+                                    class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
+                                    <iconify-icon icon="fa6-solid:money-bill-wave"
+                                        class="text-primary text-[20px]"></iconify-icon>
+                                    <span>رسوم الانضمام أو العضوية</span>
+                                </label>
+                                <div class="relative">
+                                    <!-- Hidden input for actual submission -->
+                                    <input type="hidden" name="membership_join_fee" id="membership_join_fee_hidden" value="{{ old('membership_join_fee', $settings['membership_join_fee']) }}">
+
+                                    <!-- Styled Button -->
+                                    <button type="button" data-target="membershipFeeModal"
+                                        class="open-modal w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_join_fee') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} px-6 font-bold outline-none cursor-pointer hover:bg-slate-100 transition relative flex items-center justify-center">
+                                        <span>عرض وتعديل جدول الرسوم</span>
+                                        <iconify-icon icon="mdi:chevron-left" class="text-[#124375] text-[28px] absolute left-4"></iconify-icon>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -222,17 +245,14 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>نسبة القرض من إجمالي الاشتراكات</span>
+                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>نسبة القرض من إجمالي الاشتراكات (%)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_percentage"
                                         value="{{ old('loan_percentage', $settings['loan_percentage']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        %</div>
                                 </div>
                             </div>
 
@@ -240,17 +260,14 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>معدل الفائدة السنوية</span>
+                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>معدل الفائدة السنوية (%)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_interest_rate"
                                         value="{{ old('loan_interest_rate', $settings['loan_interest_rate']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_interest_rate') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        %</div>
                                 </div>
                             </div>
                         </div>
@@ -261,17 +278,14 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:cash" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>الحد الأقصى للقرض الشخصي</span>
+                                    <iconify-icon icon="fa6-solid:money-bill-wave" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأقصى للقرض الشخصي (ج.م)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_max_amount"
                                         value="{{ old('loan_max_amount', $settings['loan_max_amount']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_max_amount') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        ج.م</div>
                                 </div>
                             </div>
 
@@ -279,18 +293,15 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:calendar-clock"
+                                    <iconify-icon icon="sidekickicons:arrow-path-clock-16-solid"
                                         class="text-primary text-[20px]"></iconify-icon>
-                                    <span>أقصى فترة سداد للقرض</span>
+                                    <span>أقصى فترة سداد للقرض (شهراً)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_repayment_months"
                                         value="{{ old('loan_repayment_months', $settings['loan_repayment_months']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_repayment_months') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        شهراً</div>
                                 </div>
                             </div>
                         </div>
@@ -300,17 +311,14 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="mdi:history" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>الحد الأدنى للاشتراك لطلب القرض</span>
+                                    <iconify-icon icon="pixel:calender-solid" class="text-primary text-[20px]"></iconify-icon>
+                                    <span>الحد الأدنى للاشتراك لطلب القرض (عاماً)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="loan_min_years_subscribed"
                                         value="{{ old('loan_min_years_subscribed', $settings['loan_min_years_subscribed']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('loan_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        سنوات</div>
                                 </div>
                             </div>
                             <div class="relative"></div> <!-- Spacer column -->
@@ -326,16 +334,13 @@
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>نسبة الميزة التأمينية الأساسية</span>
+                                    <span>نسبة الميزة التأمينية الأساسية (%)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_basic_percentage"
                                         value="{{ old('claim_basic_percentage', $settings['claim_basic_percentage']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_basic_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        %</div>
                                 </div>
                             </div>
 
@@ -344,16 +349,13 @@
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>نسبة الميزة في حالة النقل / الاستقالة</span>
+                                    <span>نسبة الميزة في حالة النقل / الاستقالة (%)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_transfer_resignation_percentage"
                                         value="{{ old('claim_transfer_resignation_percentage', $settings['claim_transfer_resignation_percentage']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_transfer_resignation_percentage') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        %</div>
                                 </div>
                             </div>
                         </div>
@@ -365,16 +367,13 @@
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:cash" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>مصاريف الجنازة</span>
+                                    <span>مصاريف الجنازة (ج.م)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_funeral_expenses"
                                         value="{{ old('claim_funeral_expenses', $settings['claim_funeral_expenses']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_funeral_expenses') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        ج.م</div>
                                 </div>
                             </div>
 
@@ -383,16 +382,13 @@
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:history" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>الحد الأدنى لسنوات الاشتراك لاستحقاق الميزة</span>
+                                    <span>الحد الأدنى لسنوات الاشتراك لاستحقاق الميزة (سنوات)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_min_years_subscribed"
                                         value="{{ old('claim_min_years_subscribed', $settings['claim_min_years_subscribed']) }}"
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
-                                    <div
-                                        class="absolute left-16 top-1/2 -translate-y-1/2 text-[#b4b4b4] text-[20px] font-medium font-['Noto_Sans_Arabic'] pointer-events-none">
-                                        سنوات</div>
                                 </div>
                             </div>
                         </div>
@@ -430,6 +426,57 @@
 
                 </div>
             </form>
+        </div>
+
+        <!-- Join Fee Modal -->
+        <div id="membershipFeeModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-40 flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0" dir="rtl">
+            <div class="bg-[#F8F9FA] rounded-[24px] shadow-2xl w-full max-w-3xl transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col p-8 max-h-[90vh]">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-start mb-6">
+                    <div class="text-right">
+                        <h3 class="text-3xl font-bold text-[#021219] font-['Noto_Sans_Arabic'] mb-2">جدول رسوم الانضمام</h3>
+                        <p class="text-[#6D6D6D] text-lg font-medium font-['Noto_Sans_Arabic']">يرجى تحديد رسوم الانضمام بناءً على الفئة العمرية للعضو عند الاشتراك.</p>
+                    </div>
+                    <button type="button" class="close-modal bg-white border border-[#D0D5DD] rounded-xl p-2 text-[#021219] hover:bg-gray-50 transition focus:outline-none flex items-center justify-center shadow-sm">
+                        <iconify-icon icon="mdi:close" class="text-2xl"></iconify-icon>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="flex-1 overflow-y-auto">
+                    <div class="bg-white rounded-2xl border border-[#D0D5DD] overflow-hidden">
+                        <table class="w-full text-center border-collapse" id="joinFeeTable">
+                            <thead class="bg-[#F0F7FF] text-[#021219] border-b border-[#D0D5DD]">
+                                <tr>
+                                    <th class="py-4 px-6 font-bold text-lg w-1/2">المدة المتبقية علي بلوغ سن التقاعد</th>
+                                    <th class="py-4 px-6 font-bold text-lg w-1/2">رسم العضوية</th>
+                                    <th class="py-4 px-4 w-20"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="joinFeeTableBody" class="divide-y divide-[#D0D5DD]">
+                                <!-- Rows will be generated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <button type="button" id="addRowBtn" class="mt-6 flex items-center justify-center w-full py-3 border-2 border-dashed border-[#124375] text-[#124375] rounded-xl hover:bg-[#EEF7FF] font-bold text-lg transition">
+                        <iconify-icon icon="mdi:plus-circle-outline" class="text-2xl ml-2"></iconify-icon>
+                        <span class="mr-2">إضافة صف جديد</span>
+                    </button>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="mt-8 flex justify-between gap-4">
+                    <button type="button" class="close-modal flex-1 py-3 rounded-xl text-[#124375] bg-[#F8F9FA] border-2 border-[#D0D5DD] hover:bg-gray-100 font-bold text-lg transition">
+                        إلغاء الأمر
+                    </button>
+                    <!-- Trigger the main form save -->
+                    <button type="button" onclick="document.querySelector('form[action=\'{{ route('admin.settings.update') }}\']').submit();" class="flex-1 py-3 rounded-xl text-white bg-[#124375] hover:bg-[#0e3560] font-bold text-lg transition shadow-md flex justify-center items-center gap-2">
+                        <span>حفظ التعديلات</span>
+                        <iconify-icon icon="fluent:save-16-filled" class="text-xl"></iconify-icon>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <form id="reset-form" method="POST" action="{{ route('admin.settings.reset') }}" class="hidden">
