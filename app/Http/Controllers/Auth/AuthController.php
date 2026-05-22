@@ -55,14 +55,145 @@ class AuthController extends Controller
             return back()->withInput()->with('error', 'الحساب قيد المراجعة أو موقوف بواسطة الإدارة.');
         }
 
+        if (is_null($user->email_verified_at)) {
+            $otp = rand(100000, 999999);
+            OtpCode::create([
+                'user_id' => $user->id,
+                'code' => (string) $otp,
+                'expires_at' => Carbon::now()->addMinutes(10),
+                'is_used' => false
+            ]);
+
+            try {
+                Mail::raw("رقم المرور المؤقت لتفعيل حسابك هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
+                    $msg->to($user->email)->subject('تفعيل الحساب');
+                });
+            } catch(\Exception $e) { }
+
+            session(['register_user_id' => $user->id]);
+            return redirect()->route('register.verify')->with('success', 'حسابك غير مفعل. تم إرسال رمز تفعيل جديد إلى بريدك الإلكتروني.');
+        }
+
+        // 2FA Flow
+        session(['login_2fa_user_id' => $user->id]);
+        return redirect()->route('login.2fa');
+    }
+
+    public function show2faChoice() {
+        if (!session('login_2fa_user_id')) {
+            return redirect()->route('login');
+        }
+        return view('auth.2fa-choice');
+    }
+
+    public function send2faOtp(Request $request) {
+        $userId = session('login_2fa_user_id');
+        if (!$userId) return redirect()->route('login');
+
+        $user = User::find($userId);
+        
+        $otp = rand(100000, 999999);
+        OtpCode::create([
+            'user_id' => $user->id,
+            'code' => (string) $otp,
+            'expires_at' => Carbon::now()->addMinutes(10),
+            'is_used' => false
+        ]);
+
+        try {
+            Mail::raw("رقم المرور المؤقت لتأكيد تسجيل الدخول هو: $otp \n\n صالح لمدة 10 دقائق.", function($msg) use ($user) {
+                $msg->to($user->email)->subject('تأكيد تسجيل الدخول');
+            });
+        } catch(\Exception $e) { }
+
+        session(['login_2fa_otp_sent' => true]);
+        return redirect()->route('login.2fa.otp')->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.');
+    }
+
+    public function show2faOtpVerify() {
+        if (!session('login_2fa_otp_sent') || !session('login_2fa_user_id')) {
+            return redirect()->route('login.2fa');
+        }
+        return view('auth.2fa-otp');
+    }
+
+    public function verify2faOtp(Request $request) {
+        $request->validate(['code' => 'required|digits:6'], [
+            'code.required' => 'يرجى إدخال رمز التحقق.',
+            'code.digits' => 'الرمز يجب أن يتكون من 6 أرقام.'
+        ]);
+
+        $userId = session('login_2fa_user_id');
+        if (!$userId) return redirect()->route('login');
+
+        $otpRecord = OtpCode::where('user_id', $userId)
+            ->where('code', $request->code)
+            ->where('is_used', false)
+            ->where('expires_at', '>', Carbon::now())
+            ->first();
+
+        if (!$otpRecord) return back()->with('error', 'الرمز غير صحيح أو منتهي الصلاحية.');
+
+        $otpRecord->update(['is_used' => true]);
+        
+        $user = User::find($userId);
+        
+        session()->forget(['login_2fa_user_id', 'login_2fa_otp_sent']);
+
         Auth::login($user);
         $user->update(['last_login' => now()]);
 
         if ($user->role_id == 3) {
             return redirect()->intended('/member/dashboard');
         }
-
         return redirect()->intended('/dashboard');
+    }
+
+    public function show2faFingerprint(Request $request) {
+        $userId = session('login_2fa_user_id');
+        if (!$userId) return redirect()->route('login');
+
+        $user = User::find($userId);
+        
+        // Generate options for this specific user
+        $options = app(\Laravel\Passkeys\Actions\GenerateVerificationOptions::class)($user);
+        
+        // Store options in session for verification later
+        session(['passkeys_verification_options' => $options]);
+
+        return view('auth.2fa-fingerprint', compact('options'));
+    }
+
+    public function verify2faFingerprint(Request $request) {
+        $userId = session('login_2fa_user_id');
+        if (!$userId) return response()->json(['message' => 'Unauthenticated'], 401);
+
+        $user = User::find($userId);
+        $options = session('passkeys_verification_options');
+
+        if (!$options) {
+            return response()->json(['message' => 'Invalid session'], 400);
+        }
+
+        try {
+            app(\Laravel\Passkeys\Actions\VerifyPasskey::class)(
+                $request->all(), // The credential payload from JS
+                $options,
+                $user
+            );
+
+            // Verified successfully
+            session()->forget(['login_2fa_user_id', 'passkeys_verification_options']);
+            
+            Auth::login($user);
+            $user->update(['last_login' => now()]);
+
+            return response()->json([
+                'redirect' => $user->role_id == 3 ? '/member/dashboard' : '/dashboard'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
     }
 
     public function register(Request $request) {

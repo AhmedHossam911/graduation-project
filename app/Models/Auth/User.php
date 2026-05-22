@@ -7,10 +7,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Membership\Member;
+use Laravel\Passkeys\Contracts\PasskeyUser;
+use Laravel\Passkeys\PasskeyAuthenticatable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements PasskeyUser
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes, PasskeyAuthenticatable;
 
     protected $fillable = [
         'role_id', 'name', 'email', 'password', 'is_restricted', 'last_login',

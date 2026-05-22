@@ -25,6 +25,14 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 
+    // 2FA Routes
+    Route::get('/login/2fa', [AuthController::class, 'show2faChoice'])->name('login.2fa');
+    Route::post('/login/2fa/otp/send', [AuthController::class, 'send2faOtp'])->name('login.2fa.otp.send');
+    Route::get('/login/2fa/otp', [AuthController::class, 'show2faOtpVerify'])->name('login.2fa.otp');
+    Route::post('/login/2fa/otp/verify', [AuthController::class, 'verify2faOtp'])->name('login.2fa.otp.verify');
+    Route::get('/login/2fa/fingerprint', [AuthController::class, 'show2faFingerprint'])->name('login.2fa.fingerprint');
+    Route::post('/login/2fa/fingerprint', [AuthController::class, 'verify2faFingerprint'])->name('login.2fa.fingerprint.verify');
+
     Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
