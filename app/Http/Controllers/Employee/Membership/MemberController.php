@@ -255,11 +255,11 @@ class MemberController extends Controller
             FamilyInfo::create([
                 'member_id'       => $member->id,
                 'children_count'  => $validated['children_count'] ?? 0,
-                'spouse_name'     => $this->nullIfPlaceholder($validated['spouse_name'] ?? null),
-                'spouse_phone'    => $this->digitsToString($request, 'spouse_phone_digits'),
-                'spouse_workplace'=> $this->nullIfPlaceholder($validated['spouse_workplace'] ?? null),
-                'child_name'      => $this->nullIfPlaceholder($validated['child_name'] ?? null),
-                'child_workplace' => $this->nullIfPlaceholder($validated['child_workplace'] ?? null),
+                'spouse_name'     => $this->nullIfPlaceholder($validated['spouse_name'] ?? null) ?? 'لا يوجد',
+                'spouse_phone'    => $this->digitsToString($request, 'spouse_phone_digits') ?? 'لا يوجد',
+                'spouse_workplace'=> $this->nullIfPlaceholder($validated['spouse_workplace'] ?? null) ?? 'لا يوجد',
+                'child_name'      => $this->nullIfPlaceholder($validated['child_name'] ?? null) ?? 'لا يوجد',
+                'child_workplace' => $this->nullIfPlaceholder($validated['child_workplace'] ?? null) ?? 'لا يوجد',
             ]);
 
             // Store uploaded documents
@@ -364,11 +364,11 @@ class MemberController extends Controller
                 ['member_id' => $member->id],
                 [
                     'children_count'   => $validated['children_count'] ?? 0,
-                    'spouse_name'      => $this->nullIfPlaceholder($validated['spouse_name'] ?? null),
-                    'spouse_phone'     => $this->digitsToString($request, 'spouse_phone_digits'),
-                    'spouse_workplace' => $this->nullIfPlaceholder($validated['spouse_workplace'] ?? null),
-                    'child_name'       => $this->nullIfPlaceholder($validated['child_name'] ?? null),
-                    'child_workplace'  => $this->nullIfPlaceholder($validated['child_workplace'] ?? null),
+                    'spouse_name'      => $this->nullIfPlaceholder($validated['spouse_name'] ?? null) ?? 'لا يوجد',
+                    'spouse_phone'     => $this->digitsToString($request, 'spouse_phone_digits') ?? 'لا يوجد',
+                    'spouse_workplace' => $this->nullIfPlaceholder($validated['spouse_workplace'] ?? null) ?? 'لا يوجد',
+                    'child_name'       => $this->nullIfPlaceholder($validated['child_name'] ?? null) ?? 'لا يوجد',
+                    'child_workplace'  => $this->nullIfPlaceholder($validated['child_workplace'] ?? null) ?? 'لا يوجد',
                 ]
             );
 

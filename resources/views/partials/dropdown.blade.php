@@ -56,7 +56,7 @@
         </div>
     @endif
 
-    <div class="absolute left-[15px] flex items-center gap-2 bg-white pl-1">
+    <div class="absolute left-[15px] flex items-center gap-2 bg-[#F4F7F9] pl-1">
         <iconify-icon icon="oui:arrow-down"
             class="custom-dropdown-btn cursor-pointer text-xl text-[#124375]"></iconify-icon>
     </div>

@@ -62,6 +62,7 @@
                     </div>
                 </div>
                 <!-- END FULL NAME & EMAIL -->
+
                 <!-- START LANDLINE & PHONE -->
                 <div class="flex gap-6">
                     <div class="phone relative border @error('phone_digits') border-[#D92D20] @elseif($errors->has('phone_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl flex-1 min-w-0">
@@ -253,7 +254,7 @@
                         <label class="absolute top-[-15px] right-5 @error('spouse_phone_digits') text-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب</label>
                         <div class="flex gap-2 justify-end py-3 px-3">
                             @for($i = 10; $i >= 0; $i--)
-                            <input type="tel" name="spouse_phone_digits[]" value="{{ old('spouse_phone_digits.'.(10-$i)) }}" placeholder="{{ $i }}" maxlength="1"
+                            <input type="number" min="0" max="9" name="spouse_phone_digits[]" value="{{ old('spouse_phone_digits.'.(10-$i)) }}" placeholder="{{ $i }}" maxlength="1"
                                 class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                             @endfor
                         </div>
