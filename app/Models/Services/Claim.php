@@ -22,10 +22,6 @@
         'professional_disability' => 'عجز مهني',
         'transfer'                => 'نقل',
         'death'                   => 'وفاة',
-        'Death'                   => 'وفاة',
-        // Legacy types
-        'Medical'                 => 'عجز مهني',
-        'End of Service'          => 'بلوغ سن التقاعد القانوني',
     ];
  
      protected $casts = [

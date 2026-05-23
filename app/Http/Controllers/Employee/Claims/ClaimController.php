@@ -81,9 +81,20 @@ class ClaimController extends Controller
 
         $validated = $request->validate([
             'claim_type'       => ['required', 'string', 'in:' . implode(',', array_keys(Claim::CLAIM_TYPES))],
+            'has_minors'       => ['nullable', 'boolean'],
             'claim_documents'  => ['nullable', 'array'],
             'claim_documents.*'=> ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
+
+        if ($validated['claim_type'] === 'death' && $request->input('has_minors') == 1) {
+            $request->validate([
+                'claim_documents.minors_birth_certificates' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+                'claim_documents.guardianship_decision'     => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            ], [
+                'claim_documents.minors_birth_certificates.required' => 'شهادات ميلاد القصر مطلوبة.',
+                'claim_documents.guardianship_decision.required' => 'قرار الوصاية مطلوب.',
+            ]);
+        }
 
         $claim = DB::transaction(function () use ($request, $validated, $member) {
             $claim = Claim::create([
@@ -113,8 +124,8 @@ class ClaimController extends Controller
         });
 
         return redirect()
-            ->route('members.show', ['member' => $member->id, 'claim_type' => $validated['claim_type']])
-            ->with('success', 'تم تقديم المطالبة بنجاح.');
+            ->route('members.show', ['member' => $member->id, 'tab' => 'claims'])
+            ->with('success', 'تم تسجيل المطالبة بنجاح');
     }
 
     /**

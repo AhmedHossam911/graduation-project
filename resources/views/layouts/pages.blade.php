@@ -43,7 +43,7 @@
     <!-- end header -->
 
     {{-- Main Layout --}}
-    <div>
+    <div class="flex-1 flex flex-col">
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             {{-- Page Content --}}
             <main class="flex-1 p-6 overflow-y-auto">

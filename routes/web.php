@@ -108,6 +108,7 @@ Route::middleware('auth')->group(function () {
         // ─── Legacy aliases (keep old route names working) ───────────────
         Route::get('/memberships/export', [SubscriptionController::class, 'export'])->name('memberships.export');
         Route::get('/memberships', [SubscriptionController::class, 'index'])->name('memberships.index');
+        Route::post('/subscriptions/{subscription}/send-notice', [SubscriptionController::class, 'sendNotice'])->name('subscriptions.send_notice');
 
         // Claims Management
         Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
@@ -119,6 +120,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
         Route::get('/loans/search-members', [LoanController::class, 'searchMembers'])->name('loans.searchMembers');
         Route::get('/loans/{loan}', [LoanController::class, 'show'])->name('loans.show');
+        Route::get('/members/{member}/previous-loans', [LoanController::class, 'previousLoans'])->name('members.previous-loans');
         Route::get('/loans/{loan}/data', [LoanController::class, 'getLoanData'])->name('loans.data');
         Route::post('/loans/{loan}/payment', [LoanController::class, 'recordPayment'])->name('loans.recordPayment');
         Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');

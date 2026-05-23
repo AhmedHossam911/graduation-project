@@ -127,7 +127,7 @@ class LoanController extends Controller
             ->exists();
 
         if ($hasActiveLoan) {
-            return redirect()->route('loans.index')
+            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
                 ->with('error', 'يوجد قرض نشط بالفعل لهذا العضو. لا يمكن إنشاء قرض جديد.');
         }
 
@@ -158,7 +158,7 @@ class LoanController extends Controller
             return $loan;
         });
 
-        return redirect()->route('loans.index')
+        return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
             ->with('success', 'تم إنشاء طلب القرض بنجاح.');
     }
 
@@ -172,6 +172,20 @@ class LoanController extends Controller
         }]);
 
         return view('employee.loans.show', compact('loan'));
+    }
+
+    /**
+     * Display all previous loans for a member.
+     */
+    public function previousLoans(Member $member)
+    {
+        $member->load('membershipInfo.loans.installments');
+        $loans = collect();
+        if ($member->membershipInfo) {
+            $loans = $member->membershipInfo->loans()->with('installments')->latest()->get();
+        }
+
+        return view('employee.loans.show', compact('member', 'loans'));
     }
 
     /**

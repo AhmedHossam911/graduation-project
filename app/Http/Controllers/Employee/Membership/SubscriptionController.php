@@ -64,6 +64,17 @@ class SubscriptionController extends Controller
 
         $subscription = Subscription::create($validated);
 
+        if ($validated['status'] === 'paid') {
+            // Reset warning counters for this membership's unpaid subscriptions
+            Subscription::where('membership_id', $validated['membership_id'])
+                ->where('status', 'unpaid')
+                ->update([
+                    'first_warning_sent_at' => null,
+                    'second_warning_sent_at' => null,
+                    'notice_sent_at' => null,
+                ]);
+        }
+
         // Audit log
         AuditLog::create([
             'user_id'    => auth()->id(),
@@ -89,6 +100,24 @@ class SubscriptionController extends Controller
         $query->latest('due_date');
 
         return Excel::download(new SubscriptionsExport($query), 'subscriptions.xlsx');
+    }
+
+    /**
+     * Send registered notice for a subscription.
+     */
+    public function sendNotice($id)
+    {
+        $subscription = Subscription::findOrFail($id);
+
+        if ($subscription->status === 'unpaid' && \Carbon\Carbon::parse($subscription->due_date)->addMonths(6)->isPast() && is_null($subscription->notice_sent_at)) {
+            $subscription->update([
+                'notice_sent_at' => now()
+            ]);
+
+            return back()->with('success', 'تم إرسال الإخطار المسجل وتحديث الحالة.');
+        }
+
+        return back()->with('error', 'لا يمكن إرسال الإخطار لهذا الاشتراك.');
     }
 
     // ─── Private Helpers ─────────────────────────────────────────────

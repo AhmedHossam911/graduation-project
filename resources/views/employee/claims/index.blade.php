@@ -125,11 +125,8 @@
                 <button type="button" onclick="document.getElementById('typeInput').value='all';"
                     class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">الكل</button>
                 @foreach ($claimTypes as $key => $val)
-                    @if (!in_array($key, ['Medical', 'End of Service', 'Death']))
-                        <!-- Skip legacy duplicates for filters -->
-                        <button type="button" onclick="document.getElementById('typeInput').value='{{ $key }}';"
-                            class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium ">{{ $val }}</button>
-                    @endif
+                    <button type="button" onclick="document.getElementById('typeInput').value='{{ $key }}';"
+                        class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium ">{{ $val }}</button>
                 @endforeach
             </div>
         </div>
