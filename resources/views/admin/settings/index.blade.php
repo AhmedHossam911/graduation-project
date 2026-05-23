@@ -23,7 +23,7 @@
 
             <!-- INNER RIGHT MENU -->
             <aside
-                class="w-[320px] px-4 py-8 bg-[#EEF7FF] border-l border-[#124375] flex flex-col justify-start items-center gap-6 flex-shrink-0">
+                class="w-[320px] px-4 py-8 bg-[#F4F7F9] border-l border-[#124375] flex flex-col justify-start items-center gap-6 flex-shrink-0">
                 <!-- ITEM (Basic) -->
                 <div data-tab="basic" data-title="البيانات الأساسية للصندوق"
                     class="tab-button surface-shadow rounded-xl text-base font-semibold px-4 py-3 flex items-center gap-3.5 text-[#124375] bg-[#f7f9fc] w-full cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
@@ -135,7 +135,8 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <iconify-icon icon="majesticons:percent"
+                                        class="text-primary text-[20px]"></iconify-icon>
                                     <span>نسبة الاشتراك الشهري للعضو (%)</span>
                                 </label>
                                 <div class="relative">
@@ -150,7 +151,8 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <iconify-icon icon="majesticons:percent"
+                                        class="text-primary text-[20px]"></iconify-icon>
                                     <span>نسبة مساهمة جهة العمل (%)</span>
                                 </label>
                                 <div class="relative">
@@ -224,13 +226,15 @@
                                 </label>
                                 <div class="relative">
                                     <!-- Hidden input for actual submission -->
-                                    <input type="hidden" name="membership_join_fee" id="membership_join_fee_hidden" value="{{ old('membership_join_fee', $settings['membership_join_fee']) }}">
+                                    <input type="hidden" name="membership_join_fee" id="membership_join_fee_hidden"
+                                        value="{{ old('membership_join_fee', $settings['membership_join_fee']) }}">
 
                                     <!-- Styled Button -->
                                     <button type="button" data-target="membershipFeeModal"
                                         class="open-modal w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('membership_join_fee') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} px-6 font-bold outline-none cursor-pointer hover:bg-slate-100 transition relative flex items-center justify-center">
                                         <span>عرض وتعديل جدول الرسوم</span>
-                                        <iconify-icon icon="mdi:chevron-left" class="text-[#124375] text-[28px] absolute left-4"></iconify-icon>
+                                        <iconify-icon icon="mdi:chevron-left"
+                                            class="text-[#124375] text-[28px] absolute left-4"></iconify-icon>
                                     </button>
                                 </div>
                             </div>
@@ -245,7 +249,8 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <iconify-icon icon="majesticons:percent"
+                                        class="text-primary text-[20px]"></iconify-icon>
                                     <span>نسبة القرض من إجمالي الاشتراكات (%)</span>
                                 </label>
                                 <div class="relative">
@@ -260,7 +265,8 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="majesticons:percent" class="text-primary text-[20px]"></iconify-icon>
+                                    <iconify-icon icon="majesticons:percent"
+                                        class="text-primary text-[20px]"></iconify-icon>
                                     <span>معدل الفائدة السنوية (%)</span>
                                 </label>
                                 <div class="relative">
@@ -278,7 +284,8 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="fa6-solid:money-bill-wave" class="text-primary text-[20px]"></iconify-icon>
+                                    <iconify-icon icon="fa6-solid:money-bill-wave"
+                                        class="text-primary text-[20px]"></iconify-icon>
                                     <span>الحد الأقصى للقرض الشخصي (ج.م)</span>
                                 </label>
                                 <div class="relative">
@@ -311,7 +318,8 @@
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
-                                    <iconify-icon icon="pixel:calender-solid" class="text-primary text-[20px]"></iconify-icon>
+                                    <iconify-icon icon="pixel:calender-solid"
+                                        class="text-primary text-[20px]"></iconify-icon>
                                     <span>الحد الأدنى للاشتراك لطلب القرض (عاماً)</span>
                                 </label>
                                 <div class="relative">
@@ -429,15 +437,21 @@
         </div>
 
         <!-- Join Fee Modal -->
-        <div id="membershipFeeModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-40 flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0" dir="rtl">
-            <div class="bg-[#F8F9FA] rounded-[24px] shadow-2xl w-full max-w-3xl transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col p-8 max-h-[90vh]">
+        <div id="membershipFeeModal"
+            class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-40 flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0"
+            dir="rtl">
+            <div
+                class="bg-[#F8F9FA] rounded-[24px] shadow-2xl w-full max-w-3xl transform scale-95 transition-transform duration-300 overflow-hidden flex flex-col p-8 max-h-[90vh]">
                 <!-- Modal Header -->
                 <div class="flex justify-between items-start mb-6">
                     <div class="text-right">
-                        <h3 class="text-3xl font-bold text-[#021219] font-['Noto_Sans_Arabic'] mb-2">جدول رسوم الانضمام</h3>
-                        <p class="text-[#6D6D6D] text-lg font-medium font-['Noto_Sans_Arabic']">يرجى تحديد رسوم الانضمام بناءً على الفئة العمرية للعضو عند الاشتراك.</p>
+                        <h3 class="text-3xl font-bold text-[#021219] font-['Noto_Sans_Arabic'] mb-2">جدول رسوم الانضمام
+                        </h3>
+                        <p class="text-[#6D6D6D] text-lg font-medium font-['Noto_Sans_Arabic']">يرجى تحديد رسوم الانضمام
+                            بناءً على الفئة العمرية للعضو عند الاشتراك.</p>
                     </div>
-                    <button type="button" class="close-modal bg-white border border-[#D0D5DD] rounded-xl p-2 text-[#021219] hover:bg-gray-50 transition focus:outline-none flex items-center justify-center shadow-sm">
+                    <button type="button"
+                        class="close-modal bg-white border border-[#D0D5DD] rounded-xl p-2 text-[#021219] hover:bg-gray-50 transition focus:outline-none flex items-center justify-center shadow-sm">
                         <iconify-icon icon="mdi:close" class="text-2xl"></iconify-icon>
                     </button>
                 </div>
@@ -459,7 +473,8 @@
                         </table>
                     </div>
 
-                    <button type="button" id="addRowBtn" class="mt-6 flex items-center justify-center w-full py-3 border-2 border-dashed border-[#124375] text-[#124375] rounded-xl hover:bg-[#EEF7FF] font-bold text-lg transition">
+                    <button type="button" id="addRowBtn"
+                        class="mt-6 flex items-center justify-center w-full py-3 border-2 border-dashed border-[#124375] text-[#124375] rounded-xl hover:bg-[#EEF7FF] font-bold text-lg transition">
                         <iconify-icon icon="mdi:plus-circle-outline" class="text-2xl ml-2"></iconify-icon>
                         <span class="mr-2">إضافة صف جديد</span>
                     </button>
@@ -467,11 +482,14 @@
 
                 <!-- Modal Footer -->
                 <div class="mt-8 flex justify-between gap-4">
-                    <button type="button" class="close-modal flex-1 py-3 rounded-xl text-[#124375] bg-[#F8F9FA] border-2 border-[#D0D5DD] hover:bg-gray-100 font-bold text-lg transition">
+                    <button type="button"
+                        class="close-modal flex-1 py-3 rounded-xl text-[#124375] bg-[#F8F9FA] border-2 border-[#D0D5DD] hover:bg-gray-100 font-bold text-lg transition">
                         إلغاء الأمر
                     </button>
                     <!-- Trigger the main form save -->
-                    <button type="button" onclick="document.querySelector('form[action=\'{{ route('admin.settings.update') }}\']').submit();" class="flex-1 py-3 rounded-xl text-white bg-[#124375] hover:bg-[#0e3560] font-bold text-lg transition shadow-md flex justify-center items-center gap-2">
+                    <button type="button"
+                        onclick="document.querySelector('form[action=\'{{ route('admin.settings.update') }}\']').submit();"
+                        class="flex-1 py-3 rounded-xl text-white bg-[#124375] hover:bg-[#0e3560] font-bold text-lg transition shadow-md flex justify-center items-center gap-2">
                         <span>حفظ التعديلات</span>
                         <iconify-icon icon="fluent:save-16-filled" class="text-xl"></iconify-icon>
                     </button>

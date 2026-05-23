@@ -21,19 +21,25 @@
 @endsection
 
 @section('scripts')
-<script type="module">
-    import { get } from 'https://unpkg.com/@github/webauthn-json@2.1.1/dist/browser-ponyfill.js';
-
-    const options = {!! json_encode($options) !!};
+<script src="{{ asset('js/webauthn-custom.js') }}"></script>
+<script>
+    const browserOptions = {!! json_encode($browserOptions) !!};
     
     document.getElementById('start-fingerprint').addEventListener('click', async () => {
         const statusEl = document.getElementById('fingerprint-status');
         const fallbackForm = document.getElementById('fallback-form');
         statusEl.innerText = 'جاري التحقق...';
         statusEl.style.color = '#ffc107';
+
+        if (!window.customWebAuthn) {
+            statusEl.innerText = 'حدث خطأ في تحميل مكتبة البصمة. يرجى التأكد من اتصالك بالإنترنت.';
+            statusEl.style.color = '#dc3545';
+            fallbackForm.classList.remove('hidden');
+            return;
+        }
         
         try {
-            const credential = await get(options);
+            const credential = await window.customWebAuthn.get({ publicKey: browserOptions });
             
             // Send to backend
             const response = await fetch("{{ route('login.2fa.fingerprint.verify') }}", {

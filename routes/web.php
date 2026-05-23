@@ -11,7 +11,6 @@ use App\Http\Controllers\Employee\Membership\MembershipController;
 use App\Http\Controllers\Employee\Membership\SubscriptionController;
 use App\Http\Controllers\Member\NotificationController;
 use App\Http\Controllers\Member\ProfileController;
-use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
 use App\Http\Middleware\EnsureEmployee;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
@@ -60,8 +59,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
     });
 
-    // Member Dashboard
-    Route::get('/member/dashboard', [MemberDashboardController::class, 'index'])->name('member.dashboard');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -81,18 +78,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('dashboard');
 
         // ─── Members (member data CRUD) ──────────────────────────────────
-        Route::get('/members', [MemberController::class, 'index'])->name('members.index');
-        Route::get('/members/create', [MemberController::class, 'create'])->name('members.create');
-        Route::post('/members', [MemberController::class, 'store'])->name('members.store');
-        Route::get('/members/{member}/print', [MemberController::class, 'print'])->name('members.print');
-        Route::get('/members/{member}/upload-signed', [MemberController::class, 'uploadSignedState'])->name('members.upload_signed');
-        Route::get('/members/{member}/edit', [MemberController::class, 'edit'])->name('members.edit');
-        Route::put('/members/{member}', [MemberController::class, 'update'])->name('members.update');
-        Route::post('/members/{member}/signed-form', [MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
-        Route::post('/members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
+        Route::get('members/create', [MemberController::class, 'create'])->name('members.create');
+        Route::post('members', [MemberController::class, 'store'])->name('members.store');
+        Route::get('members/{member}/print', [MemberController::class, 'print'])->name('members.print');
+        Route::get('members/{member}/upload-signed', [MemberController::class, 'uploadSignedState'])->name('members.upload_signed');
+        Route::post('members/{member}/signed-form', [MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
+        
+        Route::resource('members', MemberController::class)->except(['create', 'store', 'destroy']);
+        Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
+        Route::post('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
+
         Route::post('/members/{member}/claim', [ClaimController::class, 'store'])->name('members.storeClaim');
-        Route::delete('/members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
-        Route::get('/members/{member}', [MemberController::class, 'show'])->name('members.show');
         Route::get('/members/{member}/documents', [MemberController::class, 'documents'])->name('members.documents');
         Route::post('/members/{member}/documents', [MemberController::class, 'storeAdditionalDocument'])->name('members.documents.store');
         Route::get('/documents/{attachment}/view', [MemberController::class, 'viewDocument'])->name('documents.view');

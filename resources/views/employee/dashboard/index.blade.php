@@ -180,7 +180,7 @@
             </div>
             <div class="col-span-1">
                 <div class="grid grid-cols-2 gap-4">
-                    <a href="{{ route('members.create') }}">
+                    <a href="#">
                         <div
                             class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
                             <iconify-icon icon="mdi:account-multiple-plus" class="text-5xl text-[#124375]"></iconify-icon>

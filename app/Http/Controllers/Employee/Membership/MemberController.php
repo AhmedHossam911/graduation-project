@@ -41,6 +41,7 @@ class MemberController extends Controller
         'work_declaration'    => 'إقرار القيام بالعمل',
         'over_21_request'     => 'طلب تجاوز فوق سن ٢١ عام',
         'appointment_decision'=> 'قرار التعيين',
+        'manual_request'      => 'طلب يدوي بالتسجيل من خلال المكتب',
     ];
 
     // ─── Validation Rules ────────────────────────────────────────────
@@ -68,13 +69,13 @@ class MemberController extends Controller
             'employer_name'          => ['required', 'string', 'max:255'],
             'job_title'              => ['required', 'string', 'max:255'],
             'financial_category'     => ['required', 'string', 'max:255'],
-            'hire_day'               => ['nullable', 'integer', 'between:1,31'],
-            'hire_month'             => ['nullable', 'integer', 'between:1,12'],
-            'hire_year'              => ['nullable', 'integer', 'between:1900,2100'],
-            'retirement_day'         => ['nullable', 'integer', 'between:1,31'],
-            'retirement_month'       => ['nullable', 'integer', 'between:1,12'],
-            'retirement_year'        => ['nullable', 'integer', 'between:1900,2100'],
-            'salary'                 => ['nullable', 'numeric', 'min:0'],
+            'hire_day'               => ['required', 'integer', 'between:1,31'],
+            'hire_month'             => ['required', 'integer', 'between:1,12'],
+            'hire_year'              => ['required', 'integer', 'between:1900,2100'],
+            'retirement_day'         => ['required', 'integer', 'between:1,31'],
+            'retirement_month'       => ['required', 'integer', 'between:1,12'],
+            'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
+            'salary'                 => ['required', 'numeric', 'min:0'],
             'children_count'         => ['nullable', 'integer', 'min:0'],
             'spouse_phone_digits'    => ['nullable', 'array'],
             'spouse_phone_digits.*'  => ['nullable', 'digits:1'],
@@ -83,7 +84,12 @@ class MemberController extends Controller
             'child_name'             => ['nullable', 'string', 'max:255'],
             'child_workplace'        => ['nullable', 'string', 'max:255'],
             'documents'              => ['nullable', 'array'],
-            'documents.*'            => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.national_id_card'    => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.basic_salary_letter' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.work_declaration'    => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.over_21_request'     => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.appointment_decision'=> ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.manual_request'      => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ];
     }
 
@@ -98,7 +104,7 @@ class MemberController extends Controller
             'array'                    => 'يجب أن يحتوي الحقل على مجموعة من القيم.',
             'size'                     => 'يجب أن يحتوي الحقل على :size رقم بالضبط.',
             'digits'                   => 'يجب إدخال :digits رقم بالضبط.',
-            'integer'                  => 'يجب إدخال رقم صحيح بدون كسور.',
+            'integer'                  => 'يجب إدخال رقم صحيح  .',
             'between'                  => 'يجب أن تكون القيمة بين :min و :max.',
             'in'                       => 'القيمة المختارة غير صحيحة، يرجى اختيار قيمة من القائمة.',
             'numeric'                  => 'يجب إدخال رقم صالح.',
@@ -132,10 +138,10 @@ class MemberController extends Controller
 
     public function create()
     {
-
         return view('employee.members.create', [
             'documentTypes' => self::INITIAL_DOCUMENT_TYPES,
             'mode'          => 'create',
+            'departments'   => Department::all(),
         ]);
     }
 
@@ -156,23 +162,26 @@ class MemberController extends Controller
             ],
         ]);
 
-        // Business rule: member must be 45 years old or younger
+        // Business rule: member age validation based on system settings
         $birthDate = $this->dateFromParts($request, 'birth');
+        $age = 0;
         if ($birthDate) {
             $age = \Carbon\Carbon::parse($birthDate)->age;
-            if ($age > 45) {
+            $minAge = (int) \App\Models\System\SystemSetting::get('membership_min_age', 21);
+            $maxAge = (int) \App\Models\System\SystemSetting::get('membership_max_age', 59);
+
+            if ($age < $minAge || $age > $maxAge) {
                 return redirect()->back()->withInput()->withErrors([
-                    'birth_year' => 'لا يمكن تسجيل عضو يتجاوز عمره 45 عامًا. العمر الحالي: ' . $age . ' عامًا.',
+                    'birth_year' => "عمر العضو ($age عامًا) غير مطابق للوائح. السن المسموح به من $minAge إلى $maxAge عامًا.",
                 ]);
             }
         }
 
-        $member = DB::transaction(function () use ($request, $validated, $nationalId) {
-
+        $result = DB::transaction(function () use ($request, $validated, $nationalId, $age) {
             $departmentId = $this->resolveDepartmentId($validated);
 
             $member = Member::create([
-                'user_id'        => auth()->id(),
+                'user_id'        => auth()->id(), // Employee processing the request
                 'department_id'  => $departmentId,
                 'full_name'      => $validated['full_name'],
                 'national_id'    => $nationalId,
@@ -183,12 +192,54 @@ class MemberController extends Controller
                 'marital_status' => $validated['marital_status'],
             ]);
 
-            Membership::create([
+            $membership = Membership::create([
                 'member_id'            => $member->id,
                 'membership_number'    => 'MS-' . str_pad($member->id, 5, '0', STR_PAD_LEFT),
                 'status'               => 'pending',
                 'declaration_accepted' => true,
                 'approved_by'          => null,
+            ]);
+
+            // Calculate fees based on remaining years to retirement
+            $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
+            $remainingYears = max(0, $retirementAge - $age);
+
+            $feesSettings = json_decode(\App\Models\System\SystemSetting::get('membership_join_fee', '[]'), true);
+            $feeMonths = 0;
+
+            if (is_array($feesSettings) && count($feesSettings) > 0) {
+                $settingsData = [];
+                $maxSettingYear = 0;
+
+                foreach ($feesSettings as $setting) {
+                    $settingYearsStr = preg_replace('/[^0-9]/', '', $setting['years'] ?? '');
+                    if (is_numeric($settingYearsStr)) {
+                        $sy = (int) $settingYearsStr;
+                        $settingsData[$sy] = (float) ($setting['fee_months'] ?? 0);
+                        if ($sy > $maxSettingYear) {
+                            $maxSettingYear = $sy;
+                        }
+                    }
+                }
+
+                // If the remaining years are greater than the maximum defined years, use the calculation for max years
+                if ($remainingYears > $maxSettingYear && $maxSettingYear > 0) {
+                    $remainingYears = $maxSettingYear;
+                }
+
+                if (isset($settingsData[$remainingYears])) {
+                    $feeMonths = $settingsData[$remainingYears];
+                }
+            }
+
+            $basicSalary = (float) ($validated['salary'] ?? 0);
+            $totalFee = $feeMonths * $basicSalary;
+
+            \App\Models\Services\Subscription::create([
+                'membership_id' => $membership->id,
+                'amount'        => $totalFee,
+                'due_date'      => now(),
+                'status'        => 'unpaid',
             ]);
 
             EmploymentInfo::create([
@@ -221,12 +272,25 @@ class MemberController extends Controller
             // Audit log
             $this->logAudit('create', 'members', $member->id, null, $member->toArray());
 
-            return $member;
+            return [
+                'member' => $member,
+                'membership' => $membership,
+                'totalFee' => $totalFee
+            ];
         });
 
+        $receiptData = [
+            'name' => $result['member']->full_name,
+            'national_id' => $result['member']->national_id,
+            'membership_number' => $result['membership']->membership_number,
+            'amount' => number_format($result['totalFee'], 2),
+            'date' => now()->format('Y-m-d')
+        ];
+
         return redirect()
-            ->route('members.print', $member)
-            ->with('success', 'تم حفظ بيانات العضو.');
+            ->route('members.create')
+            ->with('success', 'تم حفظ بيانات العضو بنجاح وتوليد الإيصال.')
+            ->with('receipt_data', json_encode($receiptData));
     }
 
     // ─── Edit & Update ───────────────────────────────────────────────
@@ -397,18 +461,7 @@ class MemberController extends Controller
         return response()->download($path);
     }
 
-    public function print($id)
-    {
-        $member = Member::with(['user', 'department', 'employmentInfo', 'familyInfo', 'attachments'])
-            ->findOrFail($id);
 
-        return view('employee.members.create', [
-            'member'        => $member,
-            'departments'   => Department::all(),
-            'documentTypes' => self::INITIAL_DOCUMENT_TYPES,
-            'mode'          => 'print',
-        ]);
-    }
 
     // ─── Signed Form Upload ──────────────────────────────────────────
 

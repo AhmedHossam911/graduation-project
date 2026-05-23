@@ -65,7 +65,7 @@
                 </button>
                 <p class="text-base text-[#124375] px-2 font-medium">أخر تسجيل دخول :</p>
                 <div class="text-base font-medium flex items-center gap-7 px-2">
-                    <p>يوم : {{ auth()->user()->last_login->isoFormat('dddd D MMMM YYYY') }}</p>
+                    <p>يوم : {{ auth()->user()->last_login->timezone('Africa/Cairo')->isoFormat('dddd D MMMM YYYY') }}</p>
                     <p>الساعة : {{ auth()->user()->last_login->isoFormat('h:mm A') }}</p>
                 </div>
 
@@ -73,7 +73,7 @@
                 <div class="mt-8 border-t border-[#124375] pt-5">
                     <h3 class="text-lg font-semibold text-[#124375] mb-3">إعدادات البصمة (التحقق الثنائي)</h3>
                     <p class="text-sm text-gray-600 mb-4">يمكنك إضافة بصمة إصبع أو وجه لتأكيد تسجيل الدخول كخطوة إضافية بدلاً من رسائل الإيميل.</p>
-                    
+
                     <ul class="mb-4 space-y-2">
                         @foreach(auth()->user()->passkeys ?? [] as $passkey)
                             <li class="flex justify-between items-center bg-white p-3 rounded shadow-sm border border-gray-200">
@@ -81,7 +81,7 @@
                                     <span class="font-medium">{{ $passkey->name }}</span>
                                     <span class="text-xs text-gray-500 block">أخر استخدام: {{ $passkey->last_used_at ? $passkey->last_used_at->diffForHumans() : 'لم تستخدم' }}</span>
                                 </div>
-                                <form method="POST" action="/user/passkeys/{{ $passkey->id }}" onsubmit="return confirm('هل أنت متأكد من حذف هذه البصمة؟');">
+                                <form method="POST" action="{{ route('passkey.destroy', $passkey) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذه البصمة؟');">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-500 hover:text-red-700">
@@ -158,35 +158,50 @@
     </div>
 
     <script src="{{ asset('js/profile.js') }}"></script>
-    
-    <script type="module">
-        import { create } from 'https://unpkg.com/@github/webauthn-json@2.1.1/dist/browser-ponyfill.js';
+    <script src="{{ asset('js/webauthn-custom.js') }}"></script>
 
+    <script>
         document.getElementById('register-passkey-btn')?.addEventListener('click', async () => {
             const statusEl = document.getElementById('passkey-status');
             statusEl.classList.remove('hidden');
             statusEl.innerText = 'جاري التحضير... الرجاء استخدام البصمة.';
             statusEl.className = 'text-center mt-2 text-sm text-[#D4AF37]';
 
+            if (!window.customWebAuthn) {
+                statusEl.innerText = 'حدث خطأ في تحميل مكتبة البصمة. يرجى التأكد من اتصالك بالإنترنت.';
+                statusEl.className = 'text-center mt-2 text-sm text-red-600';
+                return;
+            }
+
             try {
                 // 1. Get options from backend
-                const optionsRes = await fetch('/user/passkeys/options');
-                if (!optionsRes.ok) throw new Error('فشل جلب إعدادات البصمة.');
+                const optionsRes = await fetch("{{ route('passkey.registration-options') }}", {
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!optionsRes.ok) {
+                    const text = await optionsRes.text();
+                    throw new Error(`خطأ (${optionsRes.status}): ${text.substring(0, 100)}`);
+                }
                 const options = await optionsRes.json();
 
                 // 2. Create credential
-                const credential = await create(options);
+                const credential = await window.customWebAuthn.create({ publicKey: options.options });
 
                 // 3. Send to backend
-                const storeRes = await fetch('/user/passkeys', {
+                const storeRes = await fetch("{{ route('passkey.store') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        credential,
-                        name: 'جهاز ' + navigator.platform
+                        name: 'الجهاز الحالي',
+                        id: credential.id,
+                        rawId: credential.rawId,
+                        type: credential.type,
+                        response: credential.response
                     })
                 });
 

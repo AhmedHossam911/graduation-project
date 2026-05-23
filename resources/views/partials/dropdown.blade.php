@@ -11,6 +11,7 @@
     $autoSubmitClear = $autoSubmitClear ?? false;
     $autoSubmit = $autoSubmit ?? $autoSubmitClear;
     $showConfirm = $showConfirm ?? false;
+    $borderColorClass = $errors->has($name) ? 'border-[#D92D20]' : ($borderColorClass ?? 'border-[#124375]');
 
     $selectedLabel = $placeholder;
     if ($selected && isset($options[$selected])) {
@@ -21,7 +22,7 @@
     }
 @endphp
 
-<div class="border border-slate-200 rounded-xl py-2 w-full min-w-[200px] bg-[#F4F7F9] relative custom-dropdown-container flex items-center pr-3 surface-shadow"
+<div class="border {{ $borderColorClass }} rounded-xl py-2 w-full min-w-[200px] bg-[#F4F7F9] relative custom-dropdown-container flex items-center pr-3 surface-shadow"
     data-clear-value="{{ $clearValue }}" data-auto-submit="{{ $autoSubmit ? 'true' : 'false' }}"
     data-has-confirm="{{ $showConfirm ? 'true' : 'false' }}">
 
@@ -34,7 +35,7 @@
     @endif
 
     @if ($floatingLabel)
-        <label class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">
+        <label class="absolute top-[-15px] right-5 {{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} text-base font-medium bg-[#F4F7F9] px-1">
             {{ $label }} @if ($required)
                 <span class="text-[#D92D20]">*</span>
             @endif
@@ -46,7 +47,7 @@
     @else
         <div class="flex-1 flex items-center px-12 overflow-hidden">
             @if ($label)
-                <span class="text-[#124375] font-medium text-base ml-1 shrink-0">{{ $label }} : </span>
+                <span class="{{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} font-medium text-base ml-1 shrink-0">{{ $label }} : </span>
             @endif
             <span
                 class="custom-dropdown-text cursor-pointer block flex-1 truncate {{ $selected ? 'text-[#124375] font-bold text-base' : 'text-[#6D6D6D] text-sm font-medium' }}">

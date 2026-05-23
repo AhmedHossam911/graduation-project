@@ -155,9 +155,11 @@ class AuthController extends Controller
         $options = app(\Laravel\Passkeys\Actions\GenerateVerificationOptions::class)($user);
         
         // Store options in session for verification later
-        session(['passkeys_verification_options' => $options]);
+        session(['passkeys_verification_options' => \Laravel\Passkeys\Support\WebAuthn::toJson($options)]);
 
-        return view('auth.2fa-fingerprint', compact('options'));
+        $browserOptions = \Laravel\Passkeys\Support\WebAuthn::toBrowserArray($options);
+
+        return view('auth.2fa-fingerprint', compact('browserOptions'));
     }
 
     public function verify2faFingerprint(Request $request) {
@@ -165,11 +167,13 @@ class AuthController extends Controller
         if (!$userId) return response()->json(['message' => 'Unauthenticated'], 401);
 
         $user = User::find($userId);
-        $options = session('passkeys_verification_options');
+        $optionsJson = session('passkeys_verification_options');
 
-        if (!$options) {
+        if (!$optionsJson) {
             return response()->json(['message' => 'Invalid session'], 400);
         }
+
+        $options = \Laravel\Passkeys\Support\WebAuthn::fromJson($optionsJson);
 
         try {
             app(\Laravel\Passkeys\Actions\VerifyPasskey::class)(
