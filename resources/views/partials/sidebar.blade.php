@@ -51,7 +51,7 @@
                         <p>الإعدادات</p>
                     </div>
                 </a>
-                <a href="{{ route('admin.settings.index') }}">
+                <a href="{{ route('admin.permissions.index') }}">
                     <div
                         class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="fa7-solid:user-cog" class="text-3xl"></iconify-icon>

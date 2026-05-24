@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('national_id', 14)->unique();
             $table->date('birth_date')->nullable();
             $table->string('phone')->nullable();
+            $table->string('landline')->nullable();
             $table->string('address')->nullable();
+            $table->string('marital_status')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

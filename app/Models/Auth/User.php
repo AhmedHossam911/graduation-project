@@ -15,7 +15,7 @@ class User extends Authenticatable implements PasskeyUser
     use HasFactory, Notifiable, SoftDeletes, PasskeyAuthenticatable;
 
     protected $fillable = [
-        'role_id', 'name', 'email', 'password', 'is_restricted', 'last_login',
+        'role_id', 'name', 'email', 'password', 'is_restricted', 'last_login', 'faculties', 'custom_permissions'
     ];
 
     protected $hidden = [
@@ -27,6 +27,8 @@ class User extends Authenticatable implements PasskeyUser
         'password' => 'hashed',
         'is_restricted' => 'boolean',
         'last_login' => 'datetime',
+        'faculties' => 'array',
+        'custom_permissions' => 'array',
     ];
 
     public function role()

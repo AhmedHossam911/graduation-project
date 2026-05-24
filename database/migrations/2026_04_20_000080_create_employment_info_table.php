@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('member_id')->unique()->constrained('members')->cascadeOnDelete();
             $table->string('workplace')->nullable();
             $table->string('job_title')->nullable();
+            $table->string('financial_category')->nullable();
             $table->date('join_date')->nullable();
             $table->date('retirement_date')->nullable();
             $table->decimal('starting_salary', 10, 2)->nullable();

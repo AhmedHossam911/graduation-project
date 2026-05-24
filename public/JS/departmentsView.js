@@ -3,32 +3,6 @@ const dropDownBtn = document.querySelectorAll(".dropDownBtn")
 const dropDown = document.querySelectorAll(".dropDown")
 // end drop down menu variables
 
-// Select all buttons logic
-const selectBtn = document.querySelectorAll('.select-btn');
-
-selectBtn.forEach(btn => {
-    const originalText = btn.textContent.trim();
-
-    btn.addEventListener('click' , () => {
-        const isSelected = btn.textContent.trim() === "إلغاء التحديد";
-
-        const groupContainer = btn.parentElement.closest('.navy-shadow');
-        if (!groupContainer) return;
-        
-        const groupItems = groupContainer.querySelectorAll('.item');
-
-        groupItems.forEach(ch => {
-            ch.checked = !isSelected;
-        });
-
-        if (isSelected) {
-            btn.textContent = originalText; 
-        } else {
-            btn.textContent = "إلغاء التحديد";
-        }
-    });
-});
-
 // drop down menu logic
 dropDownBtn.forEach((btn, index) => {
     btn.addEventListener("click", (e) => {
@@ -48,10 +22,6 @@ dropDown.forEach((menu, index) => {
             const spans = dropDownBtn[index].querySelectorAll("span");
             if (spans.length > 0) {
                 spans[0].textContent = item.textContent;
-                const roleInput = document.getElementById('role_name');
-                if (roleInput) {
-                    roleInput.value = item.textContent.trim();
-                }
             }
             menu.classList.add("hidden");
         });

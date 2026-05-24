@@ -16,6 +16,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('is_restricted')->default(false);
+            $table->json('faculties')->nullable();
+            $table->json('custom_permissions')->nullable();
             $table->datetime('last_login')->nullable();
             $table->rememberToken();
             $table->softDeletes();

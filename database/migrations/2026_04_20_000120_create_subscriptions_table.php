@@ -14,6 +14,8 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->date('due_date');
             $table->enum('status', ['paid', 'unpaid', 'overdue'])->default('unpaid');
+            $table->timestamp('notice_sent_at')->nullable();
+            $table->timestamp('last_warning_sent_at')->nullable();
             $table->timestamps();
         });
     }

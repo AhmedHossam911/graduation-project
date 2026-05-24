@@ -14,6 +14,7 @@ use App\Http\Controllers\Member\ProfileController;
 use App\Http\Middleware\EnsureEmployee;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Http\Controllers\Admin\PermissionController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -57,6 +58,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
         Route::post('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
         Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
+
+        Route::get('/admin/permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');
+        Route::get('/admin/permissions/{user}/edit', [PermissionController::class, 'edit'])->name('admin.permissions.edit');
+        Route::post('/admin/permissions/{user}/approve', [PermissionController::class, 'approve'])->name('admin.permissions.approve');
+        Route::post('/admin/permissions/{user}/reject', [PermissionController::class, 'reject'])->name('admin.permissions.reject');
+        Route::post('/admin/permissions/{user}/restore', [PermissionController::class, 'restore'])->name('admin.permissions.restore');
+        Route::delete('/admin/permissions/{user}/destroy', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
     });
 
 
