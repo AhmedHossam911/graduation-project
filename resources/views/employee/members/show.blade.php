@@ -420,13 +420,13 @@
                     </button>
                 @endif
                 <div id="loans-action-buttons" class="tab-content flex gap-3 hidden" data-tab="قروض">
-                    @if ($activeLoan->status === 'active')
+                    @if ($activeLoan && $activeLoan->status === 'active')
                         <button data-modal="modal6"
                             class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
                             تسديد القرض بالكامل
                         </button>
                     @endif
-                    @if ($activeLoan->status === 'pending')
+                    @if ($activeLoan && $activeLoan->status === 'pending')
                         <button
                             class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
                             <iconify-icon icon="material-symbols:print" class="text-xl flex items-center"></iconify-icon>
@@ -437,7 +437,7 @@
                             بدء القرض
                         </button>
                     @endif
-                    @if ($activeLoan->status === 'pending' || $activeLoan->status === 'rejected')
+                    @if ($activeLoan && ($activeLoan->status === 'pending' || $activeLoan->status === 'rejected'))
                         <a href="{{ route('members.previous-loans', $member->id) }}"
                             class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
                             عرض القروض السابقة

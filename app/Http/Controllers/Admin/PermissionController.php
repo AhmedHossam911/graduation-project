@@ -15,7 +15,7 @@ class PermissionController extends Controller
     {
         $activeUsers = User::with('role')->where('is_restricted', false)->whereNotNull('role_id')->paginate(10, ['*'], 'active_page');
         $suspendedUsers = User::with('role')->where('is_restricted', true)->whereNotNull('role_id')->paginate(10, ['*'], 'suspended_page');
-        $pendingRequests = User::with('role')->where('is_restricted', true)->paginate(10, ['*'], 'pending_page');
+        $pendingRequests = User::with('role')->where('is_restricted', true)->whereNull('role_id')->paginate(10, ['*'], 'pending_page');
         $rejectedRequests = User::with('role')->onlyTrashed()->paginate(10, ['*'], 'rejected_page');
 
         return view('admin.permissions.index', compact('activeUsers', 'suspendedUsers', 'pendingRequests', 'rejectedRequests'));
@@ -69,6 +69,20 @@ class PermissionController extends Controller
         // Placeholder: soft delete
         $user->delete();
         return back()->with('success', 'تم رفض الطلب بنجاح.');
+    }
+
+    public function suspend(User $user)
+    {
+        $user->is_restricted = true;
+        $user->save();
+        return back()->with('success', 'تم إيقاف حساب المستخدم بنجاح.');
+    }
+
+    public function reactivate(User $user)
+    {
+        $user->is_restricted = false;
+        $user->save();
+        return back()->with('success', 'تم تفعيل حساب المستخدم بنجاح.');
     }
 
     public function restore($id)

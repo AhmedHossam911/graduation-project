@@ -15,6 +15,7 @@ use App\Http\Middleware\EnsureEmployee;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\DepartmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,8 +64,17 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/permissions/{user}/edit', [PermissionController::class, 'edit'])->name('admin.permissions.edit');
         Route::post('/admin/permissions/{user}/approve', [PermissionController::class, 'approve'])->name('admin.permissions.approve');
         Route::post('/admin/permissions/{user}/reject', [PermissionController::class, 'reject'])->name('admin.permissions.reject');
+        Route::post('/admin/permissions/{user}/suspend', [PermissionController::class, 'suspend'])->name('admin.permissions.suspend');
+        Route::post('/admin/permissions/{user}/reactivate', [PermissionController::class, 'reactivate'])->name('admin.permissions.reactivate');
         Route::post('/admin/permissions/{user}/restore', [PermissionController::class, 'restore'])->name('admin.permissions.restore');
         Route::delete('/admin/permissions/{user}/destroy', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
+
+        Route::get('/admin/departments', [DepartmentController::class, 'index'])->name('admin.departments.index');
+        Route::get('/admin/departments/{department}', [DepartmentController::class, 'show'])->name('admin.departments.show');
+        Route::post('/admin/departments', [DepartmentController::class, 'store'])->name('admin.departments.store');
+        Route::put('/admin/departments/{department}', [DepartmentController::class, 'update'])->name('admin.departments.update');
+        Route::post('/admin/departments/{department}/archive', [DepartmentController::class, 'archive'])->name('admin.departments.archive');
+        Route::post('/admin/departments/{department}/restore', [DepartmentController::class, 'restore'])->name('admin.departments.restore');
     });
 
 
