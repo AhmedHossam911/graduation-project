@@ -3,6 +3,7 @@
 @section('title', 'عرض بيانات العضو')
 
 @section('content')
+    @include('partials.flash')
     <link rel="stylesheet" href="{{ asset('css/member.css') }}">
 
     @php
@@ -410,14 +411,14 @@
                 </div>
                 <!-- requests only -->
                 <!-- loans only -->
-                <button
+                <button id="request-loan-btn"
                     class="tab-content hidden flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
                     data-tab="قروض">
                     <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
                     طلب قرض
                 </button>
                 @if ($activeLoan)
-                    <div class="tab-content flex gap-3 hidden" data-tab="قروض">
+                    <div id="loans-action-buttons" class="tab-content flex gap-3 hidden" data-tab="قروض">
                         <button data-modal="modal6"
                             class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
                             تسديد القرض بالكامل
@@ -546,7 +547,7 @@
         </div>
     @endif
 
-    <div data-tab="قروض" class="hidden  tab-content px-7 py-5">
+    <div id="loans-content-container" data-tab="قروض" class="hidden  tab-content px-7 py-5">
         @if ($activeLoan && $activeLoan->installments->count() > 0)
             <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
                 <table class="w-full">
@@ -692,36 +693,43 @@
     <!-- end subscription table -->
 
     <!-- loan request form -->
-    <div class="modal tab-content hidden mx-7  rounded-2xl bg-[#F4F7F9] border border-[#124375] py-3" data-tab="قروض">
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    طلب تسجيل قرض
-                </h1>
-            </div>
+    <form action="{{ route('loans.store') }}" method="POST" enctype="multipart/form-data" id="loanStoreForm">
+        @csrf
+        <input type="hidden" name="member_id" value="{{ $member->id }}">
+        <input type="hidden" name="total_amount" id="selected_total_amount" required>
+        <input type="hidden" name="months" id="selected_months" required>
+        <div id="loan-request-form" class="hidden mx-7  rounded-2xl bg-[#F4F7F9] border border-[#124375] py-3">
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        طلب تسجيل قرض
+                    </h1>
+                </div>
             <div class="requirements grid grid-cols-2 gap-2">
                 <div class="relative">
-                    <button type="button"
-                        class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center">قيمة
+                    <button type="button" id="amount_dropdown_btn"
+                        class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center transition-colors">قيمة
                         القرض :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
                                 icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                    <span id="amount_error_msg" class="hidden absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب تحديد قيمة القرض</span>
                     <div
                         class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base ">5,000</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base ">10,000</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base ">20,000</a>
+                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option" data-value="5000">5,000</a>
+                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option" data-value="10000">10,000</a>
+                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option" data-value="20000">20,000</a>
                     </div>
                 </div>
                 <div class="relative">
-                    <button type="button"
-                        class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center">مدة
+                    <button type="button" id="months_dropdown_btn"
+                        class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center transition-colors">مدة
                         السداد :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
                                 icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                    <span id="months_error_msg" class="hidden absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب تحديد مدة السداد</span>
                     <div
                         class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base ">12 شهر</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base ">24 شهر</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base ">32 شهر</a>
+                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option" data-value="12">12 شهر</a>
+                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option" data-value="24">24 شهر</a>
+                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option" data-value="32">32 شهر</a>
                     </div>
                 </div>
             </div>
@@ -746,14 +754,14 @@
                 </p>
             </div>
             <div class="btns flex gap-2 ">
-                <form class="w-full">
+                <div class="w-full">
                     <!-- <button class="submit-btn  rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon icon="healthicons:yes"  class="flex items-center text-2xl"></iconify-icon></span>تأكيد الأختيار</button> -->
-                    <button data-modal="modal2"
-                        class="open-modal rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                    <button type="button" id="print-declaration-btn"
+                        class="rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="material-symbols:print"
                                 class="flex items-center text-2xl"></iconify-icon></span>طباعة الإقرار</button>
-                </form>
-                <button
+                </div>
+                <button type="button"
                     class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
@@ -773,29 +781,28 @@
                     إرفاق الإقرار المُوَقَّع
                 </h1>
             </div>
-            <form>
                 <div class="documents space-y-5">
                     <p class="text-[#021219] text-[16px] font-medium">يرجى رفع ملف الإقرار بعد طباعته وتوقيعه.</p>
                     <div class="border border-[#124375] rounded-[12px] ">
-                        <label for="file-1"
+                        <label for="declaration_file"
                             class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط هنا لإرفاق ملف الإقرار</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-1" class="hidden">
+                            <input type="file" name="declaration_file" id="declaration_file" class="hidden" required accept=".pdf,.png,.jpg,.jpeg">
                         </label>
                     </div>
                 </div>
                 <div class="btns flex gap-2 ">
                     <div class="w-full">
-                        <button
-                            class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow"><span><iconify-icon
+                        <button type="submit"
+                            class="submit-btn mt-4 rounded-[14px] w-full py-3 text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow"><span><iconify-icon
                                     icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
                             وإرسال</button>
                     </div>
                 </div>
-            </form>
         </div>
     </div>
+    </form>
     <!-- end Attach the signed declaration modal -->
 
     <!-- request form -->
@@ -1508,5 +1515,129 @@
         </div>
     </form>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const requestLoanBtn = document.getElementById('request-loan-btn');
+            const loanRequestForm = document.getElementById('loan-request-form');
+            const loansContentContainer = document.getElementById('loans-content-container');
+            const loansActionButtons = document.getElementById('loans-action-buttons');
+            const closeLoanRequestBtn = document.querySelector('.close-loan-request-modal');
+
+            if (requestLoanBtn && loanRequestForm) {
+                requestLoanBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loanRequestForm.classList.remove('hidden');
+                    if (loansContentContainer) loansContentContainer.classList.add('hidden');
+                    if (loansActionButtons) loansActionButtons.classList.add('hidden');
+                });
+            }
+
+            if (closeLoanRequestBtn && loanRequestForm) {
+                closeLoanRequestBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loanRequestForm.classList.add('hidden');
+                    if (loansContentContainer) loansContentContainer.classList.remove('hidden');
+                    if (loansActionButtons) loansActionButtons.classList.remove('hidden');
+                });
+            }
+
+            const tabs = document.querySelectorAll('.tabs button');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    if (loanRequestForm) {
+                        loanRequestForm.classList.add('hidden');
+                    }
+                });
+            });
+
+            // Handle custom dropdowns for loan form
+            document.querySelectorAll('.loan-amount-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const selectedAmount = document.getElementById('selected_total_amount');
+                    if(selectedAmount) selectedAmount.value = this.dataset.value;
+                    
+                    const amountBtn = document.getElementById('amount_dropdown_btn');
+                    const amountError = document.getElementById('amount_error_msg');
+                    if (amountBtn) {
+                        amountBtn.classList.remove('border', 'border-[#D92D20]', 'text-[#D92D20]');
+                        amountBtn.classList.add('text-[#124375]');
+                    }
+                    if (amountError) amountError.classList.add('hidden');
+                });
+            });
+            document.querySelectorAll('.loan-months-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const selectedMonths = document.getElementById('selected_months');
+                    if(selectedMonths) selectedMonths.value = this.dataset.value;
+
+                    const monthsBtn = document.getElementById('months_dropdown_btn');
+                    const monthsError = document.getElementById('months_error_msg');
+                    if (monthsBtn) {
+                        monthsBtn.classList.remove('border', 'border-[#D92D20]', 'text-[#D92D20]');
+                        monthsBtn.classList.add('text-[#124375]');
+                    }
+                    if (monthsError) monthsError.classList.add('hidden');
+                });
+            });
+
+            const printBtn = document.getElementById('print-declaration-btn');
+            if (printBtn) {
+                printBtn.addEventListener('click', function(e) {
+                    const totalAmount = document.getElementById('selected_total_amount');
+                    const months = document.getElementById('selected_months');
+                    let isValid = true;
+                    
+                    const amountBtn = document.getElementById('amount_dropdown_btn');
+                    const amountError = document.getElementById('amount_error_msg');
+                    if (!totalAmount || !totalAmount.value) {
+                        if (amountBtn) {
+                            amountBtn.classList.add('border', 'border-[#D92D20]', 'text-[#D92D20]');
+                            amountBtn.classList.remove('text-[#124375]');
+                        }
+                        if (amountError) amountError.classList.remove('hidden');
+                        isValid = false;
+                    }
+
+                    const monthsBtn = document.getElementById('months_dropdown_btn');
+                    const monthsError = document.getElementById('months_error_msg');
+                    if (!months || !months.value) {
+                        if (monthsBtn) {
+                            monthsBtn.classList.add('border', 'border-[#D92D20]', 'text-[#D92D20]');
+                            monthsBtn.classList.remove('text-[#124375]');
+                        }
+                        if (monthsError) monthsError.classList.remove('hidden');
+                        isValid = false;
+                    }
+
+                    if (!isValid) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // Open the modal and overlay manually since we removed open-modal class
+                    const modal2 = document.getElementById('modal2');
+                    const overlay = document.querySelector('.overlay');
+                    if (modal2) modal2.classList.remove('hidden');
+                    if (overlay) overlay.classList.remove('hidden');
+
+                    // Print the declaration
+                    const printContents = document.querySelector('.declaration').innerHTML;
+                    const printWindow = window.open('', '_blank', 'height=600,width=800');
+                    printWindow.document.write('<html dir="rtl"><head><title>طباعة الإقرار</title>');
+                    printWindow.document.write('<style>body{font-family: "Tajawal", Arial, sans-serif; padding: 40px; font-size: 18px;} h3{text-align: center; margin-bottom: 30px;} p{margin-bottom: 30px; line-height: 1.8; font-weight: bold;}</style>');
+                    printWindow.document.write('</head><body>');
+                    printWindow.document.write(printContents);
+                    printWindow.document.write('</body></html>');
+                    printWindow.document.close();
+                    
+                    // Small delay to ensure styles are applied
+                    setTimeout(function() {
+                        printWindow.focus();
+                        printWindow.print();
+                    }, 250);
+                });
+            }
+        });
+    </script>
     <script src="{{ asset('JS/member.js') }}"></script>
 @endsection

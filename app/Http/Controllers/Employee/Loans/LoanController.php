@@ -109,9 +109,10 @@ class LoanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'member_id'    => ['required', 'exists:members,id'],
-            'total_amount' => ['required', 'numeric', 'in:5000,10000,20000'],
-            'months'       => ['required', 'integer', 'in:12,24,32'],
+            'member_id'        => ['required', 'exists:members,id'],
+            'total_amount'     => ['required', 'numeric', 'in:5000,10000,20000'],
+            'months'           => ['required', 'integer', 'in:12,24,32'],
+            'declaration_file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg', 'max:5120'],
         ]);
 
         $member = Member::with('membershipInfo.loans')->findOrFail($validated['member_id']);
@@ -127,20 +128,20 @@ class LoanController extends Controller
             ->exists();
 
         if ($hasActiveLoan) {
-            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
+            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
                 ->with('error', 'يوجد قرض نشط بالفعل لهذا العضو. لا يمكن إنشاء قرض جديد.');
         }
 
         // Business rule: Paid subscriptions must be >= requested loan amount
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
-             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
+             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
                 ->with('error', 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.');
         }
 
         $installmentAmount = round($validated['total_amount'] / $validated['months'], 2);
 
-        $loan = DB::transaction(function () use ($validated, $member, $installmentAmount) {
+        $loan = DB::transaction(function () use ($validated, $request, $member, $installmentAmount) {
             $loan = Loan::create([
                 'membership_id'      => $member->membershipInfo->id,
                 'total_amount'       => $validated['total_amount'],
@@ -159,15 +160,23 @@ class LoanController extends Controller
                 ]);
             }
 
+            if ($request->hasFile('declaration_file')) {
+                $path = $request->file('declaration_file')->store('members/declarations', 'public');
+                Attachment::create([
+                    'member_id' => $member->id,
+                    'file_path' => $path,
+                    'type'      => 'loan_declaration',
+                ]);
+            }
+
             // Audit log
             $this->logAudit('create', 'loans', $loan->id, null, $loan->toArray());
 
             return $loan;
         });
 
-        return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
-            ->with('success', 'تم إنشاء طلب القرض بنجاح.')
-            ->with('open_declaration_modal', true);
+        return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
+            ->with('success', 'تم إنشاء طلب القرض بنجاح.');
     }
 
     /**
