@@ -416,44 +416,46 @@
                     <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
                     طلب قرض
                 </button>
-                <div class="tab-content flex gap-3 hidden" data-tab="قروض">
-                    <button data-modal="modal6"
-                        class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
-                        تسديد القرض بالكامل
-                    </button>
-                    <button
-                        class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
-                        <iconify-icon icon="material-symbols:print" class="text-xl flex items-center"></iconify-icon>
-                        طباعة التفاصيل للمجلس
-                    </button>
-                    <button data-modal="modal3"
-                        class="open-modal text-[16px] font-medium bg-[#124375] w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
-                        بدء القرض
-                    </button>
-                    <a href="route('members.loans.history', $member->id)"
-                        class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
-                        عرض القروض السابقة
-                    </a>
-                    <button data-modal="modal4"
-                        class="open-modal flex text-[16px] font-medium items-center w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px]">
-                        <iconify-icon icon="zondicons:close-solid" class="text-xl flex items-center"></iconify-icon>
-                        إلغاء أو رفض الطلب
-                    </button>
-                </div>
-                <!-- end loans only -->
-                <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
-                    <button
-                        class=" flex gap-3 py-3 px-12 rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
-                        <iconify-icon icon="fluent:mail-warning-24-filled"
-                            class="flex items-center text-2xl"></iconify-icon>
-                        إرسال إخطار مسجل بعلم الوصول
-                    </button>
-                    <a href="../DocumentsPage/documents.html"
-                        class=" flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
-                        <iconify-icon icon="mdi:file-account" class="flex items-center text-2xl"></iconify-icon>
-                        عرض المستندات
-                    </a>
-                </div>
+                @if ($activeLoan)
+                    <div class="tab-content flex gap-3 hidden" data-tab="قروض">
+                        <button data-modal="modal6"
+                            class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
+                            تسديد القرض بالكامل
+                        </button>
+                        <button
+                            class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
+                            <iconify-icon icon="material-symbols:print" class="text-xl flex items-center"></iconify-icon>
+                            طباعة التفاصيل للمجلس
+                        </button>
+                        <button data-modal="modal3"
+                            class="open-modal text-[16px] font-medium bg-[#124375] w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
+                            بدء القرض
+                        </button>
+                        <a href="route('members.loans.history', $member->id)"
+                            class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
+                            عرض القروض السابقة
+                        </a>
+                        <button data-modal="modal4"
+                            class="open-modal flex text-[16px] font-medium items-center w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px]">
+                            <iconify-icon icon="zondicons:close-solid" class="text-xl flex items-center"></iconify-icon>
+                            إلغاء أو رفض الطلب
+                        </button>
+                    </div>
+                @endif
+                    <!-- end loans only -->
+                    <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
+                        <button
+                            class=" flex gap-3 py-3 px-12 rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
+                            <iconify-icon icon="fluent:mail-warning-24-filled"
+                                class="flex items-center text-2xl"></iconify-icon>
+                            إرسال إخطار مسجل بعلم الوصول
+                        </button>
+                        <a href="{{ route('members.documents', $member->id) }}"
+                            class=" flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
+                            <iconify-icon icon="mdi:file-account" class="flex items-center text-2xl"></iconify-icon>
+                            عرض المستندات
+                        </a>
+                    </div>
             </div>
         </div>
     </section>
@@ -502,183 +504,190 @@
     <!-- end requests section -->
 
     <!-- loan table -->
-    <div class="tab-content hidden mx-7 rounded-[12px] bg-[#F4F7F9] border-2 border-[#124375] py-3 px-3 my-2"
-        data-tab="قروض">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">رقم القرض :<span class="text-[16px] text-[#021219]">123456789</span>
-                </p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">قيمة القرض :<span class="text-[16px] text-[#021219]">5,000</span>
-                </p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">قيمة القرض بالفائدة :<span
-                        class="text-[16px] text-[#021219]">5,400</span></p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">إجمالي المتبقي :<span
-                        class="text-[16px] text-[#021219]">5,400</span></p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">عدد الأقساط المتبقية :<span class="text-[16px] text-[#021219]">12
-                        قسط</span></p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">تاريخ إنتهاء القرض :<span class="text-[16px] text-[#021219]">لم
-                        يحدد بعد</span></p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px]">حالة القرض :<span
-                        class="text-[16px] text-[#E6B800] border border-[#E6B800] bg-[#FFF8E1] px-1 rounded-[8px]">تحت
-                        المراجعة</span></p>
+    @if ($activeLoan)
+        <div class="tab-content hidden mx-7 rounded-[12px] bg-[#F4F7F9] border-2 border-[#124375] py-3 px-3 my-2"
+            data-tab="قروض">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">رقم القرض :<span
+                            class="text-[16px] text-[#021219]">{{ $activeLoan->id }}</span>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">قيمة القرض :<span
+                            class="text-[16px] text-[#021219]">{{ number_format($activeLoan->amount, 2) }}</span>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">قيمة القرض بالفائدة :<span
+                            class="text-[16px] text-[#021219]">{{ number_format($activeLoan->amount, 2) }}</span></p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">إجمالي المتبقي :<span
+                            class="text-[16px] text-[#021219]">{{ number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) }}</span>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">عدد الأقساط المتبقية :<span
+                            class="text-[16px] text-[#021219]">{{ $activeLoan->installments->where('status', 'unpaid')->count() }}
+                            قسط</span></p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">تاريخ إنتهاء القرض :<span
+                            class="text-[16px] text-[#021219]">{{ $activeLoan->installments->last() ? \Carbon\Carbon::parse($activeLoan->installments->last()->due_date)->format('Y-m-d') : 'غير محدد' }}</span>
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض :<span
+                            class="text-[16px] text-[#E6B800] border border-[#E6B800] bg-[#FFF8E1] px-1 rounded-[8px]">{{ $activeLoan->status == 'active' ? 'نشط' : ($activeLoan->status == 'pending' ? 'تحت المراجعة' : 'معتمد') }}</span>
+                    </p>
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 
     <div data-tab="قروض" class="hidden  tab-content px-7 py-5">
-        <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم القسط</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">المبلغ</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">الحالة</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ الإستحقاق</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ السداد</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">طريقة الدفع</th>
-                        <th class="py-4 font-medium text-[#021219]">الإجراء</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="text-center border-b border-[#D1D5DB]">
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">450</td>
-                        <td class="py-4 border-l border-[#D1D5DB]"><span
-                                class="bg-[#ECFDF333] text-[#067647CC] border border-[#067647CC] px-12 py-1  text-sm rounded-lg">مدفوع</span>
-                        </td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1 فبراير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1يناير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">أمر دفع من الجامعة</td>
-                        <td class="py-5">
-                            <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
-                                <iconify-icon icon="solar:eye-linear"></iconify-icon>
-                                <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="text-center border-b border-[#D1D5DB] bg-[#EFEFEF]">
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">2</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">450</td>
-                        <td class="py-4 border-l border-[#D1D5DB]"><span
-                                class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-12 py-1  text-sm rounded-lg">مستحق</span>
-                        </td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1 فبراير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1يناير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">أمر دفع من الجامعة</td>
-                        <td class="py-5">
-                            <div>
-                                <button data-modal="modal5"
-                                    class="open-modal bg-[#124375] text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-2 px-4">
-                                    تسجيل السداد
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="text-center">
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">3</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">450</td>
-                        <td class="py-4 border-l border-[#D1D5DB]"><span
-                                class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-12 py-1  text-sm rounded-lg">مستحق</span>
-                        </td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1 فبراير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1يناير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">أمر دفع من الجامعة</td>
-                        <td class="py-5">
-                            <div>
-                                <button class="bg-[#6D6D6D] text-[16px] text-[#F4F7F9] rounded-[10px] py-2 px-4">
-                                    غير متاح حاليًا
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        @if ($activeLoan && $activeLoan->installments->count() > 0)
+            <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم القسط</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">المبلغ</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">الحالة</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ الإستحقاق</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ السداد</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">طريقة الدفع</th>
+                            <th class="py-4 font-medium text-[#021219]">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($activeLoan->installments as $index => $installment)
+                            <tr class="text-center border-b border-[#D1D5DB] {{ $loop->even ? 'bg-[#EFEFEF]' : '' }}">
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">{{ $index + 1 }}</td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ number_format($installment->amount, 2) }}</td>
+                                <td class="py-4 border-l border-[#D1D5DB]">
+                                    @if ($installment->status === 'paid')
+                                        <span
+                                            class="bg-[#ECFDF333] text-[#067647CC] border border-[#067647CC] px-12 py-1 text-sm rounded-lg">مدفوع</span>
+                                    @elseif($installment->status === 'unpaid' && \Carbon\Carbon::parse($installment->due_date)->isPast())
+                                        <span
+                                            class="bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] px-12 py-1 text-sm rounded-lg">متأخر</span>
+                                    @else
+                                        <span
+                                            class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-12 py-1 text-sm rounded-lg">مستحق</span>
+                                    @endif
+                                </td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ \Carbon\Carbon::parse($installment->due_date)->format('Y-m-d') }}</td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ $installment->paid_at ? \Carbon\Carbon::parse($installment->paid_at)->format('Y-m-d') : '-' }}
+                                </td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ $installment->payment_method ?? 'أمر دفع من الجامعة' }}</td>
+                                <td class="py-5">
+                                    @if ($installment->status === 'paid')
+                                        <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
+                                            <iconify-icon icon="solar:eye-linear"></iconify-icon>
+                                            <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                        </div>
+                                    @else
+                                        <div>
+                                            <button data-modal="modal5"
+                                                onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
+                                                class="open-modal bg-[#124375] text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-2 px-4">
+                                                تسجيل السداد
+                                            </button>
+                                        </div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="no-requests flex justify-center py-14">
+                <div class="flex flex-col items-center gap-5">
+                    <img src="{{ asset('IMGs/no-requests.png') }}" alt="no-loans">
+                    <p>لا يوجد قروض مسجلة حالياً</p>
+                </div>
+            </div>
+        @endif
     </div>
     <!-- loan table -->
 
     <!-- subscription table -->
     <div data-tab="الاشتراكات" class="hidden  tab-content px-7 py-2">
-        <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم الأشتراك</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">المبلغ</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">الحالة</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ الإستحقاق</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ السداد</th>
-                        <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">طريقة الدفع</th>
-                        <th class="py-4 font-medium text-[#021219]">الإجراء</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="text-center border-b border-[#D1D5DB]">
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">السنة الأولي</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">450</td>
-                        <td class="py-4 border-l border-[#D1D5DB]"><span
-                                class="bg-[#ECFDF333] text-[#067647CC] border border-[#067647CC] px-12 py-1  text-sm rounded-lg">مدفوع</span>
-                        </td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1 فبراير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1يناير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">أمر دفع من الجامعة</td>
-                        <td class="py-5">
-                            <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
-                                <iconify-icon icon="solar:eye-linear"></iconify-icon>
-                                <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="text-center border-b border-[#D1D5DB] bg-[#EFEFEF]">
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">السنة الأولي</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">450</td>
-                        <td class="py-4 border-l border-[#D1D5DB]"><span
-                                class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-12 py-1  text-sm rounded-lg">مستحق</span>
-                        </td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1 فبراير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1يناير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">أمر دفع من الجامعة</td>
-                        <td class="py-5">
-                            <div>
-                                <button data-modal="modal7"
-                                    class="open-modal bg-[#124375] text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-2 px-4">
-                                    تسجيل السداد
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="text-center">
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">السنة الأولي</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">450</td>
-                        <td class="py-4 border-l border-[#D1D5DB]"><span
-                                class="bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] px-12 py-1  text-sm rounded-lg">متأخر</span>
-                        </td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1 فبراير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">1يناير 2026</td>
-                        <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">أمر دفع من الجامعة</td>
-                        <td class="py-5">
-                            <div>
-                                <button class="bg-[#6D6D6D] text-[16px] text-[#F4F7F9] rounded-[10px] py-2 px-4">
-                                    غير متاح حاليًا
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        @if ($member->membershipInfo && $member->membershipInfo->subscriptions->count() > 0)
+            <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم الأشتراك</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">المبلغ</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">الحالة</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ الإستحقاق</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ السداد</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">طريقة الدفع</th>
+                            <th class="py-4 font-medium text-[#021219]">الإجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($member->membershipInfo->subscriptions as $subscription)
+                            <tr class="text-center border-b border-[#D1D5DB] {{ $loop->even ? 'bg-[#EFEFEF]' : '' }}">
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">{{ $subscription->id }}</td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ number_format($subscription->amount, 2) }}</td>
+                                <td class="py-4 border-l border-[#D1D5DB]">
+                                    @if ($subscription->status === 'paid')
+                                        <span
+                                            class="bg-[#ECFDF333] text-[#067647CC] border border-[#067647CC] px-12 py-1 text-sm rounded-lg">مدفوع</span>
+                                    @elseif($subscription->status === 'unpaid' && \Carbon\Carbon::parse($subscription->due_date)->isPast())
+                                        <span
+                                            class="bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] px-12 py-1 text-sm rounded-lg">متأخر</span>
+                                    @else
+                                        <span
+                                            class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-12 py-1 text-sm rounded-lg">مستحق</span>
+                                    @endif
+                                </td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ \Carbon\Carbon::parse($subscription->due_date)->format('Y-m-d') }}</td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ $subscription->paid_at ? \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') : '-' }}
+                                </td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ $subscription->payment_method ?? 'أمر دفع من الجامعة' }}</td>
+                                <td class="py-5">
+                                    @if ($subscription->status === 'paid')
+                                        <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
+                                            <iconify-icon icon="solar:eye-linear"></iconify-icon>
+                                            <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                        </div>
+                                    @else
+                                        <div>
+                                            <button data-modal="modal7"
+                                                onclick="document.getElementById('paySubscriptionForm').action='{{ route('subscriptions.pay', $subscription->id) }}'"
+                                                class="open-modal bg-[#124375] text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-2 px-4">
+                                                تسجيل السداد
+                                            </button>
+                                        </div>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="no-requests flex justify-center py-14">
+                <div class="flex flex-col items-center gap-5">
+                    <img src="{{ asset('IMGs/no-requests.png') }}" alt="no-subscriptions">
+                    <p>لا يوجد اشتراكات مسجلة حالياً</p>
+                </div>
+            </div>
+        @endif
     </div>
     <!-- end subscription table -->
 
@@ -1142,9 +1151,11 @@
                             <p class="text-base font-medium text-[#124375]">اسم العضو :<span
                                     class="text-[#021219] font-semibold text-base">{{ $member->full_name }}</span></p>
                             <p class="text-base font-medium text-[#124375]">رقم القرض :<span
-                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span>
+                            </p>
                             <p class="text-base font-medium text-[#124375]">قيمة القرض :<span
-                                    class="text-[#021219] font-semibold text-base">{{ number_format($activeLoan->amount ?? 0, 2) }} جنيه</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ number_format($activeLoan->amount ?? 0, 2) }}
+                                    جنيه</span></p>
                         </div>
                     </div>
                     <div class="space-y-4">
@@ -1153,9 +1164,11 @@
                         </h2>
                         <div class="flex gap-3">
                             <p class="text-base font-medium text-[#124375]">المبلغ المتبقي :<span
-                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) : '0.00' }} ج.م</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) : '0.00' }}
+                                    ج.م</span></p>
                             <p class="text-base font-medium text-[#124375]">عدد الأقساط :<span
-                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->installments->count() : 0 }} شهر</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->installments->count() : 0 }}
+                                    شهر</span></p>
                             <p class="text-base font-medium text-[#124375]">تاريخ بداية القرض :<span
                                     class="text-[#021219] font-semibold text-base">{{ now()->format('Y-m-d') }}</span></p>
                         </div>
@@ -1220,11 +1233,14 @@
                         </h2>
                         <div class="flex gap-3">
                             <p class="text-base font-medium text-[#124375]">قيمة القرض :<span
-                                    class="text-[#021219] font-semibold text-base">{{ number_format($activeLoan->amount ?? 0, 2) }} جنيه</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ number_format($activeLoan->amount ?? 0, 2) }}
+                                    جنيه</span></p>
                             <p class="text-base font-medium text-[#124375]">رقم القرض :<span
-                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span>
+                            </p>
                             <p class="text-base font-medium text-[#124375]">تاريخ تقديم الطلب :<span
-                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->created_at->format('Y-m-d') : 'غير متوفر' }}</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->created_at->format('Y-m-d') : 'غير متوفر' }}</span>
+                            </p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-5">
@@ -1336,7 +1352,8 @@
                         <p class="text-[18px] font-medium text-[#021219]">سيتم إنهاء القرض بالكامل، وسيتم احتساب جميع
                             الأقساط المتبقية كمدفوعة.</p>
                         <p class="text-[18px]">المبلغ المطلوب للسداد الكامل : <span class="font-medium text-[#124375]">
-                                {{ $activeLoan ? number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) : '0.00' }} </span> جنيه</p>
+                                {{ $activeLoan ? number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) : '0.00' }}
+                            </span> جنيه</p>
                         <p class="text-[16px] font-medium text-[#021219]">يرجى إرفاق رقم و صورة الإيصال السداد لإتمام
                             العملية.</p>
                     </div>
@@ -1436,7 +1453,9 @@
                 <div class="space-y-7">
                     <div class="flex gap-2">
                         <iconify-icon icon="bxs:error" class="text-[#E6B800] text-xl mt-1"></iconify-icon>
-                        <p>تنبيه: العضو متأخر لمدة <span> {{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }} </span>شهور ويستوجب الإنذار القانوني.</p>
+                        <p>تنبيه: العضو متأخر لمدة <span>
+                                {{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }}
+                            </span>شهور ويستوجب الإنذار القانوني.</p>
                     </div>
                     <div class="grid grid-cols-3 gap-4 ">
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
@@ -1445,27 +1464,34 @@
                         </div>
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">رقم العضوية : <span
-                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo->membership_number ?? 'غير متوفر' }}</span></p>
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo->membership_number ?? 'غير متوفر' }}</span>
+                            </p>
                         </div>
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">شهور التأخير : <span
-                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }} شهور</span></p>
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }}
+                                    شهور</span></p>
                         </div>
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">إجمالي المبلغ المستحق : <span
-                                    class="text-[#021219] text-[16px] font-semibold">{{ number_format($member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->sum('amount') : 0, 2) }} ج.م </span></p>
+                                    class="text-[#021219] text-[16px] font-semibold">{{ number_format($member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->sum('amount') : 0, 2) }}
+                                    ج.م </span></p>
                         </div>
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">أقدم شهر مستحق : <span
-                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo ? optional($member->membershipInfo->subscriptions->where('status', 'unpaid')->sortBy('due_date')->first())->due_date?->format('M Y') ?? 'لا يوجد' : 'لا يوجد' }}</span></p>
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo ? optional($member->membershipInfo->subscriptions->where('status', 'unpaid')->sortBy('due_date')->first())->due_date?->format('M Y') ?? 'لا يوجد' : 'لا يوجد' }}</span>
+                            </p>
                         </div>
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">تاريخ إرسال الإخطار : <span
-                                    class="text-[#021219] text-[16px] font-semibold">{{ now()->format('Y-m-d') }}</span></p>
+                                    class="text-[#021219] text-[16px] font-semibold">{{ now()->format('Y-m-d') }}</span>
+                            </p>
                         </div>
                     </div>
                     <div class="border border-[#124375] rounded-[10px] py-5 px-3">
-                        <p>يحيطكم الصندوق علماً بتأخركم في سداد الاشتراكات لمدة {{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }} أشهر، ويرجى السداد في موعد غايته "شهر" من
+                        <p>يحيطكم الصندوق علماً بتأخركم في سداد الاشتراكات لمدة
+                            {{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }}
+                            أشهر، ويرجى السداد في موعد غايته "شهر" من
                             تاريخه وإلا سيتم فصل العضوية نهائياً وفقاً للمادة (8). </p>
                     </div>
                 </div>
