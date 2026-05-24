@@ -518,36 +518,36 @@
             data-tab="قروض">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">رقم القرض :<span
+                    <p class="text-[#6D6D6D] text-[14px]">رقم القرض : <span
                             class="text-[16px] text-[#021219]">{{ $activeLoan->id }}</span>
                     </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">قيمة القرض :<span
+                    <p class="text-[#6D6D6D] text-[14px]">قيمة القرض : <span
                             class="text-[16px] text-[#021219]">{{ number_format($activeLoan->amount, 2) }}</span>
                     </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">قيمة القرض بالفائدة :<span
+                    <p class="text-[#6D6D6D] text-[14px]">قيمة القرض بالفائدة : <span
                             class="text-[16px] text-[#021219]">{{ number_format($activeLoan->amount, 2) }}</span></p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">إجمالي المتبقي :<span
+                    <p class="text-[#6D6D6D] text-[14px]">إجمالي المتبقي : <span
                             class="text-[16px] text-[#021219]">{{ number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) }}</span>
                     </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">عدد الأقساط المتبقية :<span
+                    <p class="text-[#6D6D6D] text-[14px]">عدد الأقساط المتبقية : <span
                             class="text-[16px] text-[#021219]">{{ $activeLoan->installments->where('status', 'unpaid')->count() }}
                             قسط</span></p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">تاريخ إنتهاء القرض :<span
+                    <p class="text-[#6D6D6D] text-[14px]">تاريخ إنتهاء القرض : <span
                             class="text-[16px] text-[#021219]">{{ $activeLoan->installments->last() ? \Carbon\Carbon::parse($activeLoan->installments->last()->due_date)->format('Y-m-d') : 'غير محدد' }}</span>
                     </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض :<span
+                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض : <span
                             class="text-[16px] text-[#E6B800] border border-[#E6B800] bg-[#FFF8E1] px-1 rounded-[8px]">{{ $activeLoan->status == 'active' ? 'نشط' : ($activeLoan->status == 'pending' ? 'تحت المراجعة' : 'معتمد') }}</span>
                     </p>
                 </div>

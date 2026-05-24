@@ -150,16 +150,6 @@ class LoanController extends Controller
                 'status'             => 'pending',
             ]);
 
-            // Generate installment schedule
-            for ($i = 1; $i <= $validated['months']; $i++) {
-                Installment::create([
-                    'loan_id'  => $loan->id,
-                    'amount'   => $installmentAmount,
-                    'due_date' => now()->addMonths($i)->startOfMonth(),
-                    'status'   => 'unpaid',
-                ]);
-            }
-
             if ($request->hasFile('declaration_file')) {
                 $path = $request->file('declaration_file')->store('members/declarations', 'public');
                 Attachment::create([
@@ -374,8 +364,46 @@ class LoanController extends Controller
             'board_approval_image' => 'nullable|image|max:5120',
         ]);
 
-        // Process file uploads and update loan status
-        // ... backend logic here ...
+        $loan->load('membership');
+        $oldValues = $loan->toArray();
+
+        DB::transaction(function () use ($request, $loan, $oldValues) {
+            $loan->update([
+                'status' => 'active'
+            ]);
+
+            // Generate installment schedule when loan is confirmed/started
+            for ($i = 1; $i <= $loan->months; $i++) {
+                Installment::create([
+                    'loan_id'  => $loan->id,
+                    'amount'   => $loan->installment_amount,
+                    'due_date' => now()->addMonths($i)->startOfMonth(),
+                    'status'   => 'unpaid',
+                ]);
+            }
+
+            $memberId = $loan->membership->member_id;
+
+            if ($request->hasFile('check_image')) {
+                $path = $request->file('check_image')->store("members/{$memberId}/loans/{$loan->id}", 'public');
+                Attachment::create([
+                    'member_id' => $memberId,
+                    'type'      => "loan_{$loan->id}_check",
+                    'file_path' => $path,
+                ]);
+            }
+
+            if ($request->hasFile('board_approval_image')) {
+                $path = $request->file('board_approval_image')->store("members/{$memberId}/loans/{$loan->id}", 'public');
+                Attachment::create([
+                    'member_id' => $memberId,
+                    'type'      => "loan_{$loan->id}_board_approval",
+                    'file_path' => $path,
+                ]);
+            }
+
+            $this->logAudit('start', 'loans', $loan->id, $oldValues, $loan->fresh()->toArray());
+        });
 
         return back()->with('success', 'تم بدء القرض بنجاح.');
     }
@@ -390,8 +418,21 @@ class LoanController extends Controller
             'details' => 'required|string',
         ]);
 
-        // Process cancellation and log reason
-        // ... backend logic here ...
+        $oldValues = $loan->toArray();
+
+        DB::transaction(function () use ($request, $loan, $oldValues) {
+            $loan->update([
+                'status' => 'rejected'
+            ]);
+
+            $this->logAudit('cancel', 'loans', $loan->id, $oldValues, array_merge($loan->fresh()->toArray(), [
+                'cancel_reason' => $request->reason,
+                'cancel_details' => $request->details,
+            ]));
+            
+            // Delete pending installments if they exist
+            $loan->installments()->where('status', 'unpaid')->delete();
+        });
 
         return back()->with('success', 'تم إلغاء طلب القرض بنجاح.');
     }
@@ -406,8 +447,40 @@ class LoanController extends Controller
             'receipt_image' => 'nullable|image|max:5120',
         ]);
 
-        // Process payment and file upload
-        // ... backend logic here ...
+        $installment->load('loan.membership');
+        $oldValues = $installment->toArray();
+
+        DB::transaction(function () use ($request, $installment, $oldValues) {
+            $installment->update([
+                'status' => 'paid',
+                'updated_at' => now(),
+            ]);
+
+            $loan = $installment->loan;
+            $memberId = $loan->membership->member_id;
+
+            if ($request->hasFile('receipt_image')) {
+                $path = $request->file('receipt_image')
+                    ->store("members/{$memberId}/loans/{$loan->id}", 'public');
+
+                Attachment::create([
+                    'member_id' => $memberId,
+                    'type'      => "installment_{$installment->id}_receipt",
+                    'file_path' => $path,
+                ]);
+            }
+
+            // Check if all installments are paid → mark loan as completed
+            $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
+            if ($unpaidCount === 0) {
+                $loan->update(['status' => 'completed']);
+            }
+
+            // Audit log
+            $this->logAudit('payment', 'installments', $installment->id, $oldValues, array_merge($installment->fresh()->toArray(), [
+                'receipt_number' => $request->receipt_number,
+            ]));
+        });
 
         return back()->with('success', 'تم سداد القسط بنجاح.');
     }
@@ -422,8 +495,44 @@ class LoanController extends Controller
             'receipt_image' => 'nullable|image|max:5120',
         ]);
 
-        // Process full repayment and mark all remaining installments as paid
-        // ... backend logic here ...
+        $loan->load('membership', 'installments');
+        
+        // Business Rule: Early repayment is only allowed if remaining time is 6 months or less
+        $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
+        if ($unpaidCount > 6) {
+            return back()->with('error', 'لا يمكن السداد المبكر إلا إذا كان المتبقي من القرض 6 أشهر أو أقل.');
+        }
+
+        $oldValues = $loan->toArray();
+
+        DB::transaction(function () use ($request, $loan, $oldValues) {
+            $loan->installments()->where('status', '!=', 'paid')->update([
+                'status' => 'paid',
+                'updated_at' => now(),
+            ]);
+
+            $loan->update([
+                'status' => 'completed',
+            ]);
+
+            $memberId = $loan->membership->member_id;
+
+            if ($request->hasFile('receipt_image')) {
+                $path = $request->file('receipt_image')
+                    ->store("members/{$memberId}/loans/{$loan->id}", 'public');
+
+                Attachment::create([
+                    'member_id' => $memberId,
+                    'type'      => "loan_{$loan->id}_early_repayment_receipt",
+                    'file_path' => $path,
+                ]);
+            }
+
+            // Audit log
+            $this->logAudit('early_repayment', 'loans', $loan->id, $oldValues, array_merge($loan->fresh()->toArray(), [
+                'receipt_number' => $request->receipt_number,
+            ]));
+        });
 
         return back()->with('success', 'تم تسجيل السداد المبكر بنجاح.');
     }
