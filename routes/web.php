@@ -104,6 +104,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
         Route::get('/subscriptions/create', [SubscriptionController::class, 'create'])->name('subscriptions.create');
         Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
+        Route::post('/subscriptions/{subscription}/pay', [SubscriptionController::class, 'pay'])->name('subscriptions.pay');
+        Route::post('/subscriptions/{subscription}/notify', [SubscriptionController::class, 'notify'])->name('subscriptions.notify');
 
         // ─── Legacy aliases (keep old route names working) ───────────────
         Route::get('/memberships/export', [SubscriptionController::class, 'export'])->name('memberships.export');
@@ -124,6 +126,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/loans/{loan}/data', [LoanController::class, 'getLoanData'])->name('loans.data');
         Route::post('/loans/{loan}/payment', [LoanController::class, 'recordPayment'])->name('loans.recordPayment');
         Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
+        
+        // Modal routes
+        Route::post('/loans/{loan}/start', [LoanController::class, 'startLoan'])->name('loans.start');
+        Route::post('/loans/{loan}/cancel', [LoanController::class, 'cancelLoan'])->name('loans.cancel');
+        Route::post('/loans/installments/{installment}/pay', [LoanController::class, 'payInstallment'])->name('loans.installments.pay');
+        Route::post('/loans/{loan}/early-repayment', [LoanController::class, 'earlyRepayment'])->name('loans.earlyRepayment');
     });
 
 });

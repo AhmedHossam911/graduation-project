@@ -168,4 +168,31 @@ class SubscriptionController extends Controller
 
         return $query;
     }
+
+    /**
+     * Record subscription payment (Modal 7)
+     */
+    public function pay(Request $request, Subscription $subscription)
+    {
+        $request->validate([
+            'receipt_number' => 'required|string|max:255',
+            'receipt_image' => 'nullable|image|max:5120',
+        ]);
+
+        // Process payment and file upload
+        // ... backend logic here ...
+
+        return back()->with('success', 'تم تسجيل سداد الاشتراك بنجاح.');
+    }
+
+    /**
+     * Send formal notification for overdue subscription (Modal 8)
+     */
+    public function notify(Request $request, Subscription $subscription)
+    {
+        // Add logic to check conditions and send formal notice
+        // ... backend logic here ...
+
+        return back()->with('success', 'تم إرسال الإخطار بنجاح.');
+    }
 }

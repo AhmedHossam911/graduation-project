@@ -5,15 +5,161 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/member.css') }}">
 
-    <!-- start header -->
+    @php
+        $membership = $member->membershipInfo;
+        $claims = $claimTypes ?? [];
+        $memberClaims = $membership?->claims ?? collect();
+        $memberLoans = $membership?->loans ?? collect();
+        $memberSubscriptions = $membership?->subscriptions ?? collect();
+        $activeTab = request('tab', request('claim_type') ? 'claims' : 'subscriptions');
+        $selectedClaimType = request('claim_type');
+
+        $statusCode = $membership->status ?? 'unknown';
+        $statusData = $statusMap[$statusCode] ?? ['label' => 'غير معروف', 'class' => 'unknown'];
+        $classMap = [
+            'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
+            'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
+            'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#F4F3FF]',
+            'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
+            'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]',
+            'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+            'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#F3F6FA]',
+            'expired' => 'text-[#021219] border-[#021219] bg-[#F2F4F7]',
+            'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+        ];
+        $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400 bg-gray-100';
+
+        $claimDocumentLabels = [
+            'salary_letter' => 'خطاب بالمرتب الأساسي',
+            'national_id' => 'بطاقة الرقم القومي',
+            'retirement_decision' => 'قرار الإحالة للمعاش',
+            'deductions_statement' => 'بيان بالمبالغ المخصومة',
+            'appointment_letter' => 'خطاب بتاريخ التعيين',
+            'release_form' => 'إخلاء طرف',
+            'transfer_decision' => 'قرار النقل',
+            'service_end_decision' => 'قرار إنهاء الخدمة',
+            'death_certificate' => 'شهادة الوفاة',
+            'heirs_ids' => 'بطاقات الرقم القومي للورثة',
+            'inheritance_notice' => 'إعلام الوراثة',
+            'signed_receipt' => 'توقيع باستلام المستحقات',
+        ];
+
+        $claimDocumentsByType = [
+            'retirement' => [
+                'salary_letter',
+                'national_id',
+                'retirement_decision',
+                'deductions_statement',
+                'appointment_letter',
+                'signed_receipt',
+            ],
+            'resignation' => [
+                'salary_letter',
+                'national_id',
+                'retirement_decision',
+                'deductions_statement',
+                'appointment_letter',
+                'signed_receipt',
+            ],
+            'early_retirement' => [
+                'salary_letter',
+                'national_id',
+                'retirement_decision',
+                'deductions_statement',
+                'appointment_letter',
+                'signed_receipt',
+            ],
+            'withdrawal' => [
+                'salary_letter',
+                'national_id',
+                'retirement_decision',
+                'deductions_statement',
+                'appointment_letter',
+                'signed_receipt',
+            ],
+            'expulsion' => [
+                'salary_letter',
+                'national_id',
+                'retirement_decision',
+                'deductions_statement',
+                'appointment_letter',
+                'signed_receipt',
+            ],
+            'professional_disability' => [
+                'salary_letter',
+                'national_id',
+                'retirement_decision',
+                'deductions_statement',
+                'appointment_letter',
+                'signed_receipt',
+            ],
+            'transfer' => [
+                'national_id',
+                'deductions_statement',
+                'appointment_letter',
+                'release_form',
+                'transfer_decision',
+            ],
+            'death' => [
+                'salary_letter',
+                'deductions_statement',
+                'appointment_letter',
+                'service_end_decision',
+                'death_certificate',
+                'heirs_ids',
+                'inheritance_notice',
+            ],
+        ];
+
+        $claimStatusClasses = [
+            'pending' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
+            'approved' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+            'paid' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+            'rejected' => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
+        ];
+        $claimStatusLabels = [
+            'pending' => 'بإنتظار الاعتماد',
+            'approved' => 'معتمد',
+            'paid' => 'تم الصرف',
+            'rejected' => 'مرفوض',
+        ];
+        $paymentStatusClasses = [
+            'paid' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+            'unpaid' => 'bg-[#F2F4F7] text-[#6D6D6D] border-[#6D6D6D]',
+            'overdue' => 'bg-[#FFEAE880] text-[#D92D20] border-[#D92D20]',
+            'pending' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
+            'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+            'completed' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+            'rejected' => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
+        ];
+        $paymentStatusLabels = [
+            'paid' => 'مدفوع',
+            'unpaid' => 'مستحق',
+            'overdue' => 'متأخر',
+            'pending' => 'تحت المراجعة',
+            'active' => 'نشط',
+            'completed' => 'مكتمل',
+            'rejected' => 'مرفوض',
+        ];
+
+        $fieldClass =
+            'focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2';
+        $labelClass = 'px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]';
+    @endphp
+
+    <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
+
+    {{-- head --}}
     <div class="flex justify-between items-center px-10 py-5">
         <div class="flex flex-col gap-4">
-            <div class="flex gap-7 items-center ">
-                <p class="text-[28px] font-semibold text-[#124375]">أحمد محمد</p>
-                <p class="mt-3 status bg-[#ECFDF3] text-[#067647] rounded-lg px-10 border border-[#067647] ">نشط</p>
+            <div class="flex gap-7 items-center">
+                <p class="text-[28px] font-semibold text-[#124375]">{{ $member->full_name }}</p>
+                <p class="mt-3 status {{ $badgeClass }} rounded-lg px-10 border">{{ $statusData['label'] }}</p>
             </div>
-            <P class="text-[#021219] text-sm font-medium flex items-center gap-4">رقم العضوية : <span
-                    class="text-[#124375] font-semibold text-xl">123456789</span></P>
+            <p class="text-[#021219] text-sm font-medium flex items-center gap-4">
+                رقم العضوية :
+                <span class="text-[#124375] font-semibold text-xl">{{ $membership->membership_number ?? '-' }}</span>
+            </p>
         </div>
         <div class="space-y-2 mt-3">
             <button data-modal="modal-edit"
@@ -26,103 +172,80 @@
             </button>
         </div>
     </div>
-    <!-- end header -->
+
     <hr class="border border-[#124375] mx-7 my-2">
 
-    <!-- start personal informationn -->
+    {{-- Member Info --}}
     <section class="py-5 px-7">
         <div class="personal-info relative border border-[#124375] rounded-[20px]">
-            <h2 class="absolute text-[#124375] px-1 right-3 top-[-15px] text-lg font-medium bg-[#F4F7F9] ">
+            <h2 class="absolute text-[#124375] px-1 right-3 top-[-15px] text-lg font-medium bg-[#F4F7F9]">
                 البيانات الشخصية
             </h2>
             <div class="information py-7 px-7">
-                <form class="space-y-5">
-                    <div class="flex gap-4">
+                <div class="space-y-5">
+                    <div class="grid grid-cols-3 gap-4">
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">الأسم
-                                كامل</label>
-                            <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="احمد محمد ابراهيم خليل">
+                            <label class="{{ $labelClass }}">الاسم كامل</label>
+                            <input type="text" disabled value="{{ $member->full_name ?? 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">الرقم
-                                القومي</label>
-                            <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="12345678912345">
+                            <label class="{{ $labelClass }}">الرقم القومي</label>
+                            <input type="text" disabled value="{{ $member->national_id ?? 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">رقم
-                                الهاتف</label>
-                            <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="01234567891">
+                            <label class="{{ $labelClass }}">رقم الهاتف</label>
+                            <input type="text" disabled value="{{ $member->phone ?? 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                     </div>
-                    <div class="flex gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">الوظيفة</label>
+                            <label class="{{ $labelClass }}">الوظيفة</label>
                             <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="دكتور في التربية النوعية">
+                                value="{{ $member->employmentInfo->job_title ?? 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">جهة
-                                العمل</label>
+                            <label class="{{ $labelClass }}">جهة العمل</label>
                             <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="كلية التربية -جامعة حلوان">
+                                value="{{ $member->employmentInfo->workplace ?? ($member->department?->name ?? 'بيانات مفقودة') }}"
+                                class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">البريد
-                                الإلكتروني</label>
-                            <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="ahmed@gmail.com">
+                            <label class="{{ $labelClass }}">البريد الإلكتروني</label>
+                            <input type="text" disabled value="{{ $member->user->email ?? 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                     </div>
-                    <div class="flex gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">تاريخ
-                                الانضمام</label>
-                            <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="22 أكتوبر 2026">
+                            <label class="{{ $labelClass }}">تاريخ الانضمام</label>
+                            <input type="text" disabled value="{{ $member->created_at?->isoFormat('D MMMM YYYY') }}"
+                                class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">الحالة
-                                الوظيفية</label>
+                            <label class="{{ $labelClass }}">الحالة الوظيفية</label>
                             <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="موظف بالجامعة">
+                                value="{{ $member->employmentInfo->financial_category ?? 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
-                            <label
-                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] ">الراتب
-                                الأساسي (في 1/7/2014)</label>
+                            <label class="{{ $labelClass }}">الراتب الأساسي</label>
                             <input type="text" disabled
-                                class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                                placeholder="416 ج.م">
+                                value="{{ $member->employmentInfo->starting_salary ? number_format($member->employmentInfo->starting_salary, 2) . ' ج.م' : 'بيانات مفقودة' }}"
+                                class="{{ $fieldClass }}">
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </section>
-    <!-- end personal information -->
 
-    <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
     <!-- suspension of membership MODAL -->
-    <form>
+    <form action="{{ route('members.suspend', $member->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
         <div id="modal1"
             class="modal hidden max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
             <button
@@ -138,7 +261,7 @@
                 <div class="reason space-y-3">
                     <p class="mr-1 text-[#021219] font-medium ">لإيقاف العضوية، يرجى توضيح سبب الرفض وإرفاق صورة من طلب
                         إيقاف العضوية الموقَّع من العضو أو قرار صندوق الزمالة برفض العضوية.</p>
-                    <textarea required rows="4"
+                    <textarea name="reason" required rows="4"
                         class="resize-none bg-[#F4F7F9] w-full border border-[#124375] rounded-xl outline-none px-2"
                         placeholder="سبب إيقاف العضوية"></textarea>
                 </div>
@@ -147,7 +270,7 @@
                         class="w-full cursor-pointer  py-6 text-[#124375] flex items-center justify-center gap-1">
                         <p>اضغط لإرفاق صورة الملف</p>
                         <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                        <input type="file" id="suspension-file" class="hidden">
+                        <input type="file" required name="suspension_file" id="suspension-file" class="hidden">
                     </label>
                 </div>
                 <div class="btns flex gap-2 ">
@@ -163,6 +286,93 @@
         </div>
     </form>
     <!-- end suspension of membership MODAL -->
+
+    {{-- edit modal --}}
+    <div id="modal-edit"
+        class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+        <button
+            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+            <iconify-icon icon="weui:close-filled"></iconify-icon>
+        </button>
+        <div class="modal-body space-y-7 px-12">
+            <div class="modal-title text-center">
+                <h1 class="text-xl font-semibold text-[#124375]">
+                    تعديل بيانات
+                </h1>
+            </div>
+            <div class="space-y-4">
+                <div class="flex gap-3">
+                    <p class="text-base font-medium text-[#124375]">الأسم : <span
+                            class="text-[#021219] font-semibold text-base">{{ $member->full_name }}</span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span
+                            class="text-[#021219] font-semibold text-base">
+                            {{ $membership->membership_number ?? '-' }}
+                        </span></p>
+                </div>
+                <div class="flex flex-col gap-5">
+                    <div class="flex flex-col gap-5">
+                        <p class="text-[14px] text-[#021219]">
+                            يمكنك تحديث البيانات الموضحة أدناه فقط. يرجى التأكد من دقة المعلومات قبل الحفظ.
+                        </p>
+                        <form action="{{ route('members.store', $member->id) }}" method="POST" class="space-y-5">
+                            @csrf
+                            <div class="flex flex-col gap-4">
+                                <div class="w-full relative">
+                                    <label
+                                        class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
+                                        التليفون</label>
+                                    <input type="text" value="{{ $member->phone ?? 'بيانات مفقودة' }}"
+                                        placeholder="01234595684"
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                </div>
+                                <div class="w-full relative">
+                                    <label
+                                        class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">البريد
+                                        الإلكتروني</label>
+                                    <input type="text" value="{{ $member->user->email ?? 'بيانات مفقودة' }}"
+                                        placeholder="ahmed@gmail.com"
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                </div>
+                                <div class="w-full relative">
+                                    <label
+                                        class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الحالة
+                                        الوظيفية</label>
+                                    <input type="text" placeholder="معيد بالجامعة"
+                                        value="{{ $member->employmentInfo->job_title ?? 'بيانات مفقودة' }}"
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                </div>
+                                <div class="w-full relative">
+                                    <label
+                                        class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">عنوان
+                                        محل الإقامة</label>
+                                    <input type="text" value="{{ $member->address ?? 'بيانات مفقودة' }}"
+                                        placeholder="العنوان الحالي بالتفصيل"
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                </div>
+                                <div class="w-full relative">
+                                    <label
+                                        class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الراتب
+                                        الأساسي</label>
+                                    <input type="text" placeholder="514 ج.م"
+                                        value="{{ $member->employmentInfo->starting_salary ? number_format($member->employmentInfo->starting_salary, 2) . ' ج.م' : 'بيانات مفقودة' }}"
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <div class="btns flex gap-2 ">
+                <div class="w-full">
+                    <button type="submit"
+                        class=" rounded-[14px] w-full py-3 bg-[#124375] text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2"><iconify-icon
+                            icon="fluent:save-16-filled" class="text-2xl mt-1"></iconify-icon>حفظ التعديلات</button>
+                </div>
+                <button
+                    class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] modal-close">إلغاء</button>
+            </div>
+        </div>
+    </div>
+    </form>
 
     <!-- tabs -->
     <section class="px-7">
@@ -207,24 +417,29 @@
                     طلب قرض
                 </button>
                 <div class="tab-content flex gap-3 hidden" data-tab="قروض">
-                            <button  data-modal="modal6" class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
-                                تسديد القرض بالكامل
-                            </button>
-                            <button class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
-                                <iconify-icon icon="material-symbols:print" class="text-xl flex items-center"></iconify-icon>
-                                طباعة التفاصيل للمجلس
-                            </button>
-                            <button data-modal="modal3" class="open-modal text-[16px] font-medium bg-[#124375] w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
-                                بدء القرض
-                            </button>
-                            <a href="../previousLoansPage/previousLoans.html" class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
-                                عرض القروض السابقة
-                            </a>
-                            <button data-modal="modal4" class="open-modal flex text-[16px] font-medium items-center w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px]">
-                                <iconify-icon icon="zondicons:close-solid" class="text-xl flex items-center"></iconify-icon>
-                                إلغاء أو رفض الطلب
-                            </button>
-                        </div> 
+                    <button data-modal="modal6"
+                        class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
+                        تسديد القرض بالكامل
+                    </button>
+                    <button
+                        class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
+                        <iconify-icon icon="material-symbols:print" class="text-xl flex items-center"></iconify-icon>
+                        طباعة التفاصيل للمجلس
+                    </button>
+                    <button data-modal="modal3"
+                        class="open-modal text-[16px] font-medium bg-[#124375] w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
+                        بدء القرض
+                    </button>
+                    <a href="route('members.loans.history', $member->id)"
+                        class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
+                        عرض القروض السابقة
+                    </a>
+                    <button data-modal="modal4"
+                        class="open-modal flex text-[16px] font-medium items-center w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px]">
+                        <iconify-icon icon="zondicons:close-solid" class="text-xl flex items-center"></iconify-icon>
+                        إلغاء أو رفض الطلب
+                    </button>
+                </div>
                 <!-- end loans only -->
                 <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
                     <button
@@ -467,7 +682,6 @@
     </div>
     <!-- end subscription table -->
 
-
     <!-- loan request form -->
     <div class="modal tab-content hidden mx-7  rounded-2xl bg-[#F4F7F9] border border-[#124375] py-3" data-tab="قروض">
         <div class="modal-body space-y-7 px-12">
@@ -524,10 +738,11 @@
             </div>
             <div class="btns flex gap-2 ">
                 <form class="w-full">
+                    <!-- <button class="submit-btn  rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon icon="healthicons:yes"  class="flex items-center text-2xl"></iconify-icon></span>تأكيد الأختيار</button> -->
                     <button data-modal="modal2"
                         class="open-modal rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="material-symbols:print"
-                                class="flex items-center text-2xl"></iconify-icon></span>تقديم الطلب</button>
+                                class="flex items-center text-2xl"></iconify-icon></span>طباعة الإقرار</button>
                 </form>
                 <button
                     class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
@@ -549,29 +764,30 @@
                     إرفاق الإقرار المُوَقَّع
                 </h1>
             </div>
-            <div class="documents space-y-5">
-                <p class="text-[#021219] text-[16px] font-medium">يرجى رفع ملف الإقرار بعد طباعته وتوقيعه.</p>
-                <div class="border border-[#124375] rounded-[12px] ">
-                    <label for="file-1"
-                        class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
-                        <p>اضغط هنا لإرفاق ملف الإقرار</p>
-                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                        <input type="file" id="file-1" class="hidden">
-                    </label>
+            <form>
+                <div class="documents space-y-5">
+                    <p class="text-[#021219] text-[16px] font-medium">يرجى رفع ملف الإقرار بعد طباعته وتوقيعه.</p>
+                    <div class="border border-[#124375] rounded-[12px] ">
+                        <label for="file-1"
+                            class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
+                            <p>اضغط هنا لإرفاق ملف الإقرار</p>
+                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                            <input type="file" id="file-1" class="hidden">
+                        </label>
+                    </div>
                 </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <form class="w-full">
-                    <button
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow"><span><iconify-icon
-                                icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
-                        وإرسال</button>
-                </form>
-            </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button
+                            class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow"><span><iconify-icon
+                                    icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
+                            وإرسال</button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
     <!-- end Attach the signed declaration modal -->
-
 
     <!-- request form -->
     <div class="tab-content modal-body space-y-7 px-5" data-tab="مطالبات">
@@ -787,7 +1003,6 @@
     </div>
     <!-- end request form -->
 
-
     <!-- second step of request form -->
     <div
         class="request-modal-2 hidden w-full max-w-5xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
@@ -903,365 +1118,369 @@
     <!-- end second step of request form -->
 
     <!-- start loan modal -->
-
-    <div id="modal3"
-        class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    بدء القرض
-                </h1>
-            </div>
-            <div class="space-y-4">
-                <div class="space-y-4">
-                    <h2 class="text-[#021219] text-base font-medium">
-                        بيانات العضو
-                    </h2>
-                    <div class="flex gap-3">
-                        <p class="text-base font-medium text-[#124375]">اسم العضو :<span
-                                class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                        <p class="text-base font-medium text-[#124375]">رقم القرض :<span
-                                class="text-[#021219] font-semibold text-base">512345678922</span></p>
-                        <p class="text-base font-medium text-[#124375]">قيمة القرض :<span
-                                class="text-[#021219] font-semibold text-base">5,000 جنيه</span></p>
-                    </div>
+    <form action="{{ route('loans.start', $memberLoans->first()->id ?? 0) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        <div id="modal3"
+            class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        بدء القرض
+                    </h1>
                 </div>
                 <div class="space-y-4">
-                    <h2 class="text-[#021219] text-base font-medium">
-                        بيانات القرض
-                    </h2>
-                    <div class="flex gap-3">
-                        <p class="text-base font-medium text-[#124375]">المبلغ المتبقي :<span
-                                class="text-[#021219] font-semibold text-base">4500 ج.م</span></p>
-                        <p class="text-base font-medium text-[#124375]">عدد الأقساط :<span
-                                class="text-[#021219] font-semibold text-base">12 شهر</span></p>
-                        <p class="text-base font-medium text-[#124375]">تاريخ بداية القرض :<span
-                                class="text-[#021219] font-semibold text-base">1 فبراير 2026</span></p>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-5">
-                    <div>
-                        <p class="text-[16px] font-medium text-[#021219]">
-                            سيتم بدء القرض واحتساب الأقساط اعتبارًا من تاريخ اليوم.
-                        </p>
-                        <p class="text-[16px] font-medium text-[#021219]">
-                            يرجى إدخال رقم الشيك وإرفاق المستندات المطلوبة قبل التأكيد.
-                        </p>
-                    </div>
-                    <div class="border border-[#124375] rounded-[12px] ">
-                        <label for="file-21"
-                            class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
-                            <p>اضغط لإرفاق صورة الشيك</p>
-                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-21" class="hidden">
-                        </label>
-                    </div>
-                    <div class="border border-[#124375] rounded-[12px] ">
-                        <label for="file-22"
-                            class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
-                            <p>اضغط لإرفاق صورة موافقة المجلس</p>
-                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-22" class="hidden">
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <form class="w-full">
-                    <button
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
-                        بدء القرض</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    <div id="modal4"
-        class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    تأكيد إلغاء الطلب
-                </h1>
-            </div>
-            <div class="space-y-4">
-                <div class="space-y-4">
-                    <h2 class="text-[#021219] text-base font-medium">
-                        بيانات القرض
-                    </h2>
-                    <div class="flex gap-3">
-                        <p class="text-base font-medium text-[#124375]">قيمة القرض :<span
-                                class="text-[#021219] font-semibold text-base">5,000 جنيه</span></p>
-                        <p class="text-base font-medium text-[#124375]">رقم القرض :<span
-                                class="text-[#021219] font-semibold text-base">123456789</span></p>
-                        <p class="text-base font-medium text-[#124375]">تاريخ تقديم الطلب :<span
-                                class="text-[#021219] font-semibold text-base">1 يناير 2027</span></p>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-5">
-                    <div class="flex flex-col gap-3">
-                        <p class="text-[16px] font-medium text-[#021219]">
-                            يرجى تحديد سبب عدم استكمال طلب القرض:
-                        </p>
-                        <div class="flex flex-col gap-3">
-                            <label class="flex items-center gap-2 w-fit cursor-pointer">
-                                <input type="radio" name="reason" class="peer hidden">
-                                <span
-                                    class="mt-2 w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
-                                <span class=" text-[16px] font-normal text-[#021219]">إلغاء بناءً على رغبة العضو</span>
-                            </label>
-                            <label class="flex items-center gap-2 w-fit cursor-pointer">
-                                <input type="radio" name="reason" class="peer hidden">
-                                <span
-                                    class="mt-2 w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
-                                <span class=" text-[16px] font-normal text-[#021219]">رفض الطلب بواسطة المجلس</span>
-                            </label>
+                    <div class="space-y-4">
+                        <h2 class="text-[#021219] text-base font-medium">
+                            بيانات العضو
+                        </h2>
+                        <div class="flex gap-3">
+                            <p class="text-base font-medium text-[#124375]">اسم العضو :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $member->full_name }}</span></p>
+                            <p class="text-base font-medium text-[#124375]">رقم القرض :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span></p>
+                            <p class="text-base font-medium text-[#124375]">قيمة القرض :<span
+                                    class="text-[#021219] font-semibold text-base">{{ number_format($activeLoan->amount ?? 0, 2) }} جنيه</span></p>
                         </div>
                     </div>
-                    <div class="reason">
-                        <textarea required rows="4"
-                            class="resize-none bg-[#F4F7F9] w-full border border-[#0A2A4E] rounded-xl outline-none px-2 p-3 placeholder:text-[#0A2A4E]"
-                            placeholder="سبب الإلغاء أو رقم المجلس الذي تم فيه الرفض"></textarea>
+                    <div class="space-y-4">
+                        <h2 class="text-[#021219] text-base font-medium">
+                            بيانات القرض
+                        </h2>
+                        <div class="flex gap-3">
+                            <p class="text-base font-medium text-[#124375]">المبلغ المتبقي :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) : '0.00' }} ج.م</span></p>
+                            <p class="text-base font-medium text-[#124375]">عدد الأقساط :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->installments->count() : 0 }} شهر</span></p>
+                            <p class="text-base font-medium text-[#124375]">تاريخ بداية القرض :<span
+                                    class="text-[#021219] font-semibold text-base">{{ now()->format('Y-m-d') }}</span></p>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <div class="w-full">
-                    <button type="submit"
-                        class=" rounded-[14px] w-full py-3 bg-[#D92D20] red-shadow text-[#F4F7F9] text-base font-medium">تأكيد
-                        إلغاء القرض</button>
-                </div>
-                <button
-                    class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] close-btn">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal5"
-        class="hidden w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    تسجيل سداد قسط قرض
-                </h1>
-            </div>
-            <div class="space-y-7">
-                <div>
-                    <p>يرجى إرفاق رقم و صورة إيصال السداد لإتمام العملية.</p>
-                </div>
-                <div class="flex flex-col gap-5">
-                    <div class="relative w-full">
-                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
-                            رقم الإيصال <span class="text-[#D92D20]">*</span>
-                        </label>
-                        <input type="text" placeholder="FJB2116708086230"
-                            class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
-                    </div>
-                    <div class=" border border-[#124375] rounded-2xl w-full">
-                        <label for="file-23"
-                            class=" cursor-pointer py-10  text-[#6D6D6D] flex items-center justify-center gap-1">
-                            <p>اضغط لإرفاق صورة إيصال السداد</p>
-                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-23" class="hidden">
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <div class="w-full">
-                    <button
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
-                        السداد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal6"
-        class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-7">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    تسجيل سداد مبكر لأقساط القرض
-                </h1>
-            </div>
-            <div class="space-y-7">
-                <div class="flex flex-col gap-3">
-                    <p class="text-[18px] font-medium text-[#021219]">سيتم إنهاء القرض بالكامل، وسيتم احتساب جميع
-                        الأقساط المتبقية كمدفوعة.</p>
-                    <p class="text-[18px]">المبلغ المطلوب للسداد الكامل : <span class="font-medium text-[#124375]">
-                            2,000 </span> جنيه</p>
-                    <p class="text-[16px] font-medium text-[#021219]">يرجى إرفاق رقم و صورة الإيصال السداد لإتمام
-                        العملية.</p>
-                </div>
-                <div class="flex flex-col gap-5">
-                    <div class="relative w-full">
-                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
-                            رقم الإيصال <span class="text-[#D92D20]">*</span>
-                        </label>
-                        <input type="text" placeholder="FJB2116708086230"
-                            class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
-                    </div>
-                    <div class=" border border-[#124375] rounded-2xl w-full">
-                        <label for="file-24"
-                            class=" cursor-pointer py-10  text-[#124375] flex items-center justify-center gap-1">
-                            <p>اضغط لإرفاق صورة إيصال السداد</p>
-                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-24" class="hidden">
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <form class="w-full">
-                    <button
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
-                        السداد</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal7"
-        class="hidden w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    تسجيل سداد الاشتراك
-                </h1>
-            </div>
-            <div class="space-y-7">
-                <div>
-                    <p>يرجى إرفاق رقم و صورة إيصال السداد لإتمام العملية.</p>
-                </div>
-                <div class="flex flex-col gap-5">
-                    <div class="relative w-full">
-                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
-                            رقم الإيصال <span class="text-[#D92D20]">*</span>
-                        </label>
-                        <input type="text" placeholder="FJB2116708086230"
-                            class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
-                    </div>
-                    <div class=" border border-[#124375] rounded-2xl w-full">
-                        <label for="file-25"
-                            class=" cursor-pointer py-10  text-[#6D6D6D] flex items-center justify-center gap-1">
-                            <p>اضغط لإرفاق صورة إيصال السداد</p>
-                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-25" class="hidden">
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <div class="w-full">
-                    <button
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
-                        السداد</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-edit"
-        class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    تعديل بيانات
-                </h1>
-            </div>
-            <div class="space-y-4">
-                <div class="flex gap-3">
-                    <p class="text-base font-medium text-[#124375]">الأسم : <span
-                            class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span
-                            class="text-[#021219] font-semibold text-base">123456789</span></p>
-                </div>
-                <div class="flex flex-col gap-5">
                     <div class="flex flex-col gap-5">
-                        <p class="text-[14px] text-[#021219]">
-                            يمكنك تحديث البيانات الموضحة أدناه فقط. يرجى التأكد من دقة المعلومات قبل الحفظ.
-                        </p>
-                        <div class="flex flex-col gap-4">
-                            <div class="w-full relative">
-                                <label
-                                    class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
-                                    التليفون</label>
-                                <input type="text" placeholder="01234595684"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
-                            </div>
-                            <div class="w-full relative">
-                                <label
-                                    class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">البريد
-                                    الإلكتروني</label>
-                                <input type="text" placeholder="ahmed@gmail.com"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
-                            </div>
-                            <div class="w-full relative">
-                                <label
-                                    class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الحالة
-                                    الوظيفية</label>
-                                <input type="text" placeholder="معيد بالجامعة"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
-                            </div>
-                            <div class="w-full relative">
-                                <label
-                                    class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">عنوان
-                                    محل الإقامة</label>
-                                <input type="text" placeholder="العنوان الحالي بالتفصيل"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
-                            </div>
-                            <div class="w-full relative">
-                                <label
-                                    class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الراتب
-                                    الأساسي</label>
-                                <input type="text" placeholder="514 ج.م"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
-                            </div>
+                        <div>
+                            <p class="text-[16px] font-medium text-[#021219]">
+                                سيتم بدء القرض واحتساب الأقساط اعتبارًا من تاريخ اليوم.
+                            </p>
+                            <p class="text-[16px] font-medium text-[#021219]">
+                                يرجى إدخال رقم الشيك وإرفاق المستندات المطلوبة قبل التأكيد.
+                            </p>
+                        </div>
+                        <div class="border border-[#124375] rounded-[12px] ">
+                            <label for="file-21"
+                                class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
+                                <p>اضغط لإرفاق صورة الشيك</p>
+                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                <input type="file" id="file-21" name="check_image" class="hidden">
+                            </label>
+                        </div>
+                        <div class="border border-[#124375] rounded-[12px] ">
+                            <label for="file-22"
+                                class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
+                                <p>اضغط لإرفاق صورة موافقة المجلس</p>
+                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                <input type="file" id="file-22" name="board_approval_image" class="hidden">
+                            </label>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="btns flex gap-2 ">
-                <div class="w-full">
-                    <button type="submit"
-                        class=" rounded-[14px] w-full py-3 bg-[#124375] text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2"><iconify-icon
-                            icon="fluent:save-16-filled" class="text-2xl mt-1"></iconify-icon>حفظ التعديلات</button>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button type="submit"
+                            class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                    icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
+                            بدء القرض</button>
+                    </div>
                 </div>
-                <button
-                    class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] modal-close">إلغاء</button>
             </div>
         </div>
-    </div>
+    </form>
+
+    <form action="{{ route('loans.cancel', $memberLoans->first()->id ?? 0) }}" method="POST">
+        @csrf
+        <div id="modal4"
+            class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        تأكيد إلغاء الطلب
+                    </h1>
+                </div>
+                <div class="space-y-4">
+                    <div class="space-y-4">
+                        <h2 class="text-[#021219] text-base font-medium">
+                            بيانات القرض
+                        </h2>
+                        <div class="flex gap-3">
+                            <p class="text-base font-medium text-[#124375]">قيمة القرض :<span
+                                    class="text-[#021219] font-semibold text-base">{{ number_format($activeLoan->amount ?? 0, 2) }} جنيه</span></p>
+                            <p class="text-base font-medium text-[#124375]">رقم القرض :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span></p>
+                            <p class="text-base font-medium text-[#124375]">تاريخ تقديم الطلب :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->created_at->format('Y-m-d') : 'غير متوفر' }}</span></p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-5">
+                        <div class="flex flex-col gap-3">
+                            <p class="text-[16px] font-medium text-[#021219]">
+                                يرجى تحديد سبب عدم استكمال طلب القرض:
+                            </p>
+                            <div class="flex flex-col gap-3">
+                                <label class="flex items-center gap-2 w-fit cursor-pointer">
+                                    <input type="radio" name="reason" value="member_request" class="peer hidden">
+                                    <span
+                                        class="mt-2 w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                    <span class=" text-[16px] font-normal text-[#021219]">إلغاء بناءً على رغبة العضو</span>
+                                </label>
+                                <label class="flex items-center gap-2 w-fit cursor-pointer">
+                                    <input type="radio" name="reason" value="board_rejection" class="peer hidden">
+                                    <span
+                                        class="mt-2 w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                    <span class=" text-[16px] font-normal text-[#021219]">رفض الطلب بواسطة المجلس</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="reason">
+                            <textarea required rows="4" name="details"
+                                class="resize-none bg-[#F4F7F9] w-full border border-[#0A2A4E] rounded-xl outline-none px-2 p-3 placeholder:text-[#0A2A4E]"
+                                placeholder="سبب الإلغاء أو رقم المجلس الذي تم فيه الرفض"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button type="submit"
+                            class=" rounded-[14px] w-full py-3 bg-[#D92D20] red-shadow text-[#F4F7F9] text-base font-medium">تأكيد
+                            إلغاء القرض</button>
+                    </div>
+                    <button
+                        class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] close-btn">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form action="{{ route('loans.installments.pay', 0) }}" method="POST" enctype="multipart/form-data"
+        id="payInstallmentForm">
+        @csrf
+        <div id="modal5"
+            class="hidden w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        تسجيل سداد قسط قرض
+                    </h1>
+                </div>
+                <div class="space-y-7">
+                    <div>
+                        <p>يرجى إرفاق رقم و صورة إيصال السداد لإتمام العملية.</p>
+                    </div>
+                    <div class="flex flex-col gap-5">
+                        <div class="relative w-full">
+                            <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
+                                رقم الإيصال <span class="text-[#D92D20]">*</span>
+                            </label>
+                            <input type="text" name="receipt_number" placeholder="FJB2116708086230"
+                                class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
+                        </div>
+                        <div class=" border border-[#124375] rounded-2xl w-full">
+                            <label for="file-23"
+                                class=" cursor-pointer py-10  text-[#6D6D6D] flex items-center justify-center gap-1">
+                                <p>اضغط لإرفاق صورة إيصال السداد</p>
+                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                <input type="file" id="file-23" name="receipt_image" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button type="submit"
+                            class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                    icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
+                            السداد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form action="{{ route('loans.earlyRepayment', $memberLoans->first()->id ?? 0) }}" method="POST"
+        enctype="multipart/form-data">
+        @csrf
+        <div id="modal6"
+            class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-7">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        تسجيل سداد مبكر لأقساط القرض
+                    </h1>
+                </div>
+                <div class="space-y-7">
+                    <div class="flex flex-col gap-3">
+                        <p class="text-[18px] font-medium text-[#021219]">سيتم إنهاء القرض بالكامل، وسيتم احتساب جميع
+                            الأقساط المتبقية كمدفوعة.</p>
+                        <p class="text-[18px]">المبلغ المطلوب للسداد الكامل : <span class="font-medium text-[#124375]">
+                                {{ $activeLoan ? number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) : '0.00' }} </span> جنيه</p>
+                        <p class="text-[16px] font-medium text-[#021219]">يرجى إرفاق رقم و صورة الإيصال السداد لإتمام
+                            العملية.</p>
+                    </div>
+                    <div class="flex flex-col gap-5">
+                        <div class="relative w-full">
+                            <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
+                                رقم الإيصال <span class="text-[#D92D20]">*</span>
+                            </label>
+                            <input type="text" name="receipt_number" placeholder="FJB2116708086230"
+                                class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
+                        </div>
+                        <div class=" border border-[#124375] rounded-2xl w-full">
+                            <label for="file-24"
+                                class=" cursor-pointer py-10  text-[#124375] flex items-center justify-center gap-1">
+                                <p>اضغط لإرفاق صورة إيصال السداد</p>
+                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                <input type="file" id="file-24" name="receipt_image" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button type="submit"
+                            class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                    icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
+                            السداد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form action="{{ route('subscriptions.pay', 0) }}" method="POST" enctype="multipart/form-data"
+        id="paySubscriptionForm">
+        @csrf
+        <div id="modal7"
+            class="hidden w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        تسجيل سداد الاشتراك
+                    </h1>
+                </div>
+                <div class="space-y-7">
+                    <div>
+                        <p>يرجى إرفاق رقم و صورة إيصال السداد لإتمام العملية.</p>
+                    </div>
+                    <div class="flex flex-col gap-5">
+                        <div class="relative w-full">
+                            <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
+                                رقم الإيصال <span class="text-[#D92D20]">*</span>
+                            </label>
+                            <input type="text" name="receipt_number" placeholder="FJB2116708086230"
+                                class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
+                        </div>
+                        <div class=" border border-[#124375] rounded-2xl w-full">
+                            <label for="file-25"
+                                class=" cursor-pointer py-10  text-[#6D6D6D] flex items-center justify-center gap-1">
+                                <p>اضغط لإرفاق صورة إيصال السداد</p>
+                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                <input type="file" id="file-25" name="receipt_image" class="hidden">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button type="submit"
+                            class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                    icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
+                            السداد</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form action="{{ route('subscriptions.notify', 0) }}" method="POST" id="notifySubscriptionForm">
+        @csrf
+        <div id="modal8"
+            class="hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        إرسال إخطار رسمي للسداد
+                    </h1>
+                </div>
+                <div class="space-y-7">
+                    <div class="flex gap-2">
+                        <iconify-icon icon="bxs:error" class="text-[#E6B800] text-xl mt-1"></iconify-icon>
+                        <p>تنبيه: العضو متأخر لمدة <span> {{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }} </span>شهور ويستوجب الإنذار القانوني.</p>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 ">
+                        <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
+                            <p class="text-[#124375] text-[16px] ">الاسم : <span
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->full_name }}</span></p>
+                        </div>
+                        <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
+                            <p class="text-[#124375] text-[16px] ">رقم العضوية : <span
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo->membership_number ?? 'غير متوفر' }}</span></p>
+                        </div>
+                        <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
+                            <p class="text-[#124375] text-[16px] ">شهور التأخير : <span
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }} شهور</span></p>
+                        </div>
+                        <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
+                            <p class="text-[#124375] text-[16px] ">إجمالي المبلغ المستحق : <span
+                                    class="text-[#021219] text-[16px] font-semibold">{{ number_format($member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->sum('amount') : 0, 2) }} ج.م </span></p>
+                        </div>
+                        <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
+                            <p class="text-[#124375] text-[16px] ">أقدم شهر مستحق : <span
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->membershipInfo ? optional($member->membershipInfo->subscriptions->where('status', 'unpaid')->sortBy('due_date')->first())->due_date?->format('M Y') ?? 'لا يوجد' : 'لا يوجد' }}</span></p>
+                        </div>
+                        <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
+                            <p class="text-[#124375] text-[16px] ">تاريخ إرسال الإخطار : <span
+                                    class="text-[#021219] text-[16px] font-semibold">{{ now()->format('Y-m-d') }}</span></p>
+                        </div>
+                    </div>
+                    <div class="border border-[#124375] rounded-[10px] py-5 px-3">
+                        <p>يحيطكم الصندوق علماً بتأخركم في سداد الاشتراكات لمدة {{ $member->membershipInfo ? $member->membershipInfo->subscriptions->where('status', 'unpaid')->count() : 0 }} أشهر، ويرجى السداد في موعد غايته "شهر" من
+                            تاريخه وإلا سيتم فصل العضوية نهائياً وفقاً للمادة (8). </p>
+                    </div>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <button type="submit"
+                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                icon="ic:round-email" class="flex items-center text-2xl"></iconify-icon></span>طباعة
+                        وإرسال
+                        الإخطار</button>
+                    <button
+                        class="close-btn rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2  text-[#124375] border border-[#124375] navy-shadow ">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
     <script src="{{ asset('JS/member.js') }}"></script>
 @endsection

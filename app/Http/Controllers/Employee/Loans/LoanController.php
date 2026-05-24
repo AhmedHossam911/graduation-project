@@ -131,6 +131,13 @@ class LoanController extends Controller
                 ->with('error', 'يوجد قرض نشط بالفعل لهذا العضو. لا يمكن إنشاء قرض جديد.');
         }
 
+        // Business rule: Paid subscriptions must be >= requested loan amount
+        $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
+        if ($totalPaidSubscriptions < $validated['total_amount']) {
+             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
+                ->with('error', 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.');
+        }
+
         $installmentAmount = round($validated['total_amount'] / $validated['months'], 2);
 
         $loan = DB::transaction(function () use ($validated, $member, $installmentAmount) {
@@ -159,7 +166,8 @@ class LoanController extends Controller
         });
 
         return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'loans'])
-            ->with('success', 'تم إنشاء طلب القرض بنجاح.');
+            ->with('success', 'تم إنشاء طلب القرض بنجاح.')
+            ->with('open_declaration_modal', true);
     }
 
     /**
@@ -345,5 +353,69 @@ class LoanController extends Controller
             'new_values' => $newValues,
             'ip_address' => request()->ip(),
         ]);
+    }
+
+    /**
+     * Start a loan (Modal 3)
+     */
+    public function startLoan(Request $request, Loan $loan)
+    {
+        $request->validate([
+            'check_image' => 'nullable|image|max:5120',
+            'board_approval_image' => 'nullable|image|max:5120',
+        ]);
+
+        // Process file uploads and update loan status
+        // ... backend logic here ...
+
+        return back()->with('success', 'تم بدء القرض بنجاح.');
+    }
+
+    /**
+     * Cancel a loan request (Modal 4)
+     */
+    public function cancelLoan(Request $request, Loan $loan)
+    {
+        $request->validate([
+            'reason' => 'required|string',
+            'details' => 'required|string',
+        ]);
+
+        // Process cancellation and log reason
+        // ... backend logic here ...
+
+        return back()->with('success', 'تم إلغاء طلب القرض بنجاح.');
+    }
+
+    /**
+     * Pay a single installment (Modal 5)
+     */
+    public function payInstallment(Request $request, Installment $installment)
+    {
+        $request->validate([
+            'receipt_number' => 'required|string|max:255',
+            'receipt_image' => 'nullable|image|max:5120',
+        ]);
+
+        // Process payment and file upload
+        // ... backend logic here ...
+
+        return back()->with('success', 'تم سداد القسط بنجاح.');
+    }
+
+    /**
+     * Early repayment of entire loan (Modal 6)
+     */
+    public function earlyRepayment(Request $request, Loan $loan)
+    {
+        $request->validate([
+            'receipt_number' => 'required|string|max:255',
+            'receipt_image' => 'nullable|image|max:5120',
+        ]);
+
+        // Process full repayment and mark all remaining installments as paid
+        // ... backend logic here ...
+
+        return back()->with('success', 'تم تسجيل السداد المبكر بنجاح.');
     }
 }

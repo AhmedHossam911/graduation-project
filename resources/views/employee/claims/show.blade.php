@@ -50,7 +50,7 @@
                 <div class="pt-1">
                     <span
                         class="text-sm text-[#124375] font-bold bg-[#F0FFF6] py-1.5 px-4 rounded-full border border-[#1243751a]">
-                        سبب المطالبة : {{ $claimTypes[$claim->type] }}
+                        سبب المطالبة : {{ $claimTypes[$claim->type] ?? $claim->type }}
                     </span>
                 </div>
             </div>
