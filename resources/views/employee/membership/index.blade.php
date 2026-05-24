@@ -62,7 +62,7 @@
             <!-- start search -->
             <div class="flex-1 items-center gap-5">
                 <input type="search" name="search" value="{{ request('search') }}"
-                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض" icon="bitcoin-icons:search-outline"
+                    placeholder=" الاسم  أو  رقم العضوية  أو  الرقم القومي   " icon="bitcoin-icons:search-outline"
                     class="w-full rounded-xl py-2 px-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             </div>
             <!-- end search -->
@@ -75,6 +75,7 @@
                     'autoSubmit' => false,
                 ])
             </div>
+
 
             <div class="relative min-w-[200px]">
                 @php
@@ -125,7 +126,8 @@
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
                                 {{ $subscription->membership->membership_number ?? '---' }}</td>
                             <td class="py-4 border-l border-[#D1D5DB] text-[#124375] font-medium hover:underline">
-                                <a href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}">
+                                <a
+                                    href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}">
                                     {{ $subscription->membership->member->full_name ?? 'حدث خطأ' }}
                                 </a>
                             </td>

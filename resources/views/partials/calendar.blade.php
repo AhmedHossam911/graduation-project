@@ -20,7 +20,7 @@
     @endpush
 @endonce
 
-<div class="flex justify-center py-2">
+<div class="flex justify-center ">
     <div class="relative min-w-[240px]">
         <label for="{{ $id }}"
             class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center cursor-pointer"
