@@ -124,8 +124,11 @@
                         <tr class="even:bg-[#F4F7F9] odd:bg-[#EFEFEF]">
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
                                 {{ $subscription->membership->membership_number ?? '---' }}</td>
-                            <td class="px-3 py-3 border-l border-[#6D6D6D]">
-                                {{ $subscription->membership->member->full_name ?? 'حدث خطأ' }}</td>
+                            <td class="py-4 border-l border-[#D1D5DB] text-[#124375] font-medium hover:underline">
+                                <a href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}">
+                                    {{ $subscription->membership->member->full_name ?? 'حدث خطأ' }}
+                                </a>
+                            </td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">{{ number_format($subscription->amount, 2) }}
                                 ج.م</td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">

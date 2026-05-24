@@ -16,8 +16,38 @@ const inputsFile = document.querySelectorAll('input[type="file"]')
 
 
 // tabs logic
+const currentPath = window.location.pathname;
+const urlParams = new URLSearchParams(window.location.search);
+const urlTab = urlParams.get('tab');
+
+const tabNameMap = {
+    'subscriptions': 'الاشتراكات',
+    'loans': 'قروض',
+    'claims': 'مطالبات',
+    'documents': 'مرفقات العضو',
+    'personal': 'المعلومات الشخصية'
+};
+
+const mappedTabName = tabNameMap[urlTab] || urlTab || sessionStorage.getItem('activeTab_' + currentPath);
+let initialTabName = mappedTabName;
+
+function activateTabByName(tabName) {
+    let tabFound = false;
+    tabs.forEach(tab => {
+        if (tab.textContent.replace(/\s+/g, ' ').trim() === tabName) {
+            tabFound = true;
+            tab.click();
+        }
+    });
+    return tabFound;
+}
+
 tabs.forEach(tab => {
     tab.addEventListener('click', (e) => {
+        if (e.isTrusted === true) {
+            // Only prevent default for actual user clicks, not programmatic ones
+            // though programatic ones are ok to preventDefault too.
+        }
         e.preventDefault();
         tabs.forEach(t => {
             t.classList.remove('active-tab');
@@ -25,7 +55,16 @@ tabs.forEach(tab => {
         });
         tab.classList.remove('tab');
         tab.classList.add('active-tab');
-        const tabName = tab.textContent.trim();
+        const tabName = tab.textContent.replace(/\s+/g, ' ').trim();
+        
+        // Save to session storage
+        sessionStorage.setItem('activeTab_' + currentPath, tabName);
+        
+        // Update URL safely without reloading
+        const newUrl = new URL(window.location);
+        newUrl.searchParams.set('tab', tabName);
+        window.history.replaceState({}, '', newUrl);
+
         tabContents.forEach(content => {
             if (content.dataset.tab === tabName) {
                 content.classList.remove('hidden');
@@ -35,7 +74,13 @@ tabs.forEach(tab => {
         });
     });
 });
-// tabs logic 
+
+// Initialize on page load
+if (initialTabName) {
+    // Wait a tick for DOM
+    setTimeout(() => activateTabByName(initialTabName), 50);
+}
+// tabs logic  
 
 // modals logic
 openModalBtns.forEach((btn) => {

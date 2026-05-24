@@ -149,22 +149,31 @@ class MemberController extends Controller
                 ->whereIn('status', ['active', 'pending', 'approved'])
                 ->first();
 
+            // Check for any subscription overdue for 6+ months
+            $hasOverdueSubscription6Months = $member->membershipInfo->subscriptions()
+                ->whereIn('status', ['unpaid', 'overdue'])
+                ->where('due_date', '<=', now()->subMonths(6))
+                ->exists();
+
             // Check for any installment overdue for 6+ months
             $hasOverdueInstallment6Months = \App\Models\Financial\Installment::whereHas('loan', function($query) use ($member) {
                     $query->where('membership_id', $member->membershipInfo->id);
                 })
-                ->where('status', 'overdue')
+                ->whereIn('status', ['unpaid', 'overdue'])
                 ->where('due_date', '<=', now()->subMonths(6))
                 ->exists();
+
+            // User requested notice is ONLY for subscriptions
+            $hasOverdue6Months = $hasOverdueSubscription6Months;
         }
 
         return view('employee.members.show', [
-            'member'                       => $member,
-            'statusMap'                    => self::STATUS_MAP,
-            'claimTypes'                   => Claim::CLAIM_TYPES,
-            'totalPaidSubscriptions'       => $totalPaidSubscriptions,
-            'activeLoan'                   => $activeLoan,
-            'hasOverdueInstallment6Months' => $hasOverdueInstallment6Months,
+            'member'                 => $member,
+            'statusMap'              => self::STATUS_MAP,
+            'claimTypes'             => Claim::CLAIM_TYPES,
+            'totalPaidSubscriptions' => $totalPaidSubscriptions,
+            'activeLoan'             => $activeLoan,
+            'hasOverdue6Months'      => $hasOverdue6Months ?? false,
         ]);
     }
 
@@ -305,5 +314,35 @@ class MemberController extends Controller
         if ($request->filled('department') && $request->department !== 'all') {
             $query->where('department_id', $request->department);
         }
+    }
+
+    /**
+     * Send official notice for overdue payments (subscriptions > 6 months).
+     */
+    public function notify(Request $request, Member $member)
+    {
+        if (!$member->membershipInfo) {
+            return back()->with('error', 'لا يوجد اشتراك متاح لهذا العضو.');
+        }
+
+        // Update notice_sent_at for subscriptions that are overdue for 6+ months
+        $member->membershipInfo->subscriptions()
+            ->whereIn('status', ['unpaid', 'overdue'])
+            ->where('due_date', '<=', now()->subMonths(6))
+            ->whereNull('notice_sent_at')
+            ->update([
+                'notice_sent_at' => now()
+            ]);
+
+        // Log the action
+        \App\Models\System\AuditLog::create([
+            'user_id'    => auth()->id(),
+            'action'     => 'send_official_notice',
+            'table_name' => 'memberships',
+            'record_id'  => $member->membershipInfo->id,
+            'ip_address' => $request->ip()
+        ]);
+
+        return back()->with('success', 'تم إرسال الإخطار المسجل وتحديث الحالة.');
     }
 }

@@ -157,8 +157,15 @@
                     @forelse ($claims as $claim)
                         <tr class="text-center {{ $loop->odd ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                {{ $claim->membership->member->name ?? 'غير متوفر' }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#124375] font-medium hover:underline">
+                                @if(isset($claim->membership->member))
+                                    <a href="{{ route('members.show', ['member' => $claim->membership->member->id, 'tab' => 'claims']) }}">
+                                        {{ $claim->membership->member->full_name ?? $claim->membership->member->name ?? 'غير متوفر' }}
+                                    </a>
+                                @else
+                                    غير متوفر
+                                @endif
+                            </td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                 {{ \Carbon\Carbon::parse($claim->created_at)->translatedFormat('d F Y') }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">

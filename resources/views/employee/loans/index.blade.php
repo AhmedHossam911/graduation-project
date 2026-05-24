@@ -144,8 +144,11 @@
                         @endphp
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : 'border-b border-[#6D6D6D]' }}">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $loan->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                {{ $loan->membership->member->full_name ?? 'غير متوفر' }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#124375] font-medium hover:underline">
+                                <a href="{{ route('members.show', ['member' => $loan->membership->member_id, 'tab' => 'loans']) }}">
+                                    {{ $loan->membership->member->full_name ?? 'غير متوفر' }}
+                                </a>
+                            </td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                 {{ number_format($loan->total_amount) }} ج .م</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ number_format($paidAmount) }} ج

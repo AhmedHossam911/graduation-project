@@ -169,9 +169,6 @@ class SubscriptionController extends Controller
         return $query;
     }
 
-    /**
-     * Record subscription payment (Modal 7)
-     */
     public function pay(Request $request, Subscription $subscription)
     {
         $request->validate([
@@ -179,8 +176,40 @@ class SubscriptionController extends Controller
             'receipt_image' => 'nullable|image|max:5120',
         ]);
 
-        // Process payment and file upload
-        // ... backend logic here ...
+        $subscription->load('membership');
+        $oldValues = $subscription->toArray();
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($request, $subscription, $oldValues) {
+            $subscription->update([
+                'status' => 'paid',
+                'first_warning_sent_at' => null,
+                'second_warning_sent_at' => null,
+                'notice_sent_at' => null,
+            ]);
+
+            if ($request->hasFile('receipt_image')) {
+                $memberId = $subscription->membership->member_id;
+                $path = $request->file('receipt_image')
+                    ->store("members/{$memberId}/subscriptions/{$subscription->id}", 'public');
+
+                \App\Models\Membership\Attachment::create([
+                    'member_id' => $memberId,
+                    'type'      => "subscription_{$subscription->id}_receipt",
+                    'file_path' => $path,
+                ]);
+            }
+
+            // Audit log
+            AuditLog::create([
+                'user_id'    => auth()->id(),
+                'action'     => 'payment',
+                'table_name' => 'subscriptions',
+                'record_id'  => $subscription->id,
+                'old_values' => $oldValues,
+                'new_values' => $subscription->fresh()->toArray(),
+                'ip_address' => request()->ip(),
+            ]);
+        });
 
         return back()->with('success', 'تم تسجيل سداد الاشتراك بنجاح.');
     }

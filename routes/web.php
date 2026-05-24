@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
         Route::post('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
 
+        Route::post('/members/{member}/notify', [MemberController::class, 'notify'])->name('members.notify');
         Route::post('/members/{member}/claim', [ClaimController::class, 'store'])->name('members.storeClaim');
         Route::get('/members/{member}/documents', [MemberController::class, 'documents'])->name('members.documents');
         Route::post('/members/{member}/documents', [MemberController::class, 'storeAdditionalDocument'])->name('members.documents.store');

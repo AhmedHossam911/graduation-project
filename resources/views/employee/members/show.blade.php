@@ -411,18 +411,22 @@
                 </div>
                 <!-- requests only -->
                 <!-- loans only -->
-                <button id="request-loan-btn"
-                    class="tab-content hidden flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
-                    data-tab="قروض">
-                    <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
-                    طلب قرض
-                </button>
-                @if ($activeLoan)
-                    <div id="loans-action-buttons" class="tab-content flex gap-3 hidden" data-tab="قروض">
+                @if ($activeLoan === null)
+                    <button id="request-loan-btn"
+                        class="tab-content hidden flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
+                        data-tab="قروض">
+                        <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
+                        طلب قرض
+                    </button>
+                @endif
+                <div id="loans-action-buttons" class="tab-content flex gap-3 hidden" data-tab="قروض">
+                    @if ($activeLoan->status === 'active')
                         <button data-modal="modal6"
                             class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
                             تسديد القرض بالكامل
                         </button>
+                    @endif
+                    @if ($activeLoan->status === 'pending')
                         <button
                             class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
                             <iconify-icon icon="material-symbols:print" class="text-xl flex items-center"></iconify-icon>
@@ -432,7 +436,9 @@
                             class="open-modal text-[16px] font-medium bg-[#124375] w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
                             بدء القرض
                         </button>
-                        <a href="route('members.loans.history', $member->id)"
+                    @endif
+                    @if ($activeLoan->status === 'pending' || $activeLoan->status === 'rejected')
+                        <a href="{{ route('members.previous-loans', $member->id) }}"
                             class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
                             عرض القروض السابقة
                         </a>
@@ -441,22 +447,24 @@
                             <iconify-icon icon="zondicons:close-solid" class="text-xl flex items-center"></iconify-icon>
                             إلغاء أو رفض الطلب
                         </button>
-                    </div>
-                @endif
-                    <!-- end loans only -->
-                    <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
-                        <button
-                            class=" flex gap-3 py-3 px-12 rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
+                    @endif
+                </div>
+                <!-- end loans only -->
+                <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
+                    @if ($hasOverdue6Months)
+                        <button type="button" data-modal="modal8"
+                            class="open-modal flex gap-3 py-3 px-12 rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
                             <iconify-icon icon="fluent:mail-warning-24-filled"
                                 class="flex items-center text-2xl"></iconify-icon>
                             إرسال إخطار مسجل بعلم الوصول
                         </button>
-                        <a href="{{ route('members.documents', $member->id) }}"
-                            class=" flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
-                            <iconify-icon icon="mdi:file-account" class="flex items-center text-2xl"></iconify-icon>
-                            عرض المستندات
-                        </a>
-                    </div>
+                    @endif
+                    <a href="{{ route('members.documents', $member->id) }}"
+                        class=" flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
+                        <iconify-icon icon="mdi:file-account" class="flex items-center text-2xl"></iconify-icon>
+                        عرض المستندات
+                    </a>
+                </div>
             </div>
         </div>
     </section>
@@ -550,7 +558,7 @@
     <div id="loans-content-container" data-tab="قروض" class="hidden  tab-content px-7 py-5">
         @if ($activeLoan && $activeLoan->installments->count() > 0)
             <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
-                <table class="w-full">
+                <table class="w-full" id="installments-table">
                     <thead>
                         <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم القسط</th>
@@ -705,82 +713,92 @@
                         طلب تسجيل قرض
                     </h1>
                 </div>
-            <div class="requirements grid grid-cols-2 gap-2">
-                <div class="relative">
-                    <button type="button" id="amount_dropdown_btn"
-                        class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center transition-colors">قيمة
-                        القرض :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
-                                icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
-                    <span id="amount_error_msg" class="hidden absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب تحديد قيمة القرض</span>
-                    <div
-                        class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option" data-value="5000">5,000</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option" data-value="10000">10,000</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option" data-value="20000">20,000</a>
+                <div class="requirements grid grid-cols-2 gap-2">
+                    <div class="relative">
+                        <button type="button" id="amount_dropdown_btn"
+                            class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center transition-colors">قيمة
+                            القرض :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
+                                    icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                        <span id="amount_error_msg"
+                            class="hidden absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب
+                            تحديد قيمة القرض</span>
+                        <div
+                            class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
+                            <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option"
+                                data-value="5000">5,000</a>
+                            <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option"
+                                data-value="10000">10,000</a>
+                            <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-amount-option"
+                                data-value="20000">20,000</a>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <button type="button" id="months_dropdown_btn"
+                            class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center transition-colors">مدة
+                            السداد :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
+                                    icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                        <span id="months_error_msg"
+                            class="hidden absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب
+                            تحديد مدة السداد</span>
+                        <div
+                            class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
+                            <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option"
+                                data-value="12">12 شهر</a>
+                            <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option"
+                                data-value="24">24 شهر</a>
+                            <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option"
+                                data-value="32">32 شهر</a>
+                        </div>
                     </div>
                 </div>
-                <div class="relative">
-                    <button type="button" id="months_dropdown_btn"
-                        class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center transition-colors">مدة
-                        السداد :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
-                                icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
-                    <span id="months_error_msg" class="hidden absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب تحديد مدة السداد</span>
-                    <div
-                        class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option" data-value="12">12 شهر</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option" data-value="24">24 شهر</a>
-                        <a class="cursor-pointer navy-shadow py-2 px-5 rounded-xl text-base loan-months-option" data-value="32">32 شهر</a>
+                <div class="declaration space-y-3">
+                    <h3 class="text-center font-medium">
+                        إقرار
+                    </h3>
+                    <p class="font-medium">
+                        أقر أنا / ____________________ برغبتي في الحصول على القرض الموضح بياناته أعلاه من صندوق الزمالة
+                        الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان. وأتعهد بالالتزام بكافة الشروط والأحكام،
+                        كما أفوض الإدارة المالية بالجامعة بخصم قيمة الأقساط الشهرية من راتبي أو من أي مستحقات مالية أخرى لي،
+                        وذلك حتى يتم سداد كامل قيمة القرض.
+                    </p>
+                    <p class="font-medium">
+                        تحريراً في: _____ / _____ /_____ ٢٠ م
+                    </p>
+                    <p class="font-medium">
+                        الاسم / ____________________________ الوظيفة / ____________________________
+                    </p>
+                    <p class="font-medium">
+                        الرقم القومي / ____________________________ التوقيع / ____________________________
+                    </p>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <!-- <button class="submit-btn  rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon icon="healthicons:yes"  class="flex items-center text-2xl"></iconify-icon></span>تأكيد الأختيار</button> -->
+                        <button type="button" id="print-declaration-btn"
+                            class="rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                    icon="material-symbols:print"
+                                    class="flex items-center text-2xl"></iconify-icon></span>طباعة الإقرار</button>
                     </div>
+                    <button type="button"
+                        class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
                 </div>
-            </div>
-            <div class="declaration space-y-3">
-                <h3 class="text-center font-medium">
-                    إقرار
-                </h3>
-                <p class="font-medium">
-                    أقر أنا / ____________________ برغبتي في الحصول على القرض الموضح بياناته أعلاه من صندوق الزمالة
-                    الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان. وأتعهد بالالتزام بكافة الشروط والأحكام،
-                    كما أفوض الإدارة المالية بالجامعة بخصم قيمة الأقساط الشهرية من راتبي أو من أي مستحقات مالية أخرى لي،
-                    وذلك حتى يتم سداد كامل قيمة القرض.
-                </p>
-                <p class="font-medium">
-                    تحريراً في: _____ / _____ /_____ ٢٠ م
-                </p>
-                <p class="font-medium">
-                    الاسم / ____________________________ الوظيفة / ____________________________
-                </p>
-                <p class="font-medium">
-                    الرقم القومي / ____________________________ التوقيع / ____________________________
-                </p>
-            </div>
-            <div class="btns flex gap-2 ">
-                <div class="w-full">
-                    <!-- <button class="submit-btn  rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon icon="healthicons:yes"  class="flex items-center text-2xl"></iconify-icon></span>تأكيد الأختيار</button> -->
-                    <button type="button" id="print-declaration-btn"
-                        class="rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="material-symbols:print"
-                                class="flex items-center text-2xl"></iconify-icon></span>طباعة الإقرار</button>
-                </div>
-                <button type="button"
-                    class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
-    </div>
-    <!-- end loan request form -->
+        <!-- end loan request form -->
 
-    <!-- Attach the signed declaration modal -->
-    <div id="modal2"
-        class="hidden w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-        <button
-            class="close-btn text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-5">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    إرفاق الإقرار المُوَقَّع
-                </h1>
-            </div>
+        <!-- Attach the signed declaration modal -->
+        <div id="modal2"
+            class="hidden w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button
+                class="close-btn text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-5">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        إرفاق الإقرار المُوَقَّع
+                    </h1>
+                </div>
                 <div class="documents space-y-5">
                     <p class="text-[#021219] text-[16px] font-medium">يرجى رفع ملف الإقرار بعد طباعته وتوقيعه.</p>
                     <div class="border border-[#124375] rounded-[12px] ">
@@ -788,7 +806,8 @@
                             class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط هنا لإرفاق ملف الإقرار</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" name="declaration_file" id="declaration_file" class="hidden" required accept=".pdf,.png,.jpg,.jpeg">
+                            <input type="file" name="declaration_file" id="declaration_file" class="hidden" required
+                                accept=".pdf,.png,.jpg,.jpeg">
                         </label>
                     </div>
                 </div>
@@ -800,8 +819,8 @@
                             وإرسال</button>
                     </div>
                 </div>
+            </div>
         </div>
-    </div>
     </form>
     <!-- end Attach the signed declaration modal -->
 
@@ -1443,7 +1462,7 @@
         </div>
     </form>
 
-    <form action="{{ route('subscriptions.notify', 0) }}" method="POST" id="notifySubscriptionForm">
+    <form action="{{ route('members.notify', $member->id) }}" method="POST" id="notifySubscriptionForm">
         @csrf
         <div id="modal8"
             class="hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
@@ -1554,8 +1573,8 @@
             document.querySelectorAll('.loan-amount-option').forEach(option => {
                 option.addEventListener('click', function() {
                     const selectedAmount = document.getElementById('selected_total_amount');
-                    if(selectedAmount) selectedAmount.value = this.dataset.value;
-                    
+                    if (selectedAmount) selectedAmount.value = this.dataset.value;
+
                     const amountBtn = document.getElementById('amount_dropdown_btn');
                     const amountError = document.getElementById('amount_error_msg');
                     if (amountBtn) {
@@ -1568,7 +1587,7 @@
             document.querySelectorAll('.loan-months-option').forEach(option => {
                 option.addEventListener('click', function() {
                     const selectedMonths = document.getElementById('selected_months');
-                    if(selectedMonths) selectedMonths.value = this.dataset.value;
+                    if (selectedMonths) selectedMonths.value = this.dataset.value;
 
                     const monthsBtn = document.getElementById('months_dropdown_btn');
                     const monthsError = document.getElementById('months_error_msg');
@@ -1586,7 +1605,7 @@
                     const totalAmount = document.getElementById('selected_total_amount');
                     const months = document.getElementById('selected_months');
                     let isValid = true;
-                    
+
                     const amountBtn = document.getElementById('amount_dropdown_btn');
                     const amountError = document.getElementById('amount_error_msg');
                     if (!totalAmount || !totalAmount.value) {
@@ -1624,12 +1643,14 @@
                     const printContents = document.querySelector('.declaration').innerHTML;
                     const printWindow = window.open('', '_blank', 'height=600,width=800');
                     printWindow.document.write('<html dir="rtl"><head><title>طباعة الإقرار</title>');
-                    printWindow.document.write('<style>body{font-family: "Tajawal", Arial, sans-serif; padding: 40px; font-size: 18px;} h3{text-align: center; margin-bottom: 30px;} p{margin-bottom: 30px; line-height: 1.8; font-weight: bold;}</style>');
+                    printWindow.document.write(
+                        '<style>body{font-family: "Tajawal", Arial, sans-serif; padding: 40px; font-size: 18px;} h3{text-align: center; margin-bottom: 30px;} p{margin-bottom: 30px; line-height: 1.8; font-weight: bold;}</style>'
+                    );
                     printWindow.document.write('</head><body>');
                     printWindow.document.write(printContents);
                     printWindow.document.write('</body></html>');
                     printWindow.document.close();
-                    
+
                     // Small delay to ensure styles are applied
                     setTimeout(function() {
                         printWindow.focus();
@@ -1639,5 +1660,62 @@
             }
         });
     </script>
-    <script src="{{ asset('JS/member.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.getElementById('installments-table');
+            if (!table) return;
+            const tbody = table.querySelector('tbody');
+            if (!tbody) return;
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            const rowsPerPage = 12;
+
+            if (rows.length > rowsPerPage) {
+                const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+                function displayPage(page) {
+                    rows.forEach((row, index) => {
+                        if (index >= (page - 1) * rowsPerPage && index < page * rowsPerPage) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                }
+
+                displayPage(1);
+
+                const paginationContainer = document.createElement('div');
+                paginationContainer.className = 'flex justify-center items-center gap-2 mt-6 pb-6';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.innerText = i;
+                    btn.className =
+                        'w-10 h-10 flex items-center justify-center rounded-lg border font-medium transition-colors ' +
+                        (i === 1 ? 'bg-[#124375] text-white border-[#124375]' :
+                            'bg-white text-[#124375] border-[#124375] hover:bg-gray-50');
+
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        displayPage(i);
+
+                        Array.from(paginationContainer.children).forEach(child => {
+                            child.className =
+                                'w-10 h-10 flex items-center justify-center rounded-lg border font-medium transition-colors bg-white text-[#124375] border-[#124375] hover:bg-gray-50';
+                        });
+                        this.className =
+                            'w-10 h-10 flex items-center justify-center rounded-lg border font-medium transition-colors bg-[#124375] text-white border-[#124375]';
+                    });
+
+                    paginationContainer.appendChild(btn);
+                }
+
+                const tableWrapper = table.closest('.rounded-\\[14px\\]');
+                if (tableWrapper) {
+                    tableWrapper.parentNode.insertBefore(paginationContainer, tableWrapper.nextSibling);
+                }
+            }
+        });
+    </script>
+    <script src="{{ asset('JS/member.js') }}?v={{ time() }}"></script>
 @endsection

@@ -29,44 +29,32 @@ class CheckOverdueSubscriptions extends Command
         $oneMonthAgo = $now->copy()->subMonth();
         $sixMonthsAgo = $now->copy()->subMonths(6);
 
-        // 1. Send first warning (1 month overdue)
-        $firstWarningSubs = \App\Models\Services\Subscription::with('membership.member.user')
-            ->where('status', 'unpaid')
+        // 1. Send warning (1 to 6 months overdue)
+        $warningSubs = \App\Models\Services\Subscription::with('membership.member.user')
+            ->whereIn('status', ['unpaid', 'overdue'])
             ->where('due_date', '<=', $oneMonthAgo)
-            ->whereNull('first_warning_sent_at')
+            ->where('due_date', '>', $sixMonthsAgo)
+            ->where(function ($query) use ($now) {
+                $query->whereNull('last_warning_sent_at')
+                      ->orWhere('last_warning_sent_at', '<=', $now->copy()->subDays(30));
+            })
             ->get();
 
-        foreach ($firstWarningSubs as $sub) {
+        foreach ($warningSubs as $sub) {
             $user = $sub->membership->member->user;
             if ($user && $user->email) {
-                // In a real app, use Mail::to($user)->send(...)
-                // \Illuminate\Support\Facades\Mail::raw('يرجى سداد اشتراكك المتأخر لمدة شهر.', function($msg) use ($user) {
-                //    $msg->to($user->email)->subject('تأخر سداد الاشتراك');
-                // });
+                try {
+                    \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\LatePaymentReminderMail($sub));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to send late payment reminder to ' . $user->email . ': ' . $e->getMessage());
+                }
             }
-            $sub->update(['first_warning_sent_at' => $now]);
+            $sub->update(['last_warning_sent_at' => $now]);
         }
 
-        // 2. Send second warning (6 months overdue)
-        $secondWarningSubs = \App\Models\Services\Subscription::with('membership.member.user')
-            ->where('status', 'unpaid')
-            ->where('due_date', '<=', $sixMonthsAgo)
-            ->whereNull('second_warning_sent_at')
-            ->get();
-
-        foreach ($secondWarningSubs as $sub) {
-            $user = $sub->membership->member->user;
-            if ($user && $user->email) {
-                // \Illuminate\Support\Facades\Mail::raw('اشتراكك متأخر لمدة 6 أشهر. سيتم إرسال إخطار مسجل.', function($msg) use ($user) {
-                //    $msg->to($user->email)->subject('تحذير: تأخر سداد الاشتراك 6 أشهر');
-                // });
-            }
-            $sub->update(['second_warning_sent_at' => $now]);
-        }
-
-        // 3. Suspend memberships if 1 month passed since notice_sent_at
-        $suspendSubs = \App\Models\Services\Subscription::with('membership.member')
-            ->where('status', 'unpaid')
+        // 2. Suspend memberships if 1 month passed since official notice (notice_sent_at)
+        $suspendSubs = \App\Models\Services\Subscription::with('membership.member.user')
+            ->whereIn('status', ['unpaid', 'overdue'])
             ->whereNotNull('notice_sent_at')
             ->where('notice_sent_at', '<=', $oneMonthAgo)
             ->get();
@@ -76,13 +64,24 @@ class CheckOverdueSubscriptions extends Command
             if ($membership && $membership->status !== 'suspended') {
                 $membership->update(['status' => 'suspended']);
 
+                $user = $membership->member->user;
+                if ($user && $user->email) {
+                    try {
+                        \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\MembershipSuspendedMail($membership));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to send membership suspended mail to ' . $user->email . ': ' . $e->getMessage());
+                    }
+                }
+
                 // Notify admin/employee
-                $employees = \App\Models\System\User::whereHas('roles', function($q) {
+                $employees = \App\Models\Auth\User::whereHas('roles', function($q) {
                     $q->whereIn('name', ['General Admin', 'Membership Employee']);
                 })->get();
 
                 foreach ($employees as $emp) {
-                    $emp->notify(new \App\Notifications\MembershipSuspendedNotification($membership));
+                    if (class_exists(\App\Notifications\MembershipSuspendedNotification::class)) {
+                        $emp->notify(new \App\Notifications\MembershipSuspendedNotification($membership));
+                    }
                 }
             }
         }

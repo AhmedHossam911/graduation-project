@@ -9,11 +9,19 @@ class Subscription extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['membership_id', 'amount', 'due_date', 'status'];
+    protected $fillable = [
+        'membership_id', 'amount', 'due_date', 'status',
+        'last_warning_sent_at', 'first_warning_sent_at',
+        'second_warning_sent_at', 'notice_sent_at',
+    ];
 
     protected $casts = [
         'amount' => 'decimal:2',
         'due_date' => 'date',
+        'last_warning_sent_at' => 'datetime',
+        'first_warning_sent_at' => 'datetime',
+        'second_warning_sent_at' => 'datetime',
+        'notice_sent_at' => 'datetime',
     ];
 
     public function membership()
