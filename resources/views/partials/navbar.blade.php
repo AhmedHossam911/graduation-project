@@ -13,10 +13,34 @@
                 </a>
             </div>
             <div class="flex items-center gap-4 text-[#124375] text-4xl">
-                <a class="cursor-pointer" href="{{ route('notifications.index') }}">
-                    <iconify-icon icon="ion:notifcations"></iconify-icon>
-                </a>
-                <a class="cursor-pointer" href="{{ route('profile.index') }}">
+                <div class="relative">
+                    <a class="cursor-pointer notification-btn">
+                        <iconify-icon icon="ion:notifcations"></iconify-icon>
+                    </a>
+                    <div
+                        class="notifications-box hidden absolute w-max left-0 z-50 bg-white  text-center surface-shadow rounded-lg   p-4 space-y-3">
+                        <h1 class="text-lg font-semibold text-[#124375]">
+                            إشعارات
+                        </h1>
+                        <div class="notification surface-shadow bg-[#EEF7FF] rounded-xl p-2">
+                            <p class="notifcation-body text-sm font-medium text-[#124375]">تم تغير كلمة المرور بنجاح</p>
+                        </div>
+                        <div class="notification surface-shadow rounded-xl p-2">
+                            <div class="flex gap-2">
+                                <p class="notifcation-body text-[#6D6D6D] text-sm">العضو : <span
+                                        class="font-semibold text-[#021219] text-base">روان محمد</span></p>
+                                <p class="notifcation-body text-[#6D6D6D] text-sm">رقم العضوية : <span
+                                        class="font-semibold text-[#021219] text-base">123456</span></p>
+                            </div>
+                            <p class="notifcation-body font-semibold text-[#021219] text-base">تمت الموافقة علي طلب
+                                القرض</p>
+                        </div>
+                        <a href="../NotificationsPage/notifications.html"
+                            class="text-base bg-[#124375]  text-white surface-shadow rounded-xl py-2 block">عرض كل
+                            الإشعارات</a>
+                    </div>
+                </div>
+                <a class="cursor-pointer">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>

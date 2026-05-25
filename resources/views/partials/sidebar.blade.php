@@ -65,6 +65,13 @@
                         <p>ادارة القطاعات</p>
                     </div>
                 </a>
+                <a href="{{ route('admin.auditlog.index') }}">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
+                        <iconify-icon icon="mdi:file-clock" class="text-3xl"></iconify-icon>
+                        <p>سجل العمليات</p>
+                    </div>
+                </a>
             </div>
             <div>
                 <div

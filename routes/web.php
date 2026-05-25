@@ -16,6 +16,7 @@ use App\Http\Middleware\EnsureAdmin;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\AuditLogController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -59,6 +60,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
         Route::post('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
         Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
+        
+        Route::get('/admin/auditlog', [AuditLogController::class, 'index'])->name('admin.auditlog.index');
 
         Route::get('/admin/permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');
         Route::get('/admin/permissions/create', [PermissionController::class, 'create'])->name('admin.permissions.create');
