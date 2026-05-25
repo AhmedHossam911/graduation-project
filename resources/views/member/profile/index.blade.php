@@ -69,35 +69,7 @@
                     <p>الساعة : {{ auth()->user()->last_login->isoFormat('h:mm A') }}</p>
                 </div>
 
-                <!-- Passkeys Section -->
-                <div class="mt-8 border-t border-[#124375] pt-5">
-                    <h3 class="text-lg font-semibold text-[#124375] mb-3">إعدادات البصمة (التحقق الثنائي)</h3>
-                    <p class="text-sm text-gray-600 mb-4">يمكنك إضافة بصمة إصبع أو وجه لتأكيد تسجيل الدخول كخطوة إضافية بدلاً من رسائل الإيميل.</p>
 
-                    <ul class="mb-4 space-y-2">
-                        @foreach(auth()->user()->passkeys ?? [] as $passkey)
-                            <li class="flex justify-between items-center bg-white p-3 rounded shadow-sm border border-gray-200">
-                                <div>
-                                    <span class="font-medium">{{ $passkey->name }}</span>
-                                    <span class="text-xs text-gray-500 block">أخر استخدام: {{ $passkey->last_used_at ? $passkey->last_used_at->diffForHumans() : 'لم تستخدم' }}</span>
-                                </div>
-                                <form method="POST" action="{{ route('passkey.destroy', $passkey) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذه البصمة؟');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-700">
-                                        <iconify-icon icon="mingcute:delete-2-fill" class="text-xl"></iconify-icon>
-                                    </button>
-                                </form>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    <button type="button" id="register-passkey-btn" class="flex justify-center items-center gap-3 bg-[#28a745] text-white w-full py-3 text-base font-medium rounded-xl hover:bg-[#218838] transition-colors">
-                        <iconify-icon icon="fa-solid:fingerprint" class="text-2xl"></iconify-icon>
-                        إضافة بصمة جديدة
-                    </button>
-                    <p id="passkey-status" class="text-center mt-2 text-sm hidden"></p>
-                </div>
             </form>
         </div>
     </div>
@@ -158,66 +130,5 @@
     </div>
 
     <script src="{{ asset('js/member/profile.js') }}"></script>
-    <script src="{{ asset('js/auth/webauthn-custom.js') }}"></script>
 
-    <script>
-        document.getElementById('register-passkey-btn')?.addEventListener('click', async () => {
-            const statusEl = document.getElementById('passkey-status');
-            statusEl.classList.remove('hidden');
-            statusEl.innerText = 'جاري التحضير... الرجاء استخدام البصمة.';
-            statusEl.className = 'text-center mt-2 text-sm text-[#D4AF37]';
-
-            if (!window.customWebAuthn) {
-                statusEl.innerText = 'حدث خطأ في تحميل مكتبة البصمة. يرجى التأكد من اتصالك بالإنترنت.';
-                statusEl.className = 'text-center mt-2 text-sm text-red-600';
-                return;
-            }
-
-            try {
-                // 1. Get options from backend
-                const optionsRes = await fetch("{{ route('passkey.registration-options') }}", {
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                if (!optionsRes.ok) {
-                    const text = await optionsRes.text();
-                    throw new Error(`خطأ (${optionsRes.status}): ${text.substring(0, 100)}`);
-                }
-                const options = await optionsRes.json();
-
-                // 2. Create credential
-                const credential = await window.customWebAuthn.create({ publicKey: options.options });
-
-                // 3. Send to backend
-                const storeRes = await fetch("{{ route('passkey.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    body: JSON.stringify({
-                        name: 'الجهاز الحالي',
-                        id: credential.id,
-                        rawId: credential.rawId,
-                        type: credential.type,
-                        response: credential.response
-                    })
-                });
-
-                if (storeRes.ok) {
-                    statusEl.innerText = 'تم إضافة البصمة بنجاح! سيتم تحديث الصفحة.';
-                    statusEl.className = 'text-center mt-2 text-sm text-green-600';
-                    setTimeout(() => window.location.reload(), 1500);
-                } else {
-                    const errData = await storeRes.json();
-                    throw new Error(errData.message || 'فشل حفظ البصمة في السيرفر.');
-                }
-            } catch (error) {
-                console.error(error);
-                statusEl.innerText = error.message || 'حدث خطأ أثناء تسجيل البصمة. تأكد من دعم جهازك لها.';
-                statusEl.className = 'text-center mt-2 text-sm text-red-600';
-            }
-        });
-    </script>
 @endsection

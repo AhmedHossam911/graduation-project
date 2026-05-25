@@ -19,7 +19,7 @@
 }
 
 body {
-    background-image: url('../IMGs/HU IMG.png');
+    background-image: url('../../IMGs/HU IMG.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

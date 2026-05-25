@@ -19,9 +19,5 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Pagination\Paginator::useTailwind();
         Carbon::setLocale('ar');
-        
-        if (class_exists(\Laravel\Passkeys\Passkeys::class)) {
-            \Laravel\Passkeys\Passkeys::useUserModel(\App\Models\Auth\User::class);
-        }
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('membership_id')->constrained('memberships')->cascadeOnDelete();
             $table->string('type');
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', ['pending', 'approved', 'paid'])->default('pending');
             $table->string('attachment_receipt')->nullable();
             $table->timestamps();
         });

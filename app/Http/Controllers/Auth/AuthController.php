@@ -74,14 +74,21 @@ class AuthController extends Controller
 
         // 2FA Flow
         session(['login_2fa_user_id' => $user->id]);
-        return redirect()->route('login.2fa');
-    }
 
-    public function show2faChoice() {
-        if (!session('login_2fa_user_id')) {
-            return redirect()->route('login');
-        }
-        return view('auth.2fa-choice');
+        $otp = rand(100000, 999999);
+        OtpCode::create([
+            'user_id' => $user->id,
+            'code' => (string) $otp,
+            'expires_at' => Carbon::now()->addMinutes(10),
+            'is_used' => false
+        ]);
+
+        try {
+            Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تأكيد تسجيل الدخول (2FA)'));
+        } catch(\Exception $e) { }
+
+        session(['login_2fa_otp_sent' => true]);
+        return redirect()->route('login.2fa.otp')->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.');
     }
 
     public function send2faOtp(Request $request) {
@@ -145,56 +152,7 @@ class AuthController extends Controller
         return redirect()->intended('/dashboard');
     }
 
-    public function show2faFingerprint(Request $request) {
-        $userId = session('login_2fa_user_id');
-        if (!$userId) return redirect()->route('login');
 
-        $user = User::find($userId);
-        
-        // Generate options for this specific user
-        $options = app(\Laravel\Passkeys\Actions\GenerateVerificationOptions::class)($user);
-        
-        // Store options in session for verification later
-        session(['passkeys_verification_options' => \Laravel\Passkeys\Support\WebAuthn::toJson($options)]);
-
-        $browserOptions = \Laravel\Passkeys\Support\WebAuthn::toBrowserArray($options);
-
-        return view('auth.2fa-fingerprint', compact('browserOptions'));
-    }
-
-    public function verify2faFingerprint(Request $request) {
-        $userId = session('login_2fa_user_id');
-        if (!$userId) return response()->json(['message' => 'Unauthenticated'], 401);
-
-        $user = User::find($userId);
-        $optionsJson = session('passkeys_verification_options');
-
-        if (!$optionsJson) {
-            return response()->json(['message' => 'Invalid session'], 400);
-        }
-
-        $options = \Laravel\Passkeys\Support\WebAuthn::fromJson($optionsJson);
-
-        try {
-            app(\Laravel\Passkeys\Actions\VerifyPasskey::class)(
-                $request->all(), // The credential payload from JS
-                $options,
-                $user
-            );
-
-            // Verified successfully
-            session()->forget(['login_2fa_user_id', 'passkeys_verification_options']);
-            
-            Auth::login($user);
-            $user->update(['last_login' => now()]);
-
-            return response()->json([
-                'redirect' => $user->role_id == 3 ? '/member/dashboard' : '/dashboard'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
-        }
-    }
 
     public function register(Request $request) {
         $request->validate([
