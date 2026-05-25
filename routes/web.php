@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
 
         Route::get('/admin/permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');
+        Route::get('/admin/permissions/create', [PermissionController::class, 'create'])->name('admin.permissions.create');
+        Route::post('/admin/permissions', [PermissionController::class, 'store'])->name('admin.permissions.store');
         Route::get('/admin/permissions/{user}/edit', [PermissionController::class, 'edit'])->name('admin.permissions.edit');
         Route::post('/admin/permissions/{user}/approve', [PermissionController::class, 'approve'])->name('admin.permissions.approve');
         Route::post('/admin/permissions/{user}/reject', [PermissionController::class, 'reject'])->name('admin.permissions.reject');

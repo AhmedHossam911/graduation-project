@@ -18,7 +18,7 @@
             </p>
         </div>
         <div>
-            <a href="#"
+            <a href="{{ route('admin.permissions.create') }}"
                 class="cursor-pointer hover:bg-[#0e3560] transition-colors text-[16px] navy-shadow flex items-center justify-center gap-4 bg-[#124375] text-[#F4F7F9] py-2.5 px-14 rounded-[12px]">
                 <iconify-icon icon="ic:round-plus" class="text-2xl mt-1"></iconify-icon>
                 إضافة و تفويض مستخدم

@@ -22,7 +22,7 @@
         </a>
     </div>
 
-    <form action="{{ route('admin.permissions.approve', $user->id) }}" method="POST">
+    <form action="{{ route('admin.permissions.store') }}" method="POST">
         @csrf
         <div class="px-12 py-4 ">
             <div class="space-y-10 py-10 px-7 bg-[#F4F7F9] navy-shadow rounded-[16px]">
@@ -33,27 +33,27 @@
                 <div class="grid grid-cols-2 gap-7">
                     <div class="relative">
                         <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الاسم رباعي</label>
-                        <input type="text" name="name" value="{{ old('name', $user->name) }}" placeholder="الاسم المدرج بقرار التعيين"
+                        <input type="text" name="name" value="{{ old('name') }}" placeholder="الاسم المدرج بقرار التعيين"
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full text-center rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] py-2" required>
                     </div>
                     <div class="relative">
                         <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">البريد الإلكتروني الرسمي</label>
-                        <input type="email" name="email" value="{{ old('email', $user->email) }}" placeholder="example@helwan.edu.eg"
+                        <input type="email" name="email" value="{{ old('email') }}" placeholder="example@helwan.edu.eg"
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full text-center rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] py-2" required>
                     </div>
                     <div class="relative">
                         <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الرقم القومي</label>
-                        <input type="text" name="national_id" value="{{ old('national_id', $user->member ? $user->member->national_id : '') }}" placeholder="12345678912345"
+                        <input type="text" name="national_id" value="{{ old('national_id') }}" placeholder="12345678912345"
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full text-center rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] py-2" minlength="14" maxlength="14">
                     </div>
                     <div class="relative">
                         <button type="button"
                             class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base gap-3 flex justify-between items-center"><span
-                                class="text-[#021219] text-center flex-1">{{ old('role_name', $user->role ? $user->role->name : 'اختر') }}</span><span
+                            class="text-[#021219] text-center flex-1">{{ old('role_name', 'اختر') }}</span><span
                                 class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl "></iconify-icon></span></button>
                         <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الصفة الإدارية / المسمي الوظيفي</label>
-                        <input type="hidden" name="role_name" id="role_name" value="{{ old('role_name', $user->role ? $user->role->name : '') }}">
+                        <input type="hidden" name="role_name" id="role_name" value="{{ old('role_name') }}">
                         <div class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-2 px-5 py-4 rounded-xl navy-shadow w-full">
                             <button type="button" class=" navy-shadow py-2 px-4 rounded-xl text-sm font-medium">رئيس مجلس الإدارة</button>
                             <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium">المدير المالي</button>
@@ -67,7 +67,8 @@
         </div>
 
         @php
-            $userFaculties = old('faculties', $user->faculties ?? []);
+
+            $userFaculties = old('faculties', []);
             if (!is_array($userFaculties)) $userFaculties = [];
         @endphp
 
@@ -101,7 +102,7 @@
         </div>
 
         @php
-            $userPermissions = old('permissions', $user->custom_permissions ?? []);
+            $userPermissions = old('permissions', []);
             if (!is_array($userPermissions)) $userPermissions = [];
         @endphp
 

@@ -20,10 +20,64 @@ class PermissionController extends Controller
 
         return view('admin.permissions.index', compact('activeUsers', 'suspendedUsers', 'pendingRequests', 'rejectedRequests'));
     }
+    public function create()
+    {
+        $departments = Department::where('status', 'active')->get();
+        return view('admin.permissions.create', compact('departments'));
+    }
 
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'national_id' => 'nullable|string|size:14',
+            'role_name' => 'nullable|string',
+            'faculties' => 'nullable|array',
+            'permissions' => 'nullable|array',
+        ]);
+
+        $user = new User();
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->password = bcrypt('12345678'); // default password
+
+        if (!empty($validated['role_name'])) {
+            $role = Role::firstOrCreate(['name' => $validated['role_name']]);
+            $user->role_id = $role->id;
+        }
+
+        $user->faculties = $validated['faculties'] ?? [];
+        $user->custom_permissions = $validated['permissions'] ?? [];
+        $user->is_restricted = false; 
+        $user->save();
+
+        if (!empty($validated['national_id'])) {
+            $member = Member::firstOrNew(['user_id' => $user->id]);
+            $member->national_id = $validated['national_id'];
+            
+            if (!$member->exists) {
+                $member->full_name = $validated['name'];
+                $department = null;
+                if (!empty($validated['faculties'])) {
+                    $department = Department::where('name', $validated['faculties'][0])->first();
+                }
+                if (!$department) {
+                    $department = Department::first();
+                }
+                if ($department) {
+                    $member->department_id = $department->id;
+                }
+            }
+            
+            $member->save();
+        }
+
+        return redirect()->route('admin.permissions.index')->with('success', 'تم إضافة المستخدم بنجاح.');
+    }
     public function edit(User $user)
     {
-        $departments = Department::all();
+        $departments = Department::where('status', 'active')->get();
         return view('admin.permissions.edit', compact('user', 'departments'));
     }
 
@@ -58,6 +112,21 @@ class PermissionController extends Controller
         if (!empty($validated['national_id'])) {
             $member = Member::firstOrNew(['user_id' => $user->id]);
             $member->national_id = $validated['national_id'];
+            
+            if (!$member->exists) {
+                $member->full_name = $validated['name'];
+                $department = null;
+                if (!empty($validated['faculties'])) {
+                    $department = Department::where('name', $validated['faculties'][0])->first();
+                }
+                if (!$department) {
+                    $department = Department::first();
+                }
+                if ($department) {
+                    $member->department_id = $department->id;
+                }
+            }
+            
             $member->save();
         }
 
