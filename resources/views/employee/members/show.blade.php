@@ -4,7 +4,7 @@
 
 @section('content')
     @include('partials.flash')
-    <link rel="stylesheet" href="{{ asset('css/member.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/employee/member.css') }}">
 
     @php
         $membership = $member->membershipInfo;
@@ -1717,5 +1717,5 @@
             }
         });
     </script>
-    <script src="{{ asset('JS/member.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/employee/member.js') }}?v={{ time() }}"></script>
 @endsection

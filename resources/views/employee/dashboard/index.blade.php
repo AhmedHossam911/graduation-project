@@ -257,6 +257,6 @@
         </section>
     </main>
     </div>
-    <script src="{{ asset('js/Dashboard.js') }}"></script>
+    <script src="{{ asset('js/layouts/Dashboard.js') }}"></script>
     <!-- end table -->
 @endsection

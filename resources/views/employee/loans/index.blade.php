@@ -4,7 +4,7 @@
 
 @section('content')
     @include('partials.flash')
-    <link rel="stylesheet" href="{{ asset('css/loans.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/employee/loans.css') }}">
     <!-- start header -->
     <div class="flex justify-between px-2 py-5">
         <div>
@@ -17,7 +17,7 @@
                 class="open-modal rounded-xl flex items-center justify-center py-3 px-16 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إنشاء طلب قرض جديد
             </button>
-            <a href=""
+            <a href="{{ route('loans.export', request()->all()) }}"
                 class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل
             </a>
@@ -385,7 +385,7 @@
     <script>
         window.APP_URL = "{{ url('/') }}";
     </script>
-    <script src="{{ asset('JS/loans.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/employee/loans.js') }}?v={{ time() }}"></script>
 @endsection
 
 @section('pagination')

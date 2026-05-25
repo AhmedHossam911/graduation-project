@@ -6,7 +6,7 @@
 
 @section('content')
 
-    <link rel="stylesheet" href="{{ asset('css/departments.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/departments.css') }}">
 
         <div class="flex justify-between items-center py-7 px-12">
             <div class="flex flex-col gap-3">
@@ -300,6 +300,6 @@
                 });
             });
         </script>
-        <script src="{{ asset('JS/departments.js') }}"></script>
+        <script src="{{ asset('js/admin/departments.js') }}"></script>
 
     @endsection

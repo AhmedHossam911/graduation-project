@@ -5,7 +5,7 @@
 @include('partials.flash')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/settings.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/settings.css') }}">
     <main class="flex-1 py-5 px-3">
         <!-- start header main -->
         <div class="flex flex-col gap-2 mb-6">
@@ -502,5 +502,5 @@
         </form>
     </main>
 
-    <script src="{{ asset('js/settings.js') }}"></script>
+    <script src="{{ asset('js/admin/settings.js') }}"></script>
 @endsection

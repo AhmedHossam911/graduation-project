@@ -9,6 +9,8 @@ use App\Models\Membership\Member;
 use App\Models\Membership\Attachment;
 use App\Models\System\AuditLog;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ClaimsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ClaimController extends Controller
 {
@@ -16,6 +18,20 @@ class ClaimController extends Controller
      * Display a listing of all claims.
      */
     public function index(Request $request)
+    {
+        $query = $this->buildFilteredQuery($request);
+        $claims = $query->paginate(10)->withQueryString();
+        $claimTypes = Claim::CLAIM_TYPES;
+
+        // Statistics for cards
+        $paidCount = Claim::where('status', 'approved')->count(); // تم صرفها
+        $pendingApprovalCount = Claim::where('status', 'pending_approval')->count(); // بانتظار الأعتماد
+        $pendingSettlementCount = Claim::where('status', 'pending')->count(); // بانتظار التسوية
+
+        return view('employee.claims.index', compact('claims', 'claimTypes', 'paidCount', 'pendingApprovalCount', 'pendingSettlementCount'));
+    }
+
+    private function buildFilteredQuery(Request $request)
     {
         $query = Claim::with(['membership.member'])->latest();
 
@@ -55,15 +71,13 @@ class ClaimController extends Controller
             $query->where('type', $request->type);
         }
 
-        $claims = $query->paginate(10)->withQueryString();
-        $claimTypes = Claim::CLAIM_TYPES;
+        return $query;
+    }
 
-        // Statistics for cards
-        $paidCount = Claim::where('status', 'approved')->count(); // تم صرفها
-        $pendingApprovalCount = Claim::where('status', 'pending_approval')->count(); // بانتظار الأعتماد
-        $pendingSettlementCount = Claim::where('status', 'pending')->count(); // بانتظار التسوية
-
-        return view('employee.claims.index', compact('claims', 'claimTypes', 'paidCount', 'pendingApprovalCount', 'pendingSettlementCount'));
+    public function export(Request $request)
+    {
+        $query = $this->buildFilteredQuery($request);
+        return Excel::download(new ClaimsExport($query), 'claims.xlsx');
     }
 
     /**

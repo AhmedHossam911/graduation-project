@@ -1,7 +1,7 @@
 @extends('layouts.pages')
 @section('title', 'المستندات')
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/documents.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/employee/documents.css') }}">
     <!-- start header -->
     <div class="py-4 px-12 flex items-center justify-between">
         <div class="space-y-2">
@@ -139,5 +139,5 @@
             </form>
         </div>
     </div>
-    <script src="{{ asset('JS/documents.js') }}"></script>
+    <script src="{{ asset('js/employee/documents.js') }}"></script>
 @endsection

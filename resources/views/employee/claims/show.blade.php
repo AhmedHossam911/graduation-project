@@ -12,7 +12,7 @@
         $membershipJoinDate = \Carbon\Carbon::parse($claim->membership->member->created_at);
         $subscriptionMonths = (int) $membershipJoinDate->diffInMonths($claim_creation);
     @endphp
-    <link rel="stylesheet" href="{{ asset('css/claims-approve.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/employee/claims-approve.css') }}">
     <!-- header -->
     <div class="flex justify-between py-5 px-12">
         <h1 class="text-[#124375] text-3xl font-medium">
@@ -278,6 +278,6 @@
             </div>
         </div>
     </form>
-    <script src="{{ asset('js/payment.js') }}"></script>
+    <script src="{{ asset('js/employee/payment.js') }}"></script>
 
 @endsection

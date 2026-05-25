@@ -11,6 +11,8 @@ use App\Models\Membership\Attachment;
 use App\Models\System\AuditLog;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Exports\LoansExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LoanController extends Controller
 {
@@ -18,6 +20,35 @@ class LoanController extends Controller
      * Display a listing of all loans with search, filters, and statistics.
      */
     public function index(Request $request)
+    {
+        $query = $this->buildFilteredQuery($request);
+
+        $loans = $query->paginate(10)->withQueryString();
+
+        // ── Statistics cards ──
+        // قروض مُفعلة هذا الشهر
+        $activeLoansThisMonth = Loan::where('status', 'active')
+            ->whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)
+            ->count();
+
+        // طلبات قروض تحت المراجعة
+        $pendingLoansCount = Loan::where('status', 'pending')->count();
+
+        // أقساط متأخره اليوم
+        $overdueInstallmentsCount = Installment::where('status', 'overdue')
+            ->whereDate('due_date', '<=', now()->toDateString())
+            ->count();
+
+        return view('employee.loans.index', compact(
+            'loans',
+            'activeLoansThisMonth',
+            'pendingLoansCount',
+            'overdueInstallmentsCount'
+        ));
+    }
+
+    private function buildFilteredQuery(Request $request)
     {
         $query = Loan::with(['membership.member', 'installments'])->latest();
 
@@ -78,29 +109,13 @@ class LoanController extends Controller
             }
         }
 
-        $loans = $query->paginate(10)->withQueryString();
+        return $query;
+    }
 
-        // ── Statistics cards ──
-        // قروض مُفعلة هذا الشهر
-        $activeLoansThisMonth = Loan::where('status', 'active')
-            ->whereMonth('created_at', now()->month)
-            ->whereYear('created_at', now()->year)
-            ->count();
-
-        // طلبات قروض تحت المراجعة
-        $pendingLoansCount = Loan::where('status', 'pending')->count();
-
-        // أقساط متأخره اليوم
-        $overdueInstallmentsCount = Installment::where('status', 'overdue')
-            ->whereDate('due_date', '<=', now()->toDateString())
-            ->count();
-
-        return view('employee.loans.index', compact(
-            'loans',
-            'activeLoansThisMonth',
-            'pendingLoansCount',
-            'overdueInstallmentsCount'
-        ));
+    public function export(Request $request)
+    {
+        $query = $this->buildFilteredQuery($request);
+        return Excel::download(new LoansExport($query), 'loans.xlsx');
     }
 
     /**

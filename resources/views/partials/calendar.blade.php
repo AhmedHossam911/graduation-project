@@ -10,13 +10,13 @@
 @once
     @push('styles')
         <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
-        <link rel="stylesheet" href="{{ asset('css/calendar.css') }}?v={{ filemtime(public_path('css/calendar.css')) }}">
+        <link rel="stylesheet" href="{{ asset('css/partials/calendar.css') }}?v={{ filemtime(public_path('css/partials/calendar.css')) }}">
     @endpush
 
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
-        <script src="{{ asset('JS/calendar.js') }}?v={{ filemtime(public_path('JS/calendar.js')) }}"></script>
+        <script src="{{ asset('js/partials/calendar.js') }}?v={{ filemtime(public_path('js/partials/calendar.js')) }}"></script>
     @endpush
 @endonce
 

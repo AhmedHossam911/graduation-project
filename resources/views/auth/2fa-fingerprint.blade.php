@@ -21,7 +21,7 @@
 @endsection
 
 @section('scripts')
-<script src="{{ asset('js/webauthn-custom.js') }}"></script>
+<script src="{{ asset('js/auth/webauthn-custom.js') }}"></script>
 <script>
     const browserOptions = {!! json_encode($browserOptions) !!};
     

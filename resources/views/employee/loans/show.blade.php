@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', 'القروض السابقة')
 @section('content')
-    <link rel="stylesheet" href="{{ asset('CSS/previousLoans.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/employee/previousLoans.css') }}">
     <!-- start header -->
     <div class="py-4 px-12">
         <h1 class="text-[#124375] text-[28px] font-semibold">
@@ -67,5 +67,5 @@
         </div>
     </section>
 
-    <script src="{{ asset('JS/previousLoans.js') }}"></script>
+    <script src="{{ asset('js/employee/previousLoans.js') }}"></script>
 @endsection

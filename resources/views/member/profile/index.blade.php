@@ -2,7 +2,7 @@
 @section('title', 'الملف الشخصي')
 @section('content')
     @include('partials.flash')
-    <style src="{{ asset('css/profile.css') }}"></style>
+    <style src="{{ asset('css/member/profile.css') }}"></style>
     <div class="profile transition-all duration-300">
         <div class="profile-header py-7 text-center">
             <h1 class="text-xl font-semibold text-[#124375]">
@@ -157,8 +157,8 @@
         </form>
     </div>
 
-    <script src="{{ asset('js/profile.js') }}"></script>
-    <script src="{{ asset('js/webauthn-custom.js') }}"></script>
+    <script src="{{ asset('js/member/profile.js') }}"></script>
+    <script src="{{ asset('js/auth/webauthn-custom.js') }}"></script>
 
     <script>
         document.getElementById('register-passkey-btn')?.addEventListener('click', async () => {

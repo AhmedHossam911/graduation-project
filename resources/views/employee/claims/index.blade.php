@@ -3,7 +3,7 @@
 @section('title', 'قائمة المطالبات')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/claims-approve.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/employee/claims-approve.css') }}">
     <!-- start header -->
     <div class="flex justify-between px-4 py-5">
         <div>
@@ -16,7 +16,7 @@
                 class="open-modal rounded-xl flex items-center justify-center py-3 px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إنشاء مطالبة
             </button>
-            <a href=""
+            <a href="{{ route('claims.export', request()->all()) }}"
                 class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل
             </a>
@@ -377,7 +377,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('JS/claims.js') }}"></script>
+    <script src="{{ asset('js/employee/claims.js') }}"></script>
 @endsection
 @section('pagination')
     <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">

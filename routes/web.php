@@ -137,11 +137,13 @@ Route::middleware('auth')->group(function () {
         Route::post('/subscriptions/{subscription}/send-notice', [SubscriptionController::class, 'sendNotice'])->name('subscriptions.send_notice');
 
         // Claims Management
+        Route::get('/claims/export', [ClaimController::class, 'export'])->name('claims.export');
         Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
         Route::get('/claims/{claim}', [ClaimController::class, 'show'])->name('claims.show');
         Route::post('/claims/{claim}/approve', [ClaimController::class, 'approve'])->name('claims.approve');
 
         // ─── Loans Management ──────────────────────────────────────────────
+        Route::get('/loans/export', [LoanController::class, 'export'])->name('loans.export');
         Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
         Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
         Route::get('/loans/search-members', [LoanController::class, 'searchMembers'])->name('loans.searchMembers');

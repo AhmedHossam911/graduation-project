@@ -5,7 +5,7 @@
 @include('partials.flash')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/grantaccess.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/grantaccess.css') }}">
 
     <div class="flex justify-between items-center py-7 px-12">
         <div class="flex flex-col gap-3">
@@ -262,6 +262,6 @@
         </div>
     </form>
 
-    <script src="{{ asset('JS/grantaccess.js') }}"></script>
+    <script src="{{ asset('js/admin/grantaccess.js') }}"></script>
 
 @endsection

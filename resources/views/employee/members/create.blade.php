@@ -1,7 +1,7 @@
 @extends('layouts.pages')
 @section('title', 'إستمارة العضوية')
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/MembershipForm.css') }}">
+<link rel="stylesheet" href="{{ asset('css/employee/MembershipForm.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- start Header -->
@@ -376,7 +376,7 @@
         </div>
     </form>
 
-    <script src="{{ asset('JS/MembershipForm.js') }}"></script>
+    <script src="{{ asset('js/employee/MembershipForm.js') }}"></script>
 
     @if(session('receipt_data'))
     <script>

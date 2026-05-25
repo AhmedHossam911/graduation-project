@@ -7,7 +7,7 @@
     <!-- Include FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Include Custom Auth CSS -->
-    <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/auth/auth.css') }}">
     <link rel="icon" href="{{ asset('IMGs/Hu Logo 1.png') }}">
 </head>
 <body>

@@ -6,7 +6,7 @@
 
 @section('content')
 
-    <link rel="stylesheet" href="{{ asset('CSS/departmentsView.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/departmentsView.css') }}">
 
     <div class="py-7 px-12">
         <div class="flex flex-col gap-3">
@@ -157,6 +157,6 @@
             document.getElementById('status_display').innerText = status;
         }
     </script>
-    <script src="{{ asset('JS/departmentsView.js') }}"></script>
+    <script src="{{ asset('js/admin/departmentsView.js') }}"></script>
 
 @endsection

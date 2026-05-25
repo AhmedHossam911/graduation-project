@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/layouts/Dashboard.css') }}">
     <link rel="icon" href="{{ asset('IMGs/Hu Logo 1.png') }}">
 </head>
 
@@ -56,7 +56,7 @@
     @include('partials.footer')
 
     @stack('scripts')
-    <script src="{{ asset('JS/Dashboard.js') }}"></script>
+    <script src="{{ asset('js/layouts/Dashboard.js') }}"></script>
 </body>
 
 </html>

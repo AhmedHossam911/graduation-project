@@ -6,7 +6,7 @@
 
 @section('content')
 
-    <link rel="stylesheet" href="{{ asset('css/permissions.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/permissions.css') }}">
 
     <div class="flex justify-between items-center py-7 px-12">
         <div class="flex flex-col gap-3">
@@ -459,7 +459,7 @@
         </div>
     @endforeach
 
-    <script src="{{ asset('JS/permissions.js') }}"></script>
+    <script src="{{ asset('js/admin/permissions.js') }}"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

@@ -5,7 +5,7 @@
 @include('partials.flash')
 
 @section('content')
-    <link rel="stylesheet" href="{{ asset('css/auditLogs.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/auditLogs.css') }}">
     <div class="py-7 px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375] font-semibold">
@@ -192,5 +192,5 @@
     </div>
     @endforeach
 
-    <script src="{{ asset('JS/auditLogs.js') }}"></script>
+    <script src="{{ asset('js/admin/auditLogs.js') }}"></script>
 @endsection
