@@ -24,9 +24,9 @@ class ClaimsExport implements FromQuery, WithMapping, WithHeadings
     public function map($claim): array
     {
         $status = match ($claim->status) {
-            'pending' => 'قيد الانتظار',
-            'pending_approval' => 'بانتظار الاعتماد',
-            'approved' => 'معتمد/تم الصرف',
+            'pending' => 'بانتظار الأعتماد',
+            'approved' => 'بانتظار التسوية',
+            'paid' => 'تم الصرف',
             'rejected' => 'مرفوض',
             default => '---',
         };

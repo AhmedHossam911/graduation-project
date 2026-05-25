@@ -2,7 +2,10 @@
 const dropDownBtn = document.querySelectorAll(".dropDownBtn")
 const dropDown = document.querySelectorAll(".dropDown")
 // end drop down menu variables
-
+// calendar variables
+const calendarLabel = document.querySelector(".calendar-label")
+const calendarSpan = calendarLabel.querySelector("span")
+// end calendar variables
 
 // modals variables
 const modal = document.querySelectorAll(".modal")
@@ -58,3 +61,21 @@ document.addEventListener("click", () => {
 });
 // end drop down menu logic
 
+// calendar logic
+$(function () {
+    $("#datepicker").datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        showButtonPanel: true,
+        currentText: "Done",
+        closeText: "Cancel",
+        onSelect: function () {
+            const currentDate = $("#datepicker").datepicker("getDate");
+            const day = currentDate.getDate();
+            const month = currentDate.getMonth() + 1;
+            const year = currentDate.getFullYear();
+            calendarSpan.textContent = day + "/" + month + "/" + year;
+        }
+    });
+});
+// end calendar logic

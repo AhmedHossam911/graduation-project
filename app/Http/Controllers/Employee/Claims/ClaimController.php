@@ -24,9 +24,9 @@ class ClaimController extends Controller
         $claimTypes = Claim::CLAIM_TYPES;
 
         // Statistics for cards
-        $paidCount = Claim::where('status', 'approved')->count(); // تم صرفها
-        $pendingApprovalCount = Claim::where('status', 'pending_approval')->count(); // بانتظار الأعتماد
-        $pendingSettlementCount = Claim::where('status', 'pending')->count(); // بانتظار التسوية
+        $paidCount = Claim::where('status', 'paid')->count(); // تم صرفها
+        $pendingApprovalCount = Claim::where('status', 'pending')->count(); // بانتظار الأعتماد
+        $pendingSettlementCount = Claim::where('status', 'approved')->count(); // بانتظار التسوية
 
         return view('employee.claims.index', compact('claims', 'claimTypes', 'paidCount', 'pendingApprovalCount', 'pendingSettlementCount'));
     }

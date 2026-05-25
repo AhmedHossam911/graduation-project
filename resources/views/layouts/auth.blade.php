@@ -14,7 +14,7 @@
 <body class="bg-[url('{{ asset('IMGs/HU%20IMG.png') }}')] bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center relative overflow-hidden font-['Cairo']">
     <div class="absolute inset-0 bg-white/10 backdrop-blur-[2px] z-[-1] h-[105%]"></div>
     
-    <div class="bg-white/90 backdrop-blur-md rounded-2xl py-5 px-5 md:px-14 w-full max-w-[568px] mx-5 md:mx-auto shadow-[0_10px_40px_rgba(0,0,0,0.1)] text-center">
+    <div class="bg-white/90 backdrop-blur-md rounded-2xl py-5 px-5 md:px-14 w-full @yield('card-width', 'max-w-[568px]') mx-5 md:mx-auto shadow-[0_10px_40px_rgba(0,0,0,0.1)] text-center">
         <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="شعار الجامعة" class="max-w-[120px] mx-auto">
         <h1 class="text-[#193e6a] text-2xl font-bold mb-1">صندوق الزمالة - جامعة العاصمة</h1>
         
