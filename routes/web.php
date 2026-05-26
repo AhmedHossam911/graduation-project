@@ -138,6 +138,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
         Route::get('/claims/{claim}', [ClaimController::class, 'show'])->name('claims.show');
         Route::post('/claims/{claim}/approve', [ClaimController::class, 'approve'])->name('claims.approve');
+        Route::post('/claims/{claim}/finalize', [ClaimController::class, 'finalize'])->name('claims.finalize');
 
         // ─── Loans Management ──────────────────────────────────────────────
         Route::get('/loans/export', [LoanController::class, 'export'])->name('loans.export');

@@ -202,6 +202,38 @@ class ClaimController extends Controller
     /**
      * Create an audit log entry for any action.
      */
+
+    /**
+     * Finalize the claim (Upload signed receipt for cheque payment).
+     */
+    public function finalize(Request $request, Claim $claim)
+    {
+        $request->validate([
+            'signed_receipt' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+        ]);
+
+        $oldValues = $claim->toArray();
+
+        DB::transaction(function () use ($request, $claim, $oldValues) {
+            $memberId = $claim->membership->member_id;
+            $path = $request->file('signed_receipt')->store("members/{$memberId}/claims/{$claim->id}", 'public');
+
+            Attachment::create([
+                'member_id' => $memberId,
+                'type'      => "claim_{$claim->id}_signed_receipt",
+                'file_path' => $path,
+            ]);
+
+            $claim->update([
+                'status' => 'delivered' // Or 'ready', as requested by the user
+            ]);
+
+            $this->logAudit('finalize', 'claims', $claim->id, $oldValues, $claim->fresh()->toArray());
+        });
+
+        return back()->with('success', 'تم رفع الإقرار الموقع ودفع الشيك بنجاح.');
+    }
+
     private function logAudit(string $action, string $tableName, int $recordId, ?array $oldValues, ?array $newValues): void
     {
         AuditLog::create([

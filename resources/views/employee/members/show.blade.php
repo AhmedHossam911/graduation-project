@@ -389,7 +389,8 @@
             <div>
                 <!-- requests only -->
                 <div class="tab-content relative" data-tab="مطالبات">
-                    <button class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex gap-3">نوع
+                    <button
+                        class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex gap-3">نوع
                         المطالبة : @if (isset($selectedClaimType))
                             <span class="text-[#021219]">{{ $claims[$selectedClaimType] ?? 'أختر' }}</span>
                         @else
@@ -397,15 +398,25 @@
                         @endif
                         <span class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                 class="text-xl"></iconify-icon></span></button>
-                    <div class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow max-w-fit">
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=retirement&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2 px-1 rounded-xl text-base ">بلوغ سن التقاعد القانوني</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=transfer&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">نقل</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=death&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base "> وفاة</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=resignation&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base "> استقالة</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=early_retirement&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">معاش مبكر</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=withdrawal&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">انسحاب</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=expulsion&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">فصل</a>
-                        <a href="{{ url('/members/' . $member->id . '?claim_type=professional_disability&tab=مطالبات') }}" class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">عجز مهني</a>
+                    <div
+                        class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow max-w-fit">
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=retirement&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2 px-1 rounded-xl text-base ">بلوغ سن
+                            التقاعد القانوني</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=transfer&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">نقل</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=death&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base "> وفاة</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=resignation&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base "> استقالة</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=early_retirement&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">معاش مبكر</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=withdrawal&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">انسحاب</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=expulsion&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">فصل</a>
+                        <a href="{{ url('/members/' . $member->id . '?claim_type=professional_disability&tab=مطالبات') }}"
+                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">عجز مهني</a>
                     </div>
                 </div>
                 <!-- requests only -->
@@ -472,8 +483,9 @@
     <!-- start requests section -->
     <div class="tab-content" data-tab="مطالبات">
         <!-- first step of request -->
-        @if (request('claim_type') !== null)
-            <form action="{{ route('members.storeClaim', $member->id) }}" method="POST" enctype="multipart/form-data" class="w-full">
+        @if (request('claim_type') !== null && request('view_claim') === null)
+            <form action="{{ route('members.storeClaim', $member->id) }}" method="POST" enctype="multipart/form-data"
+                class="w-full">
                 @csrf
                 <input type="hidden" name="claim_type" value="{{ request('claim_type') }}">
                 <div class="tab-content modal-body space-y-7 mt-6 px-5" data-tab="مطالبات">
@@ -484,169 +496,226 @@
                     </div>
                     <div class="space-y-3">
                         <div class="flex gap-4">
-                            <p class="text-[#124375] text-base font-medium">الأسم : <span class="text-[#021219] text-base font-semibold">{{ $member->full_name }}</span></p>
-                            <p class="text-[#124375] text-base font-medium">رقم العضوية : <span class="text-[#021219] text-base font-semibold">{{ $member->membershipInfo->membership_number ?? '-' }}</span></p>
-                            <p class="text-[#124375] text-base font-medium">الرقم القومي : <span class="text-[#021219] text-base font-semibold">{{ $member->national_id }}</span></p>
+                            <p class="text-[#124375] text-base font-medium">الأسم : <span
+                                    class="text-[#021219] text-base font-semibold">{{ $member->full_name }}</span></p>
+                            <p class="text-[#124375] text-base font-medium">رقم العضوية : <span
+                                    class="text-[#021219] text-base font-semibold">{{ $member->membershipInfo->membership_number ?? '-' }}</span>
+                            </p>
+                            <p class="text-[#124375] text-base font-medium">الرقم القومي : <span
+                                    class="text-[#021219] text-base font-semibold">{{ $member->national_id }}</span></p>
                         </div>
-                        <p>يرجى إرفاق المستندات التالية لإتمام مطالبة ({{ $claims[request('claim_type')] ?? '' }}) واستلام المستحقات.</p>
+                        <p>يرجى إرفاق المستندات التالية لإتمام مطالبة ({{ $claims[request('claim_type')] ?? '' }}) واستلام
+                            المستحقات.</p>
                     </div>
 
                     <div class="documents grid grid-cols-2 gap-y-5 gap-x-4">
                         <!-- common inputs -->
                         @if (request('claim_type') !== 'transfer')
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">خطاب بالمرتب الأساسي<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-salary" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[salary_letter]" id="file-salary" class="hidden" required>
-                            </label>
-                        </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">خطاب
+                                    بالمرتب الأساسي<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-salary"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[salary_letter]" id="file-salary"
+                                        class="hidden" required>
+                                </label>
+                            </div>
                         @endif
 
                         <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">بيان بالمبالغ المخصومة<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-deductions" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                            <span
+                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">بيان
+                                بالمبالغ المخصومة<span class="text-[#D92D20]">*</span></span>
+                            <label for="file-deductions"
+                                class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط لإرفاق صورة الملف</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[deductions_statement]" id="file-deductions" class="hidden" required>
+                                <input type="file" name="attachments[deductions_statement]" id="file-deductions"
+                                    class="hidden" required>
                             </label>
                         </div>
 
                         <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">خطاب بتاريخ التعيين<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-appointment" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                            <span
+                                class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">خطاب
+                                بتاريخ التعيين<span class="text-[#D92D20]">*</span></span>
+                            <label for="file-appointment"
+                                class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط لإرفاق صورة الملف</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[appointment_letter]" id="file-appointment" class="hidden" required>
+                                <input type="file" name="attachments[appointment_letter]" id="file-appointment"
+                                    class="hidden" required>
                             </label>
                         </div>
 
                         @if (request('claim_type') !== 'death')
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">بطاقه الرقم القومي<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-national" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[national_id]" id="file-national" class="hidden" required>
-                            </label>
-                        </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">بطاقه
+                                    الرقم القومي<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-national"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[national_id]" id="file-national"
+                                        class="hidden" required>
+                                </label>
+                            </div>
                         @endif
 
                         @if (request('claim_type') !== 'transfer' && request('claim_type') !== 'death')
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار الإحالة للمعاش<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-retirement" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[retirement_decision]" id="file-retirement" class="hidden" required>
-                            </label>
-                        </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    قرار الإحالة للمعاش<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-retirement"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[retirement_decision]" id="file-retirement"
+                                        class="hidden" required>
+                                </label>
+                            </div>
                         @endif
 
-                        <div class="relative border border-[#6D6D6D] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#6D6D6D] font-medium bg-[#F4F7F9]">توقيع {{ request('claim_type') === 'death' ? 'الوريث' : 'العضو' }} بصرف مستحقاته</span>
-                            <label for="file-receipt" class="cursor-pointer py-3 text-[#6D6D6D] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[signed_receipt]" id="file-receipt" class="hidden">
-                            </label>
-                        </div>
+
 
                         @if (request('claim_type') === 'transfer')
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة إخلاء طرف<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-release" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[release_form]" id="file-release" class="hidden" required>
-                            </label>
-                        </div>
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار النقل<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-transfer" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[service_end_decision]" id="file-transfer" class="hidden" required>
-                            </label>
-                        </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    إخلاء طرف<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-release"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[release_form]" id="file-release"
+                                        class="hidden" required>
+                                </label>
+                            </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    قرار النقل<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-transfer"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[service_end_decision]" id="file-transfer"
+                                        class="hidden" required>
+                                </label>
+                            </div>
                         @endif
 
                         @if (request('claim_type') === 'death')
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار إنهاء الخدمة<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-death-end" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[service_end_decision]" id="file-death-end" class="hidden" required>
-                            </label>
-                        </div>
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة شهادة الوفاة<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-death-cert" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[death_certificate]" id="file-death-cert" class="hidden" required>
-                            </label>
-                        </div>
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة بطاقة الرقم القومي للورثة المستحقين<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-heirs" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[heirs_ids]" id="file-heirs" class="hidden" required>
-                            </label>
-                        </div>
-                        <div class="relative border border-[#124375] rounded-2xl w-full">
-                            <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة إعلام الوراثة الشرعي<span class="text-[#D92D20]">*</span></span>
-                            <label for="file-inheritance" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                <p>اضغط لإرفاق صورة الملف</p>
-                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[inheritance_notice]" id="file-inheritance" class="hidden" required>
-                            </label>
-                        </div>
-                        <div class="col-span-2">
-                            <div class="flex justify-between">
-                                <div>
-                                    <p class="text-base font-medium text-[#124375]">هل يوجد قصر ؟ <span class="text-[#D92D20]">*</span></p>
-                                </div>
-                                <div class="flex gap-3">
-                                    <label for="yes" class="cursor-pointer flex items-center gap-3">
-                                        <input type="radio" name="has_minors" value="1" id="yes" class="hidden peer" required onclick="document.getElementById('minors_files').classList.remove('hidden')">
-                                        <span class="inline-block w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
-                                        <span>نعم</span>
-                                    </label>
-                                    <label for="no" class="cursor-pointer flex items-center gap-3">
-                                        <input type="radio" name="has_minors" value="0" id="no" class="hidden peer" required checked onclick="document.getElementById('minors_files').classList.add('hidden')">
-                                        <span class="inline-block w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
-                                        <span>لا</span>
-                                    </label>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    قرار إنهاء الخدمة<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-death-end"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[service_end_decision]" id="file-death-end"
+                                        class="hidden" required>
+                                </label>
+                            </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    شهادة الوفاة<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-death-cert"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[death_certificate]" id="file-death-cert"
+                                        class="hidden" required>
+                                </label>
+                            </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    بطاقة الرقم القومي للورثة المستحقين<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-heirs"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[heirs_ids]" id="file-heirs" class="hidden"
+                                        required>
+                                </label>
+                            </div>
+                            <div class="relative border border-[#124375] rounded-2xl w-full">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                    إعلام الوراثة الشرعي<span class="text-[#D92D20]">*</span></span>
+                                <label for="file-inheritance"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                    <p>اضغط لإرفاق صورة الملف</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                    <input type="file" name="attachments[inheritance_notice]" id="file-inheritance"
+                                        class="hidden" required>
+                                </label>
+                            </div>
+                            <div class="col-span-2">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <p class="text-base font-medium text-[#124375]">هل يوجد قصر ؟ <span
+                                                class="text-[#D92D20]">*</span></p>
+                                    </div>
+                                    <div class="flex gap-3">
+                                        <label for="yes" class="cursor-pointer flex items-center gap-3">
+                                            <input type="radio" name="has_minors" value="1" id="yes"
+                                                class="hidden peer" required
+                                                onclick="document.getElementById('minors_files').classList.remove('hidden')">
+                                            <span
+                                                class="inline-block w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                            <span>نعم</span>
+                                        </label>
+                                        <label for="no" class="cursor-pointer flex items-center gap-3">
+                                            <input type="radio" name="has_minors" value="0" id="no"
+                                                class="hidden peer" required checked
+                                                onclick="document.getElementById('minors_files').classList.add('hidden')">
+                                            <span
+                                                class="inline-block w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                            <span>لا</span>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div id="minors_files" class="col-span-2 grid grid-cols-2 gap-y-5 gap-x-4 hidden">
-                            <div class="relative border border-[#124375] rounded-2xl w-full">
-                                <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار الوصاية في حالة وجود قصر<span class="text-[#D92D20]">*</span></span>
-                                <label for="file-guardianship" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                    <p>اضغط لإرفاق صورة الملف</p>
-                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[guardianship_decision]" id="file-guardianship" class="hidden">
-                                </label>
+                            <div id="minors_files" class="col-span-2 grid grid-cols-2 gap-y-5 gap-x-4 hidden">
+                                <div class="relative border border-[#124375] rounded-2xl w-full">
+                                    <span
+                                        class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                        قرار الوصاية في حالة وجود قصر<span class="text-[#D92D20]">*</span></span>
+                                    <label for="file-guardianship"
+                                        class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                        <p>اضغط لإرفاق صورة الملف</p>
+                                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                        <input type="file" name="attachments[guardianship_decision]"
+                                            id="file-guardianship" class="hidden">
+                                    </label>
+                                </div>
+                                <div class="relative border border-[#124375] rounded-2xl w-full">
+                                    <span
+                                        class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
+                                        شهادات ميلاد القصر بالرقم القومي<span class="text-[#D92D20]">*</span></span>
+                                    <label for="file-minors-certs"
+                                        class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
+                                        <p>اضغط لإرفاق صورة الملف</p>
+                                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                        <input type="file" name="attachments[minors_birth_certs]"
+                                            id="file-minors-certs" class="hidden">
+                                    </label>
+                                </div>
                             </div>
-                            <div class="relative border border-[#124375] rounded-2xl w-full">
-                                <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة شهادات ميلاد القصر بالرقم القومي<span class="text-[#D92D20]">*</span></span>
-                                <label for="file-minors-certs" class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
-                                    <p>اضغط لإرفاق صورة الملف</p>
-                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[minors_birth_certs]" id="file-minors-certs" class="hidden">
-                                </label>
-                            </div>
-                        </div>
                         @endif
                     </div>
 
-                    <div class="declaration space-y-3" id="declaration-content">
+                    {{-- <div class="declaration space-y-3" id="declaration-content">
                         <h3 class="text-center font-medium">إقرار</h3>
                         <p class="font-medium text-lg leading-loose">
                             أقر أنا / <span class="font-bold">{{ $member->full_name }}</span> بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان،
@@ -655,17 +724,13 @@
                         <p class="font-medium text-lg mt-8 text-left">
                             <span>التوقيع / ________________</span>
                         </p>
-                    </div>
+                    </div> --}}
 
                     <div class="btns flex gap-4 mt-6">
-                        <button type="button" onclick="printDeclaration()"
-                            class="border-2 border-[#124375] text-[#124375] font-bold w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
-                            <iconify-icon icon="material-symbols:print" class="text-2xl"></iconify-icon>
-                            طباعة الإقرار
-                        </button>
+
                         <button type="submit"
-                            class="submit-btn rounded-[14px] w-2/3 py-3 bg-[#124375] text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2 hover:bg-opacity-90 transition-colors">
-                            تقديم الطلب 
+                            class="submit-btn rounded-[14px] w-full py-3 bg-[#124375] text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2 hover:bg-opacity-90 transition-colors">
+                            تقديم الطلب
                         </button>
                     </div>
                 </div>
@@ -709,9 +774,11 @@
                             @foreach ($memberClaims as $claim)
                                 <tr class="text-center border-b border-[#D1D5DB] {{ $loop->even ? 'bg-[#EFEFEF]' : '' }}">
                                     <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">{{ $claim->id }}</td>
-                                    <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">{{ $claims[$claim->claim_type] ?? $claim->claim_type }}</td>
+                                    <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                        {{ $claims[$claim->type] ?? $claim->type }}</td>
                                     <td class="py-4 border-l border-[#D1D5DB]">
-                                        <span class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100' }} border px-4 py-1.5 text-sm rounded-lg">
+                                        <span
+                                            class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100' }} border px-4 py-1.5 text-sm rounded-lg">
                                             {{ $claimStatusLabels[$claim->status] ?? $claim->status }}
                                         </span>
                                     </td>
@@ -719,7 +786,14 @@
                                         {{ $claim->created_at->format('Y-m-d') }}
                                     </td>
                                     <td class="py-5">
-                                        <button class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium">عرض التفاصيل</button>
+                                        @if ($claim->status === 'approved')
+                                            <a href="?tab=مطالبات&view_claim={{ $claim->id }}"
+                                                class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium inline-block">عرض
+                                                التفاصيل</a>
+                                        @elseif($claim->status === 'pending')
+                                            <a href="{{ route('claims.show', $claim->id) }}"
+                                                class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium inline-block">اعتماد</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -728,8 +802,76 @@
                 </div>
             @endif
         </section>
+        <!-- end requests section -->
+
+        <!-- view claim section -->
+        @if (request('view_claim') !== null)
+            @php
+                $viewedClaim = $memberClaims->find(request('view_claim'));
+            @endphp
+            <section class="px-7 py-5 border-t border-gray-200 mt-5">
+                <div class="flex items-center gap-2 mb-4">
+                    <p class="text-2xl font-semibold text-[#124375]">تفاصيل المطالبة</p>
+                </div>
+
+                @if ($viewedClaim->status === 'approved')
+                    <form action="{{ route('claims.finalize', $viewedClaim->id) }}" method="POST"
+                        enctype="multipart/form-data" class="w-full">
+                        @csrf
+                        <div>
+                            <div class="declaration space-y-3" id="declaration-content">
+                                <h3 class="text-center font-medium text-xl text-[#124375]">إقرار استلام المستحقات</h3>
+                                <p class="font-medium text-lg leading-loose border p-4 rounded-xl bg-[#F4F7F9]">
+                                    أقر أنا / <span
+                                        class="font-bold underline decoration-dotted">{{ $member->full_name }}</span>
+                                    بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس ومعاونيهم
+                                    والعاملين بجامعة حلوان،
+                                    وذلك اعتبارًا من تاريخ {{ date('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي مستحقات
+                                    أخرى بعد هذا التاريخ.
+                                </p>
+                                <p class="font-medium text-lg mt-8 flex justify-between">
+                                    <span>الاسم / <span class="font-bold">{{ $member->full_name }}</span></span>
+                                    <span>الرقم القومي / <span class="font-bold">{{ $member->national_id }}</span></span>
+                                    <span>التوقيع / ________________</span>
+                                </p>
+                            </div>
+
+                            <div class="mt-8 border border-[#124375] rounded-2xl w-full relative p-6 bg-white">
+                                <span
+                                    class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-white">رفع
+                                    الإقرار بعد توقيعه <span class="text-[#D92D20]">*</span></span>
+                                <label for="file-receipt"
+                                    class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-2 border-2 border-dashed border-[#124375] rounded-xl hover:bg-[#F4F7F9] transition-colors">
+                                    <p class="text-lg">اضغط لإرفاق صورة الإقرار الموقع</p>
+                                    <iconify-icon icon="mingcute:upload-3-fill" class="text-3xl"></iconify-icon>
+                                    <input type="file" name="signed_receipt" id="file-receipt" class="hidden"
+                                        required>
+                                </label>
+                            </div>
+
+                            <div class="btns flex gap-4 mt-6">
+                                <button type="button" onclick="printDeclaration()"
+                                    class="border-2 border-[#124375] text-[#124375] font-bold w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
+                                    <iconify-icon icon="material-symbols:print" class="text-2xl"></iconify-icon>
+                                    طباعة الإقرار
+                                </button>
+                                <button type="submit"
+                                    class="submit-btn rounded-[14px] w-2/3 py-3 bg-[#124375] text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2 hover:bg-opacity-90 transition-colors">
+                                    تأكيد دفع الشيك (رفع الإقرار الموقع)
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                @else
+                    <div class="bg-[#FFF8E1] text-[#E6B800] border border-[#E6B800] p-4 rounded-xl text-center">
+                        <p class="text-lg font-medium">يجب اعتماد هذه المطالبة أولاً حتى تتمكن من طباعة الإقرار وإرفاق
+                            التوقيع.</p>
+                    </div>
+                @endif
+            </section>
+        @endif
     </div>
-    <!-- end requests section -->
+
 
     <!-- loan table -->
     @if ($activeLoan)
@@ -1089,7 +1231,8 @@
                                     class="text-[#021219] font-semibold text-base">{{ $activeLoan ? $activeLoan->installments->count() : 0 }}
                                     شهر</span></p>
                             <p class="text-base font-medium text-[#124375]">تاريخ بداية القرض :<span
-                                    class="text-[#021219] font-semibold text-base">{{ now()->format('Y-m-d') }}</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ now()->format('Y-m-d') }}</span>
+                            </p>
                         </div>
                     </div>
                     <div class="flex flex-col gap-5">

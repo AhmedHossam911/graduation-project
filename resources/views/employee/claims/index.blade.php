@@ -187,7 +187,7 @@
                                     <a href="{{ route('claims.show', $claim->id) }}"
                                         class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
                                         <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
-                                        أعتماد وعرض
+                                        أعتماد
                                     </a>
                                 @elseif($claim->status === 'paid')
                                     <a href="{{ route('claims.show', $claim->id) }}"
