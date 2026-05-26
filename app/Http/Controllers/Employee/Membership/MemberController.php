@@ -19,16 +19,16 @@ class MemberController extends Controller
      * Shared status map used across index, show, and other views.
      */
     public const STATUS_MAP = [
-        'active'       => ['label' => 'نشط',              'class' => 'active'],
-        'registering'  => ['label' => 'قيد التسجيل',      'class' => 'registering'],
-        'pending'      => ['label' => 'قيد الانتظار',     'class' => 'pending'],
-        'loan'         => ['label' => 'إعارة',            'class' => 'loan'],
-        'pension'      => ['label' => 'محال للمعاش',      'class' => 'pension'],
-        'withdrawn'    => ['label' => 'منسحب',            'class' => 'withdrawn'],
-        'dismissed'    => ['label' => 'مفصول',            'class' => 'dismissed'],
-        'unpaid_leave' => ['label' => 'إجازة بدون راتب',  'class' => 'unpaid_leave'],
-        'expired'      => ['label' => 'منتهي العضوية',    'class' => 'expired'],
-        'suspended'    => ['label' => 'موقوف',            'class' => 'suspended'],
+        'active'               => ['label' => 'نشط',              'class' => 'active'],
+        'registering'          => ['label' => 'قيد التسجيل',      'class' => 'registering'],
+        'pending_registration' => ['label' => 'قيد الانتظار',     'class' => 'pending'],
+        'loaned'               => ['label' => 'إعارة',            'class' => 'loan'],
+        'pension_eligible'     => ['label' => 'محال للمعاش',      'class' => 'pension'],
+        'withdrawn'            => ['label' => 'منسحب',            'class' => 'withdrawn'],
+        'dismissed'            => ['label' => 'مفصول',            'class' => 'dismissed'],
+        'unpaid_leave'         => ['label' => 'أجازه بدون مرتب',  'class' => 'unpaid_leave'],
+        'membership_expired'   => ['label' => 'منتهية العضوية',    'class' => 'expired'],
+        'suspended'            => ['label' => 'موقوف',            'class' => 'suspended'],
     ];
 
     protected $memberService;

@@ -147,7 +147,38 @@ class SubscriptionController extends Controller
         }
 
         if ($request->filled('status') && $request->status !== 'all') {
-            $query->where('status', $request->status);
+            $status = $request->status;
+
+            if ($status === 'suspended') {
+                $query->whereHas('membership', function ($q) {
+                    $q->where('status', 'suspended');
+                });
+            } else {
+                $query->whereHas('membership', function ($q) {
+                    $q->where('status', '!=', 'suspended');
+                });
+
+                if ($status === 'paid') {
+                    $query->where('status', 'paid');
+                } elseif ($status === 'unpaid') {
+                    $query->where('status', 'unpaid')
+                          ->where('due_date', '>=', now()->startOfDay());
+                } elseif ($status === 'overdue_0_6') {
+                    $query->where('status', 'unpaid')
+                          ->where('due_date', '<', now()->startOfDay())
+                          ->where('due_date', '>=', now()->subMonths(6)->startOfDay());
+                } elseif ($status === 'overdue_6_no_notice') {
+                    $query->where('status', 'unpaid')
+                          ->where('due_date', '<', now()->subMonths(6)->startOfDay())
+                          ->whereNull('notice_sent_at');
+                } elseif ($status === 'overdue_6_notice') {
+                    $query->where('status', 'unpaid')
+                          ->where('due_date', '<', now()->subMonths(6)->startOfDay())
+                          ->whereNotNull('notice_sent_at');
+                } else {
+                    $query->where('status', $status);
+                }
+            }
         }
 
         if ($request->filled('date')) {

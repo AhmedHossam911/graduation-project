@@ -97,13 +97,13 @@
                                 @php
                                     $dbStatusToAr = [
                                         'active' => 'نشط',
-                                        'pending' => 'قيد التسجيل',
-                                        'loan' => 'إعارة',
-                                        'pension' => 'محال للمعاش',
+                                        'pending_registration' => 'قيد التسجيل',
+                                        'loaned' => 'إعارة',
+                                        'pension_eligible' => 'محال للمعاش',
                                         'withdrawn' => 'منسحب',
                                         'dismissed' => 'مفصول',
                                         'unpaid_leave' => 'أجازه بدون مرتب',
-                                        'expired' => 'منتهية العضوية',
+                                        'membership_expired' => 'منتهية العضوية',
                                         'suspended' => 'موقوف'
                                     ];
                                     $statusColors = [

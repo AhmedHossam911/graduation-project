@@ -25,12 +25,26 @@ class SubscriptionsExport implements FromQuery, WithMapping, WithHeadings
 
     public function map($subscription): array
     {
-        $status = match ($subscription->status) {
-            'paid' => 'مسدد',
-            'unpaid' => 'غير مسدد',
-            'overdue' => 'متأخر',
-            default => '---',
-        };
+        $isPast = $subscription->due_date && \Carbon\Carbon::parse($subscription->due_date)->isPast();
+        $monthsLate = $isPast ? \Carbon\Carbon::parse($subscription->due_date)->diffInMonths(now()) : 0;
+        $noticeSent = $subscription->notice_sent_at !== null;
+        $memStatus = $subscription->membership->status ?? '';
+
+        if ($memStatus === 'suspended') {
+            $status = 'تم فصل العضوية';
+        } elseif ($subscription->status === 'paid') {
+            $status = 'مسدد';
+        } elseif ($isPast) {
+            if ($monthsLate > 6 && !$noticeSent) {
+                $status = 'متأخر ( يستوجب إخطار )';
+            } elseif ($monthsLate > 6 && $noticeSent) {
+                $status = 'متأخر ( تم إرسال التنبيه )';
+            } else {
+                $status = 'متأخر ( تم إرسال إخطار )';
+            }
+        } else {
+            $status = 'مستحق';
+        }
 
         return [
             $subscription->membership->membership_number ?? '---',

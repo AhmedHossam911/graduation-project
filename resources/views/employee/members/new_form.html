@@ -1,0 +1,173 @@
+    <!-- request form (creation) -->
+    <div id="claim-creation-container" class="tab-content modal-body space-y-7 px-5 hidden" data-tab="مطالبات">
+        <form action="#" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="hidden" name="claim_type" id="hidden_claim_type" value="">
+            <div class="modal-title text-center">
+                <h1 class="text-xl font-semibold text-[#124375]" id="claim-form-title">
+                    مطالبة
+                </h1>
+            </div>
+            <div class="space-y-3">
+                <div class="flex gap-4 ">
+                    <p class="text-[#124375] text-base font-medium">الأسم : <span
+                            class="text-[#021219] text-base font-semibold">{{ $member->full_name }}</span></p>
+                    <p class="text-[#124375] text-base font-medium">رقم العضوية : <span
+                            class="text-[#021219] text-base font-semibold">{{ $membership->membership_number ?? '-' }}</span></p>
+                    <p class="text-[#124375] text-base font-medium">الرقم القومي : <span
+                            class="text-[#021219] text-base font-semibold">{{ $member->national_id }}</span></p>
+                </div>
+                <p id="claim-form-desc">يرجى إرفاق المستندات التالية لإتمام طلب واستلام المستحقات.</p>
+            </div>
+            <div class="documents grid grid-cols-2 gap-y-5 gap-x-4">
+                <!-- Attachments fields -->
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="salary_letter">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">خطاب بالمرتب الأساسي<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_salary_letter" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_salary_letter" name="salary_letter" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="deductions_statement">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">بيان بالمبالغ المخصومة<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_deductions_statement" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_deductions_statement" name="deductions_statement" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="appointment_letter">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">خطاب بتاريخ التعيين<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_appointment_letter" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_appointment_letter" name="appointment_letter" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="national_id">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">بطاقه الرقم القومي<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_national_id" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_national_id" name="national_id" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="retirement_decision">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار الإحالة للمعاش<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_retirement_decision" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_retirement_decision" name="retirement_decision" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="release_form">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة إخلاء طرف<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_release_form" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_release_form" name="release_form" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="transfer_decision">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار إنهاء الخدمة / النقل <span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_transfer_decision" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_transfer_decision" name="transfer_decision" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="death_certificate">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة شهادة الوفاة <span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_death_certificate" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_death_certificate" name="death_certificate" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="heirs_ids">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة بطاقة الرقم القومي للورثة المستحقين<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_heirs_ids" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_heirs_ids" name="heirs_ids" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="inheritance_notice">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة إعلام الوراثة الشرعي <span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_inheritance_notice" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_inheritance_notice" name="inheritance_notice" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="heir_signature">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">توقيع الوريث بصرف المستحقات <span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_heir_signature" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_heir_signature" name="heir_signature" class="hidden">
+                    </label>
+                </div>
+                
+                <div class="col-span-2 claim-doc-group hidden" data-doc="minors_question">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-base font-medium text-[#124375]">هل يوجد قصر ؟ <span class="text-[#D92D20]">*</span></p>
+                        </div>
+                        <div class="flex gap-3">
+                            <label for="yes_minors" class="cursor-pointer flex items-center gap-3">
+                                <input type="radio" name="has_minors" value="1" id="yes_minors" class="hidden peer">
+                                <span class="inline-block w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                <span>نعم</span>
+                            </label>
+                            <label for="no_minors" class="cursor-pointer flex items-center gap-3">
+                                <input type="radio" name="has_minors" value="0" id="no_minors" class="hidden peer" checked>
+                                <span class="inline-block w-4 h-4 rounded-full border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:shadow-[inset_0_0_0_2px_white]"></span>
+                                <span>لا</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="guardianship_decision">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة قرار الوصاية في حالة وجود قصر<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_guardianship_decision" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_guardianship_decision" name="guardianship_decision" class="hidden">
+                    </label>
+                </div>
+                <div class="relative border border-[#124375] rounded-2xl w-full claim-doc-group hidden" data-doc="minors_birth_certificates">
+                    <span class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة شهادات ميلاد القصر بالرقم القومي<span class="text-[#D92D20]">*</span></span>
+                    <label for="doc_minors_birth_certificates" class=" cursor-pointer py-3  text-[#124375] flex items-center justify-center gap-1">
+                        <p>اضغط لإرفاق صورة الملف</p>
+                        <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                        <input type="file" id="doc_minors_birth_certificates" name="minors_birth_certificates" class="hidden">
+                    </label>
+                </div>
+            </div>
+            
+            <!-- declaration -->
+            <div id="claim-declaration-container" class="declaration space-y-3 hidden mt-5">
+                <h3 class="text-center font-medium">إقرار</h3>
+                <p class="font-medium" id="claim-declaration-text">
+                    أقر أنا / __________ بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء
+                    هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان،
+                    وذلك اعتبارًا من تاريخ _____ / _____ / ________، وأقر بعدم أحقيتي في المطالبة بأي مستحقات أخرى بعد هذا
+                    التاريخ
+                </p>
+                <p class="font-medium" id="claim-declaration-signature-fields">
+                    الاسم / _______________ الوظيفة / _______________ الرقم القومي / ____________________ التوقيع / ________________
+                </p>
+            </div>
+            
+            <div class="btns flex gap-2 mt-8">
+                <button type="submit" class="submit-btn rounded-[14px] w-full py-3 bg-[#124375] text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2">
+                    <span><iconify-icon icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تقديم المطالبة
+                </button>
+                <button type="button" id="cancel-claim-btn" class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] close-btn">إلغاء</button>
+            </div>
+        </form>
+    </div>
+    <!-- end request form (creation) -->

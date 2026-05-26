@@ -13,7 +13,7 @@ class MembershipController extends Controller
     /**
      * Allowed membership statuses based on the migration enum.
      */
-    private const ALLOWED_STATUSES = ['active', 'inactive', 'suspended', 'pending', 'deleted'];
+    private const ALLOWED_STATUSES = ['active', 'pending_registration', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];
 
     /**
      * Approve a pending membership — set status to active and record approver.

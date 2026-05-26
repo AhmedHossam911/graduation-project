@@ -65,37 +65,46 @@
     <!-- filteration buttons -->
     <form action="{{ route('claims.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5">
         <div class="relative flex-1">
-            <input type="search" name="search" value="{{ request('search') }}" placeholder="الاسم أو رقم العضوية أو رقم المطالبة"
+            <input type="search" name="search" value="{{ request('search') }}"
+                placeholder="الاسم أو رقم العضوية أو رقم المطالبة"
                 class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             <iconify-icon icon="mynaui:search"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
         </div>
         <div class="relative min-w-[240px]">
-            <label for="datepicker"
-                class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
-                : <span class="text-[#021219]">{{ request('date') ?: 'يوم/شهر/ سنة' }}</span><span class="flex items-center"><iconify-icon
-                        icon="lucide:calendar" class="text-xl"></iconify-icon></span>
-                <input type="text" id="datepicker" name="date" value="{{ request('date') }}"
-                    class="absolute left-0 top-full mt-3 opacity-0 w-0 h-0 pointer-events-none">
-            </label>
+            @include('partials.calendar', [
+                'name' => 'date',
+                'id' => 'subscriptions-datepicker',
+                'value' => request('date'),
+                'autoSubmit' => false,
+            ])
         </div>
         <div class="relative min-w-[150px]">
             <input type="hidden" name="status" id="status-input" value="{{ request('status', 'all') }}">
             <button type="button"
                 class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">الحالة
                 : <span class="text-[#021219] ">
-                    @if(request('status') === 'approved') بانتظار التسوية
-                    @elseif(request('status') === 'pending') بانتظار الأعتماد
-                    @elseif(request('status') === 'paid') تم الصرف
-                    @else الكل @endif
-                </span><span class="flex items-center"><iconify-icon
-                        icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                    @if (request('status') === 'approved')
+                        بانتظار التسوية
+                    @elseif(request('status') === 'pending')
+                        بانتظار الأعتماد
+                    @elseif(request('status') === 'paid')
+                        تم الصرف
+                    @else
+                        الكل
+                    @endif
+                </span><span class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                        class="text-xl"></iconify-icon></span></button>
             <div
                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium" onclick="document.getElementById('status-input').value='all';">الكل</button>
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium" onclick="document.getElementById('status-input').value='approved';">بانتظار التسوية</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium" onclick="document.getElementById('status-input').value='pending';">بانتظار الأعتماد</button>
-                <button type="button" class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium" onclick="document.getElementById('status-input').value='paid';">تم الصرف</button>
+                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
+                    onclick="document.getElementById('status-input').value='all';">الكل</button>
+                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
+                    onclick="document.getElementById('status-input').value='approved';">بانتظار التسوية</button>
+                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium"
+                    onclick="document.getElementById('status-input').value='pending';">بانتظار الأعتماد</button>
+                <button type="button" class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium"
+                    onclick="document.getElementById('status-input').value='paid';">تم الصرف</button>
             </div>
         </div>
         <div class="relative min-w-[150px]">
@@ -103,14 +112,16 @@
             <button type="button"
                 class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">نوع
                 المطالبة :<span class="text-[#021219] ">
-                    {{ request('type') && request('type') !== 'all' ? (\App\Models\Services\Claim::CLAIM_TYPES[request('type')] ?? 'الكل') : 'الكل' }}
-                </span><span class="flex items-center"><iconify-icon
-                        icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                    {{ request('type') && request('type') !== 'all' ? \App\Models\Services\Claim::CLAIM_TYPES[request('type')] ?? 'الكل' : 'الكل' }}
+                </span><span class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                        class="text-xl"></iconify-icon></span></button>
             <div
                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-3 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium" onclick="document.getElementById('type-input').value='all';">الكل</button>
-                @foreach(\App\Models\Services\Claim::CLAIM_TYPES as $key => $label)
-                    <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium" onclick="document.getElementById('type-input').value='{{ $key }}';">{{ $label }}</button>
+                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
+                    onclick="document.getElementById('type-input').value='all';">الكل</button>
+                @foreach (\App\Models\Services\Claim::CLAIM_TYPES as $key => $label)
+                    <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium"
+                        onclick="document.getElementById('type-input').value='{{ $key }}';">{{ $label }}</button>
                 @endforeach
             </div>
         </div>
@@ -141,36 +152,46 @@
                     @forelse($claims as $claim)
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claim->membership->member->name ?? 'N/A' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claim->created_at->translatedFormat('d F Y') }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ $claim->membership->member->full_name ?? 'N/A' }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ $claim->created_at->translatedFormat('d F Y') }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</td>
                             <td class="py-3 border-l border-[#6D6D6D]">
-                                @if($claim->status === 'approved')
-                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">بانتظار التسوية</span>
+                                @if ($claim->status === 'approved')
+                                    <span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">بانتظار
+                                        التسوية</span>
                                 @elseif($claim->status === 'paid')
-                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">تم الصرف</span>
+                                    <span
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">تم
+                                        الصرف</span>
                                 @elseif($claim->status === 'pending')
-                                    <span class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">بانتظار الأعتماد</span>
+                                    <span
+                                        class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">بانتظار
+                                        الأعتماد</span>
                                 @else
-                                    <span class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">{{ $claim->status }}</span>
+                                    <span
+                                        class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">{{ $claim->status }}</span>
                                 @endif
                             </td>
                             <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                @if($claim->status === 'approved')
+                                @if ($claim->status === 'approved')
                                     <a href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}"
-                                        class="flex items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 px-10 rounded-[12px] navy-shadow">
+                                        class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
                                         <iconify-icon icon="majesticons:calculator" class="text-2xl"></iconify-icon>
                                         تسوية
                                     </a>
                                 @elseif($claim->status === 'pending')
                                     <a href="{{ route('claims.show', $claim->id) }}"
-                                        class="flex items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 px-6 rounded-[12px] navy-shadow">
+                                        class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
                                         <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
                                         أعتماد وعرض
                                     </a>
                                 @elseif($claim->status === 'paid')
                                     <a href="{{ route('claims.show', $claim->id) }}"
-                                        class="flex items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 px-10 rounded-[12px] navy-shadow">
+                                        class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
                                         <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
                                         عرض
                                     </a>
@@ -205,50 +226,47 @@
             </div>
             <div class="space-y-3">
                 <!-- <div class="flex gap-3 items-center">
-                            <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                            <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                            <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
-                            <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                            <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                        </div> -->
+                                    <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
+                                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
+                                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
+                                    <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
+                                    <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
+                                </div> -->
                 <div class="flex items-center justify-between gap-4 ">
-                    <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
+                    <p class="text-[#124375] text-base font-medium min-w-fit">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
-                        <input type="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
-                            class="w-full py-2 pr-7 outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
+                        <input type="search" id="claim-member-search"
+                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
+                            class="w-full py-2 pr-7 outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"
+                            autocomplete="off">
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
+
+                        <!-- Search Results Dropdown -->
+                        <div id="claim-member-results"
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                        </div>
                     </div>
-                    <button
-                        class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
-                        <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
-                    </button>
                 </div>
             </div>
             <div class="requirements space-y-5">
-                <div class="relative">
+                <div class="relative claim-type-dropdown">
                     <button type="button"
                         class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3  items-center">نوع
                         المطالبة :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
                                 icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
                     <div
                         class="dropDown hidden absolute z-50 bg-[#F4F7F9] right-3 top-full mt-3 grid grid-cols-4 gap-3 px-3 py-4 rounded-xl navy-shadow ">
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium ">عجز مهني</button>
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium "> وفاة</button>
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium ">نقل</button>
-                        <button type="button" class=" navy-shadow py-2 px-2 rounded-xl text-sm font-medium  ">بلوغ سن
-                            التقاعد القانوني</button>
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium ">فصل</button>
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium ">انسحاب</button>
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium ">معاش
-                            مبكر</button>
-                        <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium "> استقالة</button>
+                        @foreach (\App\Models\Services\Claim::CLAIM_TYPES as $key => $label)
+                            <button type="button" data-type="{{ $key }}"
+                                class=" navy-shadow py-2 rounded-xl text-sm font-medium ">{{ $label }}</button>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="btns flex gap-2 ">
                 <form class="w-full">
-                    <button
+                    <button id="submit-create-claim"
                         class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
                         الأختيار</button>
@@ -348,8 +366,97 @@
     <!-- MODALS -->
     <script src="{{ asset('JS/employee/claims.js') }}"></script>
 @endsection
+
 @section('pagination')
     <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
         {{ $claims->links() }}
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('claim-member-search');
+            const resultsContainer = document.getElementById('claim-member-results');
+            let selectedMemberId = null;
+
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    if (query.length < 2) {
+                        resultsContainer.classList.add('hidden');
+                        return;
+                    }
+
+                    fetch(`{{ route('loans.searchMembers') }}?q=${encodeURIComponent(query)}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            resultsContainer.innerHTML = '';
+                            if (data.length === 0) {
+                                resultsContainer.innerHTML =
+                                    '<div class="p-3 text-center text-gray-500">لا يوجد نتائج</div>';
+                            } else {
+                                data.forEach(member => {
+                                    const div = document.createElement('div');
+                                    div.className =
+                                        'p-3 cursor-pointer hover:bg-[#124375] hover:text-white transition-colors border-b border-gray-200 last:border-0 text-right';
+                                    div.innerHTML = `
+                                <div class="font-bold">${member.full_name}</div>
+                                <div class="text-sm">رقم العضوية: ${member.membership_number} | القومي: ${member.national_id}</div>
+                            `;
+                                    div.addEventListener('click', () => {
+                                        searchInput.value = member.full_name;
+                                        selectedMemberId = member.member_id;
+                                        resultsContainer.classList.add('hidden');
+                                    });
+                                    resultsContainer.appendChild(div);
+                                });
+                            }
+                            resultsContainer.classList.remove('hidden');
+                        });
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+                        resultsContainer.classList.add('hidden');
+                    }
+                });
+            }
+
+            let selectedClaimType = null;
+            const typeButtons = document.querySelectorAll('.claim-type-dropdown .dropDown button');
+            typeButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    selectedClaimType = this.dataset.type;
+                    const span = this.closest('.claim-type-dropdown').querySelector(
+                        '.dropDownBtn span.text-\\[\\#021219\\]');
+                    if (span) span.textContent = this.textContent;
+
+                    // Close the dropdown
+                    const dropDownMenu = this.closest('.claim-type-dropdown').querySelector(
+                        '.dropDown');
+                    if (dropDownMenu) dropDownMenu.classList.add('hidden');
+                });
+            });
+
+            const submitBtn = document.getElementById('submit-create-claim');
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (!selectedMemberId) {
+                        alert('الرجاء اختيار العضو أولاً');
+                        return;
+                    }
+                    if (!selectedClaimType) {
+                        alert('الرجاء اختيار نوع المطالبة');
+                        return;
+                    }
+
+                    const baseUrl = `{{ url('/members') }}/${selectedMemberId}`;
+                    window.location.href = `${baseUrl}?tab=claims&create_claim=${selectedClaimType}`;
+                });
+            }
+        });
+    </script>
+@endpush

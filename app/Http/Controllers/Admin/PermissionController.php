@@ -23,7 +23,8 @@ class PermissionController extends Controller
     public function create()
     {
         $departments = Department::where('status', 'active')->get();
-        return view('admin.permissions.create', compact('departments'));
+        $roles = Role::all();
+        return view('admin.permissions.create', compact('departments', 'roles'));
     }
 
     public function store(Request $request)
@@ -78,7 +79,8 @@ class PermissionController extends Controller
     public function edit(User $user)
     {
         $departments = Department::where('status', 'active')->get();
-        return view('admin.permissions.edit', compact('user', 'departments'));
+        $roles = Role::all();
+        return view('admin.permissions.edit', compact('user', 'departments', 'roles'));
     }
 
     public function approve(User $user, Request $request)

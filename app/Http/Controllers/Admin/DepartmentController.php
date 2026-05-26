@@ -57,13 +57,13 @@ class DepartmentController extends Controller
         if ($status && $status !== 'الكل') {
             $statusMap = [
                 'نشط' => 'active',
-                'قيد التسجيل' => 'pending',
-                'إعارة' => 'loan',
-                'محال للمعاش' => 'pension',
+                'قيد التسجيل' => 'pending_registration',
+                'إعارة' => 'loaned',
+                'محال للمعاش' => 'pension_eligible',
                 'منسحب' => 'withdrawn',
                 'مفصول' => 'dismissed',
                 'أجازه بدون مرتب' => 'unpaid_leave',
-                'منتهية العضوية' => 'expired',
+                'منتهية العضوية' => 'membership_expired',
                 'موقوف' => 'suspended'
             ];
             $mappedStatus = $statusMap[$status] ?? null;

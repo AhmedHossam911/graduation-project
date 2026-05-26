@@ -16,7 +16,17 @@ class MembershipFactory extends Factory
         return [
             'member_id' => Member::factory(),
             'membership_number' => 'MS-' . fake()->unique()->numerify('#####'),
-            'status' => fake()->randomElement(['active', 'pending', 'loan', 'pension', 'withdrawn', 'dismissed', 'unpaid_leave', 'expired', 'suspended']),
+            'status' => fake()->randomElement([
+                'active',
+                'pending_registration',
+                'loaned',
+                'pension_eligible',
+                'withdrawn',
+                'dismissed',
+                'unpaid_leave',
+                'membership_expired',
+                'suspended'
+            ]),
             'declaration_accepted' => fake()->boolean(95),
             'approved_by' => User::factory(),
         ];

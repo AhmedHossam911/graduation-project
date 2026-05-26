@@ -90,9 +90,12 @@ function initLoansModule() {
                                 alert('هذا العضو ليس لديه عضوية مفعلة.');
                                 return;
                             }
-                            document.getElementById('createLoanName').textContent = member.full_name;
-                            document.getElementById('createLoanMembershipNum').textContent = member.membership_number;
-                            document.getElementById('createLoanNationalId').textContent = member.national_id;
+                            const nameEl = document.getElementById('createLoanName');
+                            if (nameEl) nameEl.textContent = member.full_name;
+                            const numEl = document.getElementById('createLoanMembershipNum');
+                            if (numEl) numEl.textContent = member.membership_number;
+                            const idEl = document.getElementById('createLoanNationalId');
+                            if (idEl) idEl.textContent = member.national_id;
                             document.getElementById('selectedMemberId').value = member.id;
                             memberSearchResults.classList.add('hidden');
                             memberSearchInput.value = member.full_name;
@@ -188,6 +191,20 @@ function initLoansModule() {
         }
     });
 
+    const createLoanForm = document.getElementById('createLoanForm');
+    if (createLoanForm) {
+        createLoanForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const memberId = document.getElementById('selectedMemberId').value;
+            const amount = document.getElementById('selectedLoanAmount').value;
+            const months = document.getElementById('selectedLoanMonths').value;
+            
+            if (memberId && amount && months) {
+                const baseUrl = `${window.APP_URL}/members/${memberId}`;
+                window.location.href = `${baseUrl}?tab=loans&create_loan_amount=${amount}&create_loan_months=${months}`;
+            }
+        });
+    }
 }
 
 function checkCreateLoanSubmitBtn() {

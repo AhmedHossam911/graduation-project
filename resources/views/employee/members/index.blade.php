@@ -84,7 +84,6 @@
                     <th class="py-3 border-l border-[#6D6D6D]">الإجراءات</th>
                 </tr>
                 @if ($members->count() > 0)
-                    {{-- @dd($members[0]->user->role_id) --}}
                     @foreach ($members as $member)
                         @if ($member->user->role_id === 3)
                             <tr class="text-center even:bg-[#EFEFEF] odd:bg-[#F4F7F9] text-[#021219] font-medium">
@@ -96,29 +95,26 @@
                                     {{ $member->department?->name ?? 'لا يوجد بيانات' }}
                                 </td>
                                 <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->phone }}</td>
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                <td class="py-3 ص border-l border-b border-[#6D6D6D]">
                                     @php
                                         $statusCode = $member->membershipInfo->status ?? 'unknown';
                                         $statusData = $statusMap[$statusCode] ?? [
-                                            'label' => 'غير معروف',
-                                            'class' => 'unknown',
+                                            'label' => 'غير معروف'
                                         ];
-                                        // Map CSS classes for visual consistency
-                                        $classMap = [
-                                            'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
-                                            'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
-                                            'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#F4F3FF]',
-                                            'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
-                                            'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]',
-                                            'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
-                                            'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#F3F6FA]',
-                                            'expired' => 'text-[#021219] border-[#021219] bg-[#F2F4F7]',
-                                            'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
-                                        ];
-                                        $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400';
+
+                                        $badgeClass = match ($statusCode) {
+                                            'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+                                            'registering', 'pending_registration' => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
+                                            'loaned' => 'bg-[#F9F5FF] text-[#6941C6] border-[#6941C6]',
+                                            'pension_eligible' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
+                                            'withdrawn' => 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]',
+                                            'dismissed', 'suspended' => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
+                                            'unpaid_leave' => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
+                                            'membership_expired' => 'bg-[#F2F4F7] text-[#101828] border-[#101828]',
+                                            default => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
+                                        };
                                     @endphp
-                                    <span
-                                        class="{{ $badgeClass }} w-[127px] py-1 block mx-auto rounded-full border bg-white text-center font-medium">
+                                    <span class="{{ $badgeClass }} flex w-[130px] mx-auto items-center justify-center border px-3 py-1 text-sm rounded-[10px] font-medium">
                                         {{ $statusData['label'] }}
                                     </span>
                                 </td>

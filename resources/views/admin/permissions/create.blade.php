@@ -52,14 +52,12 @@
                             class="text-[#021219] text-center flex-1">{{ old('role_name', 'اختر') }}</span><span
                                 class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl "></iconify-icon></span></button>
-                        <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الصفة الإدارية / المسمي الوظيفي</label>
+                        <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الدور بالنظام</label>
                         <input type="hidden" name="role_name" id="role_name" value="{{ old('role_name') }}">
                         <div class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-2 px-5 py-4 rounded-xl navy-shadow w-full">
-                            <button type="button" class=" navy-shadow py-2 px-4 rounded-xl text-sm font-medium">رئيس مجلس الإدارة</button>
-                            <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium">المدير المالي</button>
-                            <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium">المدير التنفيذي</button>
-                            <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium">موظف</button>
-                            <button type="button" class=" navy-shadow py-2  rounded-xl text-sm font-medium">عضو</button>
+                            @foreach($roles as $role)
+                                <button type="button" class="navy-shadow py-2 px-4 rounded-xl text-sm font-medium">{{ $role->name }}</button>
+                            @endforeach
                         </div>
                     </div>
                 </div>

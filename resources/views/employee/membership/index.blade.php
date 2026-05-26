@@ -82,13 +82,12 @@
                     $statusOptions = [
                         'all' => 'الكل',
                         'paid' => 'مسدد',
-                        'unpaid' => 'غير مسدد',
+                        'unpaid' => 'مستحق',
+                        'overdue_0_6' => 'متأخر ( تم إرسال إخطار )',
+                        'overdue_6_no_notice' => 'متأخر ( يستوجب إخطار )',
+                        'overdue_6_notice' => 'متأخر ( تم إرسال التنبيه )',
+                        'suspended' => 'تم فصل العضوية',
                     ];
-                    if (isset($statusMap)) {
-                        foreach ($statusMap as $key => $statusData) {
-                            $statusOptions[$key] = $statusData['label'];
-                        }
-                    }
                 @endphp
                 @include('partials.dropdown', [
                     'name' => 'status',
@@ -134,26 +133,57 @@
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">{{ number_format($subscription->amount, 2) }}
                                 ج.م</td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
-                                @if ($subscription->status == 'paid')
+                                @php
+                                    $isPast = \Carbon\Carbon::parse($subscription->due_date)->isPast();
+                                    $monthsLate = $isPast
+                                        ? \Carbon\Carbon::parse($subscription->due_date)->diffInMonths(now())
+                                        : 0;
+                                    $noticeSent = $subscription->notice_sent_at !== null;
+                                    $memStatus = $subscription->membership->status ?? '';
+                                @endphp
+
+                                @if ($memStatus === 'suspended')
                                     <div
-                                        class="border-[#067647] text-[#067647] bg-[#ECFDF3] rounded-xl border-[1px] flex items-center justify-right gap-2 px-4 py-1.5 w-full max-w-[160px] mx-auto">
+                                        class="border-[#D92D20] text-[#D92D20] bg-[#FFEAE8] rounded-xl border-[1px] flex items-center justify-center gap-2 px-2 py-1.5 w-full max-w-[210px] mx-auto">
+                                        <iconify-icon icon="mdi:account-cancel" width="20"
+                                            height="20"></iconify-icon>
+                                        <span class="font-bold whitespace-nowrap">تم فصل العضوية</span>
+                                    </div>
+                                @elseif ($subscription->status === 'paid')
+                                    <div
+                                        class="border-[#067647] text-[#067647] bg-[#ECFDF3] rounded-xl border-[1px] flex items-center justify-center gap-2 px-2 py-1.5 w-full max-w-[210px] mx-auto">
                                         <iconify-icon icon="mdi:check-circle" width="20" height="20"></iconify-icon>
-                                        <span class="font-bold">مسدد</span>
+                                        <span class="font-bold whitespace-nowrap">مسدد</span>
                                     </div>
-                                @elseif ($subscription->status == 'unpaid')
-                                    <div
-                                        class="border-[#D92D20] text-[#D92D20] bg-[#FEE4E2] rounded-xl border-[1px] flex items-center justify-right gap-2 px-2 py-1.5 w-full max-w-[160px] mx-auto">
-                                        <iconify-icon icon="mdi:alert-circle" width="20" height="20"></iconify-icon>
-                                        <span class="font-bold">غير مسدد</span>
-                                    </div>
-                                @elseif($subscription->status == 'overdue')
-                                    <div
-                                        class="border-[#124375] text-[#124375] bg-[#EEF7FF] rounded-xl border-[1px] flex items-center justify-right gap-2 px-4 py-1.5 w-full max-w-[160px] mx-auto">
-                                        <iconify-icon icon="mdi:information" width="20" height="20"></iconify-icon>
-                                        <span class="font-bold">متأخر</span>
-                                    </div>
+                                @elseif ($isPast)
+                                    @if ($monthsLate > 6 && !$noticeSent)
+                                        <div
+                                            class="border-[#D92D20] text-[#D92D20] bg-[#FFEAE8] rounded-xl border-[1px] flex items-center justify-center gap-2 px-2 py-1.5 w-full max-w-[210px] mx-auto">
+                                            <iconify-icon icon="mdi:information" width="20"
+                                                height="20"></iconify-icon>
+                                            <span class="font-bold whitespace-nowrap text-sm">متأخر ( يستوجب إخطار )</span>
+                                        </div>
+                                    @elseif ($monthsLate > 6 && $noticeSent)
+                                        <div
+                                            class="border-[#F79009] text-[#F79009] bg-[#FFF7ED] rounded-xl border-[1px] flex items-center justify-center gap-2 px-2 py-1.5 w-full max-w-[210px] mx-auto">
+                                            <iconify-icon icon="mdi:alert" width="20" height="20"></iconify-icon>
+                                            <span class="font-bold whitespace-nowrap text-sm">متأخر ( تم إرسال التنبيه
+                                                )</span>
+                                        </div>
+                                    @else
+                                        <div
+                                            class="border-[#175CD3] text-[#175CD3] bg-[#EFF8FF] rounded-xl border-[1px] flex items-center justify-center gap-2 px-2 py-1.5 w-full max-w-[210px] mx-auto">
+                                            <iconify-icon icon="mdi:information" width="20"
+                                                height="20"></iconify-icon>
+                                            <span class="font-bold whitespace-nowrap text-sm">متأخر ( تم إرسال إخطار
+                                                )</span>
+                                        </div>
+                                    @endif
                                 @else
-                                    <span class="text-gray-500">---</span>
+                                    <div
+                                        class="border-[#6D6D6D] text-[#6D6D6D] bg-[#F2F4F7] rounded-xl border-[1px] flex items-center justify-center gap-2 px-2 py-1.5 w-full max-w-[210px] mx-auto">
+                                        <span class="font-bold whitespace-nowrap text-sm">مستحق</span>
+                                    </div>
                                 @endif
                             </td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">
@@ -165,7 +195,8 @@
                                     class="text-[#124375] hover:underline">
                                     <iconify-icon
                                         class="text-[#124375] hover:rounded-md hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
-                                        icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon> </a>
+                                        icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon>
+                                </a>
                             </td>
                         </tr>
                     @endforeach

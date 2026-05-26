@@ -67,7 +67,7 @@ class MemberService
             $membership = Membership::create([
                 'member_id'            => $member->id,
                 'membership_number'    => 'MS-' . str_pad($member->id, 5, '0', STR_PAD_LEFT),
-                'status'               => 'pending',
+                'status'               => 'pending_registration',
                 'declaration_accepted' => true,
                 'approved_by'          => null,
             ]);

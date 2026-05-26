@@ -12,7 +12,17 @@ return new class extends Migration
             $table->id();
             $table->foreignId('member_id')->constrained('members')->cascadeOnDelete();
             $table->string('membership_number')->unique();
-            $table->enum('status', ['active', 'pending', 'loan', 'pension', 'withdrawn', 'dismissed', 'unpaid_leave', 'expired', 'suspended'])->default('pending');
+            $table->enum('status', [
+                'active',
+                'pending_registration',
+                'loaned',
+                'pension_eligible',
+                'withdrawn',
+                'dismissed',
+                'unpaid_leave',
+                'membership_expired',
+                'suspended'
+            ])->default('pending_registration');
             $table->boolean('declaration_accepted')->default(false);
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
