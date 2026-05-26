@@ -9,6 +9,7 @@ use App\Http\Controllers\Employee\Loans\LoanController;
 use App\Http\Controllers\Employee\Membership\MemberController;
 use App\Http\Controllers\Employee\Membership\MembershipController;
 use App\Http\Controllers\Employee\Membership\SubscriptionController;
+use App\Http\Controllers\Employee\Finance\FinanceController;
 use App\Http\Controllers\Member\NotificationController;
 use App\Http\Controllers\Member\ProfileController;
 use App\Http\Middleware\EnsureEmployee;
@@ -156,6 +157,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/loans/{loan}/cancel', [LoanController::class, 'cancelLoan'])->name('loans.cancel');
         Route::post('/loans/installments/{installment}/pay', [LoanController::class, 'payInstallment'])->name('loans.installments.pay');
         Route::post('/loans/{loan}/early-repayment', [LoanController::class, 'earlyRepayment'])->name('loans.earlyRepayment');
+
+        // ─── Finance Management ─────────────────────────────────────────
+        Route::get('/finance/export', [FinanceController::class, 'export'])->name('finance.export');
+        Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+        Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
+        Route::get('/finance/{transaction}', [FinanceController::class, 'show'])->name('finance.show');
     });
 
 });
