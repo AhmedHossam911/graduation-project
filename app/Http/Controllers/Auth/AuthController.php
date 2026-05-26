@@ -21,11 +21,11 @@ class AuthController extends Controller
     public function showLogin() {
         return view('auth.login');
     }
-    
+
     public function showRegister() {
         return view('auth.register');
     }
-    
+
     public function showForgotPassword() {
         return view('auth.forgot-password');
     }
@@ -96,7 +96,7 @@ class AuthController extends Controller
         if (!$userId) return redirect()->route('login');
 
         $user = User::find($userId);
-        
+
         $otp = rand(100000, 999999);
         OtpCode::create([
             'user_id' => $user->id,
@@ -138,9 +138,9 @@ class AuthController extends Controller
         if (!$otpRecord) return back()->with('error', 'الرمز غير صحيح أو منتهي الصلاحية.');
 
         $otpRecord->update(['is_used' => true]);
-        
+
         $user = User::find($userId);
-        
+
         session()->forget(['login_2fa_user_id', 'login_2fa_otp_sent']);
 
         Auth::login($user);
@@ -184,7 +184,7 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role_id' => 3,
-                'is_restricted' => true 
+                'is_restricted' => true
             ]);
 
             $department = Department::firstOrCreate(['name' => 'Pending Registration']);
@@ -238,7 +238,7 @@ class AuthController extends Controller
         if (!$otpRecord) return back()->with('error', 'الرمز غير صحيح أو منتهي الصلاحية.');
 
         $otpRecord->update(['is_used' => true]);
-        
+
         $user = User::find($userId);
         $user->update([
             'is_restricted' => false,
@@ -250,7 +250,7 @@ class AuthController extends Controller
         Auth::login($user);
         $user->update(['last_login' => now()]);
 
-        return redirect()->route('member.dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
+        return redirect()->route('admin.dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
     }
 
     public function sendOtp(Request $request) {
@@ -267,7 +267,7 @@ class AuthController extends Controller
 
         $user = $member->user;
         $otp = rand(100000, 999999);
-        
+
         OtpCode::create([
             'user_id' => $user->id,
             'code' => (string) $otp,

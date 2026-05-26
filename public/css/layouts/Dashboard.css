@@ -61,3 +61,18 @@
     max-width: 200px;
     transition: opacity 0.3s ease 0.1s, max-width 0.3s ease;
 }
+
+/* Section titles remain visible when sidebar is collapsed */
+.side-bar p.section-title {
+    opacity: 1;
+    white-space: normal;
+    max-width: 100%;
+    text-align: center;
+    margin-right: 0;
+    transition: all 0.3s ease;
+}
+
+.active p.section-title {
+    text-align: right;
+    margin-right: 0.5rem;
+}

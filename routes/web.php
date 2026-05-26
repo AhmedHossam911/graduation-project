@@ -105,27 +105,34 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('dashboard');
         Route::get('/dashboard/search-member', [EmployeeDashboardController::class, 'searchMember'])->name('dashboard.searchMember');
         // ─── Members (member data CRUD) ──────────────────────────────────
-        Route::get('members/create', [MemberController::class, 'create'])->name('members.create');
-        Route::post('members', [MemberController::class, 'store'])->name('members.store');
-        Route::get('members/{member}/print', [MemberController::class, 'print'])->name('members.print');
-        Route::get('members/{member}/upload-signed', [MemberController::class, 'uploadSignedState'])->name('members.upload_signed');
-        Route::post('members/{member}/signed-form', [MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
+        Route::middleware(['permission:إدارة الأعضاء'])->group(function () {
+            Route::get('members/create', [MemberController::class, 'create'])->name('members.create');
+            Route::post('members', [MemberController::class, 'store'])->name('members.store');
+            Route::get('members/{member}/print', [MemberController::class, 'print'])->name('members.print');
+            Route::get('members/{member}/upload-signed', [MemberController::class, 'uploadSignedState'])->name('members.upload_signed');
+            Route::post('members/{member}/signed-form', [MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
 
-        Route::resource('members', MemberController::class)->except(['create', 'store', 'destroy']);
-        Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
-        Route::post('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
+            Route::resource('members', MemberController::class)->except(['create', 'store', 'destroy', 'show']);
+            Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
+            Route::post('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
 
-        Route::post('/members/{member}/notify', [MemberController::class, 'notify'])->name('members.notify');
-        Route::post('/members/{member}/claim', [ClaimController::class, 'store'])->name('members.storeClaim');
-        Route::get('/members/{member}/documents', [MemberController::class, 'documents'])->name('members.documents');
-        Route::post('/members/{member}/documents', [MemberController::class, 'storeAdditionalDocument'])->name('members.documents.store');
-        Route::get('/documents/{attachment}/view', [MemberController::class, 'viewDocument'])->name('documents.view');
-        Route::get('/documents/{attachment}/download', [MemberController::class, 'downloadDocument'])->name('documents.download');
+            Route::post('/members/{member}/notify', [MemberController::class, 'notify'])->name('members.notify');
+            Route::post('/members/{member}/claim', [ClaimController::class, 'store'])->name('members.storeClaim');
+            Route::get('/members/{member}/documents', [MemberController::class, 'documents'])->name('members.documents');
+            Route::post('/members/{member}/documents', [MemberController::class, 'storeAdditionalDocument'])->name('members.documents.store');
+            Route::get('/documents/{attachment}/view', [MemberController::class, 'viewDocument'])->name('documents.view');
+            Route::get('/documents/{attachment}/download', [MemberController::class, 'downloadDocument'])->name('documents.download');
 
-        // ─── Memberships (membership lifecycle: approve/reject/status) ───
-        Route::post('/memberships/{membership}/approve', [MembershipController::class, 'approve'])->name('memberships.approve');
-        Route::post('/memberships/{membership}/reject', [MembershipController::class, 'reject'])->name('memberships.reject');
-        Route::post('/memberships/{membership}/status', [MembershipController::class, 'changeStatus'])->name('memberships.changeStatus');
+            // ─── Memberships (membership lifecycle: approve/reject/status) ───
+            Route::post('/memberships/{membership}/approve', [MembershipController::class, 'approve'])->name('memberships.approve');
+            Route::post('/memberships/{membership}/reject', [MembershipController::class, 'reject'])->name('memberships.reject');
+            Route::post('/memberships/{membership}/status', [MembershipController::class, 'changeStatus'])->name('memberships.changeStatus');
+        });
+
+        // ─── Member Profile (View Only for specific roles) ───────────────
+        Route::middleware(['permission:إدارة الأعضاء|إدارة المطالبات|إدارة القروض|إدارة الاشتراكات'])->group(function () {
+            Route::get('members/{member}', [MemberController::class, 'show'])->name('members.show');
+        });
 
         // ─── Subscriptions (payment tracking, was previously "memberships") ───
         Route::middleware(['permission:إدارة الاشتراكات'])->group(function () {

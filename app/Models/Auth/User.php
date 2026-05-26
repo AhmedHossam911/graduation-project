@@ -55,10 +55,8 @@ class User extends Authenticatable
         }
 
         $userPermissions = $this->custom_permissions ?? [];
-        $rolePermissions = $this->role ? ($this->role->permissions ?? []) : [];
         
-        $allPermissions = array_merge((array)$userPermissions, (array)$rolePermissions);
-
-        return in_array($permission, $allPermissions);
+        // Use strict mode in in_array to prevent loose comparison (e.g., 'string' == true)
+        return in_array($permission, (array)$userPermissions, true);
     }
 }

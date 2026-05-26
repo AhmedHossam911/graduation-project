@@ -44,6 +44,19 @@
                         <p>المطالبات</p>
                     </div>
                 </a>
+                <p>
+                    الرقابة والتقارير
+                </p>
+                <a href="{{ route('admin.auditlog.index') }}">
+                    <div
+                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
+                        <iconify-icon icon="mdi:file-clock" class="text-3xl"></iconify-icon>
+                        <p>سجل العمليات</p>
+                    </div>
+                </a>
+                <p>
+                    إعدادات النظام
+                </p>
                 <a href="{{ route('admin.settings.index') }}">
                     <div
                         class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
@@ -63,13 +76,6 @@
                         class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="bi:buildings-fill" class="text-3xl"></iconify-icon>
                         <p>ادارة القطاعات</p>
-                    </div>
-                </a>
-                <a href="{{ route('admin.auditlog.index') }}">
-                    <div
-                        class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
-                        <iconify-icon icon="mdi:file-clock" class="text-3xl"></iconify-icon>
-                        <p>سجل العمليات</p>
                     </div>
                 </a>
             </div>

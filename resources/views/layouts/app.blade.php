@@ -21,7 +21,9 @@
     {{-- Main Layout --}}
     <div>
         {{-- Sidebar --}}
-        @if(auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin')
+        @if (strtolower(auth()->user()->role->name) === 'employee')
+            @include('partials.sidebar')
+        @elseif (strtolower(auth()->user()->role->name) === 'admin')
             @include('partials.admin-sidebar')
         @else
             @include('partials.sidebar')

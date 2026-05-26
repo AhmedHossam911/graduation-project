@@ -163,6 +163,7 @@
             </p>
         </div>
         <div class="space-y-2 mt-3">
+            @if(auth()->user() && auth()->user()->hasPermission('إدارة الأعضاء'))
             <button data-modal="modal-edit"
                 class="open-modal flex items-center justify-center navy-shadow bg-[#124375] text-[#FEFFFC] rounded-xl gap-2 w-full  py-3 ">
                 <iconify-icon icon="ic:round-edit" class="mt-1 text-xl"></iconify-icon> تعديل بيانات
@@ -171,6 +172,7 @@
                 class="flex open-modal items-center red-shadow bg-[#F4F7F9] text-[#D92D20] rounded-xl gap-2 px-20 py-3 border border-[#D92D20]">
                 <iconify-icon icon="carbon:close-filled" class="mt-1 text-xl"></iconify-icon> إيقاف العضوية
             </button>
+            @endif
         </div>
     </div>
 
@@ -389,6 +391,7 @@
             <div>
                 <!-- requests only -->
                 <div class="tab-content relative" data-tab="مطالبات">
+                    @if(auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
                     <button
                         class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex gap-3">نوع
                         المطالبة : @if (isset($selectedClaimType))
@@ -418,9 +421,11 @@
                         <a href="{{ url('/members/' . $member->id . '?claim_type=professional_disability&tab=مطالبات') }}"
                             class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">عجز مهني</a>
                     </div>
+                    @endif
                 </div>
                 <!-- requests only -->
                 <!-- loans only -->
+                @if(auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
                 @if ($activeLoan === null)
                     <button id="request-loan-btn"
                         class="tab-content hidden flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
@@ -459,8 +464,10 @@
                         </button>
                     @endif
                 </div>
+                @endif
                 <!-- end loans only -->
                 <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
+                    @if(auth()->user() && auth()->user()->hasPermission('إدارة الاشتراكات'))
                     @if ($hasOverdue6Months)
                         <button type="button" data-modal="modal8"
                             class="open-modal flex gap-3 py-3 px-12 rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
@@ -468,6 +475,7 @@
                                 class="flex items-center text-2xl"></iconify-icon>
                             إرسال إخطار مسجل بعلم الوصول
                         </button>
+                    @endif
                     @endif
                     <a href="{{ route('members.documents', $member->id) }}"
                         class=" flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
@@ -484,6 +492,7 @@
     <div class="tab-content" data-tab="مطالبات">
         <!-- first step of request -->
         @if (request('claim_type') !== null && request('view_claim') === null)
+            @if(auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
             <form action="{{ route('members.storeClaim', $member->id) }}" method="POST" enctype="multipart/form-data"
                 class="w-full">
                 @csrf
@@ -735,6 +744,7 @@
                     </div>
                 </div>
             </form>
+            @endif
             <script>
                 function printDeclaration() {
                     const content = document.getElementById('declaration-content').innerHTML;
@@ -791,8 +801,10 @@
                                                 class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium inline-block">عرض
                                                 التفاصيل</a>
                                         @elseif($claim->status === 'pending')
+                                            @if(auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
                                             <a href="{{ route('claims.show', $claim->id) }}"
                                                 class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium inline-block">اعتماد</a>
+                                            @endif
                                         @endif
                                     </td>
                                 </tr>
@@ -815,6 +827,7 @@
                 </div>
 
                 @if ($viewedClaim->status === 'approved')
+                    @if(auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
                     <form action="{{ route('claims.finalize', $viewedClaim->id) }}" method="POST"
                         enctype="multipart/form-data" class="w-full">
                         @csrf
@@ -862,6 +875,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
                 @else
                     <div class="bg-[#FFF8E1] text-[#E6B800] border border-[#E6B800] p-4 rounded-xl text-center">
                         <p class="text-lg font-medium">يجب اعتماد هذه المطالبة أولاً حتى تتمكن من طباعة الإقرار وإرفاق
@@ -963,6 +977,7 @@
                                             <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
                                         </div>
                                     @else
+                                        @if(auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
                                         <div>
                                             <button data-modal="modal5"
                                                 onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
@@ -970,6 +985,7 @@
                                                 تسجيل السداد
                                             </button>
                                         </div>
+                                        @endif
                                     @endif
                                 </td>
                             </tr>

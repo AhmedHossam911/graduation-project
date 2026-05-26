@@ -63,7 +63,7 @@ function updateCheckboxDropdownText(menu, btn) {
     const spans = btn.querySelectorAll("span");
     if (spans.length > 1) {
         if (checked.length > 0) {
-            const selectedValues = Array.from(checked).map(cb => cb.value);
+            const selectedValues = Array.from(checked).map(cb => cb.getAttribute('data-month') || cb.value);
             spans[1].textContent = selectedValues.join(" ، ");
         } else {
             spans[1].textContent = "اختر الشهر";
@@ -173,12 +173,28 @@ document.addEventListener("click", () => {
                     subs.forEach(sub => {
                         container.innerHTML += `
                             <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                                <input type="checkbox" class="hidden peer" value="${sub.id}" data-month="${sub.month_year}">
+                                <input type="checkbox" class="hidden peer" value="${sub.id}" data-amount="${sub.amount}" data-month="${sub.month_year}">
                                 <span class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                                     <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
                                 </span>
                                 <span>${sub.month_year}</span>
                             </label>`;
+                    });
+                    
+                    // Add change listener to calculate selected amount
+                    container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                        cb.addEventListener('change', () => {
+                            let total = 0;
+                            const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
+                            if (checkedBoxes.length > 0) {
+                                checkedBoxes.forEach(c => {
+                                    total += parseFloat(c.getAttribute('data-amount'));
+                                });
+                            } else {
+                                total = 0;
+                            }
+                            document.getElementById('sub-amount').textContent = total + ' ج.م';
+                        });
                     });
                 } else {
                     document.getElementById('sub-due-date').textContent = '-';

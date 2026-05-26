@@ -26,8 +26,12 @@ class CheckPermission
             abort(403, 'حسابك موقوف، يرجى التواصل مع الإدارة.');
         }
 
-        if ($user->hasPermission($permission)) {
-            return $next($request);
+        $permissions = explode('|', $permission);
+
+        foreach ($permissions as $p) {
+            if ($user->hasPermission($p)) {
+                return $next($request);
+            }
         }
 
         abort(403, 'عذراً، لا تمتلك الصلاحية الكافية للوصول إلى هذه الصفحة.');

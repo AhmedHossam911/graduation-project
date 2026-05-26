@@ -9,38 +9,44 @@
                     <div class="logo">
                         <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
                     </div>
-                    <h1 class="text-xl font-semibold">صندوق الزمالة</h1>
+                    <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
                 </a>
             </div>
-            <div class="flex items-center gap-4 text-[#124375] text-4xl">
+            <div class="flex items-center gap-4 text-[#124375] text-4xl z-50">
                 <div class="relative">
                     <a class="cursor-pointer notification-btn">
                         <iconify-icon icon="ion:notifcations"></iconify-icon>
                     </a>
                     <div
-                        class="notifications-box hidden absolute w-max left-0 z-50 bg-white  text-center surface-shadow rounded-lg   p-4 space-y-3">
-                        <h1 class="text-lg font-semibold text-[#124375]">
+                        class="notifications-box hidden absolute w-max left-0 z-50 bg-white  text-center surface-shadow rounded-lg   p-4 space-y-3 min-w-[250px]">
+                        <h1 class="text-lg font-semibold text-[#124375] border-b pb-2">
                             إشعارات
                         </h1>
-                        <div class="notification surface-shadow bg-[#EEF7FF] rounded-xl p-2">
-                            <p class="notifcation-body text-sm font-medium text-[#124375]">تم تغير كلمة المرور بنجاح</p>
+
+                        @php
+                            $latestNotifications = auth()->user()->notifications()->latest()->take(3)->get();
+                        @endphp
+
+                        <div class="flex flex-col gap-2">
+                            @forelse ($latestNotifications as $notification)
+                                <div class="notification surface-shadow {{ is_null($notification->read_at) ? 'bg-[#EEF7FF]' : 'bg-white' }} rounded-xl p-3 text-right">
+                                    @if($notification->title)
+                                    <h3 class="text-sm font-semibold text-[#124375] mb-1">{{ $notification->title }}</h3>
+                                    @endif
+                                    <p class="notifcation-body text-sm text-[#6D6D6D]">{{ $notification->message }}</p>
+                                    <span class="text-[10px] text-gray-400 mt-1 block">{{ $notification->created_at->diffForHumans() }}</span>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 py-4 text-center">لا توجد إشعارات حالياً</p>
+                            @endforelse
                         </div>
-                        <div class="notification surface-shadow rounded-xl p-2">
-                            <div class="flex gap-2">
-                                <p class="notifcation-body text-[#6D6D6D] text-sm">العضو : <span
-                                        class="font-semibold text-[#021219] text-base">روان محمد</span></p>
-                                <p class="notifcation-body text-[#6D6D6D] text-sm">رقم العضوية : <span
-                                        class="font-semibold text-[#021219] text-base">123456</span></p>
-                            </div>
-                            <p class="notifcation-body font-semibold text-[#021219] text-base">تمت الموافقة علي طلب
-                                القرض</p>
-                        </div>
-                        <a href="../NotificationsPage/notifications.html"
-                            class="text-base bg-[#124375]  text-white surface-shadow rounded-xl py-2 block">عرض كل
+
+                        <a href="{{ route('notifications.index') }}"
+                            class="text-base bg-[#124375]  text-white surface-shadow rounded-xl py-2 mt-2 block w-full text-center hover:bg-opacity-90 transition-colors">عرض كل
                             الإشعارات</a>
                     </div>
                 </div>
-                <a class="cursor-pointer">
+                <a href="{{route('profile.index')}}" class="cursor-pointer">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>
