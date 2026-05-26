@@ -19,5 +19,9 @@ class AppServiceProvider extends ServiceProvider
     {
         \Illuminate\Pagination\Paginator::useTailwind();
         Carbon::setLocale('ar');
+
+        \Illuminate\Support\Facades\Blade::if('permission', function ($permission) {
+            return auth()->check() && auth()->user()->hasPermission($permission);
+        });
     }
 }

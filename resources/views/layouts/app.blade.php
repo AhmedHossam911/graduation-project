@@ -21,7 +21,11 @@
     {{-- Main Layout --}}
     <div>
         {{-- Sidebar --}}
-        @include('partials.sidebar')
+        @if(auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin')
+            @include('partials.admin-sidebar')
+        @else
+            @include('partials.sidebar')
+        @endif
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             {{-- Page Content --}}

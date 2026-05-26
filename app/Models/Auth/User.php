@@ -47,4 +47,18 @@ class User extends Authenticatable
     {
         return $this->hasOne(Member::class);
     }
+
+    public function hasPermission($permission)
+    {
+        if ($this->role && strtolower($this->role->name) === 'admin') {
+            return true;
+        }
+
+        $userPermissions = $this->custom_permissions ?? [];
+        $rolePermissions = $this->role ? ($this->role->permissions ?? []) : [];
+        
+        $allPermissions = array_merge((array)$userPermissions, (array)$rolePermissions);
+
+        return in_array($permission, $allPermissions);
+    }
 }

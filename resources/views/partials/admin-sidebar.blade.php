@@ -1,4 +1,4 @@
-    <div class="flex "> 
+    <div class="flex ">
         <!-- start SideBar -->
         <aside class="SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375]">
             <div class="sidebar-pages flex flex-col  gap-5">

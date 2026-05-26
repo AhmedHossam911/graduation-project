@@ -15,8 +15,8 @@ class EnsureEmployee
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role_id == 3) {
-            return redirect()->route('member.dashboard');
+        if (auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'member') {
+            return redirect()->route('profile.index'); // Redirect members to their profile or member dashboard
         }
 
         return $next($request);

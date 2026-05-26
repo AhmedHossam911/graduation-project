@@ -17,7 +17,7 @@ class EnsureAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role_id == 1) { // 1 is Admin
+        if (auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin') {
             return $next($request);
         }
 

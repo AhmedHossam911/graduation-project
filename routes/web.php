@@ -55,22 +55,28 @@ Route::middleware('auth')->group(function () {
     // Admin Routes (Admin Only)
     Route::middleware([EnsureAdmin::class])->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-        Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
-        Route::post('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
-        Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
-        
-        Route::get('/admin/auditlog', [AuditLogController::class, 'index'])->name('admin.auditlog.index');
+        Route::middleware(['permission:إعدادات اللائحة'])->group(function () {
+            Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+            Route::post('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
+            Route::post('/admin/settings/reset', [AdminSettingsController::class, 'reset'])->name('admin.settings.reset');
+        });
 
-        Route::get('/admin/permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');
-        Route::get('/admin/permissions/create', [PermissionController::class, 'create'])->name('admin.permissions.create');
-        Route::post('/admin/permissions', [PermissionController::class, 'store'])->name('admin.permissions.store');
-        Route::get('/admin/permissions/{user}/edit', [PermissionController::class, 'edit'])->name('admin.permissions.edit');
-        Route::post('/admin/permissions/{user}/approve', [PermissionController::class, 'approve'])->name('admin.permissions.approve');
-        Route::post('/admin/permissions/{user}/reject', [PermissionController::class, 'reject'])->name('admin.permissions.reject');
-        Route::post('/admin/permissions/{user}/suspend', [PermissionController::class, 'suspend'])->name('admin.permissions.suspend');
-        Route::post('/admin/permissions/{user}/reactivate', [PermissionController::class, 'reactivate'])->name('admin.permissions.reactivate');
-        Route::post('/admin/permissions/{user}/restore', [PermissionController::class, 'restore'])->name('admin.permissions.restore');
-        Route::delete('/admin/permissions/{user}/destroy', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
+        Route::middleware(['permission:سجل العمليات'])->group(function () {
+            Route::get('/admin/auditlog', [AuditLogController::class, 'index'])->name('admin.auditlog.index');
+        });
+
+        Route::middleware(['permission:إدارة الصلاحيات'])->group(function () {
+            Route::get('/admin/permissions', [PermissionController::class, 'index'])->name('admin.permissions.index');
+            Route::get('/admin/permissions/create', [PermissionController::class, 'create'])->name('admin.permissions.create');
+            Route::post('/admin/permissions', [PermissionController::class, 'store'])->name('admin.permissions.store');
+            Route::get('/admin/permissions/{user}/edit', [PermissionController::class, 'edit'])->name('admin.permissions.edit');
+            Route::post('/admin/permissions/{user}/approve', [PermissionController::class, 'approve'])->name('admin.permissions.approve');
+            Route::post('/admin/permissions/{user}/reject', [PermissionController::class, 'reject'])->name('admin.permissions.reject');
+            Route::post('/admin/permissions/{user}/suspend', [PermissionController::class, 'suspend'])->name('admin.permissions.suspend');
+            Route::post('/admin/permissions/{user}/reactivate', [PermissionController::class, 'reactivate'])->name('admin.permissions.reactivate');
+            Route::post('/admin/permissions/{user}/restore', [PermissionController::class, 'restore'])->name('admin.permissions.restore');
+            Route::delete('/admin/permissions/{user}/destroy', [PermissionController::class, 'destroy'])->name('admin.permissions.destroy');
+        });
 
         Route::get('/admin/departments', [DepartmentController::class, 'index'])->name('admin.departments.index');
         Route::get('/admin/departments/{department}', [DepartmentController::class, 'show'])->name('admin.departments.show');
@@ -97,14 +103,14 @@ Route::middleware('auth')->group(function () {
     Route::middleware([EnsureEmployee::class])->group(function () {
         // Dashboard (Employee)
         Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('dashboard');
-
+        Route::get('/dashboard/search-member', [EmployeeDashboardController::class, 'searchMember'])->name('dashboard.searchMember');
         // ─── Members (member data CRUD) ──────────────────────────────────
         Route::get('members/create', [MemberController::class, 'create'])->name('members.create');
         Route::post('members', [MemberController::class, 'store'])->name('members.store');
         Route::get('members/{member}/print', [MemberController::class, 'print'])->name('members.print');
         Route::get('members/{member}/upload-signed', [MemberController::class, 'uploadSignedState'])->name('members.upload_signed');
         Route::post('members/{member}/signed-form', [MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
-        
+
         Route::resource('members', MemberController::class)->except(['create', 'store', 'destroy']);
         Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
         Route::post('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
@@ -122,47 +128,55 @@ Route::middleware('auth')->group(function () {
         Route::post('/memberships/{membership}/status', [MembershipController::class, 'changeStatus'])->name('memberships.changeStatus');
 
         // ─── Subscriptions (payment tracking, was previously "memberships") ───
-        Route::get('/subscriptions/export', [SubscriptionController::class, 'export'])->name('subscriptions.export');
-        Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
-        Route::get('/subscriptions/create', [SubscriptionController::class, 'create'])->name('subscriptions.create');
-        Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
-        Route::post('/subscriptions/{subscription}/pay', [SubscriptionController::class, 'pay'])->name('subscriptions.pay');
-        Route::post('/subscriptions/{subscription}/notify', [SubscriptionController::class, 'notify'])->name('subscriptions.notify');
+        Route::middleware(['permission:إدارة الاشتراكات'])->group(function () {
+            Route::get('/subscriptions/export', [SubscriptionController::class, 'export'])->name('subscriptions.export');
+            Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
+            Route::get('/subscriptions/create', [SubscriptionController::class, 'create'])->name('subscriptions.create');
+            Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
+            Route::post('/subscriptions/{subscription}/pay', [SubscriptionController::class, 'pay'])->name('subscriptions.pay');
+            Route::post('/subscriptions/{subscription}/notify', [SubscriptionController::class, 'notify'])->name('subscriptions.notify');
 
-        // ─── Legacy aliases (keep old route names working) ───────────────
-        Route::get('/memberships/export', [SubscriptionController::class, 'export'])->name('memberships.export');
-        Route::get('/memberships', [SubscriptionController::class, 'index'])->name('memberships.index');
-        Route::post('/subscriptions/{subscription}/send-notice', [SubscriptionController::class, 'sendNotice'])->name('subscriptions.send_notice');
+            // ─── Legacy aliases (keep old route names working) ───────────────
+            Route::get('/memberships/export', [SubscriptionController::class, 'export'])->name('memberships.export');
+            Route::get('/memberships', [SubscriptionController::class, 'index'])->name('memberships.index');
+            Route::post('/subscriptions/{subscription}/send-notice', [SubscriptionController::class, 'sendNotice'])->name('subscriptions.send_notice');
+        });
 
         // Claims Management
-        Route::get('/claims/export', [ClaimController::class, 'export'])->name('claims.export');
-        Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
-        Route::get('/claims/{claim}', [ClaimController::class, 'show'])->name('claims.show');
-        Route::post('/claims/{claim}/approve', [ClaimController::class, 'approve'])->name('claims.approve');
-        Route::post('/claims/{claim}/finalize', [ClaimController::class, 'finalize'])->name('claims.finalize');
+        Route::middleware(['permission:إدارة المطالبات'])->group(function () {
+            Route::get('/claims/export', [ClaimController::class, 'export'])->name('claims.export');
+            Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
+            Route::get('/claims/{claim}', [ClaimController::class, 'show'])->name('claims.show');
+            Route::post('/claims/{claim}/approve', [ClaimController::class, 'approve'])->name('claims.approve');
+            Route::post('/claims/{claim}/finalize', [ClaimController::class, 'finalize'])->name('claims.finalize');
+        });
 
         // ─── Loans Management ──────────────────────────────────────────────
-        Route::get('/loans/export', [LoanController::class, 'export'])->name('loans.export');
-        Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
-        Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
-        Route::get('/loans/search-members', [LoanController::class, 'searchMembers'])->name('loans.searchMembers');
-        Route::get('/loans/{loan}', [LoanController::class, 'show'])->name('loans.show');
-        Route::get('/members/{member}/previous-loans', [LoanController::class, 'previousLoans'])->name('members.previous-loans');
-        Route::get('/loans/{loan}/data', [LoanController::class, 'getLoanData'])->name('loans.data');
-        Route::post('/loans/{loan}/payment', [LoanController::class, 'recordPayment'])->name('loans.recordPayment');
-        Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
-        
-        // Modal routes
-        Route::post('/loans/{loan}/start', [LoanController::class, 'startLoan'])->name('loans.start');
-        Route::post('/loans/{loan}/cancel', [LoanController::class, 'cancelLoan'])->name('loans.cancel');
-        Route::post('/loans/installments/{installment}/pay', [LoanController::class, 'payInstallment'])->name('loans.installments.pay');
-        Route::post('/loans/{loan}/early-repayment', [LoanController::class, 'earlyRepayment'])->name('loans.earlyRepayment');
+        Route::middleware(['permission:إدارة القروض'])->group(function () {
+            Route::get('/loans/export', [LoanController::class, 'export'])->name('loans.export');
+            Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
+            Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
+            Route::get('/loans/search-members', [LoanController::class, 'searchMembers'])->name('loans.searchMembers');
+            Route::get('/loans/{loan}', [LoanController::class, 'show'])->name('loans.show');
+            Route::get('/members/{member}/previous-loans', [LoanController::class, 'previousLoans'])->name('members.previous-loans');
+            Route::get('/loans/{loan}/data', [LoanController::class, 'getLoanData'])->name('loans.data');
+            Route::post('/loans/{loan}/payment', [LoanController::class, 'recordPayment'])->name('loans.recordPayment');
+            Route::post('/loans/{loan}/approve', [LoanController::class, 'approve'])->name('loans.approve');
+
+            // Modal routes
+            Route::post('/loans/{loan}/start', [LoanController::class, 'startLoan'])->name('loans.start');
+            Route::post('/loans/{loan}/cancel', [LoanController::class, 'cancelLoan'])->name('loans.cancel');
+            Route::post('/loans/installments/{installment}/pay', [LoanController::class, 'payInstallment'])->name('loans.installments.pay');
+            Route::post('/loans/{loan}/early-repayment', [LoanController::class, 'earlyRepayment'])->name('loans.earlyRepayment');
+        });
 
         // ─── Finance Management ─────────────────────────────────────────
-        Route::get('/finance/export', [FinanceController::class, 'export'])->name('finance.export');
-        Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
-        Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
-        Route::get('/finance/{transaction}', [FinanceController::class, 'show'])->name('finance.show');
+        Route::middleware(['permission:الشؤون المالية'])->group(function () {
+            Route::get('/finance/export', [FinanceController::class, 'export'])->name('finance.export');
+            Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
+            Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
+            Route::get('/finance/{transaction}', [FinanceController::class, 'show'])->name('finance.show');
+        });
     });
 
 });

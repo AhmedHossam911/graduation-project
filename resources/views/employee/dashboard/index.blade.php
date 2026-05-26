@@ -11,19 +11,44 @@
         <main class="flex-1 py-5 px-3">
             <!-- start header main -->
             <div class="flex flex-col gap-2">
-                <h2 class="text-[#021219] text-xl font-semibold"> مرحباً ، <span></span></h2>
+                <h2 class="text-[#021219] text-xl font-semibold"> مرحباً ، <span>{{ auth()->user()->name ?? '' }}</span></h2>
                 <p class="text-[#6D6D6D] text-base font-normal">
                     نظام إدارة الصندوق – لوحة الموظف
                 </p>
             </div> <!-- end header main -->
 
             <!-- start search -->
-            <div class="flex items-center gap-5 mt-6 ">
-                <input type="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض"
-                    class="w-full  rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
-                <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
-                    <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
-                </button>
+            <div class="relative mt-6 z-[60]">
+                <div class="flex items-center gap-5">
+                    <input type="search" id="global-search-input" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض"
+                        class="w-full  rounded-xl py-2 pr-2 surface-shadow outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
+                    <button id="global-search-btn" class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
+                        <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
+                    </button>
+                </div>
+                
+                <div id="global-search-results" class="hidden absolute top-full left-0 w-full mt-2 bg-white rounded-xl shadow-2xl z-[999] p-4 border border-[#124375]">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="text-[#124375] font-semibold text-lg">نتائج البحث</h2>
+                        <button id="close-global-search" class="text-[#124375] hover:text-red-500"><iconify-icon icon="weui:close-filled" class="text-2xl"></iconify-icon></button>
+                    </div>
+                    <div class="rounded-[14px] overflow-hidden border border-[#6D6D6D]">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم القرض</th>
+                                    <th class="py-3 font-medium text-[#021219]">إجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="search-results-tbody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
             <!-- end search -->
 
@@ -36,7 +61,7 @@
                             class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
                     </div>
                     <div class="flex flex-col items-center text-[#124375] gap-2">
-                        <p class="text-4xl font-extrabold">9</p>
+                        <p class="text-4xl font-extrabold">{{ $activeMembersCount }}</p>
                         <p class="text-sm font-medium">عدد الأعضاء النشطين</p>
                     </div>
                 </div>
@@ -47,7 +72,7 @@
                             class="surface-shadow text-4xl text-[#D4AF37] bg-[#FFFCEF] rounded-lg px-2 py-1"></iconify-icon>
                     </div>
                     <div class="flex flex-col items-center text-[#124375] gap-2">
-                        <p class="text-4xl font-extrabold">0</p>
+                        <p class="text-4xl font-extrabold">{{ $todaySubscriptionsCount }}</p>
                         <p class="text-sm font-medium">اشتراكات اليوم</p>
                     </div>
                 </div>
@@ -58,7 +83,7 @@
                             class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
                     </div>
                     <div class="flex flex-col items-center text-[#F4F7F9] gap-2">
-                        <p class="text-4xl font-extrabold">3</p>
+                        <p class="text-4xl font-extrabold">{{ $dueTodayInstallmentsCount }}</p>
                         <p class="text-sm font-medium">أقساط مستحقة اليوم</p>
                     </div>
                 </div>
@@ -69,7 +94,7 @@
                             class="surface-shadow text-4xl text-[#D92D20] bg-[#FFEAE880] rounded-lg px-2 py-1"></iconify-icon>
                     </div>
                     <div class="flex flex-col items-center text-[#124375] gap-2">
-                        <p class="text-4xl font-extrabold">5</p>
+                        <p class="text-4xl font-extrabold">{{ $pendingClaimsCount }}</p>
                         <p class="text-sm font-medium">طلبات تحت المراجعة</p>
                     </div>
                 </div>
@@ -81,42 +106,86 @@
                 <div class="col-span-2 space-y-5">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="material-symbols:edit-notifications-rounded" class="text-2xl"></iconify-icon>
-                        <h2 class="text-base font-medium">المهام المطلوبة اليوم <span class="text-[#124375]">(3)</span></h2>
+                        <h2 class="text-base font-medium">المهام المطلوبة اليوم <span
+                                class="text-[#124375]">({{ $totalTasksCount }})</span></h2>
                     </div>
                     <div class="py-2 surface-shadow rounded-2xl py-4 px-5 divide-y-2 divide-[#6D6D6D]">
-                        <div class="flex justify-between py-5">
-                            <div class="flex items-center gap-2">
-                                <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#175CD3]"></iconify-icon>
-                                <div>
-                                    <h3 class="text-[#021219] text-sm font-medium">اشتراك مستحق اليوم</h3>
-                                    <p class="text-[#6D6D6D] text-sm font-normal">غير مسجل بعد</p>
+                        @if ($totalTasksCount == 0)
+                            <div class="py-5 text-center text-[#6D6D6D]">لا توجد مهام مطلوبة اليوم.</div>
+                        @else
+                            @foreach ($todaySubscriptions as $sub)
+                                <div class="flex justify-between py-5">
+                                    <div class="flex items-center gap-2">
+                                        <iconify-icon icon="dashicons:arrow-left"
+                                            class="text-4xl text-[#175CD3]"></iconify-icon>
+                                        <div>
+                                            <h3 class="text-[#021219] text-sm font-medium">اشتراك مستحق اليوم</h3>
+                                            <p class="text-[#6D6D6D] text-sm font-normal">
+                                                {{ $sub->membership->member->full_name ?? 'عضو' }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('subscriptions.index') }}"
+                                        class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
+                                        التفاصيل</a>
                                 </div>
-                            </div>
-                            <button
-                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
-                                التفاصيل</button>
-                        </div>
-                        <div class="flex justify-between py-5">
-                            <div class="flex items-center gap-2">
-                                <iconify-icon icon="dashicons:arrow-left" class="text-4xl text-[#D92D20]"></iconify-icon>
-                                <div>
-                                    <h3 class="text-[#021219] text-sm font-medium">قسط متأخر</h3>
-                                    <p class="text-[#6D6D6D] text-sm font-normal">متأخر منذ 4 ايام</p>
+                            @endforeach
+                            @foreach ($dueTodayInstallments as $installment)
+                                <div class="flex justify-between py-5">
+                                    <div class="flex items-center gap-2">
+                                        <iconify-icon icon="dashicons:arrow-left"
+                                            class="text-4xl text-[#D92D20]"></iconify-icon>
+                                        <div>
+                                            <h3 class="text-[#021219] text-sm font-medium">قسط متأخر</h3>
+                                            <p class="text-[#6D6D6D] text-sm font-normal">
+                                                {{ $installment->loan->membership->member->name ?? 'عضو' }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('loans.index') }}"
+                                        class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
+                                        التفاصيل</a>
                                 </div>
-                            </div>
-                            <button
-                                class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
-                                التفاصيل</button>
-                        </div>
+                            @endforeach
+                            @foreach ($pendingClaims as $claim)
+                                <div class="flex justify-between py-5">
+                                    <div class="flex items-center gap-2">
+                                        <iconify-icon icon="dashicons:arrow-left"
+                                            class="text-4xl text-[#D4AF37]"></iconify-icon>
+                                        <div>
+                                            <h3 class="text-[#021219] text-sm font-medium">مطالبة قيد المراجعة</h3>
+                                            <p class="text-[#6D6D6D] text-sm font-normal">
+                                                {{ $claim->membership->member->name ?? 'عضو' }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('claims.index') }}"
+                                        class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
+                                        التفاصيل</a>
+                                </div>
+                            @endforeach
+                            @foreach ($membersWithMissingDocs as $member)
+                                <div class="flex justify-between py-5">
+                                    <div class="flex items-center gap-2">
+                                        <iconify-icon icon="dashicons:arrow-left"
+                                            class="text-4xl text-[#175CD3]"></iconify-icon>
+                                        <div>
+                                            <h3 class="text-[#021219] text-sm font-medium">مستندات ناقصة</h3>
+                                            <p class="text-[#6D6D6D] text-sm font-normal">{{ $member->name }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{{ route('members.show', $member->id) }}"
+                                        class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
+                                        التفاصيل</a>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
                 <div class="col-span-1">
                     <div class="grid grid-cols-2 gap-4">
-                        <div
+                        <a href="{{ route('members.create') }}"
                             class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
                             <iconify-icon icon="mdi:account-multiple-plus" class="text-5xl text-[#124375]"></iconify-icon>
                             <h3 class="text-base font-medium text-[#124375]">تسجيل عضو جديد</h3>
-                        </div>
+                        </a>
                         <div
                             class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375]">
                             <iconify-icon icon="material-symbols:list-alt-check-rounded"
@@ -146,29 +215,37 @@
                         تنبيهات التأخير العاجلة
                     </h3>
                 </div>
-                <div class="rounded-2xl overflow-hidden text-center surface-shadow">
-                    <img src="{{ asset('IMGs/no-members-alert.png') }}" alt="no alerts" style="width: 200px"
-                        class="mx-auto py-10">
-                    <p class="text-base font-medium text-[#124375]">
-                        ممتاز! لا يوجد أعضاء متأخرين يستوجب إنذارهم حالياً.
-                    </p>
-                </div>
-                <div class="rounded-2xl overflow-hidden  surface-shadow">
-                    <table class="w-full">
-                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                            <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">المبلغ المستحق</th>
-                            <th class="py-3 border-l border-[#6D6D6D]">مدة التأخير</th>
-                        </tr>
-                        <tr class="text-center">
-                            <td class="py-3 border-l border-[#6D6D6D]"></td>
-                            <td class="py-3 border-l border-[#6D6D6D]"></td>
-                            <td class="py-3 border-l border-[#6D6D6D]"></td>
-                            <td class="py-3 border-l border-[#6D6D6D]"></td>
-                        </tr>
-                    </table>
-                </div>
+                @if ($lateInstallments->isEmpty())
+                    <div class="rounded-2xl overflow-hidden text-center surface-shadow">
+                        <img src="{{ asset('IMGs/no-members-alert.png') }}" alt="no alerts" style="width: 200px"
+                            class="mx-auto py-10">
+                        <p class="text-base font-medium text-[#124375]">
+                            ممتاز! لا يوجد أعضاء متأخرين يستوجب إنذارهم حالياً.
+                        </p>
+                    </div>
+                @else
+                    <div class="rounded-2xl overflow-hidden  surface-shadow">
+                        <table class="w-full">
+                            <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
+                                <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
+                                <th class="py-3 border-l border-[#6D6D6D]">المبلغ المستحق</th>
+                                <th class="py-3 border-l border-[#6D6D6D]">مدة التأخير</th>
+                            </tr>
+                            @foreach ($lateInstallments as $installment)
+                                <tr class="text-center">
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        {{ $installment->loan->membership->member->full_name ?? 'عضو' }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        {{ $installment->loan->membership->membership_number ?? '-' }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">{{ $installment->amount }} ج.م</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        {{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                @endif
             </section>
         </main>
     </div>
@@ -190,31 +267,30 @@
                 </h1>
             </div>
             <div class="space-y-4">
-                <!-- <div class="flex gap-3 items-center">
-                                                                                            <p class="text-base font-medium text-[#124375]">اسم العضو :<span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">رقم القرض :<span class="text-[#021219] font-semibold text-base">512345678922</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">المبلغ المتبقي :<span class="text-[#021219] font-semibold text-base">4500 ج.م</span></p>
-                                                                                            <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                                                                                        </div> -->
+                <div id="sub-member-info" class="hidden flex gap-3 items-center">
+                    <p class="text-base font-medium text-[#124375]">اسم العضو :<span id="sub-member-name" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم العضوية :<span id="sub-membership-number" class="text-[#021219] font-semibold text-base"></span></p>
+                    <iconify-icon icon="pajamas:redo" class="cursor-pointer text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2" onclick="document.getElementById('sub-member-info').classList.add('hidden')"></iconify-icon>
+                </div>
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
-                        <input type="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
+                        <input type="search" id="sub-search-input" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
                             class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
                     </div>
-                    <button
+                    <button id="sub-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
                         <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                     </button>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center gap-5">
-                        <p class="text-base font-medium text-[#124375]">تاريخ السداد : <span
-                                class="text-[#021219] font-semibold text-base">1 إبريل 2026</span></p>
-                        <p class="text-base font-medium text-[#124375]">المبلغ : <span
-                                class="text-[#021219] font-semibold text-base">4500 ج.م</span></p>
+                        <p class="text-base font-medium text-[#124375]">تاريخ أقرب إشتراك غير مدفوع : <span id="sub-due-date"
+                                class="text-[#021219] font-semibold text-base">-</span></p>
+                        <p class="text-base font-medium text-[#124375]">المبلغ : <span id="sub-amount"
+                                class="text-[#021219] font-semibold text-base">-</span></p>
                     </div>
                 </div>
                 <div class="relative w-fit">
@@ -223,40 +299,9 @@
                         عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]">اختر
                             الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
                                 class="text-xl "></iconify-icon></span></button>
-                    <div
+                    <div id="sub-months-dropdown"
                         class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3">
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="يناير 2026">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>يناير 2026</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="فبراير 2026">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>فبراير 2026</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="مارس 2026">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>مارس 2026</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="أبريل 2027">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>أبريل 2027</span>
-                        </label>
+                        <!-- Will be populated dynamically via JS -->
                     </div>
                 </div>
                 <div class="relative w-fit">
@@ -283,22 +328,23 @@
                         <label class="px-1 text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
                             رقم الإيصال <span class="text-[#D92D20]">*</span>
                         </label>
-                        <input type="text" placeholder="FJB2116708086230"
+                        <input type="text" id="sub-receipt-number" placeholder="FJB2116708086230"
                             class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
                     </div>
                     <div class="border border-[#124375] rounded-[12px] ">
-                        <label for="file-1"
+                        <label for="sub-receipt-image"
                             class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط لإرفاق صورة إيصال السداد</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-1" class="hidden">
+                            <input type="file" id="sub-receipt-image" class="hidden">
                         </label>
                     </div>
                 </div>
             </div>
             <div class="btns flex gap-2 ">
                 <form class="w-full">
-                    <button
+                    <input type="hidden" id="sub-member-id">
+                    <button type="button" id="sub-submit-btn"
                         class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تسجيل سداد
                         الإشتراك</button>
@@ -323,21 +369,21 @@
                 </h1>
             </div>
             <div class="space-y-4">
-                <!-- <div class="flex gap-3 items-center">
-                                                                                            <p class="text-base font-medium text-[#124375]">اسم العضو :<span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">رقم القرض :<span class="text-[#021219] font-semibold text-base">512345678922</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">المبلغ المتبقي :<span class="text-[#021219] font-semibold text-base">4500 ج.م</span></p>
-                                                                                            <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                                                                                        </div> -->
+                <div id="inst-member-info" class="hidden flex gap-3 items-center">
+                    <p class="text-base font-medium text-[#124375]">اسم العضو :<span id="inst-member-name" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم القرض :<span id="inst-loan-number" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">المبلغ المتبقي :<span id="inst-loan-remaining" class="text-[#021219] font-semibold text-base"></span></p>
+                    <iconify-icon icon="pajamas:redo" class="cursor-pointer text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2" onclick="document.getElementById('inst-member-info').classList.add('hidden')"></iconify-icon>
+                </div>
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
-                        <input type="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
+                        <input type="search" id="inst-search-input" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
                             class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
                     </div>
-                    <button
+                    <button id="inst-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
                         <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                     </button>
@@ -347,10 +393,8 @@
                         بيانات السداد
                     </h2>
                     <div class="flex gap-3">
-                        <p class="text-base font-medium text-[#124375]">المبلغ المدفوع (ج.م) :<span
-                                class="text-[#021219] font-semibold text-base">1500</span></p>
-                        <p class="text-base font-medium text-[#124375]">تاريخ السداد :<span
-                                class="text-[#021219] font-semibold text-base">16 أبريل 2026</span></p>
+                        <p class="text-base font-medium text-[#124375]">المبلغ المحدد (ج.م) :<span id="inst-amount-selected"
+                                class="text-[#021219] font-semibold text-base">0</span></p>
                     </div>
                 </div>
                 <div class="relative w-fit">
@@ -359,40 +403,9 @@
                         عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]">اختر
                             الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
                                 class="text-xl "></iconify-icon></span></button>
-                    <div
+                    <div id="inst-months-dropdown"
                         class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3">
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="يناير 2026">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>يناير 2026</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="فبراير 2026">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>فبراير 2026</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="مارس 2026">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>مارس 2026</span>
-                        </label>
-                        <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
-                            <input type="checkbox" class="hidden peer" value="أبريل 2027">
-                            <span
-                                class="custom-checkbox flex items-center justify-center h-[17px] w-[17px] rounded-sm border-2 border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
-                                <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
-                            </span>
-                            <span>أبريل 2027</span>
-                        </label>
+                        <!-- Populated by JS -->
                     </div>
                 </div>
                 <div class="flex flex-col gap-6">
@@ -403,22 +416,24 @@
                         <label class="px-1 text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
                             رقم الإيصال <span class="text-[#D92D20]">*</span>
                         </label>
-                        <input type="text" placeholder="FJB2116708086230"
+                        <input type="text" id="inst-receipt-number" placeholder="FJB2116708086230"
                             class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
                     </div>
                     <div class="border border-[#124375] rounded-[12px] ">
-                        <label for="file-1"
+                        <label for="inst-receipt-image"
                             class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط لإرفاق صورة إيصال السداد</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="file-1" class="hidden">
+                            <input type="file" id="inst-receipt-image" class="hidden">
                         </label>
                     </div>
                 </div>
             </div>
             <div class="btns flex gap-2 ">
                 <form class="w-full">
-                    <button
+                    <input type="hidden" id="inst-member-id">
+                    <input type="hidden" id="inst-loan-id">
+                    <button type="button" id="inst-submit-btn"
                         class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تسجيل سداد
                         القسط</button>
@@ -444,22 +459,21 @@
                 </h1>
             </div>
             <div class="space-y-3">
-                <!-- <div class="flex gap-3 items-center">
-                                                                                            <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
-                                                                                            <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                                                                            <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                                                                                        </div> -->
+                <div id="claim-member-info" class="hidden flex gap-3 items-center">
+                    <p class="text-base font-medium text-[#124375]">الأسم : <span id="claim-member-name" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span id="claim-membership-number" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span id="claim-national-id" class="text-[#021219] font-semibold text-base"></span></p>
+                    <iconify-icon icon="pajamas:redo" class="cursor-pointer text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2" onclick="document.getElementById('claim-member-info').classList.add('hidden')"></iconify-icon>
+                </div>
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
-                        <input type="search" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
+                        <input type="search" id="claim-search-input" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
                             class="w-full py-2 pr-7 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
                     </div>
-                    <button
+                    <button id="claim-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
                         <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                     </button>
@@ -474,25 +488,22 @@
                                 class="text-xl"></iconify-icon></span></button>
                     <div
                         class="dropDown hidden absolute z-50 bg-[#F4F7F9] right-3 top-full mt-3 grid grid-cols-4 gap-3 px-3 py-4 rounded-xl surface-shadow ">
-                        <button type="button" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">عجز
-                            مهني</button>
-                        <button type="button" class=" surface-shadow py-2 rounded-xl text-sm font-medium "> وفاة</button>
-                        <button type="button" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">نقل</button>
-                        <button type="button" class=" surface-shadow py-2 px-2 rounded-xl text-sm font-medium  ">بلوغ سن
-                            التقاعد القانوني</button>
-                        <button type="button" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">فصل</button>
-                        <button type="button"
-                            class=" surface-shadow py-2 rounded-xl text-sm font-medium ">انسحاب</button>
-                        <button type="button" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">معاش
-                            مبكر</button>
-                        <button type="button" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">
-                            استقالة</button>
+                        <button type="button" data-value="occupational_disability" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">عجز مهني</button>
+                        <button type="button" data-value="death" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">وفاة</button>
+                        <button type="button" data-value="transfer" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">نقل</button>
+                        <button type="button" data-value="legal_retirement" class=" surface-shadow py-2 px-2 rounded-xl text-sm font-medium  ">بلوغ سن التقاعد القانوني</button>
+                        <button type="button" data-value="dismissal" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">فصل</button>
+                        <button type="button" data-value="withdrawal" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">انسحاب</button>
+                        <button type="button" data-value="early_retirement" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">معاش مبكر</button>
+                        <button type="button" data-value="resignation" class=" surface-shadow py-2 rounded-xl text-sm font-medium ">استقالة</button>
                     </div>
                 </div>
             </div>
             <div class="btns flex gap-2 ">
                 <form class="w-full">
-                    <button
+                    <input type="hidden" id="claim-member-id">
+                    <input type="hidden" id="claim-type">
+                    <button type="button" id="claim-submit-btn"
                         class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
                         الأختيار</button>
@@ -505,48 +516,15 @@
     <!-- انشاء مطالبة -->
 
     <!-- نتائج البحث -->
-    <div
-        class="modal hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
-        <button
-            class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-12">
-            <div class="modal-title text-center">
-                <h1 class="text-xl font-semibold text-[#124375]">
-                    نتائج البحث
-                </h1>
-            </div>
-            <div>
-                <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
-                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
-                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم القرض</th>
-                                <th class="py-3 font-medium text-[#021219]">إجراءات</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="text-center">
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">5123456789</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">روان محمد فتحي</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">12345678912345</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">123456789</td>
-                                <td class="py-3  text-[#124375]">
-                                    <button>
-                                        <iconify-icon icon="solar:eye-linear" class="text-2xl"></iconify-icon>
-                                    </button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <script src="{{ asset('JS/employee/dashboard.js') }}"></script>
+    <script>
+        window.appRoutes = {
+            searchMember: "{{ route('dashboard.searchMember') }}",
+            paySubscription: function(id) { return "{{ url('/subscriptions') }}/" + id + "/pay"; },
+            payInstallment: function(id) { return "{{ url('/loans/installments') }}/" + id + "/pay"; },
+            createClaim: function(id) { return "{{ url('/members') }}/" + id + "/claim"; },
+            memberProfile: function(id) { return "{{ url('/members') }}/" + id; }
+        };
+    </script>
+    <script src="{{ asset('JS/employee/dashboard.js') }}?v={{ time() }}"></script>
 @endsection

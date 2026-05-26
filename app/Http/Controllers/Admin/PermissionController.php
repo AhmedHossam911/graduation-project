@@ -8,6 +8,9 @@ use App\Models\Auth\Role;
 use App\Models\Membership\Member;
 use App\Models\System\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AccountCreatedMail;
+use Illuminate\Support\Facades\Log;
 
 class PermissionController extends Controller
 {
@@ -41,7 +44,8 @@ class PermissionController extends Controller
         $user = new User();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
-        $user->password = bcrypt('12345678'); // default password
+        $passwordStr = !empty($validated['national_id']) ? $validated['national_id'] : '12345678';
+        $user->password = bcrypt($passwordStr);
 
         if (!empty($validated['role_name'])) {
             $role = Role::firstOrCreate(['name' => $validated['role_name']]);
@@ -74,7 +78,13 @@ class PermissionController extends Controller
             $member->save();
         }
 
-        return redirect()->route('admin.permissions.index')->with('success', 'تم إضافة المستخدم بنجاح.');
+        try {
+            Mail::to($user->email)->send(new AccountCreatedMail($user, $passwordStr, $validated['permissions'] ?? []));
+        } catch (\Exception $e) {
+            Log::error('Failed to send account creation email: ' . $e->getMessage());
+        }
+
+        return redirect()->route('admin.permissions.index')->with('success', 'تم إضافة المستخدم بنجاح وإرسال بيانات الدخول إلى بريده الإلكتروني.');
     }
     public function edit(User $user)
     {
