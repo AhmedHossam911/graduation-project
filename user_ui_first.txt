@@ -1,0 +1,79 @@
+<USER_REQUEST>
+@extends('layouts.pages')
+@section('title', 'عرض بيانات العضو')
+@section('content')
+    <link rel="stylesheet" href="{{ asset('css/member.css') }}">
+    @php
+        $claims = [
+            'retirement' => 'مطالبة ببلوغ سن التقاعد القانوني',
+            'resignation' => 'مطالبة بالاستقالة',
+            'early_retirement' => 'مطالبة بالمعاش المبكر',
+            'withdrawal' => 'مطالبة بالانسحاب',
+            'expulsion' => 'مطالبة بالفصل',
+            'professional_disability' => 'مطالبة بالعجز المهني',
+            'transfer' => 'مطالبة بالنقل',
+            'death' => 'مطالبة بالوفاة',
+        ];
+
+        if (request('claim_type')) {
+            $claim_type = request('claim_type');
+        }
+
+        $statusCode = $member->membershipInfo->status ?? 'unknown';
+        $statusData = $statusMap[$statusCode] ?? [
+            'label' => 'غير معروف',
+            'class' => 'unknown',
+        ];
+        $classMap = [
+            'active' => 'text-[#067647] border-[#067647] bg-[#ECFDF3]',
+            'pending' => 'text-[#175CD3] border-[#175CD3] bg-[#EFF8FF]',
+            'loan' => 'text-[#5925DC] border-[#5925DC] bg-[#5925DC]',
+            'pension' => 'text-[#E6B800] border-[#E6B800] bg-[#FFF8E1]',
+            'withdrawn' => 'text-[#F79009] border-[#F79009] bg-[#F79009]',
+            'dismissed' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+            'unpaid_leave' => 'text-[#4B5A70] border-[#4B5A70] bg-[#4B5A70]',
+            'expired' => 'text-[#021219] border-[#021219] bg-[#021219]',
+            'suspended' => 'text-[#D92D20] border-[#D92D20] bg-[#FFEAE8]',
+        ];
+        $badgeClass = $classMap[$statusCode] ?? 'text-gray-500 border-gray-400 bg-gray-100';
+    @endphp
+    <!-- start header -->
+    <div class="flex justify-between items-center px-10 py-5">
+        <div class="flex flex-col gap-4">
+            <div class="flex gap-7 items-cen
+<truncated 43749 bytes>
+@if ($claim->status === 'pending')
+                                        <span
+                                            class="bg-[#FFFCEF] text-[#D4AF37] border border-[#D4AF37] px-4 py-1.5 text-sm rounded-lg">بإنتظار
+                                            الاعتماد</span>
+                                    @elseif($claim->status === 'approved')
+                                        <span
+                                            class="bg-[#ECFDF3] text-[#067647] border border-[#067647] px-4 py-1.5 text-sm rounded-lg">معتمد</span>
+                                    @elseif($claim->status === 'rejected')
+                                        <span
+                                            class="bg-[#FFEAE8] text-[#D92D20] border border-[#D92D20] px-4 py-1.5 text-sm rounded-lg">مرفوض</span>
+                                    @else
+                                        <span
+                                            class="bg-[#F4F7F9] text-[#6D6D6D] border border-[#6D6D6D] px-4 py-1.5 text-sm rounded-lg">{{ $claim->status ?? 'غير معروف' }}</span>
+                                    @endif
+                                </td>
+                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
+                                    {{ $claim->created_at ? $claim->created_at->format('Y-m-d') : '' }}</td>
+                                <td class="py-5"><a href="#"
+                                        class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium">اعتماد
+                                        الصرف</a></td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            <!-- end requests table -->
+        @endif
+    </section>
+    <!-- end requests section -->
+
+افهم الكود ده كده 
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-05-26T17:47:27+03:00.
+</ADDITIONAL_METADATA>
