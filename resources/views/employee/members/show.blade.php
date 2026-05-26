@@ -476,7 +476,7 @@
             <form action="{{ route('members.storeClaim', $member->id) }}" method="POST" enctype="multipart/form-data" class="w-full">
                 @csrf
                 <input type="hidden" name="claim_type" value="{{ request('claim_type') }}">
-                <div class="tab-content modal-body space-y-7 px-5" data-tab="مطالبات">
+                <div class="tab-content modal-body space-y-7 mt-6 px-5" data-tab="مطالبات">
                     <div class="modal-title text-center">
                         <h1 class="text-xl font-semibold text-[#124375]">
                             {{ $claims[request('claim_type')] ?? '' }}
@@ -488,9 +488,9 @@
                             <p class="text-[#124375] text-base font-medium">رقم العضوية : <span class="text-[#021219] text-base font-semibold">{{ $member->membershipInfo->membership_number ?? '-' }}</span></p>
                             <p class="text-[#124375] text-base font-medium">الرقم القومي : <span class="text-[#021219] text-base font-semibold">{{ $member->national_id }}</span></p>
                         </div>
-                        <p>يرجى إرفاق المستندات التالية لإتمام طلب ({{ $claims[request('claim_type')] ?? '' }}) واستلام المستحقات.</p>
+                        <p>يرجى إرفاق المستندات التالية لإتمام مطالبة ({{ $claims[request('claim_type')] ?? '' }}) واستلام المستحقات.</p>
                     </div>
-                    
+
                     <div class="documents grid grid-cols-2 gap-y-5 gap-x-4">
                         <!-- common inputs -->
                         @if (request('claim_type') !== 'transfer')
@@ -649,16 +649,14 @@
                     <div class="declaration space-y-3" id="declaration-content">
                         <h3 class="text-center font-medium">إقرار</h3>
                         <p class="font-medium text-lg leading-loose">
-                            أقر أنا / <span class="font-bold underline decoration-dotted">{{ $member->full_name }}</span> بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان،
+                            أقر أنا / <span class="font-bold">{{ $member->full_name }}</span> بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان،
                             وذلك اعتبارًا من تاريخ {{ date('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي مستحقات أخرى بعد هذا التاريخ
                         </p>
-                        <p class="font-medium text-lg mt-8 flex justify-between">
-                            <span>الاسم / <span class="font-bold">{{ $member->full_name }}</span></span>
-                            <span>الرقم القومي / <span class="font-bold">{{ $member->national_id }}</span></span>
+                        <p class="font-medium text-lg mt-8 text-left">
                             <span>التوقيع / ________________</span>
                         </p>
                     </div>
-                    
+
                     <div class="btns flex gap-4 mt-6">
                         <button type="button" onclick="printDeclaration()"
                             class="border-2 border-[#124375] text-[#124375] font-bold w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
@@ -667,7 +665,7 @@
                         </button>
                         <button type="submit"
                             class="submit-btn rounded-[14px] w-2/3 py-3 bg-[#124375] text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2 hover:bg-opacity-90 transition-colors">
-                            تقديم الطلب (Submit Request)
+                            تقديم الطلب 
                         </button>
                     </div>
                 </div>
