@@ -22,7 +22,7 @@ class MemberRequest extends FormRequest
     {
         $rules = [
             'full_name'              => ['required', 'string', 'max:255'],
-            'email'                  => ['nullable', 'email', 'max:255'],
+            'email'                  => ['required', 'email', 'max:255'],
             'department_id'          => ['nullable', 'exists:departments,id'],
             'national_id_digits'     => ['required', 'array', 'size:14'],
             'national_id_digits.*'   => ['required', 'digits:1'],
@@ -30,9 +30,9 @@ class MemberRequest extends FormRequest
             'phone_digits.*'         => ['nullable', 'digits:1'],
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
-            'birth_day'              => ['nullable', 'integer', 'between:1,31'],
-            'birth_month'            => ['nullable', 'integer', 'between:1,12'],
-            'birth_year'             => ['nullable', 'integer', 'between:1900,2100'],
+            'birth_day'              => ['required', 'integer', 'between:1,31'],
+            'birth_month'            => ['required', 'integer', 'between:1,12'],
+            'birth_year'             => ['required', 'integer', 'between:1900,2100'],
             'address'                => ['nullable', 'string', 'max:1000'],
             'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
             'employer_name'          => ['required', 'string', 'max:255'],

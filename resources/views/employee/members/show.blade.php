@@ -1770,4 +1770,51 @@
         });
     </script>
     <script src="{{ asset('js/employee/member.js') }}?v={{ time() }}"></script>
+    @if(session('receipt_data'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let receiptData = {!! session('receipt_data') !!};
+            Swal.fire({
+                html: `
+                    <div class="receipt-container p-6 text-right" style="background-color: #F4F7F9; border-radius: 12px; font-family: 'Tajawal', sans-serif; direction: rtl;">
+                        <h2 class="text-2xl font-bold text-[#124375] mb-6 text-center">إيصال دفع إشتراك عضوية جديدة</h2>
+
+                        <div class="flex justify-between items-center mb-6 text-[#124375] font-medium border-b border-[#124375] pb-4">
+                            <div><span>التاريخ :</span> <span>${receiptData.date}</span></div>
+                            <div><span>الوقت :</span> <span>${new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</span></div>
+                            <div><span>قيمة الأشتراك :</span> <span class="font-bold">${receiptData.amount}</span></div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="text-lg font-bold mb-2">بيانات العضو</h3>
+                            <div class="flex flex-row-reverse justify-between items-center text-[#124375]">
+                                <div><span>الأسم رباعي :</span> <span class="text-[#6D6D6D]">${receiptData.name}</span></div>
+                                <div><span>رقم العضوية :</span> <span class="text-[#6D6D6D]">${receiptData.membership_number}</span></div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-[#124375] pt-4 mb-6">
+                            <h3 class="text-lg font-bold mb-2">بيانات الجهة</h3>
+                            <div class="flex flex-row-reverse justify-between items-center text-[#124375]">
+                                <div><span>البنك :</span> <span class="text-[#6D6D6D]">بنك مصر</span></div>
+                                <div><span>الجهة :</span> <span class="text-[#6D6D6D]">صندوق الزمالة - جامعة العاصمة</span></div>
+                                <div><span>رقم حساب المستفيد :</span> <span class="text-[#6D6D6D]">077777777777777</span></div>
+                            </div>
+                        </div>
+
+                        <button onclick="window.print()" class="w-full bg-[#124375] text-white py-3 rounded-xl font-bold text-lg flex justify-center items-center gap-2 hover:bg-[#0e3560] transition-colors print:hidden">
+                            <iconify-icon icon="material-symbols:print-rounded" class="text-2xl"></iconify-icon> طباعة الإيصال
+                        </button>
+                    </div>
+                `,
+                showConfirmButton: false,
+                width: '800px',
+                background: '#F4F7F9',
+                customClass: {
+                    popup: 'rounded-2xl border border-[#124375]'
+                }
+            });
+        });
+    </script>
+    @endif
 @endsection

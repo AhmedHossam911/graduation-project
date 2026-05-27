@@ -85,7 +85,7 @@ class MemberController extends Controller
             ];
 
             return redirect()
-                ->route('members.create')
+                ->route('members.show', $result['member']->id)
                 ->with('success', 'تم حفظ بيانات العضو بنجاح وتوليد الإيصال.')
                 ->with('receipt_data', json_encode($receiptData));
 

@@ -13,6 +13,11 @@ use App\Models\Services\Subscription;
 use App\Models\System\Department;
 use App\Models\System\AuditLog;
 use App\Models\System\SystemSetting;
+use App\Models\Auth\User;
+use App\Models\Auth\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\MemberAccountCreatedMail;
 use Carbon\Carbon;
 use Exception;
 
@@ -52,8 +57,17 @@ class MemberService
         return DB::transaction(function () use ($request, $validated, $nationalId, $age) {
             $departmentId = $this->resolveDepartmentId($validated);
 
+            // Create user account for the member
+            $memberRole = Role::where('name', 'Member')->first();
+            $user = User::create([
+                'name'     => $validated['full_name'],
+                'email'    => $validated['email'],
+                'password' => Hash::make($nationalId),
+                'role_id'  => $memberRole ? $memberRole->id : null,
+            ]);
+
             $member = Member::create([
-                'user_id'        => auth()->id(),
+                'user_id'        => $user->id,
                 'department_id'  => $departmentId,
                 'full_name'      => $validated['full_name'],
                 'national_id'    => $nationalId,
@@ -77,6 +91,7 @@ class MemberService
 
             Subscription::create([
                 'membership_id' => $membership->id,
+                'name'          => 'رسم الاشتراك بالصندوق',
                 'amount'        => $totalFee,
                 'due_date'      => now(),
                 'status'        => 'unpaid',
@@ -92,15 +107,15 @@ class MemberService
                 'starting_salary'    => $validated['salary'] ?? null,
             ]);
 
-            FamilyInfo::create([
-                'member_id'       => $member->id,
-                'children_count'  => $validated['children_count'] ?? 0,
-                'spouse_name'     => $this->nullIfPlaceholder($validated['spouse_name'] ?? null) ?? 'لا يوجد',
-                'spouse_phone'    => $this->digitsToString($request, 'spouse_phone_digits') ?? 'لا يوجد',
-                'spouse_workplace'=> $this->nullIfPlaceholder($validated['spouse_workplace'] ?? null) ?? 'لا يوجد',
-                'child_name'      => $this->nullIfPlaceholder($validated['child_name'] ?? null) ?? 'لا يوجد',
-                'child_workplace' => $this->nullIfPlaceholder($validated['child_workplace'] ?? null) ?? 'لا يوجد',
-            ]);
+            $familyData = ['member_id' => $member->id];
+            if (isset($validated['children_count'])) $familyData['children_count'] = $validated['children_count'];
+            if ($this->nullIfPlaceholder($validated['spouse_name'] ?? null)) $familyData['spouse_name'] = $validated['spouse_name'];
+            if ($this->digitsToString($request, 'spouse_phone_digits')) $familyData['spouse_phone'] = $this->digitsToString($request, 'spouse_phone_digits');
+            if ($this->nullIfPlaceholder($validated['spouse_workplace'] ?? null)) $familyData['spouse_workplace'] = $validated['spouse_workplace'];
+            if ($this->nullIfPlaceholder($validated['child_name'] ?? null)) $familyData['child_name'] = $validated['child_name'];
+            if ($this->nullIfPlaceholder($validated['child_workplace'] ?? null)) $familyData['child_workplace'] = $validated['child_workplace'];
+
+            FamilyInfo::create($familyData);
 
             // Store uploaded documents
             foreach (self::INITIAL_DOCUMENT_TYPES as $type => $label) {
@@ -111,6 +126,11 @@ class MemberService
 
             // Audit log
             $this->logAudit('create', 'members', $member->id, null, $member->toArray());
+
+            // Send email
+            if (!empty($validated['email'])) {
+                Mail::to($validated['email'])->send(new MemberAccountCreatedMail($member, $nationalId));
+            }
 
             return [
                 'member' => $member,

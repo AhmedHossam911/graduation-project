@@ -10,7 +10,7 @@ class Subscription extends Model
     use HasFactory;
 
     protected $fillable = [
-        'membership_id', 'amount', 'due_date', 'status',
+        'membership_id', 'name', 'amount', 'due_date', 'status',
         'last_warning_sent_at', 'first_warning_sent_at',
         'second_warning_sent_at', 'notice_sent_at',
     ];

@@ -27,13 +27,17 @@ const today = date.toLocaleDateString('ar-EG' , {
     month: 'long',
     year: 'numeric'
 });
-dateElement.textContent += today;
+if (dateElement) {
+    dateElement.textContent += today;
+}
 // Dynamic date
 
 // DropDown
-dropdownBtn.addEventListener('click', () => {
-    dropdown.classList.toggle('hidden');
-});
+if (dropdownBtn && dropdown) {
+    dropdownBtn.addEventListener('click', () => {
+        dropdown.classList.toggle('hidden');
+    });
+}
 // DropDown
 const statusText = document.getElementById('status-text');
 const confirmStatusBtn = document.getElementById('confirm-status-btn');
@@ -69,18 +73,19 @@ if (confirmStatusBtn && statusText) {
 
 // Handle Inputs
 function handleInputs (Inputs) {
+    if (!Inputs || Inputs.length === 0) return;
     Inputs.forEach((input, index) => {
-    input.addEventListener("input", (e) => {
-        if (e.target.value.length === 1) {
-            Inputs[index - 1].focus();
-        }
+        input.addEventListener("input", (e) => {
+            if (e.target.value.length === 1 && Inputs[index - 1]) {
+                Inputs[index - 1].focus();
+            }
+        });
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && e.target.value.length === 0 && Inputs[index + 1]) {
+                Inputs[index + 1].focus();
+            }
+        });
     });
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Backspace" && e.target.value.length === 0) {
-            Inputs[index + 1].focus();
-        }
-    });
-});
 }
 handleInputs(phoneInputs);
 handleInputs(landlineInputs);
@@ -89,9 +94,11 @@ handleInputs(numberInputs);
 // Handle Inputs
 
 // close button
-btnClose.addEventListener('click', () => {
-    successModal.classList.add('hidden');
-});
+if (btnClose && successModal) {
+    btnClose.addEventListener('click', () => {
+        successModal.classList.add('hidden');
+    });
+}
 // close button
 
 // Handle Print Button
@@ -120,3 +127,56 @@ if (printBtn && memberIdInput && memberIdInput.value) {
         setTimeout(handleRedirect, 1000);
     });
 }
+
+// Calculate Retirement Date
+const birthDay = document.getElementById('birth_day');
+const birthMonth = document.getElementById('birth_month');
+const birthYear = document.getElementById('birth_year');
+const retDay = document.getElementById('retirement_day');
+const retMonth = document.getElementById('retirement_month');
+const retYear = document.getElementById('retirement_year');
+
+if (birthDay && birthMonth && birthYear && retDay && retMonth && retYear) {
+    const toEnglishDigits = (str) => {
+        const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+        return str.replace(/[٠-٩]/g, (w) => arabicNumbers.indexOf(w));
+    };
+
+    const calculateRetirement = () => {
+        const d = toEnglishDigits(birthDay.value.trim());
+        const m = toEnglishDigits(birthMonth.value.trim());
+        let y = toEnglishDigits(birthYear.value.trim());
+        
+        if (d && m && y && (y.length === 4 || y.length === 2)) {
+            let yearNum = parseInt(y, 10);
+            let dayNum = parseInt(d, 10);
+            let monthNum = parseInt(m, 10);
+            if (!isNaN(yearNum) && !isNaN(dayNum) && !isNaN(monthNum)) {
+                if (y.length === 2) {
+                    yearNum = yearNum > 20 ? 1900 + yearNum : 2000 + yearNum;
+                    y = yearNum.toString();
+                }
+                const rAge = typeof SYSTEM_RETIREMENT_AGE !== 'undefined' ? SYSTEM_RETIREMENT_AGE : 60;
+                retDay.value = dayNum;
+                retMonth.value = monthNum;
+                retYear.value = yearNum + rAge;
+            } else {
+                retDay.value = '';
+                retMonth.value = '';
+                retYear.value = '';
+            }
+        } else {
+            retDay.value = '';
+            retMonth.value = '';
+            retYear.value = '';
+        }
+    };
+
+    birthDay.addEventListener('input', calculateRetirement);
+    birthMonth.addEventListener('input', calculateRetirement);
+    birthYear.addEventListener('input', calculateRetirement);
+
+    // Run on initial load in case values are prepopulated by old()
+    calculateRetirement();
+}
+
