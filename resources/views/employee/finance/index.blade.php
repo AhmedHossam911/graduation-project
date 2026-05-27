@@ -2,14 +2,8 @@
 
 @section('title', 'المالية')
 
-@push('styles')
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-@endpush
+@include('partials.flash')
 
-@push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
-@endpush
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/finance.css') }}">
     <div class="min-h-screen flex flex-col">
@@ -33,25 +27,6 @@
         </div>
         <!-- end header -->
 
-        @if(session('success'))
-            <div class="px-12 py-2">
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
-                </div>
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="px-12 py-2">
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            </div>
-        @endif
 
         <!-- start cards -->
         <div class="py-4 grid grid-cols-3 gap-4 px-12">
@@ -94,7 +69,8 @@
         <!-- filteration buttons -->
         <form action="{{ route('finance.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5">
             <div class="relative flex-1">
-                <input type="search" name="search" value="{{ request('search') }}" placeholder="الاسم أو رقم العضوية أو رقم الحركة"
+                <input type="search" name="search" value="{{ request('search') }}"
+                    placeholder="الاسم أو رقم العضوية أو رقم الحركة"
                     class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                 <iconify-icon icon="mynaui:search"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
@@ -102,8 +78,9 @@
             <div class="relative min-w-[240px]">
                 <label for="datepicker"
                     class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
-                    : <span class="text-[#021219]">{{ request('date') ?? 'يوم/شهر/ سنة' }}</span><span class="flex items-center"><iconify-icon
-                            icon="lucide:calendar" class="text-xl"></iconify-icon></span>
+                    : <span class="text-[#021219]">{{ request('date') ?? 'يوم/شهر/ سنة' }}</span><span
+                        class="flex items-center"><iconify-icon icon="lucide:calendar"
+                            class="text-xl"></iconify-icon></span>
                     <input type="text" name="date" id="datepicker" value="{{ request('date') }}"
                         class="absolute left-0 top-full mt-3 opacity-0 w-0 h-0 pointer-events-none">
                 </label>
@@ -112,13 +89,17 @@
                 <input type="hidden" name="method" class="filter-hidden" value="{{ request('method', 'all') }}">
                 <button type="button"
                     class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">طريقة
-                    الدفع :<span class="text-[#021219] ">{{ request('method') && request('method') != 'all' ? ($methodLabels[request('method')] ?? 'الكل') : 'الكل' }}</span><span class="flex items-center"><iconify-icon
-                            icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                    الدفع :<span
+                        class="text-[#021219] ">{{ request('method') && request('method') != 'all' ? $methodLabels[request('method')] ?? 'الكل' : 'الكل' }}</span><span
+                        class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                            class="text-xl"></iconify-icon></span></button>
                 <div
                     class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                    <button type="button" data-value="all" class=" navy-shadow py-2  rounded-xl text-sm font-medium">الكل</button>
-                    @foreach($methodLabels as $key => $label)
-                        <button type="button" data-value="{{ $key }}" class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                    <button type="button" data-value="all"
+                        class=" navy-shadow py-2  rounded-xl text-sm font-medium">الكل</button>
+                    @foreach ($methodLabels as $key => $label)
+                        <button type="button" data-value="{{ $key }}"
+                            class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
                     @endforeach
                 </div>
             </div>
@@ -126,13 +107,17 @@
                 <input type="hidden" name="category" class="filter-hidden" value="{{ request('category', 'all') }}">
                 <button type="button"
                     class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">بند
-                    الحركة :<span class="text-[#021219] ">{{ request('category') && request('category') != 'all' ? ($categoryLabels[request('category')] ?? 'الكل') : 'الكل' }}</span><span class="flex items-center"><iconify-icon
-                            icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
+                    الحركة :<span
+                        class="text-[#021219] ">{{ request('category') && request('category') != 'all' ? $categoryLabels[request('category')] ?? 'الكل' : 'الكل' }}</span><span
+                        class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                            class="text-xl"></iconify-icon></span></button>
                 <div
                     class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-3 py-4 rounded-xl navy-shadow w-full">
-                    <button type="button" data-value="all" class=" navy-shadow py-2  rounded-xl text-sm font-medium ">الكل</button>
-                    @foreach($categoryLabels as $key => $label)
-                        <button type="button" data-value="{{ $key }}" class=" navy-shadow py-2  rounded-xl text-sm font-medium ">{{ $label }}</button>
+                    <button type="button" data-value="all"
+                        class=" navy-shadow py-2  rounded-xl text-sm font-medium ">الكل</button>
+                    @foreach ($categoryLabels as $key => $label)
+                        <button type="button" data-value="{{ $key }}"
+                            class=" navy-shadow py-2  rounded-xl text-sm font-medium ">{{ $label }}</button>
                     @endforeach
                 </div>
             </div>
@@ -164,27 +149,37 @@
                     </thead>
                     <tbody>
                         @forelse($transactions as $transaction)
-                        <tr class="text-center border-b border-[#6D6D6D]">
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->transaction_number ?? ('TRX-'.$transaction->id) }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->membership?->member?->full_name ?? '-' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->category_label }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ number_format($transaction->amount, 2) }} ج .م</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] ">
-                                @if($transaction->type === 'IN')
-                                <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
-                                @else
-                                <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
-                                @endif
-                            </td>
-                            <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                <iconify-icon icon="solar:eye-outline" class="text-2xl cursor-pointer"
-                                    onclick="showTransactionDetails({{ $transaction->id }})"></iconify-icon>
-                            </td>
-                        </tr>
+                            <tr class="text-center border-b border-[#6D6D6D]">
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->transaction_number ?? 'TRX-' . $transaction->id }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->membership?->member?->full_name ?? 'معاملة غير مربوطة بعضو' }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->category_label }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ number_format($transaction->amount, 2) }} ج .م</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}
+                                </td>
+                                <td class="py-3 border-l border-[#6D6D6D] ">
+                                    @if ($transaction->type === 'IN')
+                                        <span
+                                            class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
+                                    @else
+                                        <span
+                                            class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
+                                    @endif
+                                </td>
+                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                    <iconify-icon icon="solar:eye-outline" class="text-2xl cursor-pointer"
+                                        onclick="showTransactionDetails({{ $transaction->id }})"></iconify-icon>
+                                </td>
+                            </tr>
                         @empty
-                        <tr><td colspan="8" class="py-4 text-center">لا توجد حركات مالية</td></tr>
+                            <tr>
+                                <td colspan="8" class="py-4 text-center">لا توجد حركات مالية</td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -211,23 +206,31 @@
                     </thead>
                     <tbody>
                         @forelse($revenueTransactions as $transaction)
-                        <tr class="text-center border-b border-[#6D6D6D]">
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->transaction_number ?? ('TRX-'.$transaction->id) }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->membership?->member?->full_name ?? '-' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->category_label }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ number_format($transaction->amount, 2) }} ج .م</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] "><span
-                                    class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
-                            </td>
-                            <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                <iconify-icon icon="solar:eye-outline" class="text-2xl cursor-pointer"
-                                    onclick="showTransactionDetails({{ $transaction->id }})"></iconify-icon>
-                            </td>
-                        </tr>
+                            <tr class="text-center border-b border-[#6D6D6D]">
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->transaction_number ?? 'TRX-' . $transaction->id }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->membership?->member?->full_name ?? '-' }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->category_label }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ number_format($transaction->amount, 2) }} ج .م</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}
+                                </td>
+                                <td class="py-3 border-l border-[#6D6D6D] "><span
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
+                                </td>
+                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                    <iconify-icon icon="solar:eye-outline" class="text-2xl cursor-pointer"
+                                        onclick="showTransactionDetails({{ $transaction->id }})"></iconify-icon>
+                                </td>
+                            </tr>
                         @empty
-                        <tr><td colspan="8" class="py-4 text-center">لا توجد حركات إيرادات</td></tr>
+                            <tr>
+                                <td colspan="8" class="py-4 text-center">لا توجد حركات إيرادات</td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -254,23 +257,31 @@
                     </thead>
                     <tbody>
                         @forelse($expenseTransactions as $transaction)
-                        <tr class="text-center border-b border-[#6D6D6D]">
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->transaction_number ?? ('TRX-'.$transaction->id) }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->membership?->member?->full_name ?? '-' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->category_label }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ number_format($transaction->amount, 2) }} ج .م</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] "><span
-                                    class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
-                            </td>
-                            <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                <iconify-icon icon="solar:eye-outline" class="text-2xl cursor-pointer"
-                                    onclick="showTransactionDetails({{ $transaction->id }})"></iconify-icon>
-                            </td>
-                        </tr>
+                            <tr class="text-center border-b border-[#6D6D6D]">
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->transaction_number ?? 'TRX-' . $transaction->id }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->membership?->member?->full_name ?? '-' }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $transaction->category_label }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ number_format($transaction->amount, 2) }} ج .م</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}
+                                </td>
+                                <td class="py-3 border-l border-[#6D6D6D] "><span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
+                                </td>
+                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                    <iconify-icon icon="solar:eye-outline" class="text-2xl cursor-pointer"
+                                        onclick="showTransactionDetails({{ $transaction->id }})"></iconify-icon>
+                                </td>
+                            </tr>
                         @empty
-                        <tr><td colspan="8" class="py-4 text-center">لا توجد حركات مصروفات</td></tr>
+                            <tr>
+                                <td colspan="8" class="py-4 text-center">لا توجد حركات مصروفات</td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -290,7 +301,8 @@
                 class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
             </button>
-            <form action="{{ route('finance.store') }}" method="POST" enctype="multipart/form-data" class="modal-body space-y-7 px-12">
+            <form action="{{ route('finance.store') }}" method="POST" enctype="multipart/form-data"
+                class="modal-body space-y-7 px-12">
                 @csrf
                 <input type="hidden" name="type" id="create-type-input" value="">
                 <input type="hidden" name="category" id="create-category-input" value="">
@@ -323,14 +335,17 @@
                             <div
                                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 px-5 py-4 rounded-xl navy-shadow w-full">
                                 <div class="flex flex-col gap-3 hidden dropdown-group" data-dropdown="مصروف">
-                                    @foreach(App\Models\Financial\Transaction::EXPENSE_CATEGORIES as $key => $label)
-                                    <button type="button" data-input="create-category-input" data-value="{{ $key }}"
-                                        class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                                    @foreach (App\Models\Financial\Transaction::EXPENSE_CATEGORIES as $key => $label)
+                                        <button type="button" data-input="create-category-input"
+                                            data-value="{{ $key }}"
+                                            class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
                                     @endforeach
                                 </div>
                                 <div class="flex flex-col gap-3 hidden dropdown-group" data-dropdown="إيراد">
-                                    @foreach(App\Models\Financial\Transaction::REVENUE_CATEGORIES as $key => $label)
-                                    <button type="button" data-input="create-category-input" data-value="{{ $key }}" class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                                    @foreach (App\Models\Financial\Transaction::REVENUE_CATEGORIES as $key => $label)
+                                        <button type="button" data-input="create-category-input"
+                                            data-value="{{ $key }}"
+                                            class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
                                     @endforeach
                                 </div>
                             </div>
@@ -343,9 +358,10 @@
                                         class="text-xl"></iconify-icon></span></button>
                             <div
                                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                                @foreach(App\Models\Financial\Transaction::METHOD_LABELS as $key => $label)
-                                <button type="button" data-input="create-method-input" data-value="{{ $key }}"
-                                    class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                                @foreach (App\Models\Financial\Transaction::METHOD_LABELS as $key => $label)
+                                    <button type="button" data-input="create-method-input"
+                                        data-value="{{ $key }}"
+                                        class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
                                 @endforeach
                             </div>
                         </div>
@@ -367,8 +383,8 @@
                         <div class="relative w-full">
                             <label
                                 class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">بيان
-                                الحركة</label>
-                            <textarea name="description" placeholder="مثلا: شراء أحبار لطابعة مكتب الدور الرابع"
+                                الحركة<span class="text-[#D92D20]">*</span></label>
+                            <textarea name="description" required placeholder="مثلا: شراء أحبار لطابعة مكتب الدور الرابع"
                                 class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] px-2 py-3 resize-none"></textarea>
                         </div>
                     </div>
@@ -377,7 +393,7 @@
                             class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط لإرفاق صورة الفاتورة أو الإيصال</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" name="attachment" id="file-1" class="hidden">
+                            <input type="file" name="attachment" id="file-1" class="hidden" required>
                         </label>
                     </div>
                 </div>
@@ -420,18 +436,18 @@
                     </div>
                     <div class="space-y-5">
                         <div class="flex gap-3">
-                            <p class="text-[#124375] text-[16px] font-semibold">اسم العضو : <span
-                                    class="text-[#021219]" id="detail-member-name"></span></p>
-                            <p class="text-[#124375] text-[16px] font-semibold">رقم العضوية : <span
-                                    class="text-[#021219]" id="detail-membership-number"></span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold">اسم العضو : <span class="text-[#021219]"
+                                    id="detail-member-name"></span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold">رقم العضوية : <span class="text-[#021219]"
+                                    id="detail-membership-number"></span></p>
                             <p class="text-[#124375] text-[16px] font-semibold">المبلغ الإجمالي : <span
                                     class="text-[#021219]" id="detail-amount"></span></p>
                         </div>
                         <div class="flex gap-3">
-                            <p class="text-[#124375] text-[16px] font-semibold">بند الحركة : <span
-                                    class="text-[#021219]" id="detail-category"></span></p>
-                            <p class="text-[#124375] text-[16px] font-semibold">طريقة الدفع : <span
-                                    class="text-[#021219]" id="detail-method"></span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold">بند الحركة : <span class="text-[#021219]"
+                                    id="detail-category"></span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold">طريقة الدفع : <span class="text-[#021219]"
+                                    id="detail-method"></span></p>
                             <p class="text-[#124375] text-[16px] font-semibold">الموظف المسؤول : <span
                                     class="text-[#021219]" id="detail-creator"></span></p>
                         </div>
@@ -446,7 +462,8 @@
                         </div>
                     </div>
                     <div id="detail-attachment-container" class="pt-2 hidden">
-                        <a id="detail-attachment-link" href="#" target="_blank" class="text-[#124375] underline font-medium">عرض المرفق</a>
+                        <a id="detail-attachment-link" href="#" target="_blank"
+                            class="text-[#124375] underline font-medium">عرض المرفق</a>
                     </div>
                 </div>
                 <div class="btns flex gap-4 ">

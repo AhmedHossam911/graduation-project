@@ -2,7 +2,7 @@
         <!-- start SideBar -->
         <aside class="SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375]">
             <div class="sidebar-pages flex flex-col  gap-5">
-                <a href="{{ route('dashboard') }}">
+                <a href="{{ route('admin.dashboard') }}">
                     <div
                         class="page surface-shadow rounded-xl text-lg font-medium px-2 py-3 flex items-center gap-2  text-[#124375] bg-[#F4F7F9] ">
                         <iconify-icon icon="mdi:home" class="text-3xl"></iconify-icon>

@@ -24,7 +24,7 @@
                     class="navy-shadow text-[40px] px-2 py-1 text-[#124375] bg-[#EEF7FF] rounded-lg "></iconify-icon>
             </div>
             <div class="flex flex-col items-center text-[#124375] gap-2">
-                <p class="text-4xl font-extrabold">2,500</p>
+                <p class="text-4xl font-extrabold">{{ number_format($totalActiveMembers) }}</p>
                 <p class="text-sm font-medium">عدد الأعضاء النشطين</p>
             </div>
         </div>
@@ -35,7 +35,7 @@
                     class="navy-shadow text-[40px] px-2 py-1 text-[#D4AF37] bg-[#FFFCEF] rounded-lg "></iconify-icon>
             </div>
             <div class="flex flex-col items-center text-[#124375] gap-2">
-                <p class="text-4xl font-extrabold">1,500,000</p>
+                <p class="text-4xl font-extrabold">{{ number_format($totalGrantedLoans) }}</p>
                 <p class="text-sm font-medium">إجمالي القروض الممنوحة</p>
             </div>
         </div>
@@ -46,7 +46,7 @@
                     class="navy-shadow text-[40px] text-[#124375]  bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
             </div>
             <div class="flex flex-col items-center gap-2">
-                <p class="text-4xl font-extrabold">15,000,000</p>
+                <p class="text-4xl font-extrabold">{{ number_format($totalFundBalance) }}</p>
                 <p class="text-sm font-medium">إجمالي رصيد الصندوق</p>
             </div>
         </div>
@@ -57,38 +57,45 @@
                     class="navy-shadow text-[40px] text-[#D92D20] bg-[#FFEAE880] rounded-lg px-2 py-1"></iconify-icon>
             </div>
             <div class="flex flex-col items-center text-[#124375] gap-2">
-                <p class="text-4xl font-extrabold">5</p>
+                <p class="text-4xl font-extrabold">{{ $pendingClaims }}</p>
                 <p class="text-sm font-medium">مطالبات بانتظار الأعتماد</p>
             </div>
         </div>
     </div>
     <!-- end cards -->
 
-    <form class="px-12 flex items-center justify-between gap-5 py-3">
+    <form id="dashboardForm" action="{{ route('admin.dashboard') }}" method="GET"
+        class="px-12 flex items-center justify-between gap-5 py-3">
         <div class="relative flex-1">
-            <input type="search"
+            <input type="search" id="globalSearchInput" autocomplete="off"
                 placeholder="الاسم أو رقم العضوية أو رقم الحركة أو رقم القرض أو رقم المطالبة أو رقم الإيصال"
-                class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
+                class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             <iconify-icon icon="mynaui:search"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
+
+            <!-- Search Results Dropdown -->
+            <div id="searchResultsContainer"
+                class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 z-50 max-h-96 overflow-y-auto">
+                <ul id="searchResultsList" class="py-2">
+                    <!-- Results will be injected here -->
+                </ul>
+                <div id="searchLoading" class="hidden py-4 text-center text-gray-500">جاري البحث...</div>
+            </div>
         </div>
+
+        <input type="hidden" name="year" id="yearInput" value="{{ $year }}">
         <div class="relative min-w-[150px]">
             <button type="button"
                 class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
-                :<span class="text-[#021219] ">2026</span><span class="flex items-center"><iconify-icon icon="uil:calender"
-                        class="text-xl"></iconify-icon></span></button>
+                :<span class="text-[#021219]">{{ $year }}</span><span class="flex items-center"><iconify-icon
+                        icon="uil:calender" class="text-xl"></iconify-icon></span></button>
             <div
                 class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" class=" navy-shadow py-2  rounded-xl text-sm font-medium">2026</button>
-                <button type="button" class=" navy-shadow py-2  rounded-xl text-sm font-medium">2025</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2024</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2023</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2022</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2021</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2020</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2019</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2018</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">2017</button>
+                @foreach ($availableYears as $y)
+                    <button type="button"
+                        onclick="document.getElementById('yearInput').value='{{ $y }}'; document.getElementById('dashboardForm').submit();"
+                        class=" navy-shadow py-2 rounded-xl text-sm font-medium">{{ $y }}</button>
+                @endforeach
             </div>
         </div>
         <div>
@@ -131,16 +138,29 @@
                 <table class="w-full text-center border-collapse">
                     <thead>
                         <tr class="bg-[#EEF7FF] text-[#6D6D6D] text-sm">
-                            <th class="py-3 px-4 border border-gray-200">إجراءات</th>
-                            <th class="py-3 px-4 border border-gray-200">المبلغ</th>
-                            <th class="py-3 px-4 border border-gray-200">بند الحركة</th>
+                            {{-- <th class="py-3 px-4 border border-gray-200">اسم العضو</th> --}}
                             <th class="py-3 px-4 border border-gray-200">التاريخ</th>
-                            <th class="py-3 px-4 border border-gray-200">اسم العضو</th>
+                            <th class="py-3 px-4 border border-gray-200">بند الحركة</th>
+                            <th class="py-3 px-4 border border-gray-200">المبلغ</th>
+                            <th class="py-3 px-4 border border-gray-200">إجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($latestDisbursements as $transaction)
                             <tr class="border-b border-gray-200 text-[#124375] font-medium text-sm">
+                                {{-- <td class="py-3 px-4 border border-gray-200">
+                                    {{ $transaction->membership->member->full_name ?? 'غير معروف' }}</td> --}}
+                                <td class="py-3 px-4 border border-gray-200">
+                                    {{ $transaction->created_at->translatedFormat('d F Y') }}</td>
+                                @if ($transaction->type === 'IN')
+                                    <td class="py-3 px-4 border border-gray-200">ايراد</td>
+                                @elseif ($transaction->type === 'OUT')
+                                    <td class="py-3 px-4 border border-gray-200">مصروف</td>
+                                @else
+                                    <td class="py-3 px-4 border border-gray-200">غير معروف</td>
+                                @endif
+                                <td class="py-3 px-4 border border-gray-200">{{ number_format($transaction->amount) }} ج.م
+                                </td>
                                 <td class="py-3 px-4 border border-gray-200">
                                     @if (Route::has('finance.show'))
                                         <a href="{{ route('finance.show', $transaction->id) }}"
@@ -151,13 +171,6 @@
                                         <iconify-icon icon="mdi:eye" class="text-xl opacity-50"></iconify-icon>
                                     @endif
                                 </td>
-                                <td class="py-3 px-4 border border-gray-200">{{ number_format($transaction->amount) }} ج.م
-                                </td>
-                                <td class="py-3 px-4 border border-gray-200">{{ $transaction->category_label }}</td>
-                                <td class="py-3 px-4 border border-gray-200">
-                                    {{ $transaction->created_at->translatedFormat('d F Y') }}</td>
-                                <td class="py-3 px-4 border border-gray-200">
-                                    {{ $transaction->membership->member->full_name ?? 'غير معروف' }}</td>
                             </tr>
                         @empty
                             <tr>
@@ -263,12 +276,7 @@
                                 }
                             },
                             datalabels: {
-                                anchor: 'end',
-                                align: 'top',
-                                formatter: Math.round,
-                                font: {
-                                    weight: 'bold'
-                                }
+                                display: false
                             }
                         },
                         scales: {
@@ -306,15 +314,7 @@
                                 }
                             },
                             datalabels: {
-                                color: '#fff',
-                                formatter: (value) => {
-                                    return value > 5 ? value + '%' :
-                                        ''; // Only show if > 5% to avoid overlap
-                                },
-                                font: {
-                                    weight: 'bold',
-                                    size: 12
-                                }
+                                display: false
                             }
                         }
                     }

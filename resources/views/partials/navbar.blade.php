@@ -5,12 +5,21 @@
                 <button id="Nav-menu">
                     <iconify-icon icon="material-symbols:menu-rounded" class="text-2xl"></iconify-icon>
                 </button>
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                    <div class="logo">
-                        <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
-                    </div>
-                    <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
-                </a>
+                @if (auth()->user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
+                        <div class="logo">
+                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                        </div>
+                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                    </a>
+                @else
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                        <div class="logo">
+                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                        </div>
+                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                    </a>
+                @endif
             </div>
             <div class="flex items-center gap-4 text-[#124375] text-4xl z-50">
                 <div class="relative">
@@ -29,12 +38,15 @@
 
                         <div class="flex flex-col gap-2">
                             @forelse ($latestNotifications as $notification)
-                                <div class="notification surface-shadow {{ is_null($notification->read_at) ? 'bg-[#EEF7FF]' : 'bg-white' }} rounded-xl p-3 text-right">
-                                    @if($notification->title)
-                                    <h3 class="text-sm font-semibold text-[#124375] mb-1">{{ $notification->title }}</h3>
+                                <div
+                                    class="notification surface-shadow {{ is_null($notification->read_at) ? 'bg-[#EEF7FF]' : 'bg-white' }} rounded-xl p-3 text-right">
+                                    @if ($notification->title)
+                                        <h3 class="text-sm font-semibold text-[#124375] mb-1">{{ $notification->title }}
+                                        </h3>
                                     @endif
                                     <p class="notifcation-body text-sm text-[#6D6D6D]">{{ $notification->message }}</p>
-                                    <span class="text-[10px] text-gray-400 mt-1 block">{{ $notification->created_at->diffForHumans() }}</span>
+                                    <span
+                                        class="text-[10px] text-gray-400 mt-1 block">{{ $notification->created_at->diffForHumans() }}</span>
                                 </div>
                             @empty
                                 <p class="text-sm text-gray-500 py-4 text-center">لا توجد إشعارات حالياً</p>
@@ -42,11 +54,12 @@
                         </div>
 
                         <a href="{{ route('notifications.index') }}"
-                            class="text-base bg-[#124375]  text-white surface-shadow rounded-xl py-2 mt-2 block w-full text-center hover:bg-opacity-90 transition-colors">عرض كل
+                            class="text-base bg-[#124375]  text-white surface-shadow rounded-xl py-2 mt-2 block w-full text-center hover:bg-opacity-90 transition-colors">عرض
+                            كل
                             الإشعارات</a>
                     </div>
                 </div>
-                <a href="{{route('profile.index')}}" class="cursor-pointer">
+                <a href="{{ route('profile.index') }}" class="cursor-pointer">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>

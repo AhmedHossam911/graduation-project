@@ -60,8 +60,8 @@ class FinanceController extends Controller
                             ))],
             'method'      => ['required', 'string', 'in:' . implode(',', array_keys(Transaction::METHOD_LABELS))],
             'amount'      => ['required', 'numeric', 'min:0.01'],
-            'description' => ['nullable', 'string', 'max:2000'],
-            'attachment'  => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'description' => ['required', 'string', 'max:2000'],
+            'attachment'  => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
 
         $transaction = DB::transaction(function () use ($request, $validated) {

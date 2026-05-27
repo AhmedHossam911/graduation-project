@@ -59,4 +59,19 @@ class User extends Authenticatable
         // Use strict mode in in_array to prevent loose comparison (e.g., 'string' == true)
         return in_array($permission, (array)$userPermissions, true);
     }
+
+    public function isAdmin()
+    {
+        return $this->role && strtolower($this->role->name) === 'admin';
+    }
+
+    public function isEmployee()
+    {
+        return $this->role && strtolower($this->role->name) === 'employee';
+    }
+
+    public function isMember()
+    {
+        return $this->role && strtolower($this->role->name) === 'member';
+    }
 }

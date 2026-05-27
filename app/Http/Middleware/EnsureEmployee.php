@@ -18,14 +18,11 @@ class EnsureEmployee
         if (auth()->check() && auth()->user()->role) {
             $roleName = strtolower(auth()->user()->role->name);
             
-            if ($roleName === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-            
             if ($roleName === 'member') {
                 return redirect()->route('profile.index');
             }
             
+            // Allow Admin, Employee, Auditor, etc to access these routes
             return $next($request);
         }
 

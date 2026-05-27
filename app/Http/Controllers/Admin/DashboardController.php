@@ -9,7 +9,34 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $year = $request->input('year', date('Y')); // Default to current year
+        // Calculate available years dynamically from transactions
+        $availableYears = \App\Models\Financial\Transaction::select(\Illuminate\Support\Facades\DB::raw('YEAR(created_at) as year'))
+            ->distinct()
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+        if (empty($availableYears)) {
+            $availableYears = [date('Y')];
+        }
+
+        $year = $request->input('year', $availableYears[0] ?? date('Y'));
+
+        // Top Cards Statistics
+        $totalActiveMembers = \App\Models\Membership\Member::whereHas('membershipInfo', function($q) {
+            $q->where('status', 'active');
+        })->count();
+
+        // Total Granted Loans (All active loans, not filtered by year)
+        $totalGrantedLoans = \App\Models\Financial\Loan::where('status', 'active')
+            ->sum('total_amount');
+
+        // Total Fund Balance
+        $totalFundBalance = \App\Models\Financial\Transaction::where('type', 'IN')->sum('amount') 
+                          - \App\Models\Financial\Transaction::where('type', 'OUT')->sum('amount');
+
+        // Pending Claims (All pending claims, not filtered by year)
+        $pendingClaims = \App\Models\Services\Claim::where('status', 'pending')
+            ->count();
 
         // 1. Loan Installments Collection Status (Count of paid vs late/unpaid by month)
         $installments = \App\Models\Financial\Installment::select(
@@ -75,7 +102,12 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard.index', compact(
+            'availableYears',
             'year',
+            'totalActiveMembers',
+            'totalGrantedLoans',
+            'totalFundBalance',
+            'pendingClaims',
             'paidInstallments',
             'lateInstallments',
             'revenues',
@@ -85,5 +117,69 @@ class DashboardController extends Controller
             'facultyColors',
             'latestDisbursements'
         ));
+    }
+
+    public function search(Request $request)
+    {
+        $q = $request->input('q');
+        if (!$q) return response()->json([]);
+
+        $results = [];
+
+        // Search Members (Name, National ID, Membership Number)
+        $members = \App\Models\Membership\Member::with('membershipInfo')
+            ->where('full_name', 'like', "%{$q}%")
+            ->orWhere('national_id', 'like', "%{$q}%")
+            ->orWhereHas('membershipInfo', function($query) use ($q) {
+                $query->where('membership_number', 'like', "%{$q}%");
+            })->limit(5)->get();
+
+        foreach ($members as $member) {
+            $results[] = [
+                'type' => 'عضو',
+                'title' => $member->full_name . ' (' . ($member->membershipInfo->membership_number ?? 'بدون رقم') . ')',
+                'url' => route('members.show', $member->id),
+                'icon' => 'mdi:account'
+            ];
+        }
+
+        // Search Loans
+        if (is_numeric($q)) {
+            $loans = \App\Models\Financial\Loan::where('id', $q)->limit(3)->get();
+            foreach ($loans as $loan) {
+                $results[] = [
+                    'type' => 'قرض',
+                    'title' => 'قرض رقم #' . $loan->id,
+                    'url' => route('loans.show', $loan->id),
+                    'icon' => 'mdi:cash-multiple'
+                ];
+            }
+
+            // Search Claims
+            $claims = \App\Models\Services\Claim::where('id', $q)->limit(3)->get();
+            foreach ($claims as $claim) {
+                $results[] = [
+                    'type' => 'مطالبة',
+                    'title' => 'مطالبة رقم #' . $claim->id,
+                    'url' => route('claims.show', $claim->id),
+                    'icon' => 'mdi:file-document-outline'
+                ];
+            }
+
+            // Search Transactions (Receipt No or ID)
+            $transactions = \App\Models\Financial\Transaction::where('id', $q)
+                ->orWhere('receipt_no', 'like', "%{$q}%")
+                ->limit(3)->get();
+            foreach ($transactions as $transaction) {
+                $results[] = [
+                    'type' => 'معاملة مالية',
+                    'title' => 'حركة رقم #' . $transaction->id . ($transaction->receipt_no ? ' - إيصال: ' . $transaction->receipt_no : ''),
+                    'url' => route('finance.show', $transaction->id),
+                    'icon' => 'mdi:cash-register'
+                ];
+            }
+        }
+
+        return response()->json($results);
     }
 }
