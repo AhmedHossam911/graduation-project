@@ -121,6 +121,7 @@ class FinanceController extends Controller
             'membership_number' => $membershipNumber,
             'creator_name'      => $creatorName,
             'attachment_path'   => $transaction->attachment_path,
+            'attachment_url'    => $transaction->attachment_path ? asset('storage/' . $transaction->attachment_path) : null,
         ]);
     }
 
@@ -186,7 +187,22 @@ class FinanceController extends Controller
 
         // Filter by category
         if ($request->filled('category') && $request->category !== 'all') {
-            $query->where('category', $request->category);
+            $category = $request->category;
+            $query->where(function ($q) use ($category) {
+                $q->where('category', $category);
+                
+                $referenceTypeMap = [
+                    'loan_installment'     => 'App\\Models\\Financial\\Installment',
+                    'monthly_subscription' => 'App\\Models\\Services\\Subscription',
+                    'claim_payment'        => 'App\\Models\\Services\\Claim',
+                    'new_loan'             => 'App\\Models\\Financial\\Loan',
+                    'membership_fees'      => 'App\\Models\\Services\\Membership',
+                ];
+
+                if (array_key_exists($category, $referenceTypeMap)) {
+                    $q->orWhere('reference_type', $referenceTypeMap[$category]);
+                }
+            });
         }
 
         return $query;

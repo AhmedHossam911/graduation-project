@@ -55,6 +55,8 @@ class Transaction extends Model
     const EXPENSE_CATEGORIES = [
         'admin_expenses'          => 'مصروفات إدارية',
         'investment_management'   => 'تكاليف إدارة استثمارات',
+        'new_loan'                => 'صرف قرض جديد',
+        'claim_payment'           => 'صرف مطالبة',
         'subscription_refund'     => 'رد اشتراكات / تسويات',
     ];
 
@@ -75,16 +77,16 @@ class Transaction extends Model
         // Revenue
         'investment_return'       => 'عائد استثمار أموال الصندوق',
         'university_contribution' => 'مساهمة الجامعة',
+        'membership_fees'         => 'رسوم عضوية جديدة',
+        'monthly_subscription'    => 'اشتراكات شهرية',
+        'loan_installment'        => 'سداد قسط قرض',
         'other_revenue'           => 'موارد أخرى',
         // Expense
         'admin_expenses'          => 'مصروفات إدارية',
         'investment_management'   => 'تكاليف إدارة استثمارات',
-        'subscription_refund'     => 'رد اشتراكات / تسويات',
-        // System-generated
-        'membership_fees'         => 'رسوم عضوية جديدة',
-        'monthly_subscription'    => 'اشتراكات شهرية',
-        'loan_installment'        => 'سداد قسط قرض',
         'new_loan'                => 'صرف قرض جديد',
+        'claim_payment'           => 'صرف مطالبة',
+        'subscription_refund'     => 'رد اشتراكات / تسويات',
     ];
 
     /* ──────────────── Relationships ──────────────── */
@@ -128,7 +130,22 @@ class Transaction extends Model
      */
     public function getCategoryLabelAttribute(): string
     {
-        return self::CATEGORY_LABELS[$this->category] ?? $this->category ?? '-';
+        if ($this->category) {
+            return self::CATEGORY_LABELS[$this->category] ?? $this->category;
+        }
+
+        if ($this->reference_type) {
+            return match ($this->reference_type) {
+                'App\\Models\\Financial\\Installment' => self::CATEGORY_LABELS['loan_installment'] ?? 'سداد قسط قرض',
+                'App\\Models\\Services\\Subscription' => self::CATEGORY_LABELS['monthly_subscription'] ?? 'اشتراكات شهرية',
+                'App\\Models\\Services\\Claim' => self::CATEGORY_LABELS['claim_payment'] ?? 'صرف مطالبة',
+                'App\\Models\\Financial\\Loan' => self::CATEGORY_LABELS['new_loan'] ?? 'صرف قرض جديد',
+                'App\\Models\\Services\\Membership' => self::CATEGORY_LABELS['membership_fees'] ?? 'رسوم عضوية جديدة',
+                default => class_basename($this->reference_type),
+            };
+        }
+
+        return '-';
     }
 
     /**
