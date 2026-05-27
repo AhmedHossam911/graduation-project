@@ -50,7 +50,7 @@ dropDown.forEach((menu, index) => {
                 spans[0].textContent = item.textContent;
                 const roleInput = document.getElementById('role_name');
                 if (roleInput) {
-                    roleInput.value = item.textContent.trim();
+                    roleInput.value = item.getAttribute('data-value') || item.textContent.trim();
                 }
             }
             menu.classList.add("hidden");

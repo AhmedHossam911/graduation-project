@@ -183,7 +183,7 @@
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->membership?->member?->full_name ?? 'معاملة غير مربوطة بعضو' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
+                                    {{ $transaction->created_at->timezone('Africa/Cairo')->translatedFormat('d F Y - h:i A') }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->category_label }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">

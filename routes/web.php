@@ -143,6 +143,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/subscriptions/create', [SubscriptionController::class, 'create'])->name('subscriptions.create');
             Route::post('/subscriptions', [SubscriptionController::class, 'store'])->name('subscriptions.store');
             Route::post('/subscriptions/{subscription}/pay', [SubscriptionController::class, 'pay'])->name('subscriptions.pay');
+            Route::get('/subscriptions/{subscription}/view-receipt', [SubscriptionController::class, 'viewReceipt'])->name('subscriptions.view_receipt');
+            Route::get('/subscriptions/{subscription}/download-receipt', [SubscriptionController::class, 'downloadReceipt'])->name('subscriptions.download_receipt');
             Route::post('/subscriptions/{subscription}/notify', [SubscriptionController::class, 'notify'])->name('subscriptions.notify');
 
             // ─── Legacy aliases (keep old route names working) ───────────────
@@ -194,6 +196,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/claim-details/{id}', [PrintController::class, 'claimDetails'])->name('claim_details');
             Route::get('/claim-declaration/{id}', [PrintController::class, 'claimDeclaration'])->name('claim_declaration');
             Route::get('/loan-declaration/{id}', [PrintController::class, 'loanDeclaration'])->name('loan_declaration');
+            Route::get('/new-loan-declaration/{member}', [PrintController::class, 'newLoanDeclaration'])->name('new_loan_declaration');
             Route::get('/board-details/{id}', [PrintController::class, 'boardDetails'])->name('board_details');
             Route::get('/new-membership-receipt/{id}', [PrintController::class, 'newMembershipReceipt'])->name('new_membership_receipt');
         });

@@ -153,7 +153,7 @@ class LoanController extends Controller
 
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
-            return response()->json(['success' => false, 'message' => 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.']);
+            return response()->json(['success' => false, 'message' => "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م)."]);
         }
 
         if ($member->employmentInfo && $member->employmentInfo->retirement_date) {
@@ -217,7 +217,7 @@ class LoanController extends Controller
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                ->with('error', 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.');
+                ->with('error', "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م).");
         }
 
         if ($member->employmentInfo && $member->employmentInfo->retirement_date) {
@@ -423,8 +423,8 @@ class LoanController extends Controller
 
         return response()->json($members->map(function ($m) {
             return [
-                'id'                => $m->membershipInfo->id ?? null,
-                'member_id'         => $m->id,
+                'id'                => $m->id,
+                'membership_id'     => $m->membershipInfo->id ?? null,
                 'full_name'         => $m->full_name,
                 'national_id'       => $m->national_id,
                 'membership_number' => $m->membershipInfo->membership_number ?? '-',

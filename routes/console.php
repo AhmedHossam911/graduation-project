@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // Run the overdue subscriptions check daily at 08:00 AM
 Schedule::command('subscriptions:check-overdue')->dailyAt('08:00');
+
+// Generate annual subscriptions for active members daily at 01:00 AM
+Schedule::command('subscriptions:generate-annual')->dailyAt('01:00');

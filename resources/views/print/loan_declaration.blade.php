@@ -13,8 +13,8 @@
         إقرار
     </h3>
     <p class="font-medium text-xl leading-loose border-2 border-[#124375] p-6 rounded-xl bg-[#F4F7F9] text-[#021219]">
-        أقر أنا / <span class="font-bold underline decoration-dotted">{{ $member->full_name }}</span> 
-        برغبتي في الحصول على القرض الموضح بياناته أعلاه من صندوق الزمالة
+        أقر أنا / <span class="font-bold ">{{ $member->full_name }}</span>
+        برغبتي في الحصول على قرض من صندوق الزمالة
         الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة العاصمة. وأتعهد بالالتزام بكافة الشروط والأحكام،
         كما أفوض الإدارة المالية بالجامعة بخصم قيمة الأقساط الشهرية من راتبي أو من أي مستحقات مالية أخرى لي،
         وذلك حتى يتم سداد كامل قيمة القرض.
@@ -29,6 +29,10 @@
     <div class="font-medium text-lg mt-6 flex justify-between text-[#124375]">
         <span>الرقم القومي / <span class="font-bold text-[#021219]">{{ $member->national_id }}</span></span>
         <span>التوقيع / ________________</span>
+    </div>
+    <div class="font-medium text-lg mt-6 flex justify-between text-[#124375]">
+        <span>قيمة القرض / ________________</span>
+        <span>مدته / ________________</span>
     </div>
 </div>
 @endsection

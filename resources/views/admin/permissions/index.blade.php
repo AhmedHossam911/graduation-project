@@ -97,7 +97,7 @@
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                         <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">الاسم </th>
                         <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">البريد الإلكتروني</th>
-                        <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">الصفة الإدراية</th>
+                        <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">الصفة الإدارية</th>
                         <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
                         <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">مسميات الصلاحيات الممنوحة</th>
                         <th class="py-4 font-medium text-[#021219]">إدارة</th>
@@ -110,7 +110,7 @@
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219] ">{{ $user->email }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]"><span
                                     class="text-[#019168] bg-[#F0FFF6] border border-[#019168] rounded-[8px] py-[1px] px-3 inline-block text-center min-w-[145px]">
-                                    {{ $user->role ? $user->role->name : 'غير محدد' }}</span></td>
+                                    {{ $user->role ? $user->role->arabic_name : 'غير محدد' }}</span></td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]"><span
                                     class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[1px] px-3 inline-block text-center min-w-[100px]">نشط</span>
                             </td>
@@ -170,7 +170,7 @@
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الاسم </th>
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">البريد الإلكتروني</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الصفة الإدراية</th>
+                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الصفة الإدارية</th>
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">مسميات الصلاحيات الممنوحة
                         </th>
@@ -184,7 +184,7 @@
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219] ">{{ $user->email }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]"><span
                                     class="text-[#019168] bg-[#F0FFF6] border border-[#019168] rounded-[8px] py-[1px] px-3 inline-block text-center min-w-[145px]">
-                                    {{ $user->role ? $user->role->name : 'غير محدد' }}</span></td>
+                                    {{ $user->role ? $user->role->arabic_name : 'غير محدد' }}</span></td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]"><span
                                     class="text-[#021219] bg-[#F2F4F7] border border-[#021219] rounded-[8px] py-[1px] px-3 inline-block text-center min-w-[100px]">موقوف</span>
                             </td>

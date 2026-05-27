@@ -924,7 +924,7 @@
                     </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض : 
+                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض :
                         @if ($activeLoan->status === 'overdue')
                             <span class="inline-block px-2 text-center text-[#F79009] bg-[#FFF7ED] border border-[#F79009] rounded-[8px] py-[1px]">متأخر</span>
                         @elseif ($activeLoan->status === 'completed')
@@ -1081,10 +1081,29 @@
                                     {{ match ($subscription->transaction?->method ?? '') {'cash' => 'نقدي','bank_transfer' => 'تحويل بنكي','salary_deduction' => 'خصم من المرتب','university_payment_order' => 'أمر دفع من الجامعة',default => '-'} }}
                                 </td>
                                 <td class="py-5">
+                                    @php
+                                        $hasReceipt = \App\Models\Financial\Transaction::where('reference_type', \App\Models\Services\Subscription::class)
+                                            ->where('reference_id', $subscription->id)
+                                            ->whereNotNull('attachment_path')
+                                            ->exists() || \App\Models\Membership\Attachment::where('member_id', $member->id)->where('type', "subscription_{$subscription->id}_receipt")->exists();
+                                    @endphp
                                     @if ($subscription->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
-                                            <iconify-icon icon="solar:eye-linear"></iconify-icon>
-                                            <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                            @if($hasReceipt)
+                                                <a href="{{ route('subscriptions.view_receipt', $subscription->id) }}" target="_blank" class="hover:text-blue-700 transition-colors" title="عرض الإيصال">
+                                                    <iconify-icon icon="solar:eye-linear"></iconify-icon>
+                                                </a>
+                                                <a href="{{ route('subscriptions.download_receipt', $subscription->id) }}" class="hover:text-blue-700 transition-colors" title="تحميل الإيصال">
+                                                    <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                                </a>
+                                            @else
+                                                <span class="text-gray-400 cursor-not-allowed" title="لا يوجد إيصال مرفق">
+                                                    <iconify-icon icon="solar:eye-linear"></iconify-icon>
+                                                </span>
+                                                <span class="text-gray-400 cursor-not-allowed" title="لا يوجد إيصال مرفق">
+                                                    <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                                </span>
+                                            @endif
                                         </div>
                                     @else
                                         <div>
@@ -1166,11 +1185,10 @@
 
                 <div class="btns flex gap-2 ">
                     <div class="w-full">
-                        <!-- <button class="submit-btn  rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon icon="healthicons:yes"  class="flex items-center text-2xl"></iconify-icon></span>تأكيد الأختيار</button> -->
-                        <button type="button" id="print-declaration-btn"
+                        <button type="button" id="proceed-to-declaration-btn"
                             class="rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                    icon="material-symbols:print"
-                                    class="flex items-center text-2xl"></iconify-icon></span>طباعة الإقرار</button>
+                                    icon="solar:document-add-linear"
+                                    class="flex items-center text-2xl"></iconify-icon></span>متابعة وإرفاق الإقرار</button>
                     </div>
                     <button type="button"
                         class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
@@ -1203,15 +1221,28 @@
                             <div><span class="font-bold">المدة:</span> <span id="summary_months">0</span> شهر</div>
                         </div>
                     </div>
-                    <p class="text-[#021219] text-[16px] font-medium">يرجى رفع ملف الإقرار بعد طباعته وتوقيعه.</p>
-                    <div class="border border-[#124375] rounded-[12px] ">
-                        <label for="declaration_file"
-                            class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
-                            <p>اضغط هنا لإرفاق ملف الإقرار</p>
-                            <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" name="declaration_file" id="declaration_file" class="hidden" required
-                                accept=".pdf,.png,.jpg,.jpeg">
-                        </label>
+                    <div class="space-y-3 mb-4">
+                        <p class="text-[#021219] text-[16px] font-medium text-center">الخطوة الأولى: طباعة الإقرار وتوقيعه</p>
+                        <div class="border border-[#124375] rounded-[12px] ">
+                            <a target="_blank" href="#" id="print-declaration-btn"
+                                class=" cursor-pointer py-7 text-[#124375] flex items-center justify-center gap-1 hover:bg-[#F4F7F9] transition-colors rounded-[12px]">
+                                <p>اضغط هنا لطباعة الإقرار</p>
+                                <iconify-icon icon="material-symbols:print" class="text-2xl"></iconify-icon>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <p class="text-[#021219] text-[16px] font-medium text-center">الخطوة الثانية: رفع ملف الإقرار المُوَقَّع</p>
+                        <div class="border border-[#124375] rounded-[12px] ">
+                            <label for="declaration_file"
+                                class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
+                                <p>اضغط هنا لإرفاق ملف الإقرار</p>
+                                <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
+                                <input type="file" name="declaration_file" id="declaration_file" class="hidden" required
+                                    accept=".pdf,.png,.jpg,.jpeg">
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="btns flex gap-2 ">
@@ -1758,9 +1789,9 @@
                 });
             });
 
-            const printBtn = document.getElementById('print-declaration-btn');
-            if (printBtn) {
-                printBtn.addEventListener('click', function(e) {
+            const proceedBtn = document.getElementById('proceed-to-declaration-btn');
+            if (proceedBtn) {
+                proceedBtn.addEventListener('click', function(e) {
                     const totalAmount = document.getElementById('selected_total_amount');
                     const months = document.getElementById('selected_months');
                     let isValid = true;
@@ -1792,33 +1823,36 @@
                         return false;
                     }
 
-                    // Open the modal and overlay manually since we removed open-modal class
+                    // Calculate and populate the summary
+                    const amountVal = parseFloat(totalAmount.value);
+                    const monthsVal = parseInt(months.value);
+
+                    const interestRate = {{ \App\Models\System\SystemSetting::get('loan_interest_rate', 8) }};
+                    const years = monthsVal / 12;
+                    const interestAmount = (interestRate / 100) * amountVal * years;
+                    const totalWithInterest = amountVal + interestAmount;
+                    const installmentAmount = totalWithInterest / monthsVal;
+
+                    document.getElementById('summary_base_amount').textContent = amountVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('summary_interest_amount').textContent = interestAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('summary_total_amount').textContent = totalWithInterest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('summary_installment_amount').textContent = installmentAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('summary_months').textContent = monthsVal;
+
+                    // Set the href for the print button
+                    const printBtn = document.getElementById('print-declaration-btn');
+                    if (printBtn) {
+                        const baseUrl = "{{ route('print.new_loan_declaration', $member->id) }}";
+                        printBtn.href = `${baseUrl}?amount=${amountVal}&months=${monthsVal}&interest=${interestAmount}&total=${totalWithInterest}&installment=${installmentAmount}`;
+                    }
+
+                    // Open the modal and overlay manually
                     const modal2 = document.getElementById('modal2');
                     const overlay = document.querySelector('.overlay');
                     if (modal2) modal2.classList.remove('hidden');
                     if (overlay) overlay.classList.remove('hidden');
-
-                    // Print the declaration
-                    const printContents = document.getElementById('print-area-wrapper-loan').innerHTML;
-                    const printWindow = window.open('', '_blank', 'height=600,width=800');
-                    printWindow.document.write('<html dir="rtl"><head><title>طباعة الإقرار</title>');
-                    printWindow.document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
-                    printWindow.document.write(
-                        '<style>body{font-family: "Tajawal", Arial, sans-serif; padding: 40px; font-size: 18px;} h3{text-align: center; margin-bottom: 30px;} p{margin-bottom: 30px; line-height: 1.8; font-weight: bold;} * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }</style>'
-                    );
-                    printWindow.document.write('</head><body>');
-                    printWindow.document.write(printContents);
-                    printWindow.document.write('</body></html>');
-                    printWindow.document.close();
-
-                    // delay to ensure styles are applied and tailwind is loaded
-                    setTimeout(function() {
-                        printWindow.focus();
-                        printWindow.print();
-                    }, 800);
                 });
             }
-
 
         });
     </script>
@@ -1953,19 +1987,47 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('open_declaration_modal') === '1') {
-                // Populate form values
+                const safeParse = (val) => {
+                    if (!val) return 0;
+                    const parsed = parseFloat(String(val).replace(/,/g, ''));
+                    return isNaN(parsed) ? 0 : parsed;
+                };
+
                 const totalAmount = urlParams.get('create_loan_amount');
                 const months = urlParams.get('create_loan_months');
+                const safeMonths = parseInt(months) || 0;
                 
-                document.getElementById('selected_total_amount').value = totalAmount;
-                document.getElementById('selected_months').value = months;
+                let baseAmount = safeParse(urlParams.get('loan_base_amount'));
+                let interestAmount = safeParse(urlParams.get('loan_interest_amount'));
+                let totalWithInterest = safeParse(urlParams.get('loan_total_amount'));
+                let installmentAmount = safeParse(urlParams.get('loan_installment_amount'));
+
+                // Fallback to calculation if URL params are missing
+                if (!baseAmount && totalAmount) {
+                    baseAmount = safeParse(totalAmount);
+                    const interestRate = {{ \App\Models\System\SystemSetting::get('loan_interest_rate', 8) }};
+                    const years = safeMonths / 12;
+                    interestAmount = (interestRate / 100) * baseAmount * years;
+                    totalWithInterest = baseAmount + interestAmount;
+                    installmentAmount = safeMonths > 0 ? totalWithInterest / safeMonths : 0;
+                }
+
+                document.getElementById('selected_total_amount').value = totalAmount || baseAmount;
+                document.getElementById('selected_months').value = months || safeMonths;
 
                 // Populate summary
-                document.getElementById('summary_base_amount').textContent = urlParams.get('loan_base_amount') || totalAmount;
-                document.getElementById('summary_interest_amount').textContent = urlParams.get('loan_interest_amount') || '0';
-                document.getElementById('summary_total_amount').textContent = urlParams.get('loan_total_amount') || totalAmount;
-                document.getElementById('summary_installment_amount').textContent = urlParams.get('loan_installment_amount') || '0';
-                document.getElementById('summary_months').textContent = months;
+                document.getElementById('summary_base_amount').textContent = baseAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('summary_interest_amount').textContent = interestAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('summary_total_amount').textContent = totalWithInterest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('summary_installment_amount').textContent = installmentAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('summary_months').textContent = safeMonths;
+                
+                // Set the href for the print button
+                const printBtn = document.getElementById('print-declaration-btn');
+                if (printBtn) {
+                    const baseUrl = "{{ route('print.new_loan_declaration', $member->id) }}";
+                    printBtn.href = `${baseUrl}?amount=${baseAmount}&months=${safeMonths}&interest=${interestAmount}&total=${totalWithInterest}&installment=${installmentAmount}`;
+                }
 
                 // Open Modal 2
                 const modal2 = document.getElementById('modal2');

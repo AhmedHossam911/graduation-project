@@ -269,4 +269,39 @@ class SubscriptionController extends Controller
 
         return back()->with('success', 'تم إرسال الإخطار بنجاح.');
     }
+
+    public function viewReceipt(Subscription $subscription)
+    {
+        $transaction = \App\Models\Financial\Transaction::where('reference_type', Subscription::class)
+            ->where('reference_id', $subscription->id)
+            ->whereNotNull('attachment_path')
+            ->first();
+
+        if (!$transaction || !file_exists(storage_path('app/public/' . $transaction->attachment_path))) {
+            return back()->with('error', 'لا يوجد إيصال متاح لهذا الاشتراك.');
+        }
+
+        return response()->file(storage_path('app/public/' . $transaction->attachment_path));
+    }
+
+    public function downloadReceipt(Subscription $subscription)
+    {
+        $transaction = \App\Models\Financial\Transaction::where('reference_type', Subscription::class)
+            ->where('reference_id', $subscription->id)
+            ->whereNotNull('attachment_path')
+            ->first();
+
+        if (!$transaction || !file_exists(storage_path('app/public/' . $transaction->attachment_path))) {
+            return back()->with('error', 'لا يوجد إيصال متاح لهذا الاشتراك.');
+        }
+
+        $subscription->load('membership.member');
+        $memberName = $subscription->membership->member->full_name ?? 'عضو';
+        $subName = $subscription->name ?? 'اشتراك';
+        // Clean filename of invalid characters
+        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$subName}");
+        $extension = pathinfo($transaction->attachment_path, PATHINFO_EXTENSION);
+
+        return response()->download(storage_path('app/public/' . $transaction->attachment_path), "{$fileName}.{$extension}");
+    }
 }

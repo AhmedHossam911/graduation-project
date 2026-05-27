@@ -132,18 +132,8 @@ if (urlParams.get('open_declaration_modal') === '1') {
                 if (monthsInput) monthsInput.value = urlParams.get('create_loan_months');
             }
 
-            // Populate summary
-            const baseAmt = document.getElementById('summary_base_amount');
-            const intAmt = document.getElementById('summary_interest_amount');
-            const totAmt = document.getElementById('summary_total_amount');
-            const instAmt = document.getElementById('summary_installment_amount');
-            const monthsSpan = document.getElementById('summary_months');
-
-            if (baseAmt) baseAmt.textContent = urlParams.get('loan_base_amount') || '0';
-            if (intAmt) intAmt.textContent = urlParams.get('loan_interest_amount') || '0';
-            if (totAmt) totAmt.textContent = urlParams.get('loan_total_amount') || '0';
-            if (instAmt) instAmt.textContent = urlParams.get('loan_installment_amount') || '0';
-            if (monthsSpan) monthsSpan.textContent = urlParams.get('create_loan_months') || '0';
+            // Summary population is handled in show.blade.php to allow formatting
+            // and correct print button url assignment.
             
             // update URL to remove the params so refresh doesn't reopen
             const newUrl = new URL(window.location);

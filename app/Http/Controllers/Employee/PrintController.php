@@ -57,6 +57,22 @@ class PrintController extends Controller
         return view('print.loan_declaration', compact('loan', 'member', 'membership'));
     }
 
+    public function newLoanDeclaration(Request $request, $memberId)
+    {
+        $member = Member::with('membershipInfo')->findOrFail($memberId);
+        $membership = $member->membershipInfo;
+        
+        $loan = new Loan([
+            'base_amount' => $request->query('amount'),
+            'months' => $request->query('months'),
+            'interest_amount' => $request->query('interest'),
+            'installment_amount' => $request->query('installment'),
+            'total_amount' => $request->query('total')
+        ]);
+        
+        return view('print.loan_declaration', compact('loan', 'member', 'membership'));
+    }
+
     public function boardDetails($id)
     {
         $activeLoan = Loan::with('membership.member', 'installments')->findOrFail($id);

@@ -62,7 +62,7 @@
                     <div class="relative">
                         <button type="button"
                             class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base gap-3 flex justify-between items-center"><span
-                                class="text-[#021219] text-center flex-1">{{ old('role_name', $user->role ? $user->role->name : 'اختر') }}</span><span
+                                class="text-[#021219] text-center flex-1">{{ old('role_name') ? \App\Models\Auth\Role::translateName(old('role_name')) : ($user->role ? $user->role->arabic_name : 'اختر') }}</span><span
                                 class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl "></iconify-icon></span></button>
                         <label
@@ -72,7 +72,7 @@
                         <div
                             class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-2 px-5 py-4 rounded-xl navy-shadow w-full">
                             @foreach($roles as $role)
-                                <button type="button" class="navy-shadow py-2 px-4 rounded-xl text-sm font-medium">{{ $role->name }}</button>
+                                <button type="button" data-value="{{ $role->name }}" class="navy-shadow py-2 px-4 rounded-xl text-sm font-medium">{{ $role->arabic_name }}</button>
                             @endforeach
                         </div>
                     </div>
