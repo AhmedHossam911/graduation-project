@@ -40,8 +40,9 @@ class Transaction extends Model
         'cash'             => 'نقدي',
         'bank_transfer'    => 'تحويل بنكي',
         'check'            => 'شيك',
-        'salary_deduction' => 'خصم من المرتب',
-        'pre_letter'       => 'دفع بجواب مسبق',
+        'salary_deduction'         => 'خصم من المرتب',
+        'pre_letter'               => 'دفع بجواب مسبق',
+        'university_payment_order' => 'أمر دفع من الجامعة',
     ];
 
     /* ──────────────── Category labels (Arabic) ──────────────── */
@@ -66,8 +67,11 @@ class Transaction extends Model
     const SYSTEM_CATEGORIES = [
         'membership_fees'         => 'رسوم عضوية جديدة',
         'monthly_subscription'    => 'اشتراكات شهرية',
+        'subscription'            => 'اشتراك',
         'loan_installment'        => 'سداد قسط قرض',
         'new_loan'                => 'صرف قرض جديد',
+        'loan_start'              => 'صرف قرض جديد',
+        'early_repayment'         => 'تسوية مبكرة لقرض',
     ];
 
     /**
@@ -79,12 +83,15 @@ class Transaction extends Model
         'university_contribution' => 'مساهمة الجامعة',
         'membership_fees'         => 'رسوم عضوية جديدة',
         'monthly_subscription'    => 'اشتراكات شهرية',
+        'subscription'            => 'اشتراك',
         'loan_installment'        => 'سداد قسط قرض',
+        'early_repayment'         => 'تسوية مبكرة لقرض',
         'other_revenue'           => 'موارد أخرى',
         // Expense
         'admin_expenses'          => 'مصروفات إدارية',
         'investment_management'   => 'تكاليف إدارة استثمارات',
         'new_loan'                => 'صرف قرض جديد',
+        'loan_start'              => 'صرف قرض جديد',
         'claim_payment'           => 'صرف مطالبة',
         'subscription_refund'     => 'رد اشتراكات / تسويات',
     ];
@@ -118,11 +125,11 @@ class Transaction extends Model
     /* ──────────────── Accessors ──────────────── */
 
     /**
-     * Human-readable transaction number: TRX-1053
+     * Human-readable transaction number: حركة-1053
      */
     public function getTransactionNumberAttribute(): string
     {
-        return 'TRX-' . $this->id;
+        return 'حركة-' . $this->id;
     }
 
     /**

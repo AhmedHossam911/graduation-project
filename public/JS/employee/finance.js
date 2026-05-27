@@ -143,8 +143,8 @@ $(function () {
         showOtherMonths: true,
         selectOtherMonths: true,
         showButtonPanel: true,
-        currentText: "Done",
-        closeText: "Cancel",
+        currentText: "اليوم",
+        closeText: "إغلاق",
         onSelect: function () {
             const currentDate = $("#datepicker").datepicker("getDate");
             const day = currentDate.getDate();

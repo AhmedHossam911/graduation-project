@@ -459,7 +459,8 @@
                                 </button>
                             @endif
                             @if ($activeLoan && $activeLoan->status === 'pending')
-                                <button type="button" onclick="window.open('{{ route('print.board_details', $activeLoan->id) }}', '_blank')"
+                                <button type="button"
+                                    onclick="window.open('{{ route('print.board_details', $activeLoan->id) }}', '_blank')"
                                     class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
                                     <iconify-icon icon="material-symbols:print"
                                         class="text-xl flex items-center"></iconify-icon>
@@ -865,7 +866,8 @@
                                 </div>
 
                                 <div class="btns flex gap-4 mt-6">
-                                    <button type="button" onclick="window.open('{{ route('print.claim_declaration', $claim->id) }}', '_blank')"
+                                    <button type="button"
+                                        onclick="window.open('{{ route('print.claim_declaration', $claim->id) }}', '_blank')"
                                         class="border-2 border-[#124375] text-[#124375] font-bold w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
                                         <iconify-icon icon="material-symbols:print" class="text-2xl"></iconify-icon>
                                         طباعة الإقرار
@@ -926,17 +928,24 @@
                 <div>
                     <p class="text-[#6D6D6D] text-[14px]">حالة القرض :
                         @if ($activeLoan->status === 'overdue')
-                            <span class="inline-block px-2 text-center text-[#F79009] bg-[#FFF7ED] border border-[#F79009] rounded-[8px] py-[1px]">متأخر</span>
+                            <span
+                                class="inline-block px-2 text-center text-[#F79009] bg-[#FFF7ED] border border-[#F79009] rounded-[8px] py-[1px]">متأخر</span>
                         @elseif ($activeLoan->status === 'completed')
-                            <span class="inline-block px-2 text-center text-[#124375] bg-[#EEF7FF] border border-[#124375] rounded-[8px] py-[1px]">مكتمل</span>
+                            <span
+                                class="inline-block px-2 text-center text-[#124375] bg-[#EEF7FF] border border-[#124375] rounded-[8px] py-[1px]">مكتمل</span>
                         @elseif ($activeLoan->status === 'active')
-                            <span class="inline-block px-2 text-center text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[1px]">نشط</span>
+                            <span
+                                class="inline-block px-2 text-center text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[1px]">نشط</span>
                         @elseif ($activeLoan->status === 'pending')
-                            <span class="inline-block px-2 text-center text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] rounded-[8px] py-[1px]">تحت المراجعة</span>
+                            <span
+                                class="inline-block px-2 text-center text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] rounded-[8px] py-[1px]">تحت
+                                المراجعة</span>
                         @elseif ($activeLoan->status === 'rejected')
-                            <span class="inline-block px-2 text-center text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[1px]">مرفوض</span>
+                            <span
+                                class="inline-block px-2 text-center text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[1px]">مرفوض</span>
                         @else
-                            <span class="inline-block px-2 text-center text-[#6D6D6D] bg-[#EFEFEF] border border-[#6D6D6D] rounded-[8px] py-[1px]">{{ $activeLoan->status }}</span>
+                            <span
+                                class="inline-block px-2 text-center text-[#6D6D6D] bg-[#EFEFEF] border border-[#6D6D6D] rounded-[8px] py-[1px]">{{ $activeLoan->status }}</span>
                         @endif
                     </p>
                 </div>
@@ -989,16 +998,18 @@
                                 <td class="py-5">
                                     @php
                                         $receipt = \App\Models\Membership\Attachment::where('member_id', $member->id)
-                                                    ->where('type', "installment_{$installment->id}_receipt")
-                                                    ->first();
+                                            ->where('type', "installment_{$installment->id}_receipt")
+                                            ->first();
                                     @endphp
                                     @if ($installment->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
-                                            @if($receipt)
-                                                <a href="{{ route('documents.view', $receipt->id) }}" target="_blank" class="hover:text-[#0e3560] transition-colors" title="عرض الإيصال">
+                                            @if ($receipt)
+                                                <a href="{{ route('documents.view', $receipt->id) }}" target="_blank"
+                                                    class="hover:text-[#0e3560] transition-colors" title="عرض الإيصال">
                                                     <iconify-icon icon="solar:eye-linear"></iconify-icon>
                                                 </a>
-                                                <a href="{{ route('documents.download', $receipt->id) }}" class="hover:text-[#0e3560] transition-colors" title="تحميل الإيصال">
+                                                <a href="{{ route('documents.download', $receipt->id) }}"
+                                                    class="hover:text-[#0e3560] transition-colors" title="تحميل الإيصال">
                                                     <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
                                                 </a>
                                             @else
@@ -1039,7 +1050,8 @@
     <!-- loan table -->
 
     <!-- subscription table -->
-    <div data-tab="الاشتراكات" class="{{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }} tab-content px-7 py-2 print:hidden">
+    <div data-tab="الاشتراكات"
+        class="{{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }} tab-content px-7 py-2 print:hidden">
         @if ($member->membershipInfo && $member->membershipInfo->subscriptions->count() > 0)
             <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
                 <table class="w-full">
@@ -1082,18 +1094,28 @@
                                 </td>
                                 <td class="py-5">
                                     @php
-                                        $hasReceipt = \App\Models\Financial\Transaction::where('reference_type', \App\Models\Services\Subscription::class)
-                                            ->where('reference_id', $subscription->id)
-                                            ->whereNotNull('attachment_path')
-                                            ->exists() || \App\Models\Membership\Attachment::where('member_id', $member->id)->where('type', "subscription_{$subscription->id}_receipt")->exists();
+                                        $hasReceipt =
+                                            \App\Models\Financial\Transaction::where(
+                                                'reference_type',
+                                                \App\Models\Services\Subscription::class,
+                                            )
+                                                ->where('reference_id', $subscription->id)
+                                                ->whereNotNull('attachment_path')
+                                                ->exists() ||
+                                            \App\Models\Membership\Attachment::where('member_id', $member->id)
+                                                ->where('type', "subscription_{$subscription->id}_receipt")
+                                                ->exists();
                                     @endphp
                                     @if ($subscription->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
-                                            @if($hasReceipt)
-                                                <a href="{{ route('subscriptions.view_receipt', $subscription->id) }}" target="_blank" class="hover:text-blue-700 transition-colors" title="عرض الإيصال">
+                                            @if ($hasReceipt)
+                                                <a href="{{ route('subscriptions.view_receipt', $subscription->id) }}"
+                                                    target="_blank" class="hover:text-blue-700 transition-colors"
+                                                    title="عرض الإيصال">
                                                     <iconify-icon icon="solar:eye-linear"></iconify-icon>
                                                 </a>
-                                                <a href="{{ route('subscriptions.download_receipt', $subscription->id) }}" class="hover:text-blue-700 transition-colors" title="تحميل الإيصال">
+                                                <a href="{{ route('subscriptions.download_receipt', $subscription->id) }}"
+                                                    class="hover:text-blue-700 transition-colors" title="تحميل الإيصال">
                                                     <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
                                                 </a>
                                             @else
@@ -1214,15 +1236,20 @@
                     <div id="loan-summary" class="bg-[#FFFCEF] p-4 rounded-xl border border-[#D4AF37] mb-4">
                         <h3 class="text-[#D4AF37] font-semibold mb-2 text-center">ملخص القرض</h3>
                         <div class="grid grid-cols-2 gap-4 text-sm text-[#021219]">
-                            <div><span class="font-bold">قيمة القرض:</span> <span id="summary_base_amount">0</span> ج.م</div>
-                            <div><span class="font-bold">فائدة القرض:</span> <span id="summary_interest_amount">0</span> ج.م</div>
-                            <div><span class="font-bold">الإجمالي بالفائدة:</span> <span id="summary_total_amount">0</span> ج.م</div>
-                            <div><span class="font-bold">القسط الشهري:</span> <span id="summary_installment_amount">0</span> ج.م</div>
+                            <div><span class="font-bold">قيمة القرض:</span> <span id="summary_base_amount">0</span> ج.م
+                            </div>
+                            <div><span class="font-bold">فائدة القرض:</span> <span id="summary_interest_amount">0</span>
+                                ج.م</div>
+                            <div><span class="font-bold">الإجمالي بالفائدة:</span> <span
+                                    id="summary_total_amount">0</span> ج.م</div>
+                            <div><span class="font-bold">القسط الشهري:</span> <span
+                                    id="summary_installment_amount">0</span> ج.م</div>
                             <div><span class="font-bold">المدة:</span> <span id="summary_months">0</span> شهر</div>
                         </div>
                     </div>
                     <div class="space-y-3 mb-4">
-                        <p class="text-[#021219] text-[16px] font-medium text-center">الخطوة الأولى: طباعة الإقرار وتوقيعه</p>
+                        <p class="text-[#021219] text-[16px] font-medium text-center">الخطوة الأولى: طباعة الإقرار وتوقيعه
+                        </p>
                         <div class="border border-[#124375] rounded-[12px] ">
                             <a target="_blank" href="#" id="print-declaration-btn"
                                 class=" cursor-pointer py-7 text-[#124375] flex items-center justify-center gap-1 hover:bg-[#F4F7F9] transition-colors rounded-[12px]">
@@ -1233,14 +1260,15 @@
                     </div>
 
                     <div class="space-y-3">
-                        <p class="text-[#021219] text-[16px] font-medium text-center">الخطوة الثانية: رفع ملف الإقرار المُوَقَّع</p>
+                        <p class="text-[#021219] text-[16px] font-medium text-center">الخطوة الثانية: رفع ملف الإقرار
+                            المُوَقَّع</p>
                         <div class="border border-[#124375] rounded-[12px] ">
                             <label for="declaration_file"
                                 class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط هنا لإرفاق ملف الإقرار</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="declaration_file" id="declaration_file" class="hidden" required
-                                    accept=".pdf,.png,.jpg,.jpeg">
+                                <input type="file" name="declaration_file" id="declaration_file" class="hidden"
+                                    required accept=".pdf,.png,.jpg,.jpeg">
                             </label>
                         </div>
                     </div>
@@ -1827,23 +1855,41 @@
                     const amountVal = parseFloat(totalAmount.value);
                     const monthsVal = parseInt(months.value);
 
-                    const interestRate = {{ \App\Models\System\SystemSetting::get('loan_interest_rate', 8) }};
+                    const interestRate =
+                        {{ \App\Models\System\SystemSetting::get('loan_interest_rate', 8) }};
                     const years = monthsVal / 12;
                     const interestAmount = (interestRate / 100) * amountVal * years;
                     const totalWithInterest = amountVal + interestAmount;
                     const installmentAmount = totalWithInterest / monthsVal;
 
-                    document.getElementById('summary_base_amount').textContent = amountVal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    document.getElementById('summary_interest_amount').textContent = interestAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    document.getElementById('summary_total_amount').textContent = totalWithInterest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                    document.getElementById('summary_installment_amount').textContent = installmentAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    document.getElementById('summary_base_amount').textContent = amountVal.toLocaleString(
+                        undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    document.getElementById('summary_interest_amount').textContent = interestAmount
+                        .toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    document.getElementById('summary_total_amount').textContent = totalWithInterest
+                        .toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
+                    document.getElementById('summary_installment_amount').textContent = installmentAmount
+                        .toLocaleString(undefined, {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                        });
                     document.getElementById('summary_months').textContent = monthsVal;
 
                     // Set the href for the print button
                     const printBtn = document.getElementById('print-declaration-btn');
                     if (printBtn) {
                         const baseUrl = "{{ route('print.new_loan_declaration', $member->id) }}";
-                        printBtn.href = `${baseUrl}?amount=${amountVal}&months=${monthsVal}&interest=${interestAmount}&total=${totalWithInterest}&installment=${installmentAmount}`;
+                        printBtn.href =
+                            `${baseUrl}?amount=${amountVal}&months=${monthsVal}&interest=${interestAmount}&total=${totalWithInterest}&installment=${installmentAmount}`;
                     }
 
                     // Open the modal and overlay manually
@@ -1996,7 +2042,7 @@
                 const totalAmount = urlParams.get('create_loan_amount');
                 const months = urlParams.get('create_loan_months');
                 const safeMonths = parseInt(months) || 0;
-                
+
                 let baseAmount = safeParse(urlParams.get('loan_base_amount'));
                 let interestAmount = safeParse(urlParams.get('loan_interest_amount'));
                 let totalWithInterest = safeParse(urlParams.get('loan_total_amount'));
@@ -2016,17 +2062,33 @@
                 document.getElementById('selected_months').value = months || safeMonths;
 
                 // Populate summary
-                document.getElementById('summary_base_amount').textContent = baseAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                document.getElementById('summary_interest_amount').textContent = interestAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                document.getElementById('summary_total_amount').textContent = totalWithInterest.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                document.getElementById('summary_installment_amount').textContent = installmentAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                document.getElementById('summary_base_amount').textContent = baseAmount.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                document.getElementById('summary_interest_amount').textContent = interestAmount.toLocaleString(
+                    undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                document.getElementById('summary_total_amount').textContent = totalWithInterest.toLocaleString(
+                    undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                document.getElementById('summary_installment_amount').textContent = installmentAmount
+                    .toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
                 document.getElementById('summary_months').textContent = safeMonths;
-                
+
                 // Set the href for the print button
                 const printBtn = document.getElementById('print-declaration-btn');
                 if (printBtn) {
                     const baseUrl = "{{ route('print.new_loan_declaration', $member->id) }}";
-                    printBtn.href = `${baseUrl}?amount=${baseAmount}&months=${safeMonths}&interest=${interestAmount}&total=${totalWithInterest}&installment=${installmentAmount}`;
+                    printBtn.href =
+                        `${baseUrl}?amount=${baseAmount}&months=${safeMonths}&interest=${interestAmount}&total=${totalWithInterest}&installment=${installmentAmount}`;
                 }
 
                 // Open Modal 2

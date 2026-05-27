@@ -188,11 +188,11 @@
                         @forelse($transactions as $transaction)
                             <tr class="text-center border-b border-[#6D6D6D]">
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->transaction_number ?? 'TRX-' . $transaction->id }}</td>
+                                    {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->membership?->member?->full_name ?? 'معاملة غير مربوطة بعضو' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->created_at->timezone('Africa/Cairo')->translatedFormat('d F Y - h:i A') }}
+                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}
                                 </td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->category_label }}</td>
@@ -246,7 +246,7 @@
                         @forelse($revenueTransactions as $transaction)
                             <tr class="text-center border-b border-[#6D6D6D]">
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->transaction_number ?? 'TRX-' . $transaction->id }}</td>
+                                    {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->membership?->member?->full_name ?? '-' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
@@ -297,7 +297,7 @@
                         @forelse($expenseTransactions as $transaction)
                             <tr class="text-center border-b border-[#6D6D6D]">
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->transaction_number ?? 'TRX-' . $transaction->id }}</td>
+                                    {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->membership?->member?->full_name ?? '-' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
@@ -469,7 +469,7 @@
                             <div class="space-y-2">
                                 <h1 class="text-[20px] text-[#124375] font-semibold">تفاصيل الحركة</h1>
                                 <div class="flex gap-2 text-[#6D6D6D] text-[16px] font-medium">
-                                    <p>رقم الحركة : <span>{{ $t->transaction_number ?? 'TRX-' . $t->id }}</span></p>
+                                    <p>رقم الحركة : <span>{{ $t->transaction_number ?? 'حركة-' . $t->id }}</span></p>
                                     <span>/</span>
                                     <p>{{ $t->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</p>
                                 </div>

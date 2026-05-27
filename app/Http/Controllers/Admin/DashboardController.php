@@ -28,10 +28,10 @@ class DashboardController extends Controller
 
         // Total Granted Loans (All active loans, not filtered by year)
         $totalGrantedLoans = \App\Models\Financial\Loan::where('status', 'active')
-            ->sum('total_amount');
+            ->sum('base_amount');
 
         // Total Fund Balance
-        $totalFundBalance = \App\Models\Financial\Transaction::where('type', 'IN')->sum('amount') 
+        $totalFundBalance = \App\Models\Financial\Transaction::where('type', 'IN')->sum('amount')
                           - \App\Models\Financial\Transaction::where('type', 'OUT')->sum('amount');
 
         // Pending Claims (All pending claims, not filtered by year)
@@ -82,13 +82,13 @@ class DashboardController extends Controller
             ->with('department')
             ->groupBy('department_id')
             ->get();
-            
+
         $totalMembers = $facultyParticipation->sum('count');
-        
+
         $facultyLabels = [];
         $facultyData = [];
         $facultyColors = ['#124375', '#D4AF37', '#60A5FA', '#93C5FD', '#1E3A8A', '#FBBF24', '#FCD34D', '#1D4ED8', '#BFDBFE', '#2563EB'];
-        
+
         foreach ($facultyParticipation as $index => $item) {
             $facultyLabels[] = $item->department ? $item->department->name : 'غير محدد';
             $facultyData[] = $totalMembers > 0 ? round(($item->count / $totalMembers) * 100, 1) : 0;

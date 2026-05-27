@@ -15,6 +15,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        if (auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         $today = Carbon::today();
 
         // Stats for the cards
@@ -79,6 +83,10 @@ class DashboardController extends Controller
 
     public function searchMember(\Illuminate\Http\Request $request)
     {
+        if (auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin') {
+            return response()->json(['success' => false, 'message' => 'غير مصرح']);
+        }
+
         $search = $request->get('q', '');
 
         $member = Member::with(['membershipInfo.loans' => function($q) {
