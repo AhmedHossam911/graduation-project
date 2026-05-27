@@ -51,10 +51,6 @@ class AuthController extends Controller
             return back()->withErrors(['password' => 'كلمة المرور غير صحيحة.'])->withInput();
         }
 
-        if ($user->is_restricted === true) {
-            return back()->withInput()->with('error', 'الحساب قيد المراجعة أو موقوف بواسطة الإدارة.');
-        }
-
         if (is_null($user->email_verified_at)) {
             $otp = rand(100000, 999999);
             OtpCode::create([
@@ -70,6 +66,10 @@ class AuthController extends Controller
 
             session(['register_user_id' => $user->id]);
             return redirect()->route('register.verify')->with('success', 'حسابك غير مفعل. تم إرسال رمز تفعيل جديد إلى بريدك الإلكتروني.');
+        }
+
+        if ($user->is_restricted === true) {
+            return back()->withInput()->with('error', 'الحساب قيد المراجعة أو موقوف بواسطة الإدارة.');
         }
 
         // 2FA Flow
@@ -146,10 +146,12 @@ class AuthController extends Controller
         Auth::login($user);
         $user->update(['last_login' => now()]);
 
-        if ($user->role_id == 3) {
-            return redirect()->intended('/member/dashboard');
+        if ($user->role && strtolower($user->role->name) === 'admin') {
+            return redirect()->intended(route('admin.dashboard'));
+        } elseif ($user->role && strtolower($user->role->name) === 'member') {
+            return redirect()->intended(route('profile.index'));
         }
-        return redirect()->intended('/dashboard');
+        return redirect()->intended(route('dashboard'));
     }
 
 
@@ -250,7 +252,12 @@ class AuthController extends Controller
         Auth::login($user);
         $user->update(['last_login' => now()]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
+        if ($user->role && strtolower($user->role->name) === 'admin') {
+            return redirect()->route('admin.dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
+        } elseif ($user->role && strtolower($user->role->name) === 'member') {
+            return redirect()->route('profile.index')->with('success', 'تم تفعيل الحساب بنجاح.');
+        }
+        return redirect()->route('dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
     }
 
     public function sendOtp(Request $request) {

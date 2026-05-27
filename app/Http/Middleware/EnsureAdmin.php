@@ -17,8 +17,17 @@ class EnsureAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin') {
-            return $next($request);
+        if (auth()->check() && auth()->user()->role) {
+            $roleName = strtolower(auth()->user()->role->name);
+            if ($roleName === 'admin') {
+                return $next($request);
+            }
+            
+            if ($roleName === 'member') {
+                return redirect()->route('profile.index');
+            }
+            
+            return redirect()->route('dashboard');
         }
 
         abort(403, 'غير مصرح لك بالوصول لهذه الصفحة.');

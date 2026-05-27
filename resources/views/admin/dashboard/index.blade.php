@@ -3,6 +3,7 @@
 @section('title', 'لوحة تحكم الإدارة')
 
 @section('content')
+    <link rel="stylesheet" href="{{ asset('css/admin/admindashboard.css') }}">
     <div class="py-7 px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375]  font-semibold">
@@ -97,4 +98,230 @@
             </button>
         </div>
     </form>
+
+    <!-- Charts section -->
+    <div class="px-12 py-6 grid grid-cols-2 gap-6">
+        <!-- Installments Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-4">موقف تحصيل أقساط القروض</h2>
+            <div class="relative h-64">
+                <canvas id="installmentsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Revenues/Expenses Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-4">حركة الإيرادات والمصروفات</h2>
+            <div class="relative h-64">
+                <canvas id="revenuesExpensesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Row: Table and Pie Chart -->
+    <div class="px-12 py-6 grid grid-cols-5 gap-6">
+        <!-- Latest Disbursements Table -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-3">
+            <div class="flex items-center  gap-2 mb-4 border-b pb-2">
+                <iconify-icon icon="mdi:cash-multiple" class="text-xl text-[#D4AF37]"></iconify-icon>
+                <h2 class="text-[#124375] text-lg text-right font-semibold">أحدث عمليات الصرف</h2>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-center border-collapse">
+                    <thead>
+                        <tr class="bg-[#EEF7FF] text-[#6D6D6D] text-sm">
+                            <th class="py-3 px-4 border border-gray-200">إجراءات</th>
+                            <th class="py-3 px-4 border border-gray-200">المبلغ</th>
+                            <th class="py-3 px-4 border border-gray-200">بند الحركة</th>
+                            <th class="py-3 px-4 border border-gray-200">التاريخ</th>
+                            <th class="py-3 px-4 border border-gray-200">اسم العضو</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($latestDisbursements as $transaction)
+                            <tr class="border-b border-gray-200 text-[#124375] font-medium text-sm">
+                                <td class="py-3 px-4 border border-gray-200">
+                                    @if (Route::has('finance.show'))
+                                        <a href="{{ route('finance.show', $transaction->id) }}"
+                                            class="text-[#124375] hover:text-[#0e3560]">
+                                            <iconify-icon icon="mdi:eye" class="text-xl"></iconify-icon>
+                                        </a>
+                                    @else
+                                        <iconify-icon icon="mdi:eye" class="text-xl opacity-50"></iconify-icon>
+                                    @endif
+                                </td>
+                                <td class="py-3 px-4 border border-gray-200">{{ number_format($transaction->amount) }} ج.م
+                                </td>
+                                <td class="py-3 px-4 border border-gray-200">{{ $transaction->category_label }}</td>
+                                <td class="py-3 px-4 border border-gray-200">
+                                    {{ $transaction->created_at->translatedFormat('d F Y') }}</td>
+                                <td class="py-3 px-4 border border-gray-200">
+                                    {{ $transaction->membership->member->full_name ?? 'غير معروف' }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="py-4 border border-gray-200 text-gray-500">لا توجد عمليات صرف
+                                    حديثة</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Faculty Participation Pie Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-2 flex flex-col items-center">
+            <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-6">نسب مشاركة الكليات في الصندوق</h2>
+            <div class="relative w-full max-w-[300px] aspect-square flex-1">
+                <canvas id="facultyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Register DataLabels plugin
+                Chart.register(ChartDataLabels);
+
+                const monthsLabels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر',
+                    'أكتوبر', 'نوفمبر', 'ديسمبر'
+                ];
+
+                // 1. Installments Chart
+                const ctxInstallments = document.getElementById('installmentsChart').getContext('2d');
+                new Chart(ctxInstallments, {
+                    type: 'bar',
+                    data: {
+                        labels: monthsLabels,
+                        datasets: [{
+                                label: 'أقساط متأخرة',
+                                data: @json($lateInstallments),
+                                backgroundColor: '#D4AF37', // Gold
+                            },
+                            {
+                                label: 'أقساط تم تحصيلها',
+                                data: @json($paidInstallments),
+                                backgroundColor: '#124375', // Navy
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                stacked: true
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true
+                                }
+                            },
+                            datalabels: {
+                                display: false
+                            } // Hide labels for stacked
+                        }
+                    }
+                });
+
+                // 2. Revenues vs Expenses Chart
+                const ctxRevExp = document.getElementById('revenuesExpensesChart').getContext('2d');
+                new Chart(ctxRevExp, {
+                    type: 'bar',
+                    data: {
+                        labels: monthsLabels,
+                        datasets: [{
+                                label: 'إيرادات',
+                                data: @json($revenues),
+                                backgroundColor: '#124375', // Navy
+                            },
+                            {
+                                label: 'مصروفات',
+                                data: @json($expenses),
+                                backgroundColor: '#D4AF37', // Gold
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true
+                                }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: Math.round,
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+
+                // 3. Faculty Chart
+                const ctxFaculty = document.getElementById('facultyChart').getContext('2d');
+                new Chart(ctxFaculty, {
+                    type: 'pie',
+                    data: {
+                        labels: @json($facultyLabels),
+                        datasets: [{
+                            data: @json($facultyData),
+                            backgroundColor: @json($facultyColors),
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            datalabels: {
+                                color: '#fff',
+                                formatter: (value) => {
+                                    return value > 5 ? value + '%' :
+                                        ''; // Only show if > 5% to avoid overlap
+                                },
+                                font: {
+                                    weight: 'bold',
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+        </script>
+    @endpush
+
+    <script src="{{ asset('JS/admin/dashboard.js') }}"></script>
 @endsection
