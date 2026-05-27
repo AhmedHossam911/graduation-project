@@ -151,6 +151,28 @@
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
+                                    value="إدارة الأعضاء"
+                                    {{ in_array('إدارة الأعضاء', $userPermissions) ? 'checked' : '' }}>
+                                <span
+                                    class="custom-checkbox flex items-center justify-center h-[22px] w-[22px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
+                                    <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
+                                </span>
+                                <span class="text-[#021219] text-[18px] font-medium">إدارة الأعضاء</span>
+                            </div>
+                            <p class="text-[14px] text-[#6D6D6D] font-medium">تسجيل وتعديل بيانات أعضاء الصندوق</p>
+                        </div>
+                        <div>
+                            <p
+                                class="text-[#6D6D6D] bg-[#F2F4F7] border border-[#6D6D6D] px-3 rounded-[8px] [label:has(:checked)_&]:text-[#F59E0B] [label:has(:checked)_&]:border-[#F59E0B] [label:has(:checked)_&]:bg-[#FEF3C7] transition">
+                                مسؤول الأعضاء</p>
+                        </div>
+                    </label>
+
+                    <label
+                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <input type="checkbox" name="permissions[]" class="hidden peer item"
                                     value="إدارة الصلاحيات"
                                     {{ in_array('إدارة الصلاحيات', $userPermissions) ? 'checked' : '' }}>
                                 <span

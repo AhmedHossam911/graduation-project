@@ -453,7 +453,6 @@
                 class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
             </button>
-            <x-print-layout title="إيصال استلام/صرف" reference="{{ $t->transaction_number ?? 'TRX-' . $t->id }}">
             <div class="modal-body space-y-7 px-12 py-4">
                 <div class="space-y-7">
                     <div class="flex justify-between items-center">
@@ -500,7 +499,7 @@
                 </div>
                 <div class="btns flex gap-4 mt-8 no-print print:hidden">
                     <div class="w-full">
-                        <button type="button" onclick="window.print()"
+                        <button type="button" onclick="window.open('{{ route('print.transaction', $t->id) }}', '_blank')"
                             class=" rounded-[14px] w-full py-3 bg-[#124375] navy-shadow text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2">
                             <iconify-icon icon="fluent:save-16-filled" class="text-2xl mt-1"></iconify-icon>
                             طباعة الإيصال
@@ -508,7 +507,6 @@
                     </div>
                 </div>
             </div>
-            </x-print-layout>
         </div>
         @endforeach
     </div>

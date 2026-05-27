@@ -126,7 +126,7 @@
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                 {{ $member->created_at->format('j F Y') }}</td>
                             <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                <a href="{{ route('members.show', $member->id) }}">
+                                <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}">
                                     <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
                                 </a>
                             </td>

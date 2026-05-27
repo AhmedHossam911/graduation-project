@@ -122,7 +122,7 @@
                                     {{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}
                                 </td>
                                 <td class="p-3 border-l border-b border-[#6D6D6D]">
-                                    <a href="{{ route('members.show', $member->id) }}">
+                                    <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}">
                                         <iconify-icon
                                             class="text-[#124375] hover:scale-110 hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
                                             icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon>

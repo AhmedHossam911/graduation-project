@@ -200,27 +200,27 @@ if (createForm) {
         
         if (!type) {
             e.preventDefault();
-            alert("الرجاء اختيار إيراد أو مصروف.");
+            showFlash('تنبيه', "الرجاء اختيار إيراد أو مصروف.", 'error');
             return;
         }
         if (!category) {
             e.preventDefault();
-            alert("الرجاء اختيار بند الحركة.");
+            showFlash('تنبيه', "الرجاء اختيار بند الحركة.", 'error');
             return;
         }
         if (!method) {
             e.preventDefault();
-            alert("الرجاء اختيار طريقة الدفع.");
+            showFlash('تنبيه', "الرجاء اختيار طريقة الدفع.", 'error');
             return;
         }
         if (!description.trim()) {
             e.preventDefault();
-            alert("الرجاء إدخال بيان الحركة.");
+            showFlash('تنبيه', "الرجاء إدخال بيان الحركة.", 'error');
             return;
         }
         if (attachment === 0) {
             e.preventDefault();
-            alert("الرجاء إرفاق صورة الفاتورة أو الإيصال.");
+            showFlash('تنبيه', "الرجاء إرفاق صورة الفاتورة أو الإيصال.", 'error');
             return;
         }
     });

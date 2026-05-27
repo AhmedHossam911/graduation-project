@@ -459,7 +459,7 @@
                                 </button>
                             @endif
                             @if ($activeLoan && $activeLoan->status === 'pending')
-                                <button
+                                <button type="button" onclick="window.open('{{ route('print.board_details', $activeLoan->id) }}', '_blank')"
                                     class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
                                     <iconify-icon icon="material-symbols:print"
                                         class="text-xl flex items-center"></iconify-icon>
@@ -771,16 +771,7 @@
                     </div>
                 </form>
             @endif
-            <script>
-                function printDeclaration() {
-                    const content = document.getElementById('print-area-wrapper-claim').innerHTML;
-                    const originalContent = document.body.innerHTML;
-                    document.body.innerHTML = content;
-                    window.print();
-                    document.body.innerHTML = originalContent;
-                    window.location.reload();
-                }
-            </script>
+
         @endif
 
         <!-- claims table section -->
@@ -858,29 +849,7 @@
                             enctype="multipart/form-data" class="w-full">
                             @csrf
                             <div>
-                                <div id="print-area-wrapper-claim">
-                                <x-print-layout title="إقرار استلام المستحقات" reference="{{ $member->membership_number ?? '' }}">
-                                <div class="declaration space-y-3" id="declaration-content">
-                                    <h3 class="text-center font-medium text-xl text-[#124375]">إقرار استلام المستحقات</h3>
-                                    <p class="font-medium text-lg leading-loose border p-4 rounded-xl bg-[#F4F7F9]">
-                                        أقر أنا / <span
-                                            class="font-bold underline decoration-dotted">{{ $member->full_name }}</span>
-                                        بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس
-                                        ومعاونيهم
-                                        والعاملين بجامعة حلوان،
-                                        وذلك اعتبارًا من تاريخ {{ date('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي
-                                        مستحقات
-                                        أخرى بعد هذا التاريخ.
-                                    </p>
-                                    <p class="font-medium text-lg mt-8 flex justify-between">
-                                        <span>الاسم / <span class="font-bold">{{ $member->full_name }}</span></span>
-                                        <span>الرقم القومي / <span
-                                                class="font-bold">{{ $member->national_id }}</span></span>
-                                        <span>التوقيع / ________________</span>
-                                    </p>
-                                </div>
-                                </x-print-layout>
-                                </div>
+
 
                                 <div class="mt-8 border border-[#124375] rounded-2xl w-full relative p-6 bg-white">
                                     <span
@@ -896,7 +865,7 @@
                                 </div>
 
                                 <div class="btns flex gap-4 mt-6">
-                                    <button type="button" onclick="printDeclaration()"
+                                    <button type="button" onclick="window.open('{{ route('print.claim_declaration', $claim->id) }}', '_blank')"
                                         class="border-2 border-[#124375] text-[#124375] font-bold w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
                                         <iconify-icon icon="material-symbols:print" class="text-2xl"></iconify-icon>
                                         طباعة الإقرار
@@ -1164,30 +1133,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="print-area-wrapper-loan">
-                <x-print-layout title="إقرار طلب قرض" reference="{{ $member->membership_number ?? '' }}">
-                <div class="declaration space-y-3">
-                    <h3 class="text-center font-medium">
-                        إقرار
-                    </h3>
-                    <p class="font-medium">
-                        أقر أنا / ____________________ برغبتي في الحصول على القرض الموضح بياناته أعلاه من صندوق الزمالة
-                        الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان. وأتعهد بالالتزام بكافة الشروط والأحكام،
-                        كما أفوض الإدارة المالية بالجامعة بخصم قيمة الأقساط الشهرية من راتبي أو من أي مستحقات مالية أخرى لي،
-                        وذلك حتى يتم سداد كامل قيمة القرض.
-                    </p>
-                    <p class="font-medium">
-                        تحريراً في: _____ / _____ /_____ ٢٠ م
-                    </p>
-                    <p class="font-medium">
-                        الاسم / ____________________________ الوظيفة / ____________________________
-                    </p>
-                    <p class="font-medium">
-                        الرقم القومي / ____________________________ التوقيع / ____________________________
-                    </p>
-                </div>
-                </x-print-layout>
-                </div>
+
                 <div class="btns flex gap-2 ">
                     <div class="w-full">
                         <!-- <button class="submit-btn  rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon icon="healthicons:yes"  class="flex items-center text-2xl"></iconify-icon></span>تأكيد الأختيار</button> -->
@@ -1826,21 +1772,24 @@
                     const printContents = document.getElementById('print-area-wrapper-loan').innerHTML;
                     const printWindow = window.open('', '_blank', 'height=600,width=800');
                     printWindow.document.write('<html dir="rtl"><head><title>طباعة الإقرار</title>');
+                    printWindow.document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
                     printWindow.document.write(
-                        '<style>body{font-family: "Tajawal", Arial, sans-serif; padding: 40px; font-size: 18px;} h3{text-align: center; margin-bottom: 30px;} p{margin-bottom: 30px; line-height: 1.8; font-weight: bold;}</style>'
+                        '<style>body{font-family: "Tajawal", Arial, sans-serif; padding: 40px; font-size: 18px;} h3{text-align: center; margin-bottom: 30px;} p{margin-bottom: 30px; line-height: 1.8; font-weight: bold;} * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }</style>'
                     );
                     printWindow.document.write('</head><body>');
                     printWindow.document.write(printContents);
                     printWindow.document.write('</body></html>');
                     printWindow.document.close();
 
-                    // Small delay to ensure styles are applied
+                    // delay to ensure styles are applied and tailwind is loaded
                     setTimeout(function() {
                         printWindow.focus();
                         printWindow.print();
-                    }, 250);
+                    }, 800);
                 });
             }
+
+
         });
     </script>
     <script>
@@ -1907,38 +1856,16 @@
                 let receiptData = {!! session('receipt_data') !!};
                 Swal.fire({
                     html: `
-                    <x-print-layout title="إيصال اشتراك عضوية" reference="${receiptData.membership_number}">
-                    <div class="receipt-container p-6 text-right" style="background-color: #F4F7F9; border-radius: 12px; font-family: 'Tajawal', sans-serif; direction: rtl;">
-                        <h2 class="text-2xl font-bold text-[#124375] mb-6 text-center">إيصال دفع إشتراك عضوية جديدة</h2>
-
-                        <div class="flex justify-between items-center mb-6 text-[#124375] font-medium border-b border-[#124375] pb-4">
-                            <div><span>التاريخ :</span> <span>${receiptData.date}</span></div>
-                            <div><span>الوقت :</span> <span>${new Date().toLocaleTimeString('ar-EG', {hour: '2-digit', minute:'2-digit'})}</span></div>
-                            <div><span>قيمة الأشتراك :</span> <span class="font-bold">${receiptData.amount}</span></div>
+                    <div class="receipt-container p-6 text-center" style="background-color: #F4F7F9; border-radius: 12px; font-family: 'Tajawal', sans-serif; direction: rtl;">
+                        <h2 class="text-2xl font-bold text-[#124375] mb-4">تم تسجيل العضوية بنجاح</h2>
+                        <div class="mb-6 flex flex-col items-center justify-center gap-2">
+                            <iconify-icon icon="line-md:confirm-circle" class="text-6xl text-[#067647]"></iconify-icon>
+                            <p class="text-lg text-[#021219]">رقم العضوية: <span class="font-bold">${receiptData.membership_number}</span></p>
                         </div>
-
-                        <div class="mb-4">
-                            <h3 class="text-lg font-bold mb-2">بيانات العضو</h3>
-                            <div class="flex flex-row-reverse justify-between items-center text-[#124375]">
-                                <div><span>الأسم رباعي :</span> <span class="text-[#6D6D6D]">${receiptData.name}</span></div>
-                                <div><span>رقم العضوية :</span> <span class="text-[#6D6D6D]">${receiptData.membership_number}</span></div>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-[#124375] pt-4 mb-6">
-                            <h3 class="text-lg font-bold mb-2">بيانات الجهة</h3>
-                            <div class="flex flex-row-reverse justify-between items-center text-[#124375]">
-                                <div><span>البنك :</span> <span class="text-[#6D6D6D]">بنك مصر</span></div>
-                                <div><span>الجهة :</span> <span class="text-[#6D6D6D]">صندوق الزمالة - جامعة العاصمة</span></div>
-                                <div><span>رقم حساب المستفيد :</span> <span class="text-[#6D6D6D]">077777777777777</span></div>
-                            </div>
-                        </div>
-
-                        <button onclick="window.print()" class="w-full bg-[#124375] text-white py-3 rounded-xl font-bold text-lg flex justify-center items-center gap-2 hover:bg-[#0e3560] transition-colors print:hidden no-print">
-                            <iconify-icon icon="material-symbols:print-rounded" class="text-2xl"></iconify-icon> طباعة الإيصال
+                        <button onclick="window.open('{{ route('print.new_membership_receipt', $member->id) }}', '_blank')" class="w-full bg-[#124375] text-white py-3 rounded-xl font-bold text-lg flex justify-center items-center gap-2 hover:bg-[#0e3560] transition-colors">
+                            <iconify-icon icon="material-symbols:print-rounded" class="text-2xl"></iconify-icon> طباعة إيصال الاشتراك
                         </button>
                     </div>
-                    </x-print-layout>
                 `,
                     showConfirmButton: false,
                     width: '800px',

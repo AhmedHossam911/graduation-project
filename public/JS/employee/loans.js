@@ -83,11 +83,11 @@ function initLoansModule() {
                         div.innerHTML = `${member.full_name} - ${member.membership_number} <br><span class="text-sm text-gray-500">${member.national_id}</span>`;
                         div.addEventListener('click', () => {
                             if (member.has_active_loan) {
-                                alert('هذا العضو لديه قرض نشط أو طلب قيد المراجعة بالفعل.');
+                                showFlash('تنبيه', 'هذا العضو لديه قرض نشط أو طلب قيد المراجعة بالفعل.', 'error');
                                 return;
                             }
                             if (!member.id) {
-                                alert('هذا العضو ليس لديه عضوية مفعلة.');
+                                showFlash('تنبيه', 'هذا العضو ليس لديه عضوية مفعلة.', 'error');
                                 return;
                             }
                             const nameEl = document.getElementById('createLoanName');
@@ -229,14 +229,14 @@ function initLoansModule() {
                         const baseUrl = `${window.APP_URL}/members/${memberId}`;
                         window.location.href = `${baseUrl}?tab=loans&create_loan_amount=${amount}&create_loan_months=${months}&open_declaration_modal=1&loan_base_amount=${data.base_amount}&loan_interest_amount=${data.interest_amount}&loan_total_amount=${data.total_amount}&loan_installment_amount=${data.installment_amount}`;
                     } else {
-                        alert(data.message || 'حدث خطأ أثناء التحقق من الشروط.');
+                        showFlash('تنبيه', data.message || 'حدث خطأ أثناء التحقق من الشروط.', 'error');
                     }
                 })
                 .catch(err => {
                     console.error('Validation error:', err);
                     submitBtn.innerHTML = originalBtnText;
                     submitBtn.classList.remove('btn-disabled');
-                    alert('حدث خطأ في الاتصال بالخادم.');
+                    showFlash('تنبيه', 'حدث خطأ في الاتصال بالخادم.', 'error');
                 });
             }
         });

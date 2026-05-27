@@ -171,7 +171,7 @@
                                             <p class="text-[#6D6D6D] text-sm font-normal">{{ $member->name }}</p>
                                         </div>
                                     </div>
-                                    <a href="{{ route('members.show', $member->id) }}"
+                                    <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}"
                                         class="surface-shadow text-[#F4F7F9] text-sm bg-[#124375] rounded-[10px] font-medium px-4 py-3">عرض
                                         التفاصيل</a>
                                 </div>

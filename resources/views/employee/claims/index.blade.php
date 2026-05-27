@@ -285,7 +285,6 @@
             class="text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
         </button>
-        <x-print-layout title="إيصال صرف مستحقات تأمينية" reference="TRX-{{ $claim->id }}">
         <div class="modal-body space-y-7 px-7 py-2">
             <div
                 class="text-[#F4F7F9] flex items-center justify-between bg-[#124375] navy-shadow py-3 px-4 rounded-[16px]">
@@ -353,14 +352,13 @@
             </div>
             <div class="btns flex gap-2 no-print print:hidden">
                 <div class="w-full">
-                    <button type="button" onclick="window.print()"
+                    <button type="button" onclick="window.open('{{ route('print.claim_receipt', $claim->id) }}', '_blank')"
                         class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="fluent:save-16-filled"
                                 class="flex items-center text-2xl"></iconify-icon></span>طباعة الإيصال</button>
                 </div>
             </div>
         </div>
-        </x-print-layout>
     </div>
     @endif
     @endforeach
@@ -447,11 +445,11 @@
                 submitBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     if (!selectedMemberId) {
-                        alert('الرجاء اختيار العضو أولاً');
+                        showFlash('تنبيه', 'الرجاء اختيار العضو أولاً', 'error');
                         return;
                     }
                     if (!selectedClaimType) {
-                        alert('الرجاء اختيار نوع المطالبة');
+                        showFlash('تنبيه', 'الرجاء اختيار نوع المطالبة', 'error');
                         return;
                     }
 

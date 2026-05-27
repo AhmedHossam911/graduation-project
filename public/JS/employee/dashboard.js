@@ -150,7 +150,7 @@ document.addEventListener("click", () => {
             const data = await res.json();
             
             if (!data.success) {
-                alert(data.message);
+                showFlash('تنبيه', data.message, 'error');
                 return;
             }
 
@@ -273,7 +273,7 @@ document.addEventListener("click", () => {
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">${member.national_id}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">${loanNum}</td>
                             <td class="py-3  text-[#124375]">
-                                <a href="${window.appRoutes ? window.appRoutes.memberProfile(member.id) : '/members/' + member.id}" class="inline-block hover:text-[#0e3560]">
+                                <a href="${window.appRoutes ? window.appRoutes.memberProfile(member.id) + '?tab=subscriptions' : '/members/' + member.id + '?tab=subscriptions'}" class="inline-block hover:text-[#0e3560]">
                                     <iconify-icon icon="solar:eye-linear" class="text-2xl"></iconify-icon>
                                 </a>
                             </td>
@@ -289,7 +289,7 @@ document.addEventListener("click", () => {
             }
         } catch (error) {
             console.error('Error fetching member:', error);
-            alert('حدث خطأ أثناء البحث عن العضو');
+            showFlash('تنبيه', 'حدث خطأ أثناء البحث عن العضو', 'error');
         }
     }
 
@@ -364,7 +364,7 @@ document.addEventListener("click", () => {
             const receiptImg = document.getElementById('sub-receipt-image').files[0];
             
             if (!memberId || subsCheckboxes.length === 0 || !receiptNum || !receiptImg) {
-                alert('يرجى التأكد من البحث عن العضو واختيار شهر الدفع وإدخال رقم الإيصال وإرفاق صورته.');
+                showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار شهر الدفع وإدخال رقم الإيصال وإرفاق صورته.', 'error');
                 return;
             }
 
@@ -400,7 +400,7 @@ document.addEventListener("click", () => {
                 const redirectUrl = window.appRoutes ? window.appRoutes.memberProfile(memberId) + '?tab=subscriptions' : `/members/${memberId}?tab=subscriptions`;
                 window.location.href = redirectUrl;
             } else {
-                alert('حدث خطأ أثناء تسجيل الدفع.');
+                showFlash('تنبيه', 'حدث خطأ أثناء تسجيل الدفع.', 'error');
                 subSubmit.disabled = false;
                 subSubmit.innerHTML = 'تسجيل سداد الإشتراك';
             }
@@ -417,7 +417,7 @@ document.addEventListener("click", () => {
             const receiptImg = document.getElementById('inst-receipt-image').files[0];
             
             if (!loanId || instCheckboxes.length === 0 || !receiptNum || !receiptImg) {
-                alert('يرجى التأكد من البحث عن العضو واختيار القسط وإدخال رقم الإيصال وإرفاق صورته.');
+                showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار القسط وإدخال رقم الإيصال وإرفاق صورته.', 'error');
                 return;
             }
 
@@ -461,7 +461,7 @@ document.addEventListener("click", () => {
                     window.location.reload();
                 }
             } else {
-                alert('حدث خطأ أثناء تسجيل الدفع.');
+                showFlash('تنبيه', 'حدث خطأ أثناء تسجيل الدفع.', 'error');
                 instSubmit.disabled = false;
                 instSubmit.innerHTML = 'تسجيل سداد القسط';
             }
@@ -476,7 +476,7 @@ document.addEventListener("click", () => {
             const type = document.getElementById('claim-type').value;
             
             if (!memberId || !type) {
-                alert('يرجى التأكد من البحث عن العضو واختيار نوع المطالبة.');
+                showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار نوع المطالبة.', 'error');
                 return;
             }
 
@@ -502,7 +502,7 @@ document.addEventListener("click", () => {
                 }
             } catch(error) {
                 console.error(error);
-                alert('حدث خطأ أثناء إنشاء المطالبة. تأكد من أن هذا النوع لا يتطلب إرفاق ملفات ضرورية فوراً.');
+                showFlash('تنبيه', 'حدث خطأ أثناء إنشاء المطالبة. تأكد من أن هذا النوع لا يتطلب إرفاق ملفات ضرورية فوراً.', 'error');
                 claimSubmit.disabled = false;
                 claimSubmit.innerHTML = 'تأكيد الأختيار';
             }

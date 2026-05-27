@@ -1,0 +1,29 @@
+@extends('layouts.print')
+
+@php
+    $title = 'إقرار استلام المستحقات';
+    $reference = $member->membership_number ?? '';
+@endphp
+
+@section('title', $title)
+
+@section('content')
+<div class="declaration space-y-3 px-8" id="declaration-content">
+    <h3 class="text-center font-bold text-2xl text-[#124375] mb-8">إقرار استلام المستحقات</h3>
+    <p class="font-medium text-xl leading-loose border-2 border-[#124375] p-6 rounded-xl bg-[#F4F7F9] text-[#021219]">
+        أقر أنا / <span
+            class="font-bold underline decoration-dotted">{{ $member->full_name }}</span>
+        بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس
+        ومعاونيهم
+        والعاملين بجامعة العاصمة،
+        وذلك اعتبارًا من تاريخ {{ date('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي
+        مستحقات
+        أخرى بعد هذا التاريخ.
+    </p>
+    <div class="font-medium text-lg mt-12 flex justify-between text-[#124375]">
+        <span>الاسم / <span class="font-bold text-[#021219]">{{ $member->full_name }}</span></span>
+        <span>الرقم القومي / <span class="font-bold text-[#021219]">{{ $member->national_id }}</span></span>
+        <span>التوقيع / ________________</span>
+    </div>
+</div>
+@endsection

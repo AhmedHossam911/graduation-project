@@ -10,6 +10,7 @@ use App\Http\Controllers\Employee\Membership\MemberController;
 use App\Http\Controllers\Employee\Membership\MembershipController;
 use App\Http\Controllers\Employee\Membership\SubscriptionController;
 use App\Http\Controllers\Employee\Finance\FinanceController;
+use App\Http\Controllers\Employee\PrintController;
 use App\Http\Controllers\Member\NotificationController;
 use App\Http\Controllers\Member\ProfileController;
 use App\Http\Middleware\EnsureEmployee;
@@ -186,6 +187,15 @@ Route::middleware('auth')->group(function () {
             Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
             Route::get('/finance/{transaction}', [FinanceController::class, 'show'])->name('finance.show');
         });
+        // ─── Print Management ─────────────────────────────────────────
+        Route::prefix('print')->name('print.')->group(function () {
+            Route::get('/transaction/{id}', [PrintController::class, 'transaction'])->name('transaction');
+            Route::get('/claim-receipt/{id}', [PrintController::class, 'claimReceipt'])->name('claim_receipt');
+            Route::get('/claim-details/{id}', [PrintController::class, 'claimDetails'])->name('claim_details');
+            Route::get('/claim-declaration/{id}', [PrintController::class, 'claimDeclaration'])->name('claim_declaration');
+            Route::get('/loan-declaration/{id}', [PrintController::class, 'loanDeclaration'])->name('loan_declaration');
+            Route::get('/board-details/{id}', [PrintController::class, 'boardDetails'])->name('board_details');
+            Route::get('/new-membership-receipt/{id}', [PrintController::class, 'newMembershipReceipt'])->name('new_membership_receipt');
+        });
     });
-
 });

@@ -18,6 +18,7 @@
 </head>
 
 <body class="bg-[#F4F7F9] text-slate-800 min-h-screen flex flex-col antialiased">
+    @include('partials.flash')
 
     {{-- Navbar --}}
     @include('partials.navbar')

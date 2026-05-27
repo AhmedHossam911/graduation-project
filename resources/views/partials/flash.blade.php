@@ -1,3 +1,37 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    .swal2-popup {
+        font-family: 'Cairo', sans-serif;
+        direction: rtl;
+        border-radius: 8px;
+    }
+    .swal2-confirm {
+        border-radius: 8px !important;
+        background-color: #193e6a !important;
+    }
+    .swal-errors-list {
+        margin: 0;
+        padding-right: 22px;
+        text-align: right;
+    }
+    .swal-errors-list li {
+        margin-bottom: 6px;
+    }
+</style>
+
+<script>
+    window.showFlash = function(title, text, icon = 'error') {
+        Swal.fire({
+            icon: icon,
+            title: title,
+            text: text,
+            confirmButtonText: 'حسنًا',
+            timer: icon === 'success' ? 3000 : null,
+            timerProgressBar: icon === 'success',
+        });
+    };
+</script>
+
 @php
     $flashMessage = null;
 
@@ -29,36 +63,13 @@
 @endphp
 
 @if ($flashMessage)
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .swal2-popup {
-            font-family: 'Cairo', sans-serif;
-            direction: rtl;
-            border-radius: 8px;
-        }
-
-        .swal2-confirm {
-            border-radius: 8px !important;
-            background-color: #193e6a !important;
-        }
-
-        .swal-errors-list {
-            margin: 0;
-            padding-right: 22px;
-            text-align: right;
-        }
-
-        .swal-errors-list li {
-            margin-bottom: 6px;
-        }
-    </style>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             Swal.fire({
                 icon: @json($flashMessage['icon']),
                 title: @json($flashMessage['title']),
                 @if (isset($flashMessage['html']))
-                    html: @json($flashMessage['html']),
+                    html: {!! json_encode($flashMessage['html']) !!},
                 @else
                     text: @json($flashMessage['text']),
                 @endif
