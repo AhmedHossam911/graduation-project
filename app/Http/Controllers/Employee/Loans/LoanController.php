@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Financial\Loan;
 use App\Models\Financial\Installment;
+use App\Models\Financial\Transaction;
 use App\Models\Membership\Member;
 use App\Models\Membership\Attachment;
 use App\Models\System\AuditLog;
+use App\Models\System\SystemSetting;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Exports\LoansExport;
@@ -119,14 +121,72 @@ class LoanController extends Controller
     }
 
     /**
+     * Validate loan request via AJAX before redirecting
+     */
+    public function validateLoanRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'member_id'    => ['required', 'exists:members,id'],
+            'total_amount' => ['required', 'numeric'],
+            'months'       => ['required', 'integer', 'min:1'],
+        ]);
+
+        $member = Member::with('membershipInfo.subscriptions', 'employmentInfo')->findOrFail($validated['member_id']);
+
+        if (!$member->membershipInfo) {
+            return response()->json(['success' => false, 'message' => 'لا يوجد عضوية مسجلة لهذا العضو.']);
+        }
+
+        // Check Membership Status
+        $forbiddenStatuses = ['pending_registration', 'pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
+            return response()->json(['success' => false, 'message' => 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.']);
+        }
+
+        $hasActiveLoan = $member->membershipInfo->loans()
+            ->whereIn('status', ['active', 'pending', 'approved'])
+            ->exists();
+
+        if ($hasActiveLoan) {
+            return response()->json(['success' => false, 'message' => 'يوجد قرض نشط أو قيد الانتظار بالفعل لهذا العضو.']);
+        }
+
+        $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
+        if ($totalPaidSubscriptions < $validated['total_amount']) {
+            return response()->json(['success' => false, 'message' => 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.']);
+        }
+
+        if ($member->employmentInfo && $member->employmentInfo->retirement_date) {
+            $retirementDate = Carbon::parse($member->employmentInfo->retirement_date);
+            $monthsRemaining = now()->startOfDay()->diffInMonths($retirementDate, false);
+            if ($monthsRemaining < $validated['months']) {
+                return response()->json(['success' => false, 'message' => 'المدة المتبقية لخدمة العضو أقل من فترة القرض المطلوبة.']);
+            }
+        }
+
+        $maxAmount = SystemSetting::get('loan_max_amount', 20000);
+        $maxMonths = SystemSetting::get('loan_repayment_months', 36);
+
+        if ($validated['total_amount'] > $maxAmount) {
+            return response()->json(['success' => false, 'message' => 'قيمة القرض تتجاوز الحد الأقصى المسموح به.']);
+        }
+
+        if ($validated['months'] > $maxMonths) {
+            return response()->json(['success' => false, 'message' => 'مدة القرض تتجاوز الحد الأقصى المسموح به.']);
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
      * Store a newly created loan.
      */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'member_id'        => ['required', 'exists:members,id'],
-            'total_amount'     => ['required', 'numeric', 'in:5000,10000,20000'],
-            'months'           => ['required', 'integer', 'in:12,24,32'],
+            'total_amount'     => ['required', 'numeric'],
+            'months'           => ['required', 'integer'],
             'declaration_file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg', 'max:5120'],
         ]);
 
@@ -135,6 +195,12 @@ class LoanController extends Controller
         if (!$member->membershipInfo) {
             return redirect()->route('loans.index')
                 ->with('error', 'لا يوجد عضوية مسجلة لهذا العضو.');
+        }
+
+        $forbiddenStatuses = ['pending_registration', 'pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
+            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
+                ->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
         }
 
         // Business rule: only 1 active loan per member
@@ -154,12 +220,28 @@ class LoanController extends Controller
                 ->with('error', 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.');
         }
 
-        $installmentAmount = round($validated['total_amount'] / $validated['months'], 2);
+        if ($member->employmentInfo && $member->employmentInfo->retirement_date) {
+            $retirementDate = Carbon::parse($member->employmentInfo->retirement_date);
+            $monthsRemaining = now()->startOfDay()->diffInMonths($retirementDate, false);
+            if ($monthsRemaining < $validated['months']) {
+                return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
+                    ->with('error', 'المدة المتبقية لخدمة العضو أقل من فترة القرض المطلوبة.');
+            }
+        }
 
-        $loan = DB::transaction(function () use ($validated, $request, $member, $installmentAmount) {
+        $baseAmount = $validated['total_amount'];
+        $interestRate = floatval(SystemSetting::get('loan_interest_rate', 8));
+        $years = $validated['months'] / 12;
+        $interestAmount = round($interestRate / 100 * $baseAmount * $years, 2);
+        $totalWithInterest = $baseAmount + $interestAmount;
+        $installmentAmount = round($totalWithInterest / $validated['months'], 2);
+
+        $loan = DB::transaction(function () use ($validated, $request, $member, $baseAmount, $interestAmount, $totalWithInterest, $installmentAmount) {
             $loan = Loan::create([
                 'membership_id'      => $member->membershipInfo->id,
-                'total_amount'       => $validated['total_amount'],
+                'base_amount'        => $baseAmount,
+                'interest_amount'    => $interestAmount,
+                'total_amount'       => $totalWithInterest,
                 'months'             => $validated['months'],
                 'installment_amount' => $installmentAmount,
                 'status'             => 'pending',
@@ -398,13 +480,14 @@ class LoanController extends Controller
             }
 
             $memberId = $loan->membership->member_id;
+            $checkPath = null;
 
             if ($request->hasFile('check_image')) {
-                $path = $request->file('check_image')->store("members/{$memberId}/loans/{$loan->id}", 'public');
+                $checkPath = $request->file('check_image')->store("members/{$memberId}/loans/{$loan->id}", 'public');
                 Attachment::create([
                     'member_id' => $memberId,
                     'type'      => "loan_{$loan->id}_check",
-                    'file_path' => $path,
+                    'file_path' => $checkPath,
                 ]);
             }
 
@@ -416,6 +499,20 @@ class LoanController extends Controller
                     'file_path' => $path,
                 ]);
             }
+
+            // Record OUT transaction for loan start
+            Transaction::create([
+                'membership_id' => $loan->membership_id,
+                'reference_type' => Loan::class,
+                'reference_id' => $loan->id,
+                'amount' => $loan->base_amount ?? $loan->total_amount, // The actual money given is base_amount
+                'type' => 'OUT',
+                'method' => 'bank_transfer',
+                'category' => 'loan_start',
+                'receipt_no' => null, // Or check number if you collect it
+                'attachment_path' => $checkPath,
+                'created_by' => auth()->id(),
+            ]);
 
             $this->logAudit('start', 'loans', $loan->id, $oldValues, $loan->fresh()->toArray());
         });
@@ -534,9 +631,15 @@ class LoanController extends Controller
             return back()->with('error', 'لا يمكن السداد المبكر إلا إذا كان المتبقي من القرض 6 أشهر أو أقل.');
         }
 
+        // Calculate early repayment amount: subtract remaining interest
+        // Amount to pay = remaining principal
+        // Monthly principal = base_amount / months
+        $monthlyPrincipal = ($loan->base_amount ?? $loan->total_amount) / $loan->months;
+        $remainingPrincipalToPay = round($monthlyPrincipal * $unpaidCount, 2);
+
         $oldValues = $loan->toArray();
 
-        DB::transaction(function () use ($request, $loan, $oldValues) {
+        DB::transaction(function () use ($request, $loan, $oldValues, $remainingPrincipalToPay) {
             $loan->installments()->where('status', '!=', 'paid')->update([
                 'status' => 'paid',
                 'updated_at' => now(),
@@ -560,11 +663,11 @@ class LoanController extends Controller
                 ]);
             }
 
-            \App\Models\Financial\Transaction::create([
+            Transaction::create([
                 'membership_id' => $loan->membership_id,
                 'reference_type' => Loan::class,
                 'reference_id' => $loan->id,
-                'amount' => $loan->remaining_loan_balance,
+                'amount' => $remainingPrincipalToPay,
                 'type' => 'IN',
                 'method' => $request->payment_method,
                 'category' => 'early_repayment',
@@ -576,6 +679,7 @@ class LoanController extends Controller
             // Audit log
             $this->logAudit('early_repayment', 'loans', $loan->id, $oldValues, array_merge($loan->fresh()->toArray(), [
                 'receipt_number' => $request->receipt_number,
+                'early_repayment_amount' => $remainingPrincipalToPay,
             ]));
         });
 

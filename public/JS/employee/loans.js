@@ -198,10 +198,46 @@ function initLoansModule() {
             const memberId = document.getElementById('selectedMemberId').value;
             const amount = document.getElementById('selectedLoanAmount').value;
             const months = document.getElementById('selectedLoanMonths').value;
+            const submitBtn = document.getElementById('createLoanSubmitBtn');
             
             if (memberId && amount && months) {
-                const baseUrl = `${window.APP_URL}/members/${memberId}`;
-                window.location.href = `${baseUrl}?tab=loans&create_loan_amount=${amount}&create_loan_months=${months}`;
+                // Change button state
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = 'جاري التحقق...';
+                submitBtn.classList.add('btn-disabled');
+
+                const validateUrl = `${window.APP_URL}/loans/validate-request`;
+                
+                fetch(validateUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        member_id: memberId,
+                        total_amount: amount,
+                        months: months
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.classList.remove('btn-disabled');
+
+                    if (data.success) {
+                        const baseUrl = `${window.APP_URL}/members/${memberId}`;
+                        window.location.href = `${baseUrl}?tab=loans&create_loan_amount=${amount}&create_loan_months=${months}&open_declaration_modal=1&loan_base_amount=${data.base_amount}&loan_interest_amount=${data.interest_amount}&loan_total_amount=${data.total_amount}&loan_installment_amount=${data.installment_amount}`;
+                    } else {
+                        alert(data.message || 'حدث خطأ أثناء التحقق من الشروط.');
+                    }
+                })
+                .catch(err => {
+                    console.error('Validation error:', err);
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.classList.remove('btn-disabled');
+                    alert('حدث خطأ في الاتصال بالخادم.');
+                });
             }
         });
     }

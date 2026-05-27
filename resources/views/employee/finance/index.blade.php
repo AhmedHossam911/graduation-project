@@ -36,7 +36,7 @@
     </style>
     <div class="min-h-screen flex flex-col">
         <!-- start header -->
-        <div class="flex justify-between px-12 py-5">
+        <div class="flex justify-between px-12 py-5 print:hidden">
             <div>
                 <h1 class="text-[32px] font-medium text-[s#124375]">
                     المالية
@@ -57,7 +57,7 @@
 
 
         <!-- start cards -->
-        <div class="py-4 grid grid-cols-3 gap-4 px-12">
+        <div class="py-4 grid grid-cols-3 gap-4 px-12 print:hidden">
             <div
                 class="tab cursor-pointer navy-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
                 <div>
@@ -95,7 +95,7 @@
         <!-- end cards -->
 
         <!-- filteration buttons -->
-        <form action="{{ route('finance.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5">
+        <form action="{{ route('finance.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5 print:hidden">
             <div class="relative flex-1">
                 <input type="search" name="search" value="{{ request('search') }}"
                     placeholder="الاسم أو رقم العضوية أو رقم الحركة"
@@ -159,7 +159,7 @@
         <!-- end filteration buttons -->
 
         <!-- start table -->
-        <section class="px-12 py-7">
+        <section class="px-12 py-7 print:hidden">
             <!-- All Transactions Tab -->
             <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content" data-tab="عدد الحركات اليوم">
                 <table class="w-full">
@@ -320,7 +320,7 @@
         </section>
         <!-- end table -->
 
-        <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
+        <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60] print:hidden"></div>
 
         <!-- Create Modal -->
         <div id="modal1"
@@ -453,6 +453,7 @@
                 class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
             </button>
+            <x-print-layout title="إيصال استلام/صرف" reference="{{ $t->transaction_number ?? 'TRX-' . $t->id }}">
             <div class="modal-body space-y-7 px-12 py-4">
                 <div class="space-y-7">
                     <div class="flex justify-between items-center">
@@ -497,7 +498,7 @@
                         @endif
                     </div>
                 </div>
-                <div class="btns flex gap-4 mt-8">
+                <div class="btns flex gap-4 mt-8 no-print print:hidden">
                     <div class="w-full">
                         <button type="button" onclick="window.print()"
                             class=" rounded-[14px] w-full py-3 bg-[#124375] navy-shadow text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2">
@@ -507,6 +508,7 @@
                     </div>
                 </div>
             </div>
+            </x-print-layout>
         </div>
         @endforeach
     </div>

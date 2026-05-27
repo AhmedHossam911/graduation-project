@@ -1,5 +1,5 @@
     <!-- start header -->
-    <header class="bg-[#EEF7FF] border border-[#124375] px-7 py-3">
+    <header class="print:hidden bg-[#EEF7FF] border border-[#124375] px-7 py-3">
         <nav class="flex items-center justify-between  ">
             <div class="flex items-center gap-3 text-[#124375]">
                 <button id="Nav-menu">

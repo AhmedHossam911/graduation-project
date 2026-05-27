@@ -33,6 +33,8 @@
     </div>
     <!-- end Header -->
 
+    <div class="print:hidden">
+
     <form action="{{ route('members.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
@@ -523,6 +525,7 @@
                 let receiptData = {!! session('receipt_data') !!};
                 Swal.fire({
                     html: `
+                    <x-print-layout title="إيصال اشتراك عضوية جديدة" reference="${receiptData.membership_number}">
                     <div class="receipt-container p-6 text-right" style="background-color: #F4F7F9; border-radius: 12px; font-family: 'Tajawal', sans-serif; direction: rtl;">
                         <h2 class="text-2xl font-bold text-[#124375] mb-6 text-center">إيصال دفع إشتراك عضوية جديدة</h2>
 
@@ -549,10 +552,11 @@
                             </div>
                         </div>
 
-                        <button onclick="window.print()" class="w-full bg-[#124375] text-white py-3 rounded-xl font-bold text-lg flex justify-center items-center gap-2 hover:bg-[#0e3560] transition-colors print:hidden">
+                        <button onclick="window.print()" class="w-full bg-[#124375] text-white py-3 rounded-xl font-bold text-lg flex justify-center items-center gap-2 hover:bg-[#0e3560] transition-colors print:hidden no-print">
                             <iconify-icon icon="material-symbols:print-rounded" class="text-2xl"></iconify-icon> طباعة الإيصال
                         </button>
                     </div>
+                    </x-print-layout>
                 `,
                     showConfirmButton: false,
                     width: '800px',

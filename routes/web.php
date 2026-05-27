@@ -163,6 +163,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware(['permission:إدارة القروض'])->group(function () {
             Route::get('/loans/export', [LoanController::class, 'export'])->name('loans.export');
             Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
+            Route::post('/loans/validate-request', [LoanController::class, 'validateLoanRequest'])->name('loans.validateRequest');
             Route::post('/loans', [LoanController::class, 'store'])->name('loans.store');
             Route::get('/loans/search-members', [LoanController::class, 'searchMembers'])->name('loans.searchMembers');
             Route::get('/loans/{loan}', [LoanController::class, 'show'])->name('loans.show');

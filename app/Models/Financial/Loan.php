@@ -12,10 +12,12 @@ class Loan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'membership_id', 'total_amount', 'months', 'installment_amount', 'status', 'approved_by'
+        'membership_id', 'base_amount', 'interest_amount', 'total_amount', 'months', 'installment_amount', 'status', 'approved_by'
     ];
 
     protected $casts = [
+        'base_amount' => 'decimal:2',
+        'interest_amount' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'installment_amount' => 'decimal:2',
     ];

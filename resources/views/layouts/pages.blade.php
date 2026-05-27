@@ -78,10 +78,10 @@
     <!-- end header -->
 
     {{-- Main Layout --}}
-    <div class="flex-1 flex flex-col">
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+    <div class="flex-1 flex flex-col print:overflow-visible print:h-auto">
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden print:overflow-visible print:h-auto">
             {{-- Page Content --}}
-            <main class="flex-1 p-6 overflow-y-auto">
+            <main class="flex-1 p-6 overflow-y-auto print:overflow-visible print:h-auto print:p-0">
                 @yield('content')
             </main>
         </div>

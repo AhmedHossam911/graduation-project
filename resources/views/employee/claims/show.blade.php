@@ -14,13 +14,13 @@
     @endphp
     <link rel="stylesheet" href="{{ asset('css/employee/claims-approve.css') }}">
     <!-- header -->
-    <div class="flex justify-between py-5 px-12">
+    <div class="flex justify-between py-5 px-12 print:hidden">
         <h1 class="text-[#124375] text-3xl font-medium">
             مطالبة صرف ميزة تأمينية
         </h1>
         <div class="btns flex items-center gap-2">
-            <button
-                class="bg-[#F4F7F9] flex items-center justify-center gap-1 navy-shadow w-48  py-3 rounded-xl text-[#124375]">
+            <button onclick="window.print()"
+                class="bg-[#F4F7F9] flex items-center justify-center gap-1 navy-shadow w-48  py-3 rounded-xl text-[#124375] no-print print:hidden">
                 <iconify-icon icon="material-symbols:print" class="flex items-center text-2xl"></iconify-icon>
                 طباعة
             </button>
@@ -33,6 +33,7 @@
     </div>
     <!-- end header -->
 
+    <x-print-layout title="مطالبة صرف ميزة تأمينية" reference="{{ $claim->membership->membership_number }}">
     <!-- first section -->
     <section class="px-12 py-4">
         <div class="flex items-stretch bg-[#F4F7F9] navy-shadow rounded-[12px] overflow-hidden border border-[#1243751a]">
@@ -214,6 +215,7 @@
         </div>
     </section>
     <!-- end third section -->
+    </x-print-layout>
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
     <form method="POST" action="{{ route('claims.approve', $claim->id) }}" enctype="multipart/form-data">
         @csrf

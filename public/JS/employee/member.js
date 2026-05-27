@@ -114,6 +114,49 @@ overlay.addEventListener("click", () => {
 });
 // end modals logic
 
+// Auto-open declaration modal if query param exists
+if (urlParams.get('open_declaration_modal') === '1') {
+    const modal2 = document.getElementById('modal2');
+    if (modal2 && overlay) {
+        // Wait a small amount for DOM to settle
+        setTimeout(() => {
+            modal2.classList.remove('hidden');
+            overlay.classList.remove('hidden');
+
+            // Set hidden inputs in loanStoreForm
+            const loanStoreForm = document.getElementById('loanStoreForm');
+            if (loanStoreForm) {
+                const totalAmountInput = document.getElementById('selected_total_amount');
+                const monthsInput = document.getElementById('selected_months');
+                if (totalAmountInput) totalAmountInput.value = urlParams.get('create_loan_amount');
+                if (monthsInput) monthsInput.value = urlParams.get('create_loan_months');
+            }
+
+            // Populate summary
+            const baseAmt = document.getElementById('summary_base_amount');
+            const intAmt = document.getElementById('summary_interest_amount');
+            const totAmt = document.getElementById('summary_total_amount');
+            const instAmt = document.getElementById('summary_installment_amount');
+            const monthsSpan = document.getElementById('summary_months');
+
+            if (baseAmt) baseAmt.textContent = urlParams.get('loan_base_amount') || '0';
+            if (intAmt) intAmt.textContent = urlParams.get('loan_interest_amount') || '0';
+            if (totAmt) totAmt.textContent = urlParams.get('loan_total_amount') || '0';
+            if (instAmt) instAmt.textContent = urlParams.get('loan_installment_amount') || '0';
+            if (monthsSpan) monthsSpan.textContent = urlParams.get('create_loan_months') || '0';
+            
+            // update URL to remove the params so refresh doesn't reopen
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.delete('open_declaration_modal');
+            newUrl.searchParams.delete('loan_base_amount');
+            newUrl.searchParams.delete('loan_interest_amount');
+            newUrl.searchParams.delete('loan_total_amount');
+            newUrl.searchParams.delete('loan_installment_amount');
+            window.history.replaceState({}, '', newUrl);
+        }, 100);
+    }
+}
+
 // file logic
 inputsFile.forEach((input) => {
     input.addEventListener('change' , (e) => {

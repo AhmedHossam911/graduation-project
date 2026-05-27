@@ -23,7 +23,7 @@
     @include('partials.navbar')
 
     {{-- Main Layout --}}
-    <div>
+    <div class="flex-1 flex flex-col min-w-0 print:overflow-visible print:h-auto">
         {{-- Sidebar --}}
         @if (strtolower(auth()->user()->role->name) === 'employee')
             @include('partials.sidebar')
@@ -33,14 +33,16 @@
             @include('partials.sidebar')
         @endif
 
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0 overflow-hidden print:overflow-visible print:h-auto">
             {{-- Page Content --}}
-            <main class="flex-1 p-6 overflow-y-auto relative">
+            <main class="flex-1 p-6 overflow-y-auto relative print:overflow-visible print:h-auto print:p-0">
                 @yield('content')
             </main>
 
             {{-- Pagination (always above footer) --}}
-            @yield('pagination')
+            <div class="print:hidden">
+                @yield('pagination')
+            </div>
         </div>
     </div>
 
