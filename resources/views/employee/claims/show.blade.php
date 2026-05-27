@@ -147,10 +147,10 @@
                         </div>
                         <div class="flex flex-col gap-3">
                             <h3 class="text-sm text-[#6D6D6D] font-medium">
-                                عدد القروض القائمة
+                                عدد شهور الاشتراك الغير مدفوعة
                             </h3>
                             <p class="text-base text-[#124375] font-semibold">
-                                {{ $claim->membership->active_loans_count . ' قرض' }}
+                                {{ $claim->membership->active_loans_count . ' شهر' }}
                             </p>
                         </div>
                     </div>

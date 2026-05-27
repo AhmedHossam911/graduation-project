@@ -481,31 +481,10 @@ document.addEventListener("click", () => {
             }
 
             claimSubmit.disabled = true;
-            claimSubmit.innerHTML = 'جاري التسجيل...';
+            claimSubmit.innerHTML = 'جاري التحويل...';
 
-            const formData = new FormData();
-            formData.append('claim_type', type);
-            formData.append('_token', csrfToken);
-            formData.append('source', 'dashboard');
-
-            try {
-                const postUrl = window.appRoutes ? window.appRoutes.createClaim(memberId) : `/members/${memberId}/claim`;
-                const res = await fetch(postUrl, {
-                    method: 'POST',
-                    body: formData
-                });
-                if (res.ok) {
-                    const redirectUrl = window.appRoutes ? window.appRoutes.memberProfile(memberId) + '?tab=claims' : `/members/${memberId}?tab=claims`;
-                    window.location.href = redirectUrl;
-                } else {
-                    throw new Error('Network error');
-                }
-            } catch(error) {
-                console.error(error);
-                showFlash('تنبيه', 'حدث خطأ أثناء إنشاء المطالبة. تأكد من أن هذا النوع لا يتطلب إرفاق ملفات ضرورية فوراً.', 'error');
-                claimSubmit.disabled = false;
-                claimSubmit.innerHTML = 'تأكيد الأختيار';
-            }
+            const redirectUrl = window.appRoutes ? window.appRoutes.memberProfile(memberId) + `?tab=claims&claim_type=${type}` : `/members/${memberId}?tab=claims&claim_type=${type}`;
+            window.location.href = redirectUrl;
         });
     }
 })();

@@ -338,6 +338,13 @@
                     <p class="text-[#6D6D6D] text-[16px] font-normal">قيمة الميزة التأمينية ( الأساسية )</p>
                     <p class="text-[#124375] text-[16px] font-semibold">{{ number_format($claim->amount, 2) }} ج.م</p>
                 </div>
+                @if($claim->type === 'death')
+                <hr class="border border-[#A8A8A8] mx-1 my-4">
+                <div class="flex justify-between">
+                    <p class="text-[#6D6D6D] text-[16px] font-normal">مصاريف الجنازة</p>
+                    <p class="text-[#067647] text-[16px] font-semibold"> +{{ number_format((float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0), 2) }} ج.م</p>
+                </div>
+                @endif
                 <hr class="border border-[#A8A8A8] mx-1 my-4">
                 <div class="flex justify-between">
                     <p class="text-[#6D6D6D] text-[16px] font-normal">رصيد القروض المتبقي</p>
@@ -347,7 +354,7 @@
                 <div
                     class="flex items-center justify-between border border-[#1243751A] bg-[#1243751A] rounded-[8px] py-4 px-4 ">
                     <p class="text-[16px] text-[#124375]">صافي المبلغ المستحق صرفه</p>
-                    <p class="text-[32px] text-[#001E3D] font-medium">{{ number_format($claim->amount - $claim->membership->remaining_loan_balance, 2) }} ج.م</p>
+                    <p class="text-[32px] text-[#001E3D] font-medium">{{ number_format($claim->amount - $claim->membership->remaining_loan_balance + ($claim->type === 'death' ? (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0) : 0), 2) }} ج.م</p>
                 </div>
             </div>
             <div class="btns flex gap-2 no-print print:hidden">
@@ -454,7 +461,7 @@
                     }
 
                     const baseUrl = `{{ url('/members') }}/${selectedMemberId}`;
-                    window.location.href = `${baseUrl}?tab=claims&create_claim=${selectedClaimType}`;
+                    window.location.href = `${baseUrl}?tab=claims&claim_type=${selectedClaimType}`;
                 });
             }
         });
