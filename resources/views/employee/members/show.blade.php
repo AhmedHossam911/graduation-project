@@ -924,8 +924,20 @@
                     </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض : <span
-                            class="text-[16px] text-[#E6B800] border border-[#E6B800] bg-[#FFF8E1] px-1 rounded-[8px]">{{ $activeLoan->status == 'active' ? 'نشط' : ($activeLoan->status == 'pending' ? 'تحت المراجعة' : 'معتمد') }}</span>
+                    <p class="text-[#6D6D6D] text-[14px]">حالة القرض : 
+                        @if ($activeLoan->status === 'overdue')
+                            <span class="inline-block px-2 text-center text-[#F79009] bg-[#FFF7ED] border border-[#F79009] rounded-[8px] py-[1px]">متأخر</span>
+                        @elseif ($activeLoan->status === 'completed')
+                            <span class="inline-block px-2 text-center text-[#124375] bg-[#EEF7FF] border border-[#124375] rounded-[8px] py-[1px]">مكتمل</span>
+                        @elseif ($activeLoan->status === 'active')
+                            <span class="inline-block px-2 text-center text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[1px]">نشط</span>
+                        @elseif ($activeLoan->status === 'pending')
+                            <span class="inline-block px-2 text-center text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] rounded-[8px] py-[1px]">تحت المراجعة</span>
+                        @elseif ($activeLoan->status === 'rejected')
+                            <span class="inline-block px-2 text-center text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[1px]">مرفوض</span>
+                        @else
+                            <span class="inline-block px-2 text-center text-[#6D6D6D] bg-[#EFEFEF] border border-[#6D6D6D] rounded-[8px] py-[1px]">{{ $activeLoan->status }}</span>
+                        @endif
                     </p>
                 </div>
             </div>
@@ -975,10 +987,28 @@
                                     {{ match ($installment->transaction?->method ?? '') {'cash' => 'نقدي','bank_transfer' => 'تحويل بنكي','salary_deduction' => 'خصم من المرتب','university_payment_order' => 'أمر دفع من الجامعة',default => '-'} }}
                                 </td>
                                 <td class="py-5">
+                                    @php
+                                        $receipt = \App\Models\Membership\Attachment::where('member_id', $member->id)
+                                                    ->where('type', "installment_{$installment->id}_receipt")
+                                                    ->first();
+                                    @endphp
                                     @if ($installment->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
-                                            <iconify-icon icon="solar:eye-linear"></iconify-icon>
-                                            <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                            @if($receipt)
+                                                <a href="{{ asset('storage/' . $receipt->file_path) }}" target="_blank" class="hover:text-[#0e3560] transition-colors" title="عرض الإيصال">
+                                                    <iconify-icon icon="solar:eye-linear"></iconify-icon>
+                                                </a>
+                                                <a href="{{ asset('storage/' . $receipt->file_path) }}" download="receipt_installment_{{ $index + 1 }}_{{ str_replace(' ', '_', $member->full_name) }}" class="hover:text-[#0e3560] transition-colors" title="تحميل الإيصال">
+                                                    <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                                </a>
+                                            @else
+                                                <span class="text-gray-400 cursor-not-allowed" title="لا يوجد إيصال مرفق">
+                                                    <iconify-icon icon="solar:eye-linear"></iconify-icon>
+                                                </span>
+                                                <span class="text-gray-400 cursor-not-allowed" title="لا يوجد إيصال مرفق">
+                                                    <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
+                                                </span>
+                                            @endif
                                         </div>
                                     @else
                                         @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
@@ -1916,6 +1946,37 @@
                     }
                 }
             });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('open_declaration_modal') === '1') {
+                // Populate form values
+                const totalAmount = urlParams.get('create_loan_amount');
+                const months = urlParams.get('create_loan_months');
+                
+                document.getElementById('selected_total_amount').value = totalAmount;
+                document.getElementById('selected_months').value = months;
+
+                // Populate summary
+                document.getElementById('summary_base_amount').textContent = urlParams.get('loan_base_amount') || totalAmount;
+                document.getElementById('summary_interest_amount').textContent = urlParams.get('loan_interest_amount') || '0';
+                document.getElementById('summary_total_amount').textContent = urlParams.get('loan_total_amount') || totalAmount;
+                document.getElementById('summary_installment_amount').textContent = urlParams.get('loan_installment_amount') || '0';
+                document.getElementById('summary_months').textContent = months;
+
+                // Open Modal 2
+                const modal2 = document.getElementById('modal2');
+                const overlay = document.querySelector('.overlay');
+                if (modal2) {
+                    modal2.classList.remove('hidden');
+                }
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                }
+            }
         });
     </script>
 @endsection

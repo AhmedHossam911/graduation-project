@@ -59,13 +59,13 @@ class LoanController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'LIKE', "%{$search}%")
-                  ->orWhereHas('membership', function ($q2) use ($search) {
-                      $q2->where('membership_number', 'LIKE', "%{$search}%")
-                         ->orWhereHas('member', function ($q3) use ($search) {
-                             $q3->where('full_name', 'LIKE', "%{$search}%")
-                                ->orWhere('national_id', 'LIKE', "%{$search}%");
-                         });
-                  });
+                    ->orWhereHas('membership', function ($q2) use ($search) {
+                        $q2->where('membership_number', 'LIKE', "%{$search}%")
+                            ->orWhereHas('member', function ($q3) use ($search) {
+                                $q3->where('full_name', 'LIKE', "%{$search}%")
+                                    ->orWhere('national_id', 'LIKE', "%{$search}%");
+                            });
+                    });
             });
         }
 
@@ -216,7 +216,7 @@ class LoanController extends Controller
         // Business rule: Paid subscriptions must be >= requested loan amount
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
-             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
+            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
                 ->with('error', 'إجمالي الاشتراكات المدفوعة لا يغطي قيمة القرض المطلوبة.');
         }
 
@@ -413,10 +413,10 @@ class LoanController extends Controller
         $members = Member::with('membershipInfo')
             ->where(function ($q) use ($search) {
                 $q->where('full_name', 'LIKE', "%{$search}%")
-                  ->orWhere('national_id', 'LIKE', "%{$search}%")
-                  ->orWhereHas('membershipInfo', function ($q2) use ($search) {
-                      $q2->where('membership_number', 'LIKE', "%{$search}%");
-                  });
+                    ->orWhere('national_id', 'LIKE', "%{$search}%")
+                    ->orWhereHas('membershipInfo', function ($q2) use ($search) {
+                        $q2->where('membership_number', 'LIKE', "%{$search}%");
+                    });
             })
             ->limit(10)
             ->get();
@@ -541,7 +541,7 @@ class LoanController extends Controller
                 'cancel_reason' => $request->reason,
                 'cancel_details' => $request->details,
             ]));
-            
+
             // Delete pending installments if they exist
             $loan->installments()->where('status', 'unpaid')->delete();
         });
@@ -624,7 +624,7 @@ class LoanController extends Controller
         ]);
 
         $loan->load('membership', 'installments');
-        
+
         // Business Rule: Early repayment is only allowed if remaining time is 6 months or less
         $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
         if ($unpaidCount > 6) {
