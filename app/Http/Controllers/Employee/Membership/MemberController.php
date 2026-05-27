@@ -211,7 +211,16 @@ class MemberController extends Controller
             abort(404);
         }
 
-        return response()->file($path);
+        $member = Member::find($attachment->member_id);
+        $memberName = $member ? $member->full_name : 'عضو';
+        $documentTypes = MemberService::INITIAL_DOCUMENT_TYPES;
+        $docTypeLabel = $documentTypes[$attachment->type] ?? $attachment->type;
+        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$docTypeLabel}");
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+        return response()->file($path, [
+            'Content-Disposition' => 'inline; filename="' . $fileName . '.' . $extension . '"'
+        ]);
     }
 
     public function downloadDocument($id)
@@ -223,7 +232,14 @@ class MemberController extends Controller
             abort(404);
         }
 
-        return response()->download($path);
+        $member = Member::find($attachment->member_id);
+        $memberName = $member ? $member->full_name : 'عضو';
+        $documentTypes = MemberService::INITIAL_DOCUMENT_TYPES;
+        $docTypeLabel = $documentTypes[$attachment->type] ?? $attachment->type;
+        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$docTypeLabel}");
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+
+        return response()->download($path, "{$fileName}.{$extension}");
     }
 
     // ─── Signed Form Upload ──────────────────────────────────────────

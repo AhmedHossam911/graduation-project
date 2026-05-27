@@ -160,18 +160,18 @@ class SubscriptionController extends Controller
                 if ($status === 'paid') {
                     $query->where('status', 'paid');
                 } elseif ($status === 'unpaid') {
-                    $query->where('status', 'unpaid')
+                    $query->whereIn('status', ['unpaid', 'overdue'])
                           ->where('due_date', '>=', now()->startOfDay());
                 } elseif ($status === 'overdue_0_6') {
-                    $query->where('status', 'unpaid')
+                    $query->whereIn('status', ['unpaid', 'overdue'])
                           ->where('due_date', '<', now()->startOfDay())
                           ->where('due_date', '>=', now()->subMonths(6)->startOfDay());
                 } elseif ($status === 'overdue_6_no_notice') {
-                    $query->where('status', 'unpaid')
+                    $query->whereIn('status', ['unpaid', 'overdue'])
                           ->where('due_date', '<', now()->subMonths(6)->startOfDay())
                           ->whereNull('notice_sent_at');
                 } elseif ($status === 'overdue_6_notice') {
-                    $query->where('status', 'unpaid')
+                    $query->whereIn('status', ['unpaid', 'overdue'])
                           ->where('due_date', '<', now()->subMonths(6)->startOfDay())
                           ->whereNotNull('notice_sent_at');
                 } else {
@@ -281,7 +281,15 @@ class SubscriptionController extends Controller
             return back()->with('error', 'لا يوجد إيصال متاح لهذا الاشتراك.');
         }
 
-        return response()->file(storage_path('app/public/' . $transaction->attachment_path));
+        $subscription->load('membership.member');
+        $memberName = $subscription->membership->member->full_name ?? 'عضو';
+        $subName = $subscription->name ?? 'اشتراك';
+        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$subName}");
+        $extension = pathinfo($transaction->attachment_path, PATHINFO_EXTENSION);
+
+        return response()->file(storage_path('app/public/' . $transaction->attachment_path), [
+            'Content-Disposition' => 'inline; filename="' . $fileName . '.' . $extension . '"'
+        ]);
     }
 
     public function downloadReceipt(Subscription $subscription)

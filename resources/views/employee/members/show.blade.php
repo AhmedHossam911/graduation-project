@@ -995,10 +995,10 @@
                                     @if ($installment->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
                                             @if($receipt)
-                                                <a href="{{ asset('storage/' . $receipt->file_path) }}" target="_blank" class="hover:text-[#0e3560] transition-colors" title="عرض الإيصال">
+                                                <a href="{{ route('documents.view', $receipt->id) }}" target="_blank" class="hover:text-[#0e3560] transition-colors" title="عرض الإيصال">
                                                     <iconify-icon icon="solar:eye-linear"></iconify-icon>
                                                 </a>
-                                                <a href="{{ asset('storage/' . $receipt->file_path) }}" download="receipt_installment_{{ $index + 1 }}_{{ str_replace(' ', '_', $member->full_name) }}" class="hover:text-[#0e3560] transition-colors" title="تحميل الإيصال">
+                                                <a href="{{ route('documents.download', $receipt->id) }}" class="hover:text-[#0e3560] transition-colors" title="تحميل الإيصال">
                                                     <iconify-icon icon="material-symbols:download-rounded"></iconify-icon>
                                                 </a>
                                             @else

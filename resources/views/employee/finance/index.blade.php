@@ -11,6 +11,7 @@
             body * {
                 visibility: hidden;
             }
+
             div[id^="modal-detail-"]:not(.hidden) {
                 visibility: visible !important;
                 position: absolute !important;
@@ -23,15 +24,21 @@
                 box-shadow: none !important;
                 background: white !important;
             }
+
             div[id^="modal-detail-"]:not(.hidden) * {
                 visibility: visible !important;
             }
+
             div[id^="modal-detail-"]:not(.hidden) .modal-close,
             div[id^="modal-detail-"]:not(.hidden) .btns {
                 display: none !important;
             }
+
             /* Ensure text colors are dark for print */
-            .text-\[\#124375\], .text-\[\#021219\] { color: #000 !important; }
+            .text-\[\#124375\],
+            .text-\[\#021219\] {
+                color: #000 !important;
+            }
         }
     </style>
     <div class="min-h-screen flex flex-col">
@@ -45,7 +52,8 @@
             <div class="btns flex items-center gap-3  ">
                 <button data-modal="modal1"
                     class="open-modal rounded-xl flex items-center justify-center py-3 px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
-                    <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إضافة إيراد أو مصروف
+                    <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إضافة إيراد أو
+                    مصروف
                 </button>
                 <a href="{{ route('finance.export', request()->query()) }}"
                     class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
@@ -95,7 +103,8 @@
         <!-- end cards -->
 
         <!-- filteration buttons -->
-        <form action="{{ route('finance.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5 print:hidden">
+        <form action="{{ route('finance.index') }}" method="GET"
+            class="px-12 flex items-center justify-between gap-5 print:hidden">
             <div class="relative flex-1">
                 <input type="search" name="search" value="{{ request('search') }}"
                     placeholder="الاسم أو رقم العضوية أو رقم الحركة"
@@ -183,7 +192,8 @@
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->membership?->member?->full_name ?? 'معاملة غير مربوطة بعضو' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->created_at->timezone('Africa/Cairo')->translatedFormat('d F Y - h:i A') }}</td>
+                                    {{ $transaction->created_at->timezone('Africa/Cairo')->translatedFormat('d F Y - h:i A') }}
+                                </td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->category_label }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
@@ -445,69 +455,83 @@
                 ->merge($expenseTransactions->items())
                 ->unique('id');
         @endphp
-        @foreach($allTrans as $t)
-        <!-- Detail Modal for TRX {{ $t->id }} -->
-        <div id="modal-detail-{{ $t->id }}"
-            class="hidden w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
-            <button type="button"
-                class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-                <iconify-icon icon="weui:close-filled"></iconify-icon>
-            </button>
-            <div class="modal-body space-y-7 px-12 py-4">
-                <div class="space-y-7">
-                    <div class="flex justify-between items-center">
-                        <div class="space-y-2">
-                            <h1 class="text-[20px] text-[#124375] font-semibold">تفاصيل الحركة</h1>
-                            <div class="flex gap-2 text-[#6D6D6D] text-[16px] font-medium">
-                                <p>رقم الحركة : <span>{{ $t->transaction_number ?? 'TRX-' . $t->id }}</span></p>
-                                <span>/</span>
-                                <p>{{ $t->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</p>
+        @foreach ($allTrans as $t)
+            <!-- Detail Modal for TRX {{ $t->id }} -->
+            <div id="modal-detail-{{ $t->id }}"
+                class="hidden w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+                <button type="button"
+                    class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                    <iconify-icon icon="weui:close-filled"></iconify-icon>
+                </button>
+                <div class="modal-body space-y-7 px-12 py-4">
+                    <div class="space-y-7">
+                        <div class="flex justify-between items-center">
+                            <div class="space-y-2">
+                                <h1 class="text-[20px] text-[#124375] font-semibold">تفاصيل الحركة</h1>
+                                <div class="flex gap-2 text-[#6D6D6D] text-[16px] font-medium">
+                                    <p>رقم الحركة : <span>{{ $t->transaction_number ?? 'TRX-' . $t->id }}</span></p>
+                                    <span>/</span>
+                                    <p>{{ $t->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</p>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center gap-2 px-4 py-1 rounded-[10px] {{ $t->type === 'IN' ? 'bg-[#ECFDF3] text-[#067647]' : 'bg-[#FFEAE8] text-[#D92D20]' }}">
+                                <iconify-icon
+                                    icon="{{ $t->type === 'IN' ? 'ph:arrow-down-left-bold' : 'ph:arrow-up-right-bold' }}"
+                                    class="text-3xl mt-1"></iconify-icon>
+                                <p class="text-[16px] font-medium">{{ $t->type_label }}</p>
                             </div>
                         </div>
-                        <div class="flex items-center gap-2 px-4 py-1 rounded-[10px] {{ $t->type === 'IN' ? 'bg-[#ECFDF3] text-[#067647]' : 'bg-[#FFEAE8] text-[#D92D20]' }}">
-                            <iconify-icon icon="{{ $t->type === 'IN' ? 'ph:arrow-down-left-bold' : 'ph:arrow-up-right-bold' }}" class="text-3xl mt-1"></iconify-icon>
-                            <p class="text-[16px] font-medium">{{ $t->type_label }}</p>
-                        </div>
-                    </div>
-                    <div class="space-y-5">
-                        <div class="flex gap-3">
-                            <p class="text-[#124375] text-[16px] font-semibold">اسم العضو : <span class="text-[#021219]">{{ $t->membership?->member?->full_name ?? '-' }}</span></p>
-                            <p class="text-[#124375] text-[16px] font-semibold">رقم العضوية : <span class="text-[#021219]">{{ $t->membership?->membership_number ?? '-' }}</span></p>
-                            <p class="text-[#124375] text-[16px] font-semibold">المبلغ الإجمالي : <span class="text-[#021219]">{{ number_format($t->amount, 2) }}</span></p>
-                        </div>
-                        <div class="flex gap-3">
-                            <p class="text-[#124375] text-[16px] font-semibold">بند الحركة : <span class="text-[#021219]">{{ $t->category_label }}</span></p>
-                            <p class="text-[#124375] text-[16px] font-semibold">طريقة الدفع : <span class="text-[#021219]">{{ $t->method_label }}</span></p>
-                            <p class="text-[#124375] text-[16px] font-semibold">بواسطة : <span class="text-[#021219]">{{ $t->creator?->name ?? '-' }}</span></p>
-                        </div>
-                        <div class="pt-2">
-                            <div class="relative w-full">
-                                <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">البيان</label>
-                                <textarea readonly class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] px-2 py-3 resize-none">{{ $t->description ?? '-' }}</textarea>
+                        <div class="space-y-5">
+                            <div class="flex gap-3">
+                                <p class="text-[#124375] text-[16px] font-semibold">اسم العضو : <span
+                                        class="text-[#021219]">{{ $t->membership?->member?->full_name ?? '-' }}</span></p>
+                                <p class="text-[#124375] text-[16px] font-semibold">رقم العضوية : <span
+                                        class="text-[#021219]">{{ $t->membership?->membership_number ?? '-' }}</span></p>
+                                <p class="text-[#124375] text-[16px] font-semibold">المبلغ الإجمالي : <span
+                                        class="text-[#021219]">{{ number_format($t->amount, 2) }}</span></p>
                             </div>
-                        </div>
+                            <div class="flex gap-3">
+                                <p class="text-[#124375] text-[16px] font-semibold">بند الحركة : <span
+                                        class="text-[#021219]">{{ $t->category_label }}</span></p>
+                                <p class="text-[#124375] text-[16px] font-semibold">طريقة الدفع : <span
+                                        class="text-[#021219]">{{ $t->method_label }}</span></p>
+                                <p class="text-[#124375] text-[16px] font-semibold">بواسطة : <span
+                                        class="text-[#021219]">{{ $t->creator?->name ?? '-' }}</span></p>
+                            </div>
+                            <div class="pt-2">
+                                <div class="relative w-full">
+                                    <label
+                                        class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">البيان</label>
+                                    <textarea readonly
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] px-2 py-3 resize-none">{{ $t->description ?? '-' }}</textarea>
+                                </div>
+                            </div>
 
-                        @if($t->attachment_path)
-                        <div class="w-full">
-                            <div class="border border-[#124375] rounded-[12px] py-4 text-[#124375] flex items-center justify-center gap-1">
-                                <iconify-icon icon="solar:paperclip-outline" class="text-2xl mt-1"></iconify-icon>
-                                <a href="{{ asset('storage/' . $t->attachment_path) }}" target="_blank" class="text-[#124375] font-medium underline mt-1 block">عرض المرفق</a>
-                            </div>
+                            @if ($t->attachment_path)
+                                <div class="w-full">
+                                    <div
+                                        class="border border-[#124375] rounded-[12px] py-4 text-[#124375] flex items-center justify-center gap-1">
+                                        <iconify-icon icon="solar:paperclip-outline" class="text-2xl mt-1"></iconify-icon>
+                                        <a href="{{ asset('storage/' . $t->attachment_path) }}" target="_blank"
+                                            class="text-[#124375] font-medium underline mt-1 block">عرض المرفق</a>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
-                        @endif
                     </div>
-                </div>
-                <div class="btns flex gap-4 mt-8 no-print print:hidden">
-                    <div class="w-full">
-                        <button type="button" onclick="window.open('{{ route('print.transaction', $t->id) }}', '_blank')"
-                            class=" rounded-[14px] w-full py-3 bg-[#124375] navy-shadow text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2">
-                            <iconify-icon icon="fluent:save-16-filled" class="text-2xl mt-1"></iconify-icon>
-                            طباعة الإيصال
-                        </button>
+                    <div class="btns flex gap-4 mt-8 no-print print:hidden">
+                        <div class="w-full">
+                            <button type="button"
+                                onclick="window.open('{{ route('print.transaction', $t->id) }}', '_blank')"
+                                class=" rounded-[14px] w-full py-3 bg-[#124375] navy-shadow text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2">
+                                <iconify-icon icon="fluent:save-16-filled" class="text-2xl mt-1"></iconify-icon>
+                                طباعة الإيصال
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         @endforeach
     </div>
 

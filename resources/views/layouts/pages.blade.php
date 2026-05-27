@@ -24,12 +24,21 @@
                     <span class="text-lg mr-2">رجوع</span>
                 </a>
 
-                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                    <div class="logo">
-                        <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
-                    </div>
-                    <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
-                </a>
+                @if (auth()->user()->isAdmin())
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
+                        <div class="logo">
+                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                        </div>
+                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                    </a>
+                @else
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                        <div class="logo">
+                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                        </div>
+                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                    </a>
+                @endif
             </div>
             <div class="flex items-center gap-4 text-[#124375] text-4xl z-50">
                 <div class="relative">

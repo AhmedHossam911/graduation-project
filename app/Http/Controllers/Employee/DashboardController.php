@@ -84,7 +84,7 @@ class DashboardController extends Controller
         $member = Member::with(['membershipInfo.loans' => function($q) {
             $q->whereIn('status', ['active', 'pending', 'approved']);
         }, 'membershipInfo.subscriptions' => function($q) {
-            $q->where('status', 'unpaid')->orderBy('due_date', 'asc');
+            $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }])->where(function ($q) use ($search) {
             $q->where('full_name', 'LIKE', "%{$search}%")
               ->orWhere('national_id', 'LIKE', "%{$search}%")
@@ -103,7 +103,7 @@ class DashboardController extends Controller
         }
 
         // Active Subscriptions
-        $unpaidSubscriptions = $membership->subscriptions()->where('status', 'unpaid')->orderBy('due_date', 'asc')->get();
+        $unpaidSubscriptions = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc')->get();
 
         // Active Loan
         $activeLoan = $membership->loans->first();
