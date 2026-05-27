@@ -15,6 +15,17 @@
         $activeTab = request('tab', request('claim_type') ? 'claims' : 'subscriptions');
         $selectedClaimType = request('claim_type');
 
+        $tabMapping = [
+            'subscriptions' => 'الاشتراكات',
+            'loans' => 'قروض',
+            'claims' => 'مطالبات',
+        ];
+        if (in_array(request('tab'), $tabMapping)) {
+            $activeTabName = request('tab');
+        } else {
+            $activeTabName = $tabMapping[$activeTab] ?? 'الاشتراكات';
+        }
+
         $statusCode = $membership->status ?? 'unknown';
         $statusData = $statusMap[$statusCode] ?? ['label' => 'غير معروف', 'class' => 'unknown'];
         $classMap = [
@@ -382,11 +393,11 @@
         <div class="flex items-center justify-between border border-[#124375] p-3 rounded-xl">
             <div class="tabs flex gap-2">
                 <button
-                    class="tab text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">الاشتراكات</button>
+                    class="{{ $activeTabName === 'الاشتراكات' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">الاشتراكات</button>
                 <button
-                    class="tab text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">قروض</button>
+                    class="{{ $activeTabName === 'قروض' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">قروض</button>
                 <button
-                    class="active-tab text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">مطالبات</button>
+                    class="{{ $activeTabName === 'مطالبات' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">مطالبات</button>
             </div>
             <div>
                 <!-- requests only -->
@@ -428,13 +439,13 @@
                 @if(auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
                 @if ($activeLoan === null)
                     <button id="request-loan-btn"
-                        class="tab-content hidden flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
+                        class="tab-content {{ $activeTabName === 'قروض' ? '' : 'hidden' }} flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
                         data-tab="قروض">
                         <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
                         طلب قرض
                     </button>
                 @endif
-                <div id="loans-action-buttons" class="tab-content flex gap-3 hidden" data-tab="قروض">
+                <div id="loans-action-buttons" class="tab-content flex gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}" data-tab="قروض">
                     @if ($activeLoan && $activeLoan->status === 'active')
                         <button data-modal="modal6"
                             class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
@@ -466,7 +477,7 @@
                 </div>
                 @endif
                 <!-- end loans only -->
-                <div class="tab-content hidden flex gap-2" data-tab="الاشتراكات">
+                <div class="tab-content flex gap-2 {{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }}" data-tab="الاشتراكات">
                     @if(auth()->user() && auth()->user()->hasPermission('إدارة الاشتراكات'))
                     @if ($hasOverdue6Months)
                         <button type="button" data-modal="modal8"
@@ -489,7 +500,7 @@
     <!-- end tabs -->
 
     <!-- start requests section -->
-    <div class="tab-content" data-tab="مطالبات">
+    <div class="tab-content {{ $activeTabName === 'مطالبات' ? '' : 'hidden' }}" data-tab="مطالبات">
         <!-- first step of request -->
         @if (request('claim_type') !== null && request('view_claim') === null)
             @if(auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
@@ -930,7 +941,7 @@
         </div>
     @endif
 
-    <div id="loans-content-container" data-tab="قروض" class="hidden  tab-content px-7 py-5">
+    <div id="loans-content-container" data-tab="قروض" class="{{ $activeTabName === 'قروض' ? '' : 'hidden' }}  tab-content px-7 py-5">
         @if ($activeLoan && $activeLoan->installments->count() > 0)
             <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
                 <table class="w-full" id="installments-table">
@@ -969,7 +980,7 @@
                                     {{ $installment->paid_at ? \Carbon\Carbon::parse($installment->paid_at)->format('Y-m-d') : '-' }}
                                 </td>
                                 <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ $installment->payment_method ?? 'أمر دفع من الجامعة' }}</td>
+                                    {{ match($installment->transaction?->method ?? '') { 'cash' => 'نقدي', 'bank_transfer' => 'تحويل بنكي', 'salary_deduction' => 'خصم من المرتب', 'university_payment_order' => 'أمر دفع من الجامعة', default => '-' } }}</td>
                                 <td class="py-5">
                                     @if ($installment->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
@@ -1005,7 +1016,7 @@
     <!-- loan table -->
 
     <!-- subscription table -->
-    <div data-tab="الاشتراكات" class="hidden  tab-content px-7 py-2">
+    <div data-tab="الاشتراكات" class="{{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }}  tab-content px-7 py-2">
         @if ($member->membershipInfo && $member->membershipInfo->subscriptions->count() > 0)
             <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
                 <table class="w-full">
@@ -1044,7 +1055,7 @@
                                     {{ $subscription->paid_at ? \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') : '-' }}
                                 </td>
                                 <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ $subscription->payment_method ?? 'أمر دفع من الجامعة' }}</td>
+                                    {{ match($subscription->transaction?->method ?? '') { 'cash' => 'نقدي', 'bank_transfer' => 'تحويل بنكي', 'salary_deduction' => 'خصم من المرتب', 'university_payment_order' => 'أمر دفع من الجامعة', default => '-' } }}</td>
                                 <td class="py-5">
                                     @if ($subscription->status === 'paid')
                                         <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
@@ -1381,6 +1392,23 @@
                         <p>يرجى إرفاق رقم و صورة إيصال السداد لإتمام العملية.</p>
                     </div>
                     <div class="flex flex-col gap-5">
+                        <div class="relative w-full mb-5 z-50">
+                            <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9] px-1 z-10">
+                                طريقة الدفع <span class="text-[#D92D20]">*</span>
+                            </label>
+                            <input type="hidden" name="payment_method" class="payment-method-input" required>
+                            <button type="button" class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-4 rounded-xl text-base flex justify-between items-center transition-colors payment-method-btn">
+                                <span class="text-[#021219]">اختر طريقة الدفع</span>
+                                <span class="flex items-center"><iconify-icon icon="fe:arrow-down" class="text-xl"></iconify-icon></span>
+                            </button>
+                            <span class="payment_error_msg hidden absolute bottom-[-20px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب اختيار طريقة الدفع</span>
+                            <div class="dropDown w-full hidden absolute z-[60] bg-[#F4F7F9] right-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow">
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="cash">نقدي</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="bank_transfer">تحويل بنكي</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="salary_deduction">خصم من المرتب</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="university_payment_order">أمر دفع من الجامعة</a>
+                            </div>
+                        </div>
                         <div class="relative w-full">
                             <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
                                 رقم الإيصال <span class="text-[#D92D20]">*</span>
@@ -1436,6 +1464,23 @@
                             العملية.</p>
                     </div>
                     <div class="flex flex-col gap-5">
+                        <div class="relative w-full mb-5 z-50">
+                            <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9] px-1 z-10">
+                                طريقة الدفع <span class="text-[#D92D20]">*</span>
+                            </label>
+                            <input type="hidden" name="payment_method" class="payment-method-input" required>
+                            <button type="button" class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-4 rounded-xl text-base flex justify-between items-center transition-colors payment-method-btn">
+                                <span class="text-[#021219]">اختر طريقة الدفع</span>
+                                <span class="flex items-center"><iconify-icon icon="fe:arrow-down" class="text-xl"></iconify-icon></span>
+                            </button>
+                            <span class="payment_error_msg hidden absolute bottom-[-20px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب اختيار طريقة الدفع</span>
+                            <div class="dropDown w-full hidden absolute z-[60] bg-[#F4F7F9] right-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow">
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="cash">نقدي</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="bank_transfer">تحويل بنكي</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="salary_deduction">خصم من المرتب</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="university_payment_order">أمر دفع من الجامعة</a>
+                            </div>
+                        </div>
                         <div class="relative w-full">
                             <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
                                 رقم الإيصال <span class="text-[#D92D20]">*</span>
@@ -1485,6 +1530,23 @@
                         <p>يرجى إرفاق رقم و صورة إيصال السداد لإتمام العملية.</p>
                     </div>
                     <div class="flex flex-col gap-5">
+                        <div class="relative w-full mb-5 z-50">
+                            <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9] px-1 z-10">
+                                طريقة الدفع <span class="text-[#D92D20]">*</span>
+                            </label>
+                            <input type="hidden" name="payment_method" class="payment-method-input" required>
+                            <button type="button" class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-4 rounded-xl text-base flex justify-between items-center transition-colors payment-method-btn">
+                                <span class="text-[#021219]">اختر طريقة الدفع</span>
+                                <span class="flex items-center"><iconify-icon icon="fe:arrow-down" class="text-xl"></iconify-icon></span>
+                            </button>
+                            <span class="payment_error_msg hidden absolute bottom-[-20px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب اختيار طريقة الدفع</span>
+                            <div class="dropDown w-full hidden absolute z-[60] bg-[#F4F7F9] right-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow">
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="cash">نقدي</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="bank_transfer">تحويل بنكي</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="salary_deduction">خصم من المرتب</a>
+                                <a class="cursor-pointer navy-shadow hover:bg-[#EEF7FF] py-2 px-5 rounded-xl text-base payment-option" data-value="university_payment_order">أمر دفع من الجامعة</a>
+                            </div>
+                        </div>
                         <div class="relative w-full">
                             <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
                                 رقم الإيصال <span class="text-[#D92D20]">*</span>
@@ -1817,4 +1879,44 @@
         });
     </script>
     @endif
+
+    <script>
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const container = this.closest('.relative');
+                const hiddenInput = container.querySelector('.payment-method-input');
+                if (hiddenInput) hiddenInput.value = this.dataset.value;
+
+                const btn = container.querySelector('.payment-method-btn');
+                const errorMsg = container.querySelector('.payment_error_msg');
+                if (btn) {
+                    btn.classList.remove('border', 'border-[#D92D20]', 'text-[#D92D20]');
+                    btn.classList.add('border-[#124375]', 'text-[#124375]');
+                }
+                if (errorMsg) errorMsg.classList.add('hidden');
+            });
+        });
+
+        const paymentForms = document.querySelectorAll('form[action*="installments"], form[action*="subscriptions"], form[action*="early-repayment"]');
+        paymentForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const hiddenInput = this.querySelector('.payment-method-input');
+                if (hiddenInput && !hiddenInput.value) {
+                    e.preventDefault();
+                    const container = hiddenInput.closest('.relative');
+                    if(container) {
+                        const btn = container.querySelector('.payment-method-btn');
+                        if(btn) {
+                            btn.classList.remove('border-[#124375]', 'text-[#124375]');
+                            btn.classList.add('border', 'border-[#D92D20]', 'text-[#D92D20]');
+                        }
+                        const errorMsg = container.querySelector('.payment_error_msg');
+                        if(errorMsg) {
+                            errorMsg.classList.remove('hidden');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 @endsection

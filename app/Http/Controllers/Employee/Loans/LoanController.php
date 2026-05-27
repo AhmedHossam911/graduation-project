@@ -375,8 +375,8 @@ class LoanController extends Controller
     public function startLoan(Request $request, Loan $loan)
     {
         $request->validate([
-            'check_image' => 'nullable|image|max:5120',
-            'board_approval_image' => 'nullable|image|max:5120',
+            'check_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
+            'board_approval_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
         ]);
 
         $loan->load('membership');
@@ -458,8 +458,9 @@ class LoanController extends Controller
     public function payInstallment(Request $request, Installment $installment)
     {
         $request->validate([
+            'payment_method' => 'required|in:cash,bank_transfer,salary_deduction,university_payment_order',
             'receipt_number' => 'required|string|max:255',
-            'receipt_image' => 'nullable|image|max:5120',
+            'receipt_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
         ]);
 
         $installment->load('loan.membership');
@@ -474,6 +475,7 @@ class LoanController extends Controller
             $loan = $installment->loan;
             $memberId = $loan->membership->member_id;
 
+            $path = null;
             if ($request->hasFile('receipt_image')) {
                 $path = $request->file('receipt_image')
                     ->store("members/{$memberId}/loans/{$loan->id}", 'public');
@@ -484,6 +486,19 @@ class LoanController extends Controller
                     'file_path' => $path,
                 ]);
             }
+
+            \App\Models\Financial\Transaction::create([
+                'membership_id' => $loan->membership_id,
+                'reference_type' => Installment::class,
+                'reference_id' => $installment->id,
+                'amount' => $installment->amount,
+                'type' => 'IN',
+                'method' => $request->payment_method,
+                'category' => 'loan_installment',
+                'receipt_no' => $request->receipt_number,
+                'attachment_path' => $path,
+                'created_by' => auth()->id(),
+            ]);
 
             // Check if all installments are paid → mark loan as completed
             $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
@@ -506,8 +521,9 @@ class LoanController extends Controller
     public function earlyRepayment(Request $request, Loan $loan)
     {
         $request->validate([
+            'payment_method' => 'required|in:cash,bank_transfer,salary_deduction,university_payment_order',
             'receipt_number' => 'required|string|max:255',
-            'receipt_image' => 'nullable|image|max:5120',
+            'receipt_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
         ]);
 
         $loan->load('membership', 'installments');
@@ -532,6 +548,7 @@ class LoanController extends Controller
 
             $memberId = $loan->membership->member_id;
 
+            $path = null;
             if ($request->hasFile('receipt_image')) {
                 $path = $request->file('receipt_image')
                     ->store("members/{$memberId}/loans/{$loan->id}", 'public');
@@ -542,6 +559,19 @@ class LoanController extends Controller
                     'file_path' => $path,
                 ]);
             }
+
+            \App\Models\Financial\Transaction::create([
+                'membership_id' => $loan->membership_id,
+                'reference_type' => Loan::class,
+                'reference_id' => $loan->id,
+                'amount' => $loan->remaining_loan_balance,
+                'type' => 'IN',
+                'method' => $request->payment_method,
+                'category' => 'early_repayment',
+                'receipt_no' => $request->receipt_number,
+                'attachment_path' => $path,
+                'created_by' => auth()->id(),
+            ]);
 
             // Audit log
             $this->logAudit('early_repayment', 'loans', $loan->id, $oldValues, array_merge($loan->fresh()->toArray(), [

@@ -69,8 +69,7 @@ class SubscriptionController extends Controller
             Subscription::where('membership_id', $validated['membership_id'])
                 ->where('status', 'unpaid')
                 ->update([
-                    'first_warning_sent_at' => null,
-                    'second_warning_sent_at' => null,
+                    'last_warning_sent_at' => null,
                     'notice_sent_at' => null,
                 ]);
         }
@@ -203,8 +202,9 @@ class SubscriptionController extends Controller
     public function pay(Request $request, Subscription $subscription)
     {
         $request->validate([
+            'payment_method' => 'required|in:cash,bank_transfer,salary_deduction,university_payment_order',
             'receipt_number' => 'required|string|max:255',
-            'receipt_image' => 'nullable|image|max:5120',
+            'receipt_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
         ]);
 
         $subscription->load('membership');
@@ -213,11 +213,11 @@ class SubscriptionController extends Controller
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $subscription, $oldValues) {
             $subscription->update([
                 'status' => 'paid',
-                'first_warning_sent_at' => null,
-                'second_warning_sent_at' => null,
+                'last_warning_sent_at' => null,
                 'notice_sent_at' => null,
             ]);
 
+            $path = null;
             if ($request->hasFile('receipt_image')) {
                 $memberId = $subscription->membership->member_id;
                 $path = $request->file('receipt_image')
@@ -229,6 +229,20 @@ class SubscriptionController extends Controller
                     'file_path' => $path,
                 ]);
             }
+
+            // Create Transaction
+            \App\Models\Financial\Transaction::create([
+                'membership_id' => $subscription->membership_id,
+                'reference_type' => \App\Models\Services\Subscription::class,
+                'reference_id' => $subscription->id,
+                'amount' => $subscription->amount,
+                'type' => 'IN',
+                'method' => $request->payment_method,
+                'category' => 'subscription',
+                'receipt_no' => $request->receipt_number,
+                'attachment_path' => $path,
+                'created_by' => auth()->id(),
+            ]);
 
             // Audit log
             AuditLog::create([

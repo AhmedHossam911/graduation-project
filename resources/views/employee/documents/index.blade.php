@@ -71,7 +71,7 @@
                                 </div>
                             </td>
                             <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                {{ $attachment->type }}
+                                {{ $attachment->readable_type }}
                             </td>
                             <td class="py-4 border-l border-[#D1D5DB]">
                                 {{ $attachment->created_at->isoFormat('D MMMM YYYY') }}

@@ -28,4 +28,9 @@ class Subscription extends Model
     {
         return $this->belongsTo(Membership::class);
     }
+
+    public function transaction()
+    {
+        return $this->morphOne(\App\Models\Financial\Transaction::class, 'reference');
+    }
 }

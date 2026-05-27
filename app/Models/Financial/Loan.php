@@ -39,4 +39,9 @@ class Loan extends Model
         {
             return $this->total_amount - $this->installments()->sum('amount');
         }
+
+    public function transaction()
+    {
+        return $this->morphOne(\App\Models\Financial\Transaction::class, 'reference');
+    }
 }

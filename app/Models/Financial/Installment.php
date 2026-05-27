@@ -23,4 +23,9 @@ class Installment extends Model
     {
         return $this->belongsTo(Loan::class);
     }
+
+    public function transaction()
+    {
+        return $this->morphOne(\App\Models\Financial\Transaction::class, 'reference');
+    }
 }
