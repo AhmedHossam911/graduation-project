@@ -29,6 +29,11 @@ class CheckOverdueSubscriptions extends Command
         $oneMonthAgo = $now->copy()->subMonth();
         $sixMonthsAgo = $now->copy()->subMonths(6);
 
+        // 0. Update status to 'overdue' if due_date has passed
+        \App\Models\Services\Subscription::where('status', 'unpaid')
+            ->where('due_date', '<', $now)
+            ->update(['status' => 'overdue']);
+
         // 1. Send warning (1 to 6 months overdue)
         $warningSubs = \App\Models\Services\Subscription::with('membership.member.user')
             ->whereIn('status', ['unpaid', 'overdue'])

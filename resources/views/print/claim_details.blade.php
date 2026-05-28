@@ -170,6 +170,24 @@
                         {{ number_format($claim->membership->remaining_loan_balance, 2) . ' ج.م' }}
                     </p>
                 </div>
+                <hr class="border border-[#A8A8A8] my-3">
+                <div class="flex justify-between text-base text-[#F4F7F9]">
+                    <h3>
+                        مديونية الاشتراكات المتأخرة
+                    </h3>
+                    <p class=" font-semibold text-[#FFB3B3]">
+                        {{ number_format($overdueSubscriptionsAmount, 2) . ' ج.م' }}
+                    </p>
+                </div>
+                <hr class="border border-[#A8A8A8] my-3">
+                <div class="flex justify-between text-base text-[#F4F7F9]">
+                    <h3 class="font-bold">
+                        إجمالي المديونية
+                    </h3>
+                    <p class=" font-bold text-[#FFB3B3]">
+                        {{ number_format($claim->membership->remaining_loan_balance + $overdueSubscriptionsAmount, 2) . ' ج.م' }}
+                    </p>
+                </div>
                 <hr class="border border-[#A8A8A8] mt-3">
             </div>
             <div

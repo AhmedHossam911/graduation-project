@@ -8,8 +8,11 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Run the overdue subscriptions check daily at 08:00 AM
-Schedule::command('subscriptions:check-overdue')->dailyAt('08:00');
+// Run the overdue subscriptions check hourly
+Schedule::command('subscriptions:check-overdue')->hourly();
+
+// Run the overdue installments check hourly
+Schedule::command('installments:check-overdue')->hourly();
 
 // Generate annual subscriptions for active members daily at 01:00 AM
 Schedule::command('subscriptions:generate-annual')->dailyAt('01:00');

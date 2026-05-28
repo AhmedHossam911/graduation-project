@@ -44,7 +44,7 @@ class PrintController extends Controller
         $paidSubscriptionsAmount = $paidSubsQuery->sum('amount');
         $paidSubscriptionsCount = $paidSubsQuery->count();
         
-        $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue']);
+        $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->where('due_date', '<=', now());
         $overdueSubscriptionsAmount = $overdueSubsQuery->sum('amount');
         $overdueSubscriptionsCount = $overdueSubsQuery->count();
         

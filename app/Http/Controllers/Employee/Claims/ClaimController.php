@@ -168,7 +168,7 @@ class ClaimController extends Controller
         $paidSubscriptionsAmount = $paidSubsQuery->sum('amount');
         $paidSubscriptionsCount = $paidSubsQuery->count();
         
-        $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue']);
+        $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->where('due_date', '<=', now());
         $overdueSubscriptionsAmount = $overdueSubsQuery->sum('amount');
         $overdueSubscriptionsCount = $overdueSubsQuery->count();
         
@@ -239,6 +239,9 @@ class ClaimController extends Controller
                 }
                 $paidSubscriptionsAmount = $paidSubsQuery->sum('amount');
                 
+                $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->where('due_date', '<=', now());
+                $overdueSubscriptionsAmount = $overdueSubsQuery->sum('amount');
+                
                 $totalPaid = $joinFee + $paidSubscriptionsAmount;
                 
                 if (in_array($claim->type, ['transfer', 'resignation'])) {
@@ -249,6 +252,9 @@ class ClaimController extends Controller
                         $insurance_benefit += $funeral_expenses;
                     }
                 }
+                
+                $remaining_loan = $membership->remaining_loan_balance;
+                $insurance_benefit = $insurance_benefit - ($remaining_loan + $overdueSubscriptionsAmount);
 
                 $updateData['amount'] = $insurance_benefit;
             }
