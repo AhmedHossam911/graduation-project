@@ -23,29 +23,31 @@
     </div>
 
     <!-- filteration buttons -->
-    <form action="{{ route('admin.reports.loans') }}" method="GET" class="px-12 flex items-center justify-start gap-5 print:hidden">
-        <div class="relative min-w-[200px]">
+    <form action="{{ route('admin.reports.loans') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
+        <div class="relative flex-1 min-w-[200px]">
             @include('partials.calendar', [
                 'name' => 'date_from',
                 'id' => 'report-datepicker-from',
                 'value' => request('date_from'),
-                'autoSubmit' => false,
+                'autoSubmit' => true,
+                'label' => 'من تاريخ',
+                'floatingLabel' => true,
             ])
-            <span class="absolute top-[-10px] right-2 bg-[#F4F7F9] px-1 text-[12px] text-[#124375] font-medium">من تاريخ</span>
         </div>
-        <div class="relative min-w-[200px]">
+        <div class="relative flex-1 min-w-[200px]">
             @include('partials.calendar', [
                 'name' => 'date_to',
                 'id' => 'report-datepicker-to',
                 'value' => request('date_to'),
-                'autoSubmit' => false,
+                'autoSubmit' => true,
+                'label' => 'إلى تاريخ',
+                'floatingLabel' => true,
             ])
-            <span class="absolute top-[-10px] right-2 bg-[#F4F7F9] px-1 text-[12px] text-[#124375] font-medium">إلى تاريخ</span>
         </div>
         <div>
             <button type="submit"
-                class="bg-[#124375] text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
-                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
+                class="bg-[#124375] text-white rounded-xl px-8 h-[46px] flex items-center justify-center hover:bg-[#0e3560] transition-colors navy-shadow mt-[5px]">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-3xl"></iconify-icon>
             </button>
         </div>
     </form>

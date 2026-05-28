@@ -1,5 +1,5 @@
 @extends('layouts.auth')
-{{-- 
+{{--
     2FA OTP View:
     Handles Two-Factor Authentication login step.
     Prompts the user to enter the 6-digit code sent to their email.

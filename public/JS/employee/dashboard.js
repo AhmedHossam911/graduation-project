@@ -1,8 +1,3 @@
-const menuBtn = document.getElementById("Nav-menu");
-const sideBar = document.querySelector(".SideBar");
-const notiBtn = document.querySelector(".notification-btn");
-const notiBox = document.querySelector(".notifications-box");
-
 // modals variables
 const modal = document.querySelectorAll(".modal")
 const modalClose = document.querySelectorAll(".modal-close")
@@ -19,14 +14,6 @@ const dropDownBtn = document.querySelectorAll(".dropDownBtn")
 const dropDown = document.querySelectorAll(".dropDown")
 // end dropDown variables
 
-notiBtn.addEventListener("click", () => {
-    notiBox.classList.toggle("hidden");
-});
-
-menuBtn.addEventListener("click", () => {
-    sideBar.classList.toggle("active");
-    sideBar.classList.toggle("side-bar");
-});
 
 // modals logic
 openModal.forEach((btn, index) => {

@@ -36,11 +36,30 @@
                 onSelect: function (dateText) {
                     updateLabel(input, dateText);
 
+                    const clearBtn = label.querySelector('[data-calendar-clear]');
+                    if (clearBtn) {
+                        clearBtn.classList.remove('hidden');
+                    }
+
                     if (input.dataset.autoSubmit === 'true' && input.form) {
                         input.form.submit();
                     }
                 }
             });
+
+            const clearBtn = label ? label.querySelector('[data-calendar-clear]') : null;
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    $input.datepicker('setDate', null);
+                    updateLabel(input, '');
+                    clearBtn.classList.add('hidden');
+                    if (input.dataset.autoSubmit === 'true' && input.form) {
+                        input.form.submit();
+                    }
+                });
+            }
 
             if (label) {
                 label.addEventListener('click', function (event) {

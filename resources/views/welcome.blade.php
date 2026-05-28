@@ -1,4 +1,4 @@
-{{-- 
+{{--
     Welcome Landing Page:
     The public-facing entry point for the Fellowship Fund Management System.
     Provides system overview, features, and links to login/registration.
@@ -10,12 +10,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>صندوق الزمالة - {{ config('app.name', 'HU Capital') }}</title>
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- AOS Animation CSS -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
@@ -65,19 +65,19 @@
 </head>
 
 <body class="min-h-screen overflow-x-hidden bg-brand-soft font-cairo text-brand-ink selection:bg-brand selection:text-white">
-    
+
     <!-- Background Elements -->
     <div class="fixed inset-0 -z-10 overflow-hidden">
         <img class="h-full w-full object-cover opacity-60 scale-105 animate-[pulse-slow_8s_ease-in-out_infinite]" src="{{ asset('IMGs/HU IMG.png') }}" alt="Background">
         <div class="absolute inset-0 bg-gradient-to-br from-brand-soft/95 via-white/80 to-white/95"></div>
-        
+
         <!-- Decorative blobs -->
         <div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] rounded-full bg-brand/10 blur-[120px] mix-blend-multiply"></div>
         <div class="absolute bottom-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-brand-gold/15 blur-[100px] mix-blend-multiply"></div>
     </div>
 
     <div class="flex min-h-screen flex-col">
-        
+
         <!-- Header -->
         <header class="sticky top-0 z-50 w-full bg-white/70 backdrop-blur-md border-b border-white/50 shadow-sm transition-all duration-300" data-aos="fade-down">
             <div class="mx-auto flex w-[min(1160px,calc(100%-32px))] items-center justify-between gap-4 py-4 max-[620px]:flex-col max-[620px]:items-start">
@@ -87,8 +87,8 @@
                         <img class="relative h-[60px] w-[60px] rounded-xl bg-white object-contain p-2 shadow-logo transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="شعار الجامعة">
                     </div>
                     <span>
-                        صندوق الزمالة كابيتال
-                        <small class="mt-0.5 block text-[13px] font-semibold text-brand-muted tracking-wide">نظام إدارة الزمالة الجامعي</small>
+                        صندوق الزمالة - جامعة العاصمة (حلوان سابقا)
+                        <small class="mt-0.5 block text-[13px] font-semibold text-brand-muted tracking-wide">نظام إدارة صندوق الزمالة </small>
                     </span>
                 </a>
 
@@ -115,7 +115,7 @@
 
         <!-- Hero Section -->
         <main class="mx-auto flex w-[min(1160px,calc(100%-32px))] flex-1 items-center gap-12 py-16 max-[900px]:flex-col max-[900px]:items-stretch max-[900px]:pt-10">
-            
+
             <section class="flex-[1.1] relative z-10">
                 <div data-aos="fade-up" data-aos-delay="100" class="mb-6 inline-flex items-center gap-2 rounded-full border border-brand/20 bg-white/60 backdrop-blur-md px-4 py-2 font-bold text-brand shadow-sm hover:shadow-md transition-shadow">
                     <span class="relative flex h-3 w-3 mr-1">
@@ -212,7 +212,7 @@
                                 </div>
                                 <span class="text-sm font-bold text-brand-muted bg-slate-200/50 px-3 py-1 rounded-md">تسجيل ومتابعة</span>
                             </div>
-                            
+
                             <div class="group flex items-center justify-between gap-3.5 rounded-xl border-r-[6px] border-brand-gold bg-slate-50/80 hover:bg-white p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-default">
                                 <div class="flex items-center gap-3 font-extrabold text-brand-dark">
                                     <div class="p-2 rounded-lg bg-brand-gold/15 text-brand-gold group-hover:scale-110 transition-transform">
@@ -222,7 +222,7 @@
                                 </div>
                                 <span class="text-sm font-bold text-brand-muted bg-slate-200/50 px-3 py-1 rounded-md">سداد وتصدير</span>
                             </div>
-                            
+
                             <div class="group flex items-center justify-between gap-3.5 rounded-xl border-r-[6px] border-brand-danger bg-slate-50/80 hover:bg-white p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-default">
                                 <div class="flex items-center gap-3 font-extrabold text-brand-dark">
                                     <div class="p-2 rounded-lg bg-brand-danger/10 text-brand-danger group-hover:scale-110 transition-transform">
@@ -232,7 +232,7 @@
                                 </div>
                                 <span class="text-sm font-bold text-brand-muted bg-slate-200/50 px-3 py-1 rounded-md">أقساط واعتماد</span>
                             </div>
-                            
+
                             <div class="group flex items-center justify-between gap-3.5 rounded-xl border-r-[6px] border-brand bg-slate-50/80 hover:bg-white p-4 shadow-sm hover:shadow-md transition-all duration-300 cursor-default">
                                 <div class="flex items-center gap-3 font-extrabold text-brand-dark">
                                     <div class="p-2 rounded-lg bg-brand/10 text-brand group-hover:scale-110 transition-transform">
@@ -254,9 +254,9 @@
                 <span class="text-brand font-bold tracking-wider uppercase text-sm mb-2 block">المميزات</span>
                 <h2 class="text-3xl font-extrabold text-brand-dark">ماذا يقدم النظام للمؤسسة؟</h2>
             </div>
-            
+
             <div class="grid grid-cols-3 items-stretch gap-6 max-[900px]:grid-cols-1">
-                
+
                 <article data-aos="fade-up" data-aos-delay="100" class="group relative rounded-2xl border border-white/50 bg-white/70 backdrop-blur-xl p-8 shadow-glass hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand/10 to-brand/5 flex items-center justify-center mb-6 group-hover:bg-brand group-hover:text-white transition-colors duration-300 text-brand shadow-sm">
@@ -267,7 +267,7 @@
                         إدارة دقيقة للبيانات الشخصية والوظيفية والعائلية، مع أرشفة المرفقات ودورة اعتماد رقمية واضحة لكل عضو لضمان الشفافية.
                     </p>
                 </article>
-                
+
                 <article data-aos="fade-up" data-aos-delay="200" class="group relative rounded-2xl border border-white/50 bg-white/70 backdrop-blur-xl p-8 shadow-glass hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-gold/10 to-brand-gold/5 flex items-center justify-center mb-6 group-hover:bg-brand-gold group-hover:text-white transition-colors duration-300 text-brand-gold shadow-sm">
@@ -278,7 +278,7 @@
                         ضبط الاشتراك الشهري، تسجيل القروض بفوائدها، خصم الأقساط أوتوماتيكياً، وحساب مطالبات نهاية الخدمة مع تنبيهات لحظية.
                     </p>
                 </article>
-                
+
                 <article data-aos="fade-up" data-aos-delay="300" class="group relative rounded-2xl border border-white/50 bg-white/70 backdrop-blur-xl p-8 shadow-glass hover:shadow-2xl hover:-translate-y-3 transition-all duration-500 overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-bl-full -z-10 group-hover:scale-110 transition-transform duration-500"></div>
                     <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand/10 to-brand/5 flex items-center justify-center mb-6 group-hover:bg-brand group-hover:text-white transition-colors duration-300 text-brand shadow-sm">
@@ -289,10 +289,10 @@
                         لوحة تحكم تفاعلية وتقارير مفصلة لمساعدة الإدارة والفريق التشغيلي على اتخاذ قرارات مالية أسرع وأكثر استناداً للبيانات.
                     </p>
                 </article>
-                
+
             </div>
         </section>
-        
+
         <!-- Footer area (optional on landing page) -->
         <footer class="mt-auto border-t border-brand/10 bg-white/40 backdrop-blur-sm py-6">
             <div class="mx-auto flex w-[min(1160px,calc(100%-32px))] items-center justify-between text-sm font-semibold text-brand-muted max-[620px]:flex-col max-[620px]:gap-3">

@@ -82,7 +82,7 @@
                 'name' => 'date',
                 'id' => 'subscriptions-datepicker',
                 'value' => request('date'),
-                'autoSubmit' => false,
+                'autoSubmit' => true,
             ])
         </div>
 

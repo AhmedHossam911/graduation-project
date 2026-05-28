@@ -85,51 +85,38 @@
                 'autoSubmit' => false,
             ])
         </div>
-        <div class="relative min-w-[150px]">
-            <input type="hidden" name="status" id="status-input" value="{{ request('status', 'all') }}">
-            <button type="button"
-                class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">الحالة
-                : <span class="text-[#021219] ">
-                    @if (request('status') === 'approved')
-                        بانتظار التسوية
-                    @elseif(request('status') === 'pending')
-                        بانتظار الأعتماد
-                    @elseif(request('status') === 'paid')
-                        تم الصرف
-                    @else
-                        الكل
-                    @endif
-                </span><span class="flex items-center"><iconify-icon icon="fe:arrow-down"
-                        class="text-xl"></iconify-icon></span></button>
-            <div
-                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='all';">الكل</button>
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='approved';">بانتظار التسوية</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='pending';">بانتظار الأعتماد</button>
-                <button type="button" class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='paid';">تم الصرف</button>
-            </div>
+        <div class="relative min-w-[200px]">
+            @php
+                $statusOptions = [
+                    'all' => 'الكل',
+                    'approved' => 'بانتظار التسوية',
+                    'pending' => 'بانتظار الأعتماد',
+                    'paid' => 'تم الصرف',
+                ];
+            @endphp
+            @include('partials.dropdown', [
+                'name' => 'status',
+                'label' => 'الحالة',
+                'options' => $statusOptions,
+                'selected' => request('status', 'all'),
+                'clearable' => true,
+                'required' => false,
+                'autoSubmit' => true,
+            ])
         </div>
-        <div class="relative min-w-[150px]">
-            <input type="hidden" name="type" id="type-input" value="{{ request('type', 'all') }}">
-            <button type="button"
-                class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">نوع
-                المطالبة :<span class="text-[#021219] ">
-                    {{ request('type') && request('type') !== 'all' ? \App\Models\Services\Claim::CLAIM_TYPES[request('type')] ?? 'الكل' : 'الكل' }}
-                </span><span class="flex items-center"><iconify-icon icon="fe:arrow-down"
-                        class="text-xl"></iconify-icon></span></button>
-            <div
-                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-3 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('type-input').value='all';">الكل</button>
-                @foreach (\App\Models\Services\Claim::CLAIM_TYPES as $key => $label)
-                    <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium"
-                        onclick="document.getElementById('type-input').value='{{ $key }}';">{{ $label }}</button>
-                @endforeach
-            </div>
+        <div class="relative min-w-[200px]">
+            @php
+                $typeOptions = ['all' => 'الكل'] + \App\Models\Services\Claim::CLAIM_TYPES;
+            @endphp
+            @include('partials.dropdown', [
+                'name' => 'type',
+                'label' => 'نوع المطالبة',
+                'options' => $typeOptions,
+                'selected' => request('type', 'all'),
+                'clearable' => true,
+                'required' => false,
+                'autoSubmit' => true,
+            ])
         </div>
         <div>
             <button type="submit"

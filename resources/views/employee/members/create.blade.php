@@ -1,5 +1,5 @@
 @extends('layouts.pages')
-{{-- 
+{{--
     Create Member View:
     Digital form for employees to register new fund members manually.
     Captures Personal Data, Functional Data, Family Data, and required Document Uploads.
@@ -28,12 +28,12 @@
                     <iconify-icon icon="ph:x-circle-fill" class="text-xl"></iconify-icon>
                 </div>
             @endif
-            <div class="btn-close">
+            <a href="{{route('members.index')}}" class="btn-close">
                 <button type="button"
                     class="bg-[#F4F7F9] text-[#D92D20] border border-[#D92D20] rounded-2xl py-2 px-12 text-base font-medium">
                     إلغاء
                 </button>
-            </div>
+            </a>
         </div>
     </div>
     <!-- end Header -->

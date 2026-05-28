@@ -1,5 +1,5 @@
 @extends('layouts.app')
-{{-- 
+{{--
     Settings View:
     Provides the General Admin interface for managing system constants and business rules (e.g. default currency, subscription %, max loan limits).
 --}}
@@ -134,7 +134,8 @@
                     <!-- TAB 2: Subscriptions -->
                     <div id="tab-subscriptions-content" class="tab-content w-full hidden">
                         <!-- SUBSCRIPTION -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        {{-- <div class="grid grid-cols-2 gap-6 mb-12">
+
                             <!-- SUBSCRIPTION PERCENTAGE -->
                             <div class="relative">
                                 <label
@@ -167,6 +168,7 @@
                                 </div>
                             </div>
                         </div>
+                        --}}
 
                         <!-- AGE LIMITS -->
                         <div class="grid grid-cols-2 gap-6 mb-12">

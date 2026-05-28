@@ -15,12 +15,39 @@
                 class="rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 العودة للتقارير
             </a>
-            <a href="{{ route('admin.reports.export_financial_position') }}"
+            <a href="{{ route('admin.reports.export_financial_position', request()->query()) }}"
                 class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل (Excel)
             </a>
         </div>
     </div>
+
+    <!-- filteration buttons -->
+    <form action="{{ route('admin.reports.financial_position') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
+        <div class="relative flex-1 min-w-[200px]">
+            @php
+                $years = [];
+                $currentYear = date('Y');
+                for($i = $currentYear; $i >= 2020; $i--) {
+                    $years[$i] = $i;
+                }
+            @endphp
+            @include('partials.dropdown', [
+                'name' => 'year',
+                'options' => $years,
+                'selected' => request('year', $currentYear),
+                'autoSubmit' => true,
+                'label' => 'السنة',
+                'floatingLabel' => true,
+            ])
+        </div>
+        <div>
+            <button type="submit"
+                class="bg-[#124375] text-white rounded-xl px-8 h-[46px] flex items-center justify-center hover:bg-[#0e3560] transition-colors navy-shadow mt-[5px]">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-3xl"></iconify-icon>
+            </button>
+        </div>
+    </form>
 
     <section class="px-12 py-4 print:hidden">
         <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">

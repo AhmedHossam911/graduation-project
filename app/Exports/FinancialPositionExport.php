@@ -13,12 +13,19 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  */
 class FinancialPositionExport implements FromArray, WithHeadings, WithStyles
 {
+    protected $year;
+
+    public function __construct($year = null)
+    {
+        $this->year = $year ?: date('Y');
+    }
+
     public function array(): array
     {
-        $totalRevenues = \App\Models\Financial\Transaction::where('type', 'IN')->sum('amount');
-        $totalExpenses = \App\Models\Financial\Transaction::where('type', 'OUT')->sum('amount');
+        $totalRevenues = \App\Models\Financial\Transaction::where('type', 'IN')->whereYear('created_at', $this->year)->sum('amount');
+        $totalExpenses = \App\Models\Financial\Transaction::where('type', 'OUT')->whereYear('created_at', $this->year)->sum('amount');
         $netBalance = $totalRevenues - $totalExpenses;
-        $activeLoansBalance = \App\Models\Financial\Loan::whereIn('status', ['active', 'pending'])->sum('total_amount') - \App\Models\Financial\Installment::where('status', 'paid')->sum('amount');
+        $activeLoansBalance = \App\Models\Financial\Loan::whereIn('status', ['active', 'pending'])->whereYear('created_at', $this->year)->sum('total_amount') - \App\Models\Financial\Installment::where('status', 'paid')->whereYear('created_at', $this->year)->sum('amount');
 
         return [
             ['إجمالي الإيرادات', number_format($totalRevenues, 2) . ' ج.م'],

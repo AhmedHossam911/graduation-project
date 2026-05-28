@@ -1,5 +1,5 @@
 @extends('layouts.app')
-{{-- 
+{{--
     Subscriptions Index View:
     Displays all financial subscriptions (paid, unpaid, overdue, suspended) across all members.
     Includes filtering options and modals for manual payment registration.
@@ -77,7 +77,7 @@
                     'name' => 'date',
                     'id' => 'subscriptions-datepicker',
                     'value' => request('date'),
-                    'autoSubmit' => false,
+                    'autoSubmit' => true,
                 ])
             </div>
 
@@ -101,7 +101,7 @@
                     'selected' => request('status', 'all'),
                     'clearable' => true,
                     'required' => false,
-                    'autoSubmitClear' => true,
+                    'autoSubmit' => true,
                 ])
             </div>
 
@@ -239,14 +239,19 @@
             </div>
             <div class="space-y-4">
                 <div id="sub-member-info" class="hidden flex gap-3 items-center">
-                    <p class="text-base font-medium text-[#124375]">اسم العضو :<span id="sub-member-name" class="text-[#021219] font-semibold text-base"></span></p>
-                    <p class="text-base font-medium text-[#124375]">رقم العضوية :<span id="sub-membership-number" class="text-[#021219] font-semibold text-base"></span></p>
-                    <iconify-icon icon="pajamas:redo" class="cursor-pointer text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2" onclick="document.getElementById('sub-member-info').classList.add('hidden')"></iconify-icon>
+                    <p class="text-base font-medium text-[#124375]">اسم العضو :<span id="sub-member-name"
+                            class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم العضوية :<span id="sub-membership-number"
+                            class="text-[#021219] font-semibold text-base"></span></p>
+                    <iconify-icon icon="pajamas:redo"
+                        class="cursor-pointer text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"
+                        onclick="document.getElementById('sub-member-info').classList.add('hidden')"></iconify-icon>
                 </div>
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
-                        <input type="search" id="sub-search-input" placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
+                        <input type="search" id="sub-search-input"
+                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
                             class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
@@ -258,37 +263,41 @@
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center gap-5">
-                        <p class="text-base font-medium text-[#124375]">تاريخ أقرب إشتراك غير مدفوع : <span id="sub-due-date"
-                                class="text-[#021219] font-semibold text-base">-</span></p>
+                        <p class="text-base font-medium text-[#124375]">تاريخ أقرب إشتراك غير مدفوع : <span
+                                id="sub-due-date" class="text-[#021219] font-semibold text-base">-</span></p>
                         <p class="text-base font-medium text-[#124375]">المبلغ : <span id="sub-amount"
                                 class="text-[#021219] font-semibold text-base">-</span></p>
                     </div>
                 </div>
-                <div class="relative w-fit">
-                    <button type="button"
-                        class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">سداد
-                        عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]">اختر
-                            الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
-                                class="text-xl "></iconify-icon></span></button>
-                    <div id="sub-months-dropdown"
-                        class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3">
-                        <!-- Will be populated dynamically via JS -->
+                <div class="flex gap-4 justify-betwwen">
+                    <div class="relative w-fit">
+                        <button type="button"
+                            class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">سداد
+                            عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span
+                                class="text-[#021219] text-[14px]">اختر
+                                الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
+                                    class="text-xl "></iconify-icon></span></button>
+                        <div id="sub-months-dropdown"
+                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3">
+                            <!-- Will be populated dynamically via JS -->
+                        </div>
                     </div>
-                </div>
-                <div class="relative w-fit">
-                    <button type="button"
-                        class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
-                        الدفع<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]"> خصم من
-                            المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
-                                class="text-xl"></iconify-icon></span></button>
-                    <div
-                        class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
-                        <button type="button" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من
-                            المرتب</button>
-                        <button type="button" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل
-                            بنكي</button>
-                        <button type="button" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب
-                            مسبق</button>
+                    <div class="relative w-fit">
+                        <button type="button"
+                            class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
+                            الدفع<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]"> خصم من
+                                المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
+                                    class="text-xl"></iconify-icon></span></button>
+                        <div
+                            class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
+                            <button type="button" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من
+                                المرتب</button>
+                            <button type="button" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل
+                                بنكي</button>
+                            <button type="button" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع
+                                بجواب
+                                مسبق</button>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-6">
@@ -330,10 +339,18 @@
     <script>
         window.appRoutes = {
             searchMember: "{{ route('dashboard.searchMember') }}",
-            paySubscription: function(id) { return "{{ url('/subscriptions') }}/" + id + "/pay"; },
-            payInstallment: function(id) { return "{{ url('/loans/installments') }}/" + id + "/pay"; },
-            createClaim: function(id) { return "{{ url('/members') }}/" + id + "/claim"; },
-            memberProfile: function(id) { return "{{ url('/members') }}/" + id; }
+            paySubscription: function(id) {
+                return "{{ url('/subscriptions') }}/" + id + "/pay";
+            },
+            payInstallment: function(id) {
+                return "{{ url('/loans/installments') }}/" + id + "/pay";
+            },
+            createClaim: function(id) {
+                return "{{ url('/members') }}/" + id + "/claim";
+            },
+            memberProfile: function(id) {
+                return "{{ url('/members') }}/" + id;
+            }
         };
     </script>
     <script src="{{ asset('JS/employee/dashboard.js') }}?v={{ time() }}"></script>

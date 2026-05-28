@@ -47,19 +47,23 @@ class ReportController extends Controller
     // --- 2. الموقف المالي الختامي للصندوق ---
     public function financialPosition(Request $request)
     {
-        // Generate a simple, aggregated summary of the financial position without pagination.
-        $totalRevenues = Transaction::where('type', 'IN')->sum('amount');
-        $totalExpenses = Transaction::where('type', 'OUT')->sum('amount');
+        $year = $request->input('year', date('Y'));
+
+        // Generate a simple, aggregated summary of the financial position for the selected year.
+        $totalRevenues = Transaction::where('type', 'IN')->whereYear('created_at', $year)->sum('amount');
+        $totalExpenses = Transaction::where('type', 'OUT')->whereYear('created_at', $year)->sum('amount');
         $netBalance = $totalRevenues - $totalExpenses;
         
-        $activeLoansBalance = Loan::whereIn('status', ['active', 'pending'])->sum('total_amount') - Installment::where('status', 'paid')->sum('amount');
+        $activeLoansBalance = Loan::whereIn('status', ['active', 'pending'])->whereYear('created_at', $year)->sum('total_amount') 
+                            - Installment::where('status', 'paid')->whereYear('created_at', $year)->sum('amount');
 
-        return view('admin.reports.pages.financial_position', compact('totalRevenues', 'totalExpenses', 'netBalance', 'activeLoansBalance'));
+        return view('admin.reports.pages.financial_position', compact('totalRevenues', 'totalExpenses', 'netBalance', 'activeLoansBalance', 'year'));
     }
 
     public function exportFinancialPosition(Request $request)
     {
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\FinancialPositionExport(), 'financial_position.xlsx');
+        $year = $request->input('year', date('Y'));
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\FinancialPositionExport($year), 'financial_position_' . $year . '.xlsx');
     }
 
     // --- 3. بيان الاستقطاعات والاشتراكات الشهرية ---

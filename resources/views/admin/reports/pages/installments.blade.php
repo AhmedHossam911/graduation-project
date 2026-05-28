@@ -23,57 +23,41 @@
     </div>
 
     <!-- filteration buttons -->
-    <form action="{{ route('admin.reports.installments') }}" method="GET" class="px-12 flex items-center justify-start gap-5 print:hidden">
-        <div class="relative min-w-[200px]">
+    <form action="{{ route('admin.reports.installments') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
+        <div class="relative flex-1 min-w-[200px]">
             @include('partials.calendar', [
                 'name' => 'date_from',
                 'id' => 'report-datepicker-from',
                 'value' => request('date_from'),
-                'autoSubmit' => false,
+                'autoSubmit' => true,
+                'label' => 'من تاريخ',
+                'floatingLabel' => true,
             ])
-            <span class="absolute top-[-10px] right-2 bg-[#F4F7F9] px-1 text-[12px] text-[#124375] font-medium">من تاريخ</span>
         </div>
-        <div class="relative min-w-[200px]">
+        <div class="relative flex-1 min-w-[200px]">
             @include('partials.calendar', [
                 'name' => 'date_to',
                 'id' => 'report-datepicker-to',
                 'value' => request('date_to'),
-                'autoSubmit' => false,
+                'autoSubmit' => true,
+                'label' => 'إلى تاريخ',
+                'floatingLabel' => true,
             ])
-            <span class="absolute top-[-10px] right-2 bg-[#F4F7F9] px-1 text-[12px] text-[#124375] font-medium">إلى تاريخ</span>
         </div>
-        <div class="relative min-w-[150px]">
-            <input type="hidden" name="status" id="status-input" value="{{ request('status', 'all') }}">
-            <button type="button" onclick="document.getElementById('status-dropdown').classList.toggle('hidden')"
-                class="navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">الحالة
-                : <span class="text-[#021219] ">
-                    @if (request('status') === 'paid')
-                        محصل
-                    @elseif(request('status') === 'unpaid')
-                        غير محصل
-                    @elseif(request('status') === 'overdue')
-                        متأخر
-                    @else
-                        الكل
-                    @endif
-                </span><span class="flex items-center"><iconify-icon icon="fe:arrow-down"
-                        class="text-xl"></iconify-icon></span></button>
-            <div id="status-dropdown"
-                class="hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='all'; this.closest('form').submit();">الكل</button>
-                <button type="button" class=" navy-shadow py-2 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='paid'; this.closest('form').submit();">محصل</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='unpaid'; this.closest('form').submit();">غير محصل</button>
-                <button type="button" class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium"
-                    onclick="document.getElementById('status-input').value='overdue'; this.closest('form').submit();">متأخر</button>
-            </div>
+        <div class="relative flex-1 min-w-[200px]">
+            @include('partials.dropdown', [
+                'name' => 'status',
+                'options' => ['all' => 'الكل', 'paid' => 'مسدد', 'unpaid' => 'غير مسدد', 'overdue' => 'متأخر'],
+                'selected' => request('status', 'all'),
+                'autoSubmit' => true,
+                'label' => 'الحالة',
+                'floatingLabel' => true,
+            ])
         </div>
         <div>
             <button type="submit"
-                class="bg-[#124375] text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
-                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
+                class="bg-[#124375] text-white rounded-xl px-8 h-[46px] flex items-center justify-center hover:bg-[#0e3560] transition-colors navy-shadow mt-[5px]">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-3xl"></iconify-icon>
             </button>
         </div>
     </form>

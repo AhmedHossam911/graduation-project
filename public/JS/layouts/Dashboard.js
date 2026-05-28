@@ -3,10 +3,11 @@ const sideBar = document.querySelector(".SideBar");
 const notiBtn = document.querySelector(".notification-btn");
 const notiBox = document.querySelector(".notifications-box");
 
-notiBtn.addEventListener("click", () => {
-    notiBox.classList.toggle("hidden");
-});
-
+if (notiBtn && notiBox) {
+    notiBtn.addEventListener("click", () => {
+        notiBox.classList.toggle("hidden");
+    });
+}
 
 if (menuBtn && sideBar) {
     menuBtn.addEventListener("click", () => {
@@ -45,8 +46,14 @@ document.querySelectorAll('.custom-dropdown-container').forEach(container => {
         menu.classList.toggle('hidden');
     };
 
-    if (btn) btn.addEventListener('click', toggleMenu);
-    if (textElement) textElement.addEventListener('click', toggleMenu);
+    container.addEventListener('click', (e) => {
+        // Prevent toggling if clicked inside the open menu
+        if (e.target.closest('.custom-dropdown-menu')) return;
+        // Prevent toggling if clicked the clear button
+        if (e.target.closest('.custom-dropdown-clear')) return;
+        
+        toggleMenu(e);
+    });
 
     if (confirmBtn) {
         confirmBtn.addEventListener('click', (e) => {

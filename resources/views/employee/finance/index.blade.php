@@ -119,51 +119,41 @@
                 <iconify-icon icon="mynaui:search"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
             </div>
-            <div class="relative min-w-[240px]">
-                <label for="datepicker"
-                    class="calendar-label navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
-                    : <span class="text-[#021219]">{{ request('date') ?? 'يوم/شهر/ سنة' }}</span><span
-                        class="flex items-center"><iconify-icon icon="lucide:calendar"
-                            class="text-xl"></iconify-icon></span>
-                    <input type="text" name="date" id="datepicker" value="{{ request('date') }}"
-                        class="absolute left-0 top-full mt-3 opacity-0 w-0 h-0 pointer-events-none">
-                </label>
+            <div class="relative min-w-[200px]">
+                @include('partials.calendar', [
+                    'name' => 'date',
+                    'id' => 'finance-datepicker',
+                    'value' => request('date'),
+                    'autoSubmit' => true,
+                ])
             </div>
-            <div class="relative min-w-[150px]">
-                <input type="hidden" name="method" class="filter-hidden" value="{{ request('method', 'all') }}">
-                <button type="button"
-                    class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">طريقة
-                    الدفع :<span
-                        class="text-[#021219] ">{{ request('method') && request('method') != 'all' ? $methodLabels[request('method')] ?? 'الكل' : 'الكل' }}</span><span
-                        class="flex items-center"><iconify-icon icon="fe:arrow-down"
-                            class="text-xl"></iconify-icon></span></button>
-                <div
-                    class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
-                    <button type="button" data-value="all"
-                        class=" navy-shadow py-2  rounded-xl text-sm font-medium">الكل</button>
-                    @foreach ($methodLabels as $key => $label)
-                        <button type="button" data-value="{{ $key }}"
-                            class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
-                    @endforeach
-                </div>
+            <div class="relative min-w-[200px]">
+                @php
+                    $methodOptions = ['all' => 'الكل'] + $methodLabels;
+                @endphp
+                @include('partials.dropdown', [
+                    'name' => 'method',
+                    'label' => 'طريقة الدفع',
+                    'options' => $methodOptions,
+                    'selected' => request('method', 'all'),
+                    'clearable' => true,
+                    'required' => false,
+                    'autoSubmit' => true,
+                ])
             </div>
-            <div class="relative min-w-[150px]">
-                <input type="hidden" name="category" class="filter-hidden" value="{{ request('category', 'all') }}">
-                <button type="button"
-                    class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">بند
-                    الحركة :<span
-                        class="text-[#021219] ">{{ request('category') && request('category') != 'all' ? $categoryLabels[request('category')] ?? 'الكل' : 'الكل' }}</span><span
-                        class="flex items-center"><iconify-icon icon="fe:arrow-down"
-                            class="text-xl"></iconify-icon></span></button>
-                <div
-                    class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-3 py-4 rounded-xl navy-shadow w-full">
-                    <button type="button" data-value="all"
-                        class=" navy-shadow py-2  rounded-xl text-sm font-medium ">الكل</button>
-                    @foreach ($categoryLabels as $key => $label)
-                        <button type="button" data-value="{{ $key }}"
-                            class=" navy-shadow py-2  rounded-xl text-sm font-medium ">{{ $label }}</button>
-                    @endforeach
-                </div>
+            <div class="relative min-w-[200px]">
+                @php
+                    $categoryOptions = ['all' => 'الكل'] + $categoryLabels;
+                @endphp
+                @include('partials.dropdown', [
+                    'name' => 'category',
+                    'label' => 'بند الحركة',
+                    'options' => $categoryOptions,
+                    'selected' => request('category', 'all'),
+                    'clearable' => true,
+                    'required' => false,
+                    'autoSubmit' => true,
+                ])
             </div>
             <div>
                 <button type="submit"

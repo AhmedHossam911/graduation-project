@@ -39,7 +39,7 @@
     @endif
 
     @if ($floatingLabel)
-        <label class="absolute top-[-15px] right-5 {{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} text-base font-medium bg-[#F4F7F9] px-1">
+        <label class="absolute top-[-15px] right-5 {{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} text-base font-medium bg-[#F4F7F9] px-1 z-10">
             {{ $label }} @if ($required)
                 <span class="text-[#D92D20]">*</span>
             @endif
