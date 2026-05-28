@@ -1,8 +1,13 @@
 @extends('layouts.pages')
+{{-- 
+    Member Profile Index View:
+    Dedicated page for viewing user account details and updating authentication credentials 
+    (like changing password) with associated security checks.
+--}}
 @section('title', 'الملف الشخصي')
 @section('content')
     @include('partials.flash')
-    <style src="{{ asset('css/member/profile.css') }}"></style>
+    <style src="{{ asset('css/common/profile.css') }}"></style>
     <div class="profile transition-all duration-300">
         <div class="profile-header py-7 text-center">
             <h1 class="text-xl font-semibold text-[#124375]">
@@ -129,6 +134,6 @@
         </form>
     </div>
 
-    <script src="{{ asset('js/member/profile.js') }}"></script>
+    <script src="{{ asset('js/common/profile.js') }}"></script>
 
 @endsection

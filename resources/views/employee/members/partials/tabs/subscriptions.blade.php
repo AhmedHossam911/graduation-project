@@ -1,3 +1,8 @@
+{{-- 
+    Member Subscriptions Tab Partial:
+    Shows all subscriptions associated with the member,
+    along with their status, and provides tools for recording payments.
+--}}
     <!-- subscription table -->
     <div data-tab="الاشتراكات"
         class="{{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }} tab-content px-7 py-2 print:hidden">

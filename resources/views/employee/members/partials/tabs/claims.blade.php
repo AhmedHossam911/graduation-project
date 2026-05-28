@@ -1,3 +1,8 @@
+{{-- 
+    Member Claims Tab Partial:
+    Handles the presentation of a member's financial claims,
+    allowing submission of new claims based on type and viewing claim history.
+--}}
 <!-- start requests section -->
     <div class="tab-content {{ $activeTabName === 'مطالبات' ? '' : 'hidden' }} print:hidden" data-tab="مطالبات">
         <!-- first step of request -->

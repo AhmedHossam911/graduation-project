@@ -1,3 +1,8 @@
+{{-- 
+    Member Loans Tab Partial:
+    Displays a member's active loan details, installment history, 
+    and handles payment recording for specific loan installments.
+--}}
     <!-- loan table -->
     @if ($activeLoan)
         <div class="tab-content hidden mx-7 rounded-[12px] bg-[#F4F7F9] border-2 border-[#124375] py-3 px-3 my-2"

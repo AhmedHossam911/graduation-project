@@ -1,4 +1,9 @@
 @extends('layouts.pages')
+{{-- 
+    Show Member Profile View (Employee):
+    A comprehensive 360-degree view of a member's record.
+    Includes tabs for managing their Subscriptions, Loans, and Claims dynamically.
+--}}
 
 @section('title', 'عرض بيانات العضو')
 

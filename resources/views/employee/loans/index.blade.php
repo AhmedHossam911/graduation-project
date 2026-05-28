@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{-- 
+    Loans Index View (Employee):
+    Overview of all loans across the system, categorized by status (Active, Pending, Overdue).
+    Allows creating new loan requests and registering manual installment payments.
+--}}
 
 @section('title', 'قائمة القروض')
 

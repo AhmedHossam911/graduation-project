@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{--
+    Show Claim Details View:
+    Displays the comprehensive breakdown of a specific claim, calculating insurance benefits,
+    subtracting any outstanding loans/subscriptions, and allowing employees to approve the final disbursement.
+--}}
 @section('title', 'عرض بيانات المطالبة')
 @section('content')
     @php

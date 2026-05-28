@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{-- 
+    Members Index View (Employee):
+    Displays the list of all members with search and filtering by department or status.
+    Provides the primary gateway to view individual member profiles.
+--}}
 
 @section('title', 'قائمة الأعضاء')
 

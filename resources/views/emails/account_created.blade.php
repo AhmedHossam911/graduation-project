@@ -1,28 +1,29 @@
-@component('mail::message')
-# مرحباً {{ $user->name }}،
+{{--
+    Account Created Email:
+    Sent to newly registered users/employees.
+    Contains their login credentials and assigned permissions.
+--}}
+<x-mail::message>
+    # مرحباً {{ $user->name }}،
 
-تم إنشاء حسابك بنجاح في نظام **صندوق الزمالة كابيتال**.
+    تم إنشاء حسابك بنجاح في نظام **صندوق الزمالة كابيتال**.
 
-يسعدنا انضمامك لفريق العمل، وإليك تفاصيل الدخول الخاصة بك:
+    يسعدنا انضمامك لفريق العمل، وإليك تفاصيل الدخول الخاصة بك:
 
-**البريد الإلكتروني:** {{ $user->email }}<br>
-**كلمة المرور الافتراضية:** {{ $passwordStr }}
+    **البريد الإلكتروني:** {{ $user->email }}<br>
+    **كلمة المرور الافتراضية:** {{ $passwordStr }}
 
-@if(!empty($permissions) && count($permissions) > 0)
-**الصلاحيات الممنوحة لك بالنظام:**
-@foreach($permissions as $permission)
-- {{ $permission }}
-@endforeach
-@endif
 
-@component('mail::button', ['url' => route('login')])
-تسجيل الدخول للنظام
-@endcomponent
+    <x-mail::button :url="route('login')">
+        تسجيل الدخول للنظام
+    </x-mail::button>
 
-@component('mail::panel')
-**نصيحة أمنية هامة:** يرجى تغيير كلمة المرور الافتراضية فور تسجيل دخولك الأول من خلال صفحة الملف الشخصي.
-@endcomponent
+    <x-mail::panel>
+        **نصيحة أمنية هامة:** يرجى تغيير كلمة المرور الافتراضية فور تسجيل دخولك الأول من خلال صفحة الملف الشخصي.
+    </x-mail::panel>
 
-مع تحيات،<br>
-إدارة النظام
-@endcomponent
+    <div style="text-align: left;" dir="rtl">
+        مع تحيات،<br>
+        {{ config('app.name') }}
+    </div>
+</x-mail::message>

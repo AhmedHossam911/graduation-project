@@ -1,3 +1,7 @@
+{{-- 
+    Global Components Partial:
+    Provides standardized UI elements like inline success and error messages.
+--}}
     @if (session('success'))
         <div class="absolute success-modal top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <div class="py-9 px-5 relative bg-[#F0FFF6] max-w-3xl mx-auto">

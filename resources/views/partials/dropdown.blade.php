@@ -1,3 +1,7 @@
+{{-- 
+    Custom Dropdown Component Partial:
+    A styled custom select/dropdown input component used throughout the application forms.
+--}}
 @php
     $name = $name ?? '';
     $label = $label ?? '';

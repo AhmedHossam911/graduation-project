@@ -45,7 +45,7 @@ class LatePaymentReminderMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.late_payment_reminder',
+            markdown: 'emails.late_payment_reminder',
         );
     }
 

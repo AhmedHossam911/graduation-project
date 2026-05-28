@@ -1,4 +1,8 @@
 @extends('layouts.auth')
+{{-- 
+    OTP Verify View:
+    Used during password reset process to verify the OTP code sent to the user's email.
+--}}
 @section('title', 'التحقق من الرمز')
 @include('partials.flash')
 @section('content')

@@ -1,4 +1,9 @@
 @extends('layouts.pages')
+{{-- 
+    Member Documents Index View:
+    Dedicated page for viewing and managing all file attachments (PDFs, Images) related to a specific member.
+    Allows for document preview, download, and uploading new files.
+--}}
 @section('title', 'المستندات')
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/documents.css') }}">

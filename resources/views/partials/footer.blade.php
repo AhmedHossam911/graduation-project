@@ -1,3 +1,7 @@
+{{-- 
+    Global Footer Partial:
+    Standard footer displaying copyright information at the bottom of pages.
+--}}
     <!-- start footer -->
     <footer class="print:hidden bg-[#EEF7FFB2] text-sm text-[#124375] font-normal text-center py-4 border border-[#124375]">
         <div class="flex items-center justify-center gap-2">

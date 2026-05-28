@@ -1,4 +1,10 @@
 @extends('layouts.app')
+{{-- 
+    Employee Dashboard View:
+    The main control panel for Employees.
+    Displays global search, quick action cards (members, subscriptions, installments, claims),
+    daily tasks/reminders, and alerts for delayed payments.
+--}}
 
 @section('title', 'الصفحة الرئيسية')
 

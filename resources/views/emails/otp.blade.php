@@ -1,3 +1,7 @@
+{{--
+    OTP Email:
+    Generic template for sending One-Time Passwords for login, password reset, or transaction verification.
+--}}
 <x-mail::message>
 # مرحباً،
 
@@ -15,6 +19,8 @@
 
 إذا لم تكن أنت من طلب هذا الرمز، يرجى تجاهل هذا الإيميل.
 
-مع تحياتنا،<br>
+<div style="text-align: left;" dir="rtl">
+مع تحيات،<br>
 {{ config('app.name') }}
+</div>
 </x-mail::message>

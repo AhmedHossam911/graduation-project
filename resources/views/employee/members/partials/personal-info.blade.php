@@ -1,3 +1,7 @@
+{{-- 
+    Member Personal Info Partial:
+    Displays read-only personal and employment information for the member.
+--}}
     {{-- Member Info --}}
     <section class="py-5 px-7 print:hidden">
         <div class="personal-info relative border border-[#124375] rounded-[20px]">

@@ -1,4 +1,8 @@
 @extends('layouts.auth')
+{{-- 
+    Register OTP View:
+    Used during new user registration to verify the provided email address via OTP.
+--}}
 @section('title', 'تفعيل الحساب')
 @include('partials.flash')
 @section('content')

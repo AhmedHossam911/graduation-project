@@ -45,7 +45,7 @@ class MembershipSuspendedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.membership_suspended',
+            markdown: 'emails.membership_suspended',
         );
     }
 

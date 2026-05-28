@@ -1,4 +1,9 @@
 @extends('layouts.pages')
+{{-- 
+    Create Member View:
+    Digital form for employees to register new fund members manually.
+    Captures Personal Data, Functional Data, Family Data, and required Document Uploads.
+--}}
 @section('title', 'إستمارة العضوية')
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/MembershipForm.css') }}">

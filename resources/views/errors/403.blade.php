@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    403 Error View:
+    Displayed when a user attempts to access a page or perform an action they do not have permission for.
+--}}
 
 @section('title', 'غير مصرح لك')
 

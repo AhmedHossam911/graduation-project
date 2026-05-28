@@ -1,4 +1,8 @@
 @extends('layouts.auth')
+{{-- 
+    Forgot Password View:
+    Allows users to request a password reset link/temporary password using their National ID and Email.
+--}}
 @section('title', 'إعادة تعيين كلمة المرور')
 @include('partials.flash')
 

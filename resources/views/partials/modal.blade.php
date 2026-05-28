@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    Change Password Modal View:
+    A dedicated view for changing user passwords. (Note: Originally designed as a modal but extends a layout).
+--}}
 @section('title', 'تغيير كلمة المرور')
 @section('content')
     <style src="{{ asset('assets/css/modal.css') }}"></style>

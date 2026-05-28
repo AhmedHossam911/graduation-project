@@ -1,3 +1,8 @@
+{{-- 
+    Print Layout Component:
+    A unified A4 print layout used across the system for generating printable reports, claims, and receipts.
+    Includes automated headers (Logo, Date, Time, User) and footers (Signatures).
+--}}
 @props(['title' => 'مستند طباعة', 'reference' => ''])
 
 @php

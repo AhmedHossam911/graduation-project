@@ -1,4 +1,9 @@
 @extends('layouts.print')
+{{-- 
+    Print New Membership Receipt View:
+    Printable receipt issued upon the successful registration of a new member
+    and the payment of their initial joining fees.
+--}}
 
 @php
     $title = 'إيصال اشتراك عضوية';

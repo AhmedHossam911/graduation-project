@@ -1,4 +1,9 @@
 @extends('layouts.print')
+{{-- 
+    Print Board Details View:
+    A formatted print layout used for presenting specific details and decisions
+    made by the board of directors (e.g., regarding loans or claims).
+--}}
 
 @php
     $title = 'تفاصيل طلب قرض لعرضه على المجلس';

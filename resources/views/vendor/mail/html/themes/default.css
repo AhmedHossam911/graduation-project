@@ -24,7 +24,7 @@ ul,
 ol,
 blockquote {
     line-height: 1.4;
-    text-align: start;
+    text-align: right;
 }
 
 a {
@@ -42,28 +42,28 @@ h1 {
     font-size: 18px;
     font-weight: bold;
     margin-top: 0;
-    text-align: start;
+    text-align: right;
 }
 
 h2 {
     font-size: 16px;
     font-weight: bold;
     margin-top: 0;
-    text-align: start;
+    text-align: right;
 }
 
 h3 {
     font-size: 14px;
     font-weight: bold;
     margin-top: 0;
-    text-align: left;
+    text-align: right;
 }
 
 p {
     font-size: 16px;
     line-height: 1.5em;
     margin-top: 0;
-    text-align: left;
+    text-align: right;
 }
 
 p.sub {
@@ -138,10 +138,10 @@ img {
     -premailer-cellspacing: 0;
     -premailer-width: 570px;
     background-color: #ffffff;
-    border-color: #D4AF37;
+    border-color: #e4e4e7;
     border-radius: 8px;
-    border-width: 2px;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    border-width: 1px;
+    box-shadow: 0px 0px 4px 0px rgba(2, 47, 92, 0.2);
     margin: 0 auto;
     padding: 0;
     width: 570px;
@@ -268,7 +268,7 @@ img {
 /* Panels */
 
 .panel {
-    border-right: #D4AF37 solid 4px;
+    border-right: #124375 solid 4px;
     margin: 21px 0;
 }
 

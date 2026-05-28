@@ -1,3 +1,8 @@
+{{-- 
+    Employee Sidebar Partial:
+    Navigation links tailored for employee roles, dynamically showing/hiding links 
+    based on the user's specific permissions.
+--}}
     <div class="flex ">
         <!-- start SideBar -->
         <aside class="SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375]">

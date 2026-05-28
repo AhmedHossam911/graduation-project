@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{--
+    Claims Index View (Employee):
+    Displays all financial claims grouped by their lifecycle status (Paid, Pending Approval, Pending Settlement).
+    Allows employees to search, filter by date/status/type, and create new claim requests.
+--}}
 
 @section('title', 'قائمة المطالبات')
 
@@ -63,7 +68,8 @@
     <!-- end cards -->
 
     <!-- filteration buttons -->
-    <form action="{{ route('claims.index') }}" method="GET" class="px-12 flex items-center justify-between gap-5 print:hidden">
+    <form action="{{ route('claims.index') }}" method="GET"
+        class="px-12 flex items-center justify-between gap-5 print:hidden">
         <div class="relative flex-1">
             <input type="search" name="search" value="{{ request('search') }}"
                 placeholder="الاسم أو رقم العضوية أو رقم المطالبة"
@@ -190,7 +196,8 @@
                                         أعتماد
                                     </a>
                                 @elseif($claim->status === 'paid')
-                                    <button type="button" onclick="document.getElementById('modal-receipt-{{ $claim->id }}').classList.remove('hidden'); document.querySelector('.overlay').classList.remove('hidden');"
+                                    <button type="button"
+                                        onclick="document.getElementById('modal-receipt-{{ $claim->id }}').classList.remove('hidden'); document.querySelector('.overlay').classList.remove('hidden');"
                                         class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
                                         <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
                                         عرض
@@ -226,12 +233,12 @@
             </div>
             <div class="space-y-3">
                 <!-- <div class="flex gap-3 items-center">
-                                    <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
-                                    <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                    <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                                </div> -->
+                                        <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
+                                        <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
+                                        <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
+                                        <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
+                                        <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
+                                    </div> -->
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium min-w-fit">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
@@ -277,97 +284,112 @@
         </div>
     </div>
 
-    @foreach($claims as $claim)
-    @if($claim->status === 'paid')
-    <div id="modal-receipt-{{ $claim->id }}"
-        class="modal hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-5">
-        <button onclick="this.closest('.modal').classList.add('hidden'); document.querySelector('.overlay').classList.add('hidden');"
-            class="text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
-            <iconify-icon icon="weui:close-filled"></iconify-icon>
-        </button>
-        <div class="modal-body space-y-7 px-7 py-2">
-            <div
-                class="text-[#F4F7F9] flex items-center justify-between bg-[#124375] navy-shadow py-3 px-4 rounded-[16px]">
-                <h1 class=" text-[20px] font-semibold">
-                    إيصال صرف مستحقات تأمينية
-                </h1>
-                <div class="flex flex-col items-center gap-2">
-                    <p class="text-[16px] ">رقم المعاملة :</p>
-                    <p class=" text-[20px] font-semibold">TRX-{{ $claim->id }}</p>
+    @foreach ($claims as $claim)
+        @if ($claim->status === 'paid')
+            <div id="modal-receipt-{{ $claim->id }}"
+                class="modal hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-5">
+                <button
+                    onclick="this.closest('.modal').classList.add('hidden'); document.querySelector('.overlay').classList.add('hidden');"
+                    class="text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                    <iconify-icon icon="weui:close-filled"></iconify-icon>
+                </button>
+                <div class="modal-body space-y-7 px-7 py-2">
+                    <div
+                        class="text-[#F4F7F9] flex items-center justify-between bg-[#124375] navy-shadow py-3 px-4 rounded-[16px]">
+                        <h1 class=" text-[20px] font-semibold">
+                            إيصال صرف مستحقات تأمينية
+                        </h1>
+                        <div class="flex flex-col items-center gap-2">
+                            <p class="text-[16px] ">رقم المعاملة :</p>
+                            <p class=" text-[20px] font-semibold">TRX-{{ $claim->id }}</p>
+                        </div>
+                    </div>
+                    <div class="bg-[#F4F7F9] navy-shadow py-3 px-4 rounded-[16px]">
+                        <div class="flex justify-between items-center">
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">اسم العضو</h2>
+                                <p class="text-[#124375] text-[25px] font-semibold">
+                                    {{ $claim->membership->member->full_name }}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم العضوية </h2>
+                                <p class="text-[#021219] text-[20px] font-semibold">
+                                    {{ $claim->membership->membership_number }}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ نهاية الخدمة</h2>
+                                <p class="text-[#021219] text-[20px] font-semibold">
+                                    {{ $claim->membership->member->employmentInfo->retirement_date ? \Carbon\Carbon::parse($claim->membership->member->employmentInfo->retirement_date)->translatedFormat('d F Y') : '-' }}
+                                </p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">حالة الصرف</h2>
+                                <p
+                                    class="text-[14px] text-[#067647] border border-[#067647] py-1 px-12 bg-[#ECFDF3] rounded-[8px] font-medium">
+                                    تم الصرف</p>
+                            </div>
+                        </div>
+                        <hr class="border border-[#A8A8A8] mx-1 my-4">
+                        <div class="flex justify-between items-center">
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">سبب الاستحقاق</h2>
+                                <p class="text-[#021219] text-[20px] font-semibold">
+                                    {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم الشيك </h2>
+                                <p class="text-[#021219] text-[20px] font-semibold">
+                                    {{ $claim->receipt_number ?? 'غير متوفر' }}</p>
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ ووقت التنفيذ</h2>
+                                <p class="text-[#021219] text-[20px] font-semibold">
+                                    {{ $claim->updated_at->translatedFormat('d F Y - h:i A') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-[#F4F7F9] navy-shadow py-3 px-4 rounded-[16px]">
+                        <div class="flex justify-between">
+                            <p class="text-[#6D6D6D] text-[16px] font-normal">قيمة الميزة التأمينية ( الأساسية )</p>
+                            <p class="text-[#124375] text-[16px] font-semibold">{{ number_format($claim->amount, 2) }} ج.م
+                            </p>
+                        </div>
+                        @if ($claim->type === 'death')
+                            <hr class="border border-[#A8A8A8] mx-1 my-4">
+                            <div class="flex justify-between">
+                                <p class="text-[#6D6D6D] text-[16px] font-normal">مصاريف الجنازة</p>
+                                <p class="text-[#067647] text-[16px] font-semibold">
+                                    +{{ number_format((float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0), 2) }}
+                                    ج.م</p>
+                            </div>
+                        @endif
+                        <hr class="border border-[#A8A8A8] mx-1 my-4">
+                        <div class="flex justify-between">
+                            <p class="text-[#6D6D6D] text-[16px] font-normal">رصيد القروض المتبقي</p>
+                            <p class="text-[#D92D20] text-[16px] font-semibold">
+                                -{{ number_format($claim->membership->remaining_loan_balance, 2) }} ج.م</p>
+                        </div>
+                        <hr class="border border-[#A8A8A8] mx-1 my-4">
+                        <div
+                            class="flex items-center justify-between border border-[#1243751A] bg-[#1243751A] rounded-[8px] py-4 px-4 ">
+                            <p class="text-[16px] text-[#124375]">صافي المبلغ المستحق صرفه</p>
+                            <p class="text-[32px] text-[#001E3D] font-medium">
+                                {{ number_format($claim->amount - $claim->membership->remaining_loan_balance + ($claim->type === 'death' ? (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0) : 0), 2) }}
+                                ج.م</p>
+                        </div>
+                    </div>
+                    <div class="btns flex gap-2 no-print print:hidden">
+                        <div class="w-full">
+                            <button type="button"
+                                onclick="window.open('{{ route('print.claim_receipt', $claim->id) }}', '_blank')"
+                                class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                                        icon="fluent:save-16-filled"
+                                        class="flex items-center text-2xl"></iconify-icon></span>طباعة الإيصال</button>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="bg-[#F4F7F9] navy-shadow py-3 px-4 rounded-[16px]">
-                <div class="flex justify-between items-center">
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">اسم العضو</h2>
-                        <p class="text-[#124375] text-[25px] font-semibold">{{ $claim->membership->member->full_name }}</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم العضوية </h2>
-                        <p class="text-[#021219] text-[20px] font-semibold">{{ $claim->membership->membership_number }}</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ نهاية الخدمة</h2>
-                        <p class="text-[#021219] text-[20px] font-semibold">{{ $claim->membership->member->employmentInfo->retirement_date ? \Carbon\Carbon::parse($claim->membership->member->employmentInfo->retirement_date)->translatedFormat('d F Y') : '-' }}</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">حالة الصرف</h2>
-                        <p
-                            class="text-[14px] text-[#067647] border border-[#067647] py-1 px-12 bg-[#ECFDF3] rounded-[8px] font-medium">
-                            تم الصرف</p>
-                    </div>
-                </div>
-                <hr class="border border-[#A8A8A8] mx-1 my-4">
-                <div class="flex justify-between items-center">
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">سبب الاستحقاق</h2>
-                        <p class="text-[#021219] text-[20px] font-semibold">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم الشيك </h2>
-                        <p class="text-[#021219] text-[20px] font-semibold">{{ $claim->receipt_number ?? 'غير متوفر' }}</p>
-                    </div>
-                    <div class="flex flex-col gap-2">
-                        <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ ووقت التنفيذ</h2>
-                        <p class="text-[#021219] text-[20px] font-semibold">{{ $claim->updated_at->translatedFormat('d F Y - h:i A') }}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-[#F4F7F9] navy-shadow py-3 px-4 rounded-[16px]">
-                <div class="flex justify-between">
-                    <p class="text-[#6D6D6D] text-[16px] font-normal">قيمة الميزة التأمينية ( الأساسية )</p>
-                    <p class="text-[#124375] text-[16px] font-semibold">{{ number_format($claim->amount, 2) }} ج.م</p>
-                </div>
-                @if($claim->type === 'death')
-                <hr class="border border-[#A8A8A8] mx-1 my-4">
-                <div class="flex justify-between">
-                    <p class="text-[#6D6D6D] text-[16px] font-normal">مصاريف الجنازة</p>
-                    <p class="text-[#067647] text-[16px] font-semibold"> +{{ number_format((float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0), 2) }} ج.م</p>
-                </div>
-                @endif
-                <hr class="border border-[#A8A8A8] mx-1 my-4">
-                <div class="flex justify-between">
-                    <p class="text-[#6D6D6D] text-[16px] font-normal">رصيد القروض المتبقي</p>
-                    <p class="text-[#D92D20] text-[16px] font-semibold"> -{{ number_format($claim->membership->remaining_loan_balance, 2) }} ج.م</p>
-                </div>
-                <hr class="border border-[#A8A8A8] mx-1 my-4">
-                <div
-                    class="flex items-center justify-between border border-[#1243751A] bg-[#1243751A] rounded-[8px] py-4 px-4 ">
-                    <p class="text-[16px] text-[#124375]">صافي المبلغ المستحق صرفه</p>
-                    <p class="text-[32px] text-[#001E3D] font-medium">{{ number_format($claim->amount - $claim->membership->remaining_loan_balance + ($claim->type === 'death' ? (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0) : 0), 2) }} ج.م</p>
-                </div>
-            </div>
-            <div class="btns flex gap-2 no-print print:hidden">
-                <div class="w-full">
-                    <button type="button" onclick="window.open('{{ route('print.claim_receipt', $claim->id) }}', '_blank')"
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="fluent:save-16-filled"
-                                class="flex items-center text-2xl"></iconify-icon></span>طباعة الإيصال</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    @endif
+        @endif
     @endforeach
 
     <!-- MODALS -->

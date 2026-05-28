@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{-- 
+    Finance Index View:
+    Central dashboard for managing incoming (revenues) and outgoing (expenses) financial transactions.
+    Provides tabs to filter between all transactions, revenues only, and expenses only, with manual entry capabilities.
+--}}
 
 @section('title', 'المالية')
 

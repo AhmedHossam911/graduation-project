@@ -1,3 +1,8 @@
+{{-- 
+    Custom Tailwind Pagination View:
+    Overrides Laravel's default pagination to use Arabic terminology and 
+    the project's specific Tailwind CSS branding and spacing.
+--}}
 @if ($paginator->hasPages())
     <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="flex items-center justify-center gap-2 font-arabic" dir="rtl">
         {{-- Previous Page Link --}}

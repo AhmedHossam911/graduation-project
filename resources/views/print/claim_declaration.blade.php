@@ -1,4 +1,9 @@
 @extends('layouts.print')
+{{-- 
+    Print Claim Declaration View:
+    Printable legal declaration form signed by the member or their beneficiaries
+    acknowledging the receipt of a financial claim and clearing the fund's liability.
+--}}
 
 @php
     $title = 'إقرار استلام المستحقات';

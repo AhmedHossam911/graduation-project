@@ -1,4 +1,9 @@
 @extends('layouts.print')
+{{-- 
+    Print Loan Declaration View:
+    Printable legal document where a member officially requests a loan and
+    commits to the specific repayment terms and payroll deductions.
+--}}
 
 @php
     $title = 'إقرار طلب قرض';

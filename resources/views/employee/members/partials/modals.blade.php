@@ -1,3 +1,8 @@
+{{-- 
+    Member Modals Partial:
+    Contains all modal components used within the member profile view, including:
+    suspension of membership, editing data, loan requests, early repayment, and subscription payments.
+--}}
     <!-- suspension of membership MODAL -->
     <form action="{{ route('members.suspend', $member->id) }}" method="POST" enctype="multipart/form-data">
         @csrf

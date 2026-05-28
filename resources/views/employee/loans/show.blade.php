@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{-- 
+    Previous Loans View:
+    Shows a historical list of all loans (completed, rejected, etc.) for a specific member context,
+    providing transparency into their borrowing history.
+--}}
 @section('title', 'القروض السابقة')
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/previousLoans.css') }}">

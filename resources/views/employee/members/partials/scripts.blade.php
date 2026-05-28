@@ -1,3 +1,8 @@
+{{-- 
+    Member Scripts Partial:
+    Includes all JavaScript logic needed for the member profile view,
+    handling modal interactions, tab switching, form validation, and dynamic UI updates.
+--}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const requestLoanBtn = document.getElementById('request-loan-btn');

@@ -1,3 +1,8 @@
+{{-- 
+    Print Wrapper Layout:
+    A dedicated HTML shell for printing. Automatically triggers the browser's print dialog on load
+    and applies specific print media queries for clean A4 paper output.
+--}}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>

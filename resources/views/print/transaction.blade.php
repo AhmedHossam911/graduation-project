@@ -1,4 +1,9 @@
 @extends('layouts.print')
+{{-- 
+    Print General Transaction View:
+    A versatile, printable receipt for any general financial transaction
+    (like incoming revenues or outgoing expenses) processed through the finance module.
+--}}
 
 @php
     $title = 'إيصال استلام/صرف';

@@ -1,4 +1,9 @@
 @extends('layouts.print')
+{{-- 
+    Print Claim Details View:
+    Detailed printable breakdown of a financial claim, showing calculations,
+    deductions (like outstanding loans), and final net amount.
+--}}
 
 @section('title', 'بيان مطالبة صرف ميزة تأمينية')
 

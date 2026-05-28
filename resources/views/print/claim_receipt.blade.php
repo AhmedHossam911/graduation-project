@@ -1,4 +1,8 @@
 @extends('layouts.print')
+{{-- 
+    Print Claim Receipt View:
+    A concise, printable financial receipt issued upon the final payout of a claim.
+--}}
 
 @php
     $title = 'إيصال صرف مستحقات تأمينية';

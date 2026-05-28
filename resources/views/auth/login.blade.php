@@ -1,4 +1,9 @@
 @extends('layouts.auth')
+{{-- 
+    Login View:
+    The main authentication gateway for all system users (Admins, Employees, Members).
+    Uses National ID and Password.
+--}}
 @section('title', 'تسجيل الدخول')
 @include('partials.flash')
 @section('content')

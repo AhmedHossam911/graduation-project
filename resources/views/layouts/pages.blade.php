@@ -1,3 +1,8 @@
+{{-- 
+    Pages Layout:
+    Alternative layout used for secondary pages (like forms or details views) where the side menu is hidden,
+    focusing the user's attention on the content with a top navigation bar for going back.
+--}}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Member;
+namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 
@@ -22,7 +22,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user();
 
-        return view('member.profile.index', compact('user'));
+        return view('common.profile.index', compact('user'));
     }
 
     /**

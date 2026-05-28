@@ -1,3 +1,8 @@
+{{-- 
+    Auth Layout:
+    Layout specifically designed for authentication screens (Login, Register, OTP, Password Reset).
+    Features a full background image with a centered glassmorphism card.
+--}}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>

@@ -1,4 +1,9 @@
 @extends('layouts.auth')
+{{-- 
+    Register View:
+    Form for new users to request an account in the system.
+    Collects personal, employment, and credential details.
+--}}
 @section('title', 'إنشاء حساب جديد')
 @section('card-width', 'max-w-[800px]')
 @include('partials.flash')

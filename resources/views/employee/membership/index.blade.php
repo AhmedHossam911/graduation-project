@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{-- 
+    Subscriptions Index View:
+    Displays all financial subscriptions (paid, unpaid, overdue, suspended) across all members.
+    Includes filtering options and modals for manual payment registration.
+--}}
 
 @section('title', 'قائمة الاشتراكات')
 

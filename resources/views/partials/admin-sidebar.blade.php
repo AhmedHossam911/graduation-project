@@ -1,3 +1,8 @@
+{{-- 
+    Admin Sidebar Partial:
+    Navigation links and structure specifically for the Super Admin dashboard,
+    including advanced reports, audit logs, and system settings.
+--}}
     <div class="flex">
         <!-- start SideBar -->
         <aside

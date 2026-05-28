@@ -1,3 +1,7 @@
+{{-- 
+    Calendar Component Partial:
+    A reusable jQuery UI datepicker component for consistent date selection across forms.
+--}}
 @props([
     'name' => 'date',
     'id' => 'datepicker',

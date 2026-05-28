@@ -1,3 +1,8 @@
+{{-- 
+    Member Profile Header Partial:
+    Displays the member's basic information (name, membership number, status) 
+    and action buttons for editing data or suspending the membership.
+--}}
 <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60] print:hidden"></div>
 
     {{-- head --}}

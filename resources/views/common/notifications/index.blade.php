@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{--
+    Member Notifications Index View:
+    Displays all system notifications sent to the user (e.g., payment reminders, claim updates).
+    Provides filtering, sorting, and capabilities to mark notifications as read.
+--}}
 @section('title', 'الإشعارات')
 @section('content')
     <div class="heading flex justify-center py-7">
@@ -178,7 +183,8 @@
 @endsection
 @section('pagination')
     @if ($notifications->hasPages())
-        <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+        <div
+            class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
             {{ $notifications->links() }}
         </div>
     @endif

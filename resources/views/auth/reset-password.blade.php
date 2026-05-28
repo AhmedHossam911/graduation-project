@@ -1,4 +1,8 @@
 @extends('layouts.auth')
+{{-- 
+    Reset Password View:
+    The final step in password recovery where the user enters a new secure password.
+--}}
 @section('title', 'تعيين كلمة مرور جديدة')
 @include('partials.flash')
 @section('content')

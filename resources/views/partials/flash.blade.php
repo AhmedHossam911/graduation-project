@@ -1,3 +1,7 @@
+{{-- 
+    Flash Messages Component:
+    Uses SweetAlert2 to display dynamic, stylized success and error notifications globally.
+--}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
     .swal2-popup {

@@ -1,3 +1,8 @@
+{{--
+    Main App Layout:
+    The primary layout structure used for authenticated user dashboards (Admins, Employees).
+    Includes Sidebar, Navbar, and Footer components dynamically based on roles.
+--}}
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
