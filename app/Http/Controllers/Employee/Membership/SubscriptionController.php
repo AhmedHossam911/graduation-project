@@ -44,7 +44,7 @@ class SubscriptionController extends Controller
     {
         $departments = Department::all();
 
-        // Fetch active memberships for the dropdown
+        // Retrieve a list of active memberships to populate the selection dropdown.
         $memberships = Membership::with('member')
             ->where('status', 'active')
             ->get();
@@ -67,7 +67,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::create($validated);
 
         if ($validated['status'] === 'paid') {
-            // Reset warning counters for this membership's unpaid subscriptions
+            // Clear any previous warning or notice timestamps since the member has made a payment.
             Subscription::where('membership_id', $validated['membership_id'])
                 ->where('status', 'unpaid')
                 ->update([
@@ -232,7 +232,7 @@ class SubscriptionController extends Controller
                 ]);
             }
 
-            // Create Transaction
+            // Record the incoming financial transaction for this payment.
             \App\Models\Financial\Transaction::create([
                 'membership_id' => $subscription->membership_id,
                 'reference_type' => \App\Models\Services\Subscription::class,
@@ -257,7 +257,7 @@ class SubscriptionController extends Controller
                 'ip_address' => request()->ip(),
             ]);
 
-            // Generate future annual subscriptions if this is the join fee
+            // If this payment represents the initial joining fee, generate the schedule for future annual subscriptions.
             if ($subscription->name === 'رسم الاشتراك بالصندوق' || $subscription->membership->subscriptions()->count() === 1) {
                 $member = $subscription->membership->member;
                 if ($member) {
@@ -266,7 +266,7 @@ class SubscriptionController extends Controller
                         $annualFee = $employmentInfo->starting_salary * 3;
                         
                         $currentYear = Carbon::now()->year;
-                        // Determine retirement year, fallback to 60 years after birth if missing
+                        // Determine the expected retirement year. If not explicitly set, calculate it as 60 years from their birth date.
                         if ($employmentInfo->retirement_date) {
                             $retirementYear = Carbon::parse($employmentInfo->retirement_date)->year;
                         } elseif ($member->birth_date) {
@@ -275,14 +275,14 @@ class SubscriptionController extends Controller
                             $retirementYear = $currentYear + 35; // reasonable fallback
                         }
 
-                        // Optimization: Fetch all existing years in one query
+                        // Fetch all currently registered subscription years at once to prevent duplicate entries efficiently.
                         $existingSubscriptions = Subscription::where('membership_id', $subscription->membership_id)
                             ->pluck('name')
                             ->toArray();
 
                         $newSubscriptions = [];
 
-                        // Generate subscriptions for every year until retirement
+                        // Create the annual subscription records spanning from the current year up until their retirement year.
                         for ($year = $currentYear; $year <= $retirementYear; $year++) {
                             $subscriptionName = 'اشتراك عام ' . $year;
                             
@@ -299,7 +299,7 @@ class SubscriptionController extends Controller
                             }
                         }
 
-                        // Optimization: Bulk Insert
+                        // Use bulk insert to efficiently save the newly generated subscriptions to the database in a single operation.
                         if (!empty($newSubscriptions)) {
                             Subscription::insert($newSubscriptions);
                         }
@@ -316,7 +316,7 @@ class SubscriptionController extends Controller
      */
     public function notify(Request $request, Subscription $subscription)
     {
-        // Add logic to check conditions and send formal notice
+        // TODO: Implement the business logic to verify conditions before sending the formal notice to the member.
         // ... backend logic here ...
 
         return back()->with('success', 'تم إرسال الإخطار بنجاح.');

@@ -1,4 +1,9 @@
 @extends('layouts.app')
+{{-- 
+    Permissions View:
+    Interface for the Super Admin to manage employee/admin roles and permissions.
+    Handles active, suspended, pending, and rejected account requests.
+--}}
 
 @section('title', 'صلاحيات المستخدمين')
 

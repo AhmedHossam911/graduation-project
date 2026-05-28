@@ -9,7 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureAdmin
 {
     /**
-     * Handle an incoming request.
+     * Intercept the incoming request to ensure the authenticated user holds the 'Admin' role.
+     * Redirects regular members to their profile and other staff to the dashboard.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next

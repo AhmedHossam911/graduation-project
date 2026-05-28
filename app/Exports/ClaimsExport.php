@@ -7,6 +7,10 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
+/**
+ * Handles the generation of Excel reports for insurance claims.
+ * Translates backend claim statuses and types (e.g., retirement, resignation) into readable Arabic formats.
+ */
 class ClaimsExport implements FromQuery, WithMapping, WithHeadings
 {
     protected $query;

@@ -146,26 +146,26 @@ class MemberController extends Controller
         if ($member->membershipInfo) {
             $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
 
-            // Only 1 active/pending/approved loan is allowed at a time based on LoanController rules
+            // Note: According to our business rules (enforced in the LoanController), a member is only permitted to have one active, pending, or approved loan at any given time.
             $activeLoan = $member->membershipInfo->loans
                 ->whereIn('status', ['active', 'pending', 'approved'])
                 ->first();
 
             $sixMonthsAgo = now()->subMonths(6);
 
-            // Check for any subscription overdue for 6+ months
+            // Identify if the member has any subscriptions that have been overdue for more than 6 months.
             $hasOverdueSubscription6Months = $member->membershipInfo->subscriptions
                 ->whereIn('status', ['unpaid', 'overdue'])
                 ->where('due_date', '<=', $sixMonthsAgo)
                 ->isNotEmpty();
 
-            // Check for any installment overdue for 6+ months
+            // Similarly, identify if there are any loan installments overdue for more than 6 months.
             $hasOverdueInstallment6Months = $member->membershipInfo->loans->flatMap->installments
                 ->whereIn('status', ['unpaid', 'overdue'])
                 ->where('due_date', '<=', $sixMonthsAgo)
                 ->isNotEmpty();
 
-            // User requested notice is ONLY for subscriptions
+            // As per user requirements, official overdue notices are currently only triggered by unpaid subscriptions, not installments.
             $hasOverdue6Months = $hasOverdueSubscription6Months;
         }
 
@@ -331,7 +331,7 @@ class MemberController extends Controller
             return back()->with('error', 'لا يوجد اشتراك متاح لهذا العضو.');
         }
 
-        // Update notice_sent_at for subscriptions that are overdue for 6+ months
+        // Record the timestamp when the official notice was sent for all subscriptions overdue by more than 6 months.
         $member->membershipInfo->subscriptions()
             ->whereIn('status', ['unpaid', 'overdue'])
             ->where('due_date', '<=', now()->subMonths(6))

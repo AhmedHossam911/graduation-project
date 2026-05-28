@@ -11,12 +11,12 @@ use Illuminate\Http\Request;
 class MembershipController extends Controller
 {
     /**
-     * Allowed membership statuses based on the migration enum.
+     * These are the valid membership statuses as defined by our database migration enum.
      */
     private const ALLOWED_STATUSES = ['active', 'pending_registration', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];
 
     /**
-     * Approve a pending membership — set status to active and record approver.
+     * Approve a pending membership request by updating its status to 'active' and recording the user who approved it.
      */
     public function approve(Request $request, $id)
     {
@@ -43,7 +43,7 @@ class MembershipController extends Controller
     }
 
     /**
-     * Reject a pending membership — set status to inactive.
+     * Reject a pending membership request and mark its status as 'inactive'.
      */
     public function reject(Request $request, $id)
     {
@@ -72,7 +72,7 @@ class MembershipController extends Controller
     }
 
     /**
-     * Change membership status (generic status transition).
+     * Handle any general status transition for a membership based on the provided status input.
      */
     public function changeStatus(Request $request, $id)
     {

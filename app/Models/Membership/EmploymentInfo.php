@@ -5,6 +5,10 @@ namespace App\Models\Membership;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Contains employment-specific details for a member, such as their workplace, job title, and salary.
+ * Vital for determining loan eligibility and calculating monthly installments.
+ */
 class EmploymentInfo extends Model
 {
     use HasFactory;

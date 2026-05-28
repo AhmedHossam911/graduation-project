@@ -11,6 +11,10 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Services\Subscription;
 
+/**
+ * Mailable class triggered by the CheckOverdueSubscriptions console command.
+ * Sends a formal warning to members whose subscriptions are between 1 and 6 months in arrears.
+ */
 class LatePaymentReminderMail extends Mailable
 {
     use Queueable, SerializesModels;

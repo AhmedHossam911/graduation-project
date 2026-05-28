@@ -9,7 +9,8 @@ use Carbon\Carbon;
 class ClaimCalculationService
 {
     /**
-     * Calculate financial details for a claim based on business rules.
+     * Compute the full financial breakdown for a member's claim (e.g., end of service, death).
+     * This factors in paid subscriptions, overdue balances, and remaining loan amounts.
      *
      * @param Claim $claim
      * @return array

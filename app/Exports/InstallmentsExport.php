@@ -9,6 +9,10 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
+/**
+ * Handles the generation of Excel reports for loan installments.
+ * Maps individual installment records to their parent loans and translates their payment statuses.
+ */
 class InstallmentsExport implements FromQuery, WithHeadings, WithMapping, WithStyles
 {
     protected $query;

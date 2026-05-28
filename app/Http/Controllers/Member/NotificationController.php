@@ -9,10 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
+/**
+ * Allows members and employees to manage their in-app notifications.
+ * Provides functionality to view, filter, sort, read, and delete alerts.
+ */
 class NotificationController extends Controller
 {
     /**
-     * Display the notifications page with filtering and sorting.
+     * Display the notifications page.
+     * Computes unread/read badges and applies dynamic filtering (by read status and time period) and sorting.
      */
     public function index(Request $request)
     {
@@ -67,7 +72,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Mark a single notification as read.
+     * Mark a specific notification as read, ensuring it belongs to the authenticated user.
      */
     public function markAsRead(Notification $notification)
     {
@@ -82,7 +87,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Mark all notifications as read.
+     * Bulk action: Mark all currently unread notifications as read.
      */
     public function readAll()
     {
@@ -94,7 +99,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Delete a single notification.
+     * Delete a specific notification record.
      */
     public function destroy(Notification $notification)
     {
@@ -108,7 +113,7 @@ class NotificationController extends Controller
     }
 
     /**
-     * Delete all notifications for the authenticated user.
+     * Bulk action: Completely clear (delete) the user's notification history.
      */
     public function clear()
     {

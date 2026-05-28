@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Auth;
 class CheckPermission
 {
     /**
-     * Handle an incoming request.
+     * Intercept the incoming request to verify that the user has the required permission(s).
+     * Supports checking multiple permissions separated by a pipe (|).
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */

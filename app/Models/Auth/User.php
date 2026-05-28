@@ -7,6 +7,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Membership\Member;
+
+/**
+ * Represents an authenticated user in the system.
+ * This model serves as the core identity for logging in, containing credentials, role associations, and 2FA data.
+ * A User may be linked to a specific Member profile if they are a standard fund participant.
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes;
@@ -48,6 +54,10 @@ class User extends Authenticatable
         return $this->hasOne(Member::class);
     }
 
+    /**
+     * Determine if the user holds a specific permission.
+     * Super Admins implicitly possess all permissions.
+     */
     public function hasPermission($permission)
     {
         if ($this->role && strtolower($this->role->name) === 'admin') {

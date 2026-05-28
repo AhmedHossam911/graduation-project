@@ -5,6 +5,10 @@ namespace App\Models\Membership;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Stores references to uploaded files and physical documents belonging to a member.
+ * Provides a highly dynamic, human-readable mapping for complex, system-generated document types (e.g., loan receipts, claim approvals).
+ */
 class Attachment extends Model
 {
     use HasFactory;
@@ -16,6 +20,10 @@ class Attachment extends Model
         return $this->belongsTo(Member::class);
     }
 
+    /**
+     * Translates backend file type identifiers into localized, human-readable Arabic labels.
+     * Essential for UI display and generating organized file lists for the member.
+     */
     public function getReadableTypeAttribute()
     {
         $type = $this->type;

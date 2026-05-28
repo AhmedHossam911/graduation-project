@@ -6,6 +6,10 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
+/**
+ * Handles the generation of Excel reports for member loans.
+ * Formats financial amounts into local currency strings and translates loan lifecycle statuses.
+ */
 class LoansExport implements FromQuery, WithMapping, WithHeadings
 {
     protected $query;

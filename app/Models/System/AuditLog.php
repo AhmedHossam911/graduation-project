@@ -24,7 +24,7 @@ class AuditLog extends Model
 
     public function getActionDescriptionAttribute()
     {
-        // If the action already contains Arabic text, it's a custom pre-translated action
+        // If the logged action is already provided in Arabic, bypass the translation and use it directly.
         if (preg_match('/\p{Arabic}/u', $this->action)) {
             return $this->action;
         }

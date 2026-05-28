@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    Settings View:
+    Provides the General Admin interface for managing system constants and business rules (e.g. default currency, subscription %, max loan limits).
+--}}
 
 @section('title', 'لوحة تحكم الإعدادات')
 

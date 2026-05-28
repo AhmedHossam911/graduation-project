@@ -7,6 +7,10 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+/**
+ * Handles the generation of the Financial Position (الموقف المالي) Excel report.
+ * Dynamically aggregates total revenues, expenses, net balance, and outstanding active loans.
+ */
 class FinancialPositionExport implements FromArray, WithHeadings, WithStyles
 {
     public function array(): array

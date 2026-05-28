@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    Reports View:
+    The central hub for generating and viewing all financial, administrative, and statistical reports.
+--}}
 
 @section('title', 'إدارة كليات وقطاعات الجامعة')
 

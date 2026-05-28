@@ -47,7 +47,7 @@ class ReportController extends Controller
     // --- 2. الموقف المالي الختامي للصندوق ---
     public function financialPosition(Request $request)
     {
-        // Simple aggregate report, no pagination.
+        // Generate a simple, aggregated summary of the financial position without pagination.
         $totalRevenues = Transaction::where('type', 'IN')->sum('amount');
         $totalExpenses = Transaction::where('type', 'OUT')->sum('amount');
         $netBalance = $totalRevenues - $totalExpenses;

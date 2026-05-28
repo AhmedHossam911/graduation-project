@@ -8,6 +8,9 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
+/**
+ * Handles the generation of Excel reports showing the distribution of members across different departments/faculties.
+ */
 class MembersDistributionExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
     protected $departments;

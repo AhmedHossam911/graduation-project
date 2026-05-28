@@ -27,17 +27,17 @@ class LoanController extends Controller
 
         $loans = $query->paginate(10)->withQueryString();
 
-        // ── Statistics cards ──
-        // قروض مُفعلة هذا الشهر
+        // ── Calculate statistics to display on the summary cards at the top of the dashboard ──
+        // Count active loans that were created within the current month
         $activeLoansThisMonth = Loan::where('status', 'active')
             ->whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
-        // طلبات قروض تحت المراجعة
+        // Count the number of loan requests that are still pending review and approval
         $pendingLoansCount = Loan::where('status', 'pending')->count();
 
-        // أقساط متأخره اليوم
+        // Count the total number of overdue installments up to the current date
         $overdueInstallmentsCount = Installment::where('status', 'overdue')
             ->whereDate('due_date', '<=', now()->toDateString())
             ->count();
@@ -54,7 +54,7 @@ class LoanController extends Controller
     {
         $query = Loan::with(['membership.member', 'installments'])->latest();
 
-        // Search by member name, national ID, membership number or loan id
+        // Allow searching loans by the member's full name, national ID, membership number, or the specific loan ID
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -79,7 +79,8 @@ class LoanController extends Controller
             }
         }
 
-        // Filter by status or department (combined in the 'department' parameter from view)
+        // Apply filtering based on either the loan status or the member's department.
+        // These are combined in a single 'department' parameter from the view for simplicity.
         if ($request->filled('department') && $request->department !== 'all') {
             $filterValue = $request->department;
 
@@ -137,7 +138,7 @@ class LoanController extends Controller
             return response()->json(['success' => false, 'message' => 'لا يوجد عضوية مسجلة لهذا العضو.']);
         }
 
-        // Check Membership Status
+        // Verify that the member's current status allows them to apply for a loan.
         $forbiddenStatuses = ['pending_registration', 'pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
         if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
             return response()->json(['success' => false, 'message' => 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.']);
@@ -203,7 +204,7 @@ class LoanController extends Controller
                 ->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
         }
 
-        // Business rule: only 1 active loan per member
+        // Enforce business rule: A member is only allowed to have one active or pending loan at a time.
         $hasActiveLoan = $member->membershipInfo->loans()
             ->whereIn('status', ['active', 'pending', 'approved'])
             ->exists();
@@ -213,7 +214,7 @@ class LoanController extends Controller
                 ->with('error', 'يوجد قرض نشط بالفعل لهذا العضو. لا يمكن إنشاء قرض جديد.');
         }
 
-        // Business rule: Paid subscriptions must be >= requested loan amount
+        // Enforce business rule: The total amount of paid subscriptions must be greater than or equal to the requested loan amount.
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
@@ -469,7 +470,7 @@ class LoanController extends Controller
                 'status' => 'active'
             ]);
 
-            // Generate installment schedule when loan is confirmed/started
+            // Generate the monthly installment schedule as soon as the loan is officially started.
             for ($i = 1; $i <= $loan->months; $i++) {
                 Installment::create([
                     'loan_id'  => $loan->id,
@@ -505,7 +506,7 @@ class LoanController extends Controller
                 'membership_id' => $loan->membership_id,
                 'reference_type' => Loan::class,
                 'reference_id' => $loan->id,
-                'amount' => $loan->base_amount ?? $loan->total_amount, // The actual money given is base_amount
+                'amount' => $loan->base_amount ?? $loan->total_amount, // We record the base amount since that is the actual money disbursed.
                 'type' => 'OUT',
                 'method' => 'bank_transfer',
                 'category' => 'loan_start',
@@ -542,7 +543,7 @@ class LoanController extends Controller
                 'cancel_details' => $request->details,
             ]));
 
-            // Delete pending installments if they exist
+            // Remove any pending installments since the loan request is being canceled.
             $loan->installments()->where('status', 'unpaid')->delete();
         });
 
@@ -597,7 +598,7 @@ class LoanController extends Controller
                 'created_by' => auth()->id(),
             ]);
 
-            // Check if all installments are paid → mark loan as completed
+            // Check if all installments have been fully paid off, and if so, mark the entire loan as completed.
             $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
             if ($unpaidCount === 0) {
                 $loan->update(['status' => 'completed']);
@@ -625,7 +626,7 @@ class LoanController extends Controller
 
         $loan->load('membership', 'installments');
 
-        // Business Rule: Early repayment is only allowed if remaining time is 6 months or less
+        // Enforce business rule: Early repayment is only permitted if there are 6 or fewer remaining installments.
         $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
         if ($unpaidCount > 6) {
             return back()->with('error', 'لا يمكن السداد المبكر إلا إذا كان المتبقي من القرض 6 أشهر أو أقل.');

@@ -27,12 +27,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Roles
+        // 1. Establish the core roles required for role-based access control (RBAC).
         $adminRole = Role::factory()->create(['name' => 'Admin']);
         $auditorRole = Role::factory()->create(['name' => 'Auditor']);
         $memberRole = Role::factory()->create(['name' => 'Member']);
 
-        // Base Admin User (Old Credentials)
+        // Create the primary Super Admin account (retaining existing known credentials for ease of use).
         $adminUser = User::factory()->create([
             'name' => 'أحمد محمد',
             'email' => 'a511r811r174@gmail.com',
@@ -68,7 +68,7 @@ class DatabaseSeeder extends Seeder
             'custom_permissions' => []
         ]);
 
-        // 2. Departments Mapping (HU Context)
+        // 2. Map out the specific faculties/departments for Helwan University (HU).
         $faculties = [
             'Faculty of Engineering (Mataria)',
             'Faculty of Engineering (Helwan)',
@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             $departments[] = Department::factory()->create(['name' => $fac]);
         }
         
-        // Link Admin to a Member profile so they can login via National ID
+        // Create a corresponding member profile for the Admin so they can test features that require a National ID.
         Member::factory()->create([
             'user_id' => $adminUser->id,
             'department_id' => $departments[0]->id,
@@ -95,11 +95,12 @@ class DatabaseSeeder extends Seeder
             'national_id' => '12345678912345'
         ]);
 
-        // Generate random System Settings
+        // Populate the system with some initial configuration settings.
         SystemSetting::factory()->count(10)->create();
 
-        // 3. Batched Member Creation
-        // Generate exactly 1000 complex member graphs grouped to manage memory optimally.
+        // 3. Bulk Member Generation
+        // Efficiently generate exactly 1000 interconnected member profiles.
+        // We chunk this process to prevent memory exhaustion during seeding.
         $totalMembers = 1000;
         $chunkSize = 100;
         
@@ -110,11 +111,11 @@ class DatabaseSeeder extends Seeder
             $users = User::factory()->count($chunkSize)->create(['role_id' => $memberRole->id]);
             
             foreach ($users as $user) {
-                // Meta info
+                // Generate auxiliary data like OTPs and notifications for realism.
                 OtpCode::factory()->count(rand(0, 1))->create(['user_id' => $user->id]);
                 Notification::factory()->count(rand(1, 3))->create(['user_id' => $user->id]);
 
-                // Create Member Profile
+                // Construct the foundational member record and link it to a random department.
                 $member = Member::factory()->create([
                     'user_id' => $user->id,
                     'department_id' => $departments[array_rand($departments)]->id,
@@ -124,13 +125,13 @@ class DatabaseSeeder extends Seeder
                 FamilyInfo::factory()->create(['member_id' => $member->id]);
                 Attachment::factory()->count(rand(1, 2))->create(['member_id' => $member->id]);
 
-                // Membership Core Account
+                // Initialize the official membership status for the member.
                 $membership = Membership::factory()->create([
                     'member_id' => $member->id,
                     'approved_by' => $adminUser->id
                 ]);
 
-                // Generate Subscription Dues and Link Transactions
+                // Simulate a history of monthly subscription dues and corresponding payment transactions.
                 $subscriptions = Subscription::factory()->count(rand(3, 8))->create(['membership_id' => $membership->id]);
                 foreach($subscriptions as $sub) {
                     if ($sub->status === 'paid') {
@@ -143,7 +144,7 @@ class DatabaseSeeder extends Seeder
                     }
                 }
 
-                // Generates Loans ~30% probabilistically
+                // Give roughly 30% of members an active or past loan, complete with installment schedules.
                 if (rand(1, 100) <= 30) {
                     $loan = Loan::factory()->create([
                         'membership_id' => $membership->id,
@@ -167,7 +168,7 @@ class DatabaseSeeder extends Seeder
                     }
                 }
 
-                // Generates Insurance Claims ~10% Probabilistically
+                // Give roughly 10% of members an end-of-service or other type of insurance claim.
                 if (rand(1, 100) <= 10) {
                     $claim = Claim::factory()->create(['membership_id' => $membership->id]);
                     if($claim->status === 'paid') {
@@ -182,7 +183,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Randomize Audit Logs
+        // Finally, generate a trail of random audit logs to simulate system activity.
         AuditLog::factory()->count(150)->create([
             'user_id' => User::inRandomOrder()->first()->id
         ]);

@@ -9,7 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureEmployee
 {
     /**
-     * Handle an incoming request.
+     * Intercept the incoming request to verify that the user is not a regular member.
+     * Administrators and employees are permitted to proceed.
      *
      * @param  Closure(Request): (Response)  $next
      */
@@ -22,7 +23,7 @@ class EnsureEmployee
                 return redirect()->route('profile.index');
             }
             
-            // Allow Admin, Employee, Auditor, etc to access these routes
+            // Since members are redirected above, allow all other administrative roles (Admin, Employee, Auditor) to proceed.
             return $next($request);
         }
 

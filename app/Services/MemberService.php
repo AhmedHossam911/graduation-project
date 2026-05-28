@@ -24,7 +24,7 @@ use Exception;
 class MemberService
 {
     /**
-     * Document types required for initial membership registration.
+     * List of mandatory documents that must be submitted during the initial membership registration.
      */
     public const INITIAL_DOCUMENT_TYPES = [
         'national_id_card'    => 'بطاقة الرقم القومي',
@@ -36,12 +36,12 @@ class MemberService
     ];
 
     /**
-     * Create a new member.
-     * Throws an Exception if age validation fails.
+     * Handle the full creation process of a new member, including user account, membership, and initial fees.
+     * Throws an Exception if the applicant's age does not meet the specified requirements.
      */
     public function createMember(array $validated, Request $request, string $nationalId): array
     {
-        // Age validation
+        // Validate the applicant's age against the system's minimum and maximum allowed limits.
         $birthDate = $this->dateFromParts($request, 'birth');
         $age = 0;
         if ($birthDate) {
@@ -57,7 +57,7 @@ class MemberService
         return DB::transaction(function () use ($request, $validated, $nationalId, $age) {
             $departmentId = $this->resolveDepartmentId($validated);
 
-            // Create user account for the member
+            // Automatically generate a corresponding user account so the member can log into the system.
             $memberRole = Role::where('name', 'Member')->first();
             $user = User::create([
                 'name'     => $validated['full_name'],
@@ -86,7 +86,7 @@ class MemberService
                 'approved_by'          => null,
             ]);
 
-            // Calculate fees based on remaining years to retirement
+            // Determine the total joining fee by calculating how many years remain until their expected retirement.
             $totalFee = $this->calculateFees($age, (float)($validated['salary'] ?? 0));
 
             Subscription::create([
@@ -117,7 +117,7 @@ class MemberService
 
             FamilyInfo::create($familyData);
 
-            // Store uploaded documents
+            // Securely store all the initial mandatory documents provided during registration.
             foreach (self::INITIAL_DOCUMENT_TYPES as $type => $label) {
                 if ($request->hasFile("documents.$type")) {
                     $this->storeDocument($member, $request->file("documents.$type"), $type);
@@ -127,7 +127,7 @@ class MemberService
             // Audit log
             $this->logAudit('create', 'members', $member->id, null, $member->toArray());
 
-            // Send email
+            // Dispatch a welcome email to the newly registered member, if an email address was provided.
             if (!empty($validated['email'])) {
                 Mail::to($validated['email'])->send(new MemberAccountCreatedMail($member, $nationalId));
             }
@@ -141,7 +141,7 @@ class MemberService
     }
 
     /**
-     * Update an existing member.
+     * Process updates to an existing member's personal, employment, and family details.
      */
     public function updateMember(Member $member, array $validated, Request $request, string $nationalId): void
     {
@@ -161,7 +161,7 @@ class MemberService
                 'marital_status' => $validated['marital_status'],
             ]);
 
-            // Update or create employment info
+            // Keep the member's employment record up to date, or create a new one if it somehow doesn't exist.
             $member->employmentInfo()->updateOrCreate(
                 ['member_id' => $member->id],
                 [
@@ -174,7 +174,7 @@ class MemberService
                 ]
             );
 
-            // Update or create family info
+            // Similarly, update or initialize their family information record.
             $member->familyInfo()->updateOrCreate(
                 ['member_id' => $member->id],
                 [
@@ -187,7 +187,7 @@ class MemberService
                 ]
             );
 
-            // Store any new uploaded documents (replaces existing ones of the same type)
+            // If any new files were uploaded during this update, replace the old attachments of the same type.
             foreach (self::INITIAL_DOCUMENT_TYPES as $type => $label) {
                 if ($request->hasFile("documents.$type")) {
                     Attachment::where('member_id', $member->id)->where('type', $type)->delete();
@@ -201,7 +201,7 @@ class MemberService
     }
 
     /**
-     * Delete a member.
+     * Permanently remove a member from the system, tracking the deletion in the audit logs.
      */
     public function deleteMember(Member $member): void
     {

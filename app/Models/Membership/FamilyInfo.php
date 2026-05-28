@@ -5,6 +5,10 @@ namespace App\Models\Membership;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Stores basic family information for a member (spouse and children).
+ * Used primarily for documentation purposes in the event of an insurance claim.
+ */
 class FamilyInfo extends Model
 {
     use HasFactory;

@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    AuditLog View:
+    Lists historical system actions (who, what, when, IP address) for transparency and security monitoring.
+--}}
 
 @section('title', 'سجل العمليات والمراقبة')
 

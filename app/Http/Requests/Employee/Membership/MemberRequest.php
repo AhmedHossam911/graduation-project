@@ -12,7 +12,8 @@ class MemberRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; // We'll assume authorization is handled via middleware
+        // Authorization is strictly managed by our route middleware, so we simply allow the request to proceed here.
+        return true;
     }
 
     /**
@@ -54,7 +55,7 @@ class MemberRequest extends FormRequest
             'child_workplace'        => ['nullable', 'string', 'max:255'],
         ];
 
-        // Documents rules
+        // Define validation rules specifically for file uploads.
         if ($this->isMethod('post')) {
             $rules['documents'] = ['nullable', 'array'];
             $rules['documents.national_id_card']    = ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'];
@@ -64,7 +65,7 @@ class MemberRequest extends FormRequest
             $rules['documents.appointment_decision']= ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'];
             $rules['documents.manual_request']      = ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'];
         } else {
-            // For update, documents are optional unless uploaded
+            // When updating a member's profile, documents are not required unless the user is specifically uploading a replacement.
             $rules['documents'] = ['nullable', 'array'];
             $rules['documents.national_id_card']    = ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'];
             $rules['documents.basic_salary_letter'] = ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'];

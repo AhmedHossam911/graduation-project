@@ -7,6 +7,12 @@ use App\Models\Services\Membership;
 use App\Models\Services\Subscription;
 use Carbon\Carbon;
 
+/**
+ * Console Command: subscriptions:generate-annual
+ * 
+ * Scheduled task that generates the mandatory annual subscription fee for all active members.
+ * The fee is dynamically calculated based on the member's starting salary as per the fund's financial rules.
+ */
 class GenerateAnnualSubscriptions extends Command
 {
     /**
@@ -54,7 +60,8 @@ class GenerateAnnualSubscriptions extends Command
             if (!$exists) {
                 $salary = $member->employmentInfo->starting_salary ?? 0;
                 
-                // Rule: ((Basic Salary * 3 / 100) * 100) which is effectively Salary * 3
+                // Business Rule: The annual fee is calculated as ((Basic Salary * 3%) * 100).
+                // Mathematically, this simplifies to just (Salary * 3).
                 $annualFee = $salary * 3;
 
                 Subscription::create([

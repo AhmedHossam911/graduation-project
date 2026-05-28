@@ -16,6 +16,11 @@ use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Centralized controller managing the entire authentication lifecycle.
+ * Handles Login, 2-Factor Authentication (2FA), Registration, and Password Recovery.
+ * Heavily relies on OTPs (One-Time Passwords) via Email to ensure security.
+ */
 class AuthController extends Controller
 {
     public function showLogin() {
@@ -30,6 +35,10 @@ class AuthController extends Controller
         return view('auth.forgot-password');
     }
 
+    /**
+     * Authenticate a user via their National ID and password.
+     * Enforces account verification and 2FA before establishing a session.
+     */
     public function login(Request $request) {
         $request->validate([
             'national_id' => 'required',
@@ -51,6 +60,7 @@ class AuthController extends Controller
             return back()->withErrors(['password' => 'كلمة المرور غير صحيحة.'])->withInput();
         }
 
+        // If the account exists but the email hasn't been verified yet, force OTP verification.
         if (is_null($user->email_verified_at)) {
             $otp = rand(100000, 999999);
             OtpCode::create([
@@ -68,11 +78,12 @@ class AuthController extends Controller
             return redirect()->route('register.verify')->with('success', 'حسابك غير مفعل. تم إرسال رمز تفعيل جديد إلى بريدك الإلكتروني.');
         }
 
+        // Block login if the account is flagged as restricted by an administrator.
         if ($user->is_restricted === true) {
             return back()->withInput()->with('error', 'الحساب قيد المراجعة أو موقوف بواسطة الإدارة.');
         }
 
-        // 2FA Flow
+        // 2FA Flow: Store user ID temporarily in session and require OTP validation to proceed.
         session(['login_2fa_user_id' => $user->id]);
 
         $otp = rand(100000, 999999);
@@ -91,6 +102,9 @@ class AuthController extends Controller
         return redirect()->route('login.2fa.otp')->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.');
     }
 
+    /**
+     * Re-send a fresh 2FA OTP code if the user requests a new one.
+     */
     public function send2faOtp(Request $request) {
         $userId = session('login_2fa_user_id');
         if (!$userId) return redirect()->route('login');
@@ -120,6 +134,10 @@ class AuthController extends Controller
         return view('auth.2fa-otp');
     }
 
+    /**
+     * Validate the provided 2FA OTP code against the database.
+     * On success, establishes the actual login session and redirects based on user role.
+     */
     public function verify2faOtp(Request $request) {
         $request->validate(['code' => 'required|digits:6'], [
             'code.required' => 'يرجى إدخال رمز التحقق.',
@@ -156,6 +174,10 @@ class AuthController extends Controller
 
 
 
+    /**
+     * Handle the registration of a new member.
+     * Uses database transactions to ensure the User, Member, and Employment info are all created atomically.
+     */
     public function register(Request $request) {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -260,6 +282,9 @@ class AuthController extends Controller
         return redirect()->route('dashboard')->with('success', 'تم تفعيل الحساب بنجاح.');
     }
 
+    /**
+     * Trigger the Password Recovery process by generating and sending an OTP to the user's email.
+     */
     public function sendOtp(Request $request) {
         $request->validate([
             'national_id' => 'required',
@@ -295,6 +320,10 @@ class AuthController extends Controller
         return view('auth.otp-verify');
     }
 
+    /**
+     * Verify the OTP sent for password recovery.
+     * Grants temporary authorization in the session to reset the password.
+     */
     public function verifyOtp(Request $request) {
         $request->validate(['code' => 'required|digits:6']);
         $userId = session('reset_user_id');
@@ -318,6 +347,9 @@ class AuthController extends Controller
         return view('auth.reset-password');
     }
 
+    /**
+     * Complete the password recovery cycle by applying the new hashed password to the user account.
+     */
     public function resetPassword(Request $request) {
         $request->validate([
             'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed'
@@ -332,6 +364,9 @@ class AuthController extends Controller
         return redirect()->route('login')->with('success', 'تم إعادة تعيين كلمة المرور بنجاح.');
     }
 
+    /**
+     * Terminate the user session and redirect to the login page.
+     */
     public function logout() {
         Auth::logout();
         return redirect()->route('login');

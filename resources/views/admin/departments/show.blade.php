@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    Departments Show View:
+    Displays the roster of all fund members registered under a specific faculty/department.
+--}}
 
 @section('title', 'عرض كلية او قطاع')
 

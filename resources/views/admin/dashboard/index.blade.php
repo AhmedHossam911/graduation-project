@@ -1,4 +1,12 @@
 @extends('layouts.app')
+{{-- 
+    Dashboard View:
+    Displays the primary system analytics for Admins, including:
+    - Active members count
+    - Total granted loans
+    - Fund balance
+    - Charts for installments vs revenues and faculty distributions.
+--}}
 
 @section('title', 'لوحة تحكم الإدارة')
 

@@ -1,4 +1,8 @@
 @extends('layouts.app')
+{{-- 
+    Departments View:
+    Manage university faculties/departments, view their codes, and see the total member count registered under each department.
+--}}
 
 @section('title', 'إدارة كليات وقطاعات الجامعة')
 

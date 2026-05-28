@@ -10,6 +10,10 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
+/**
+ * Mailable class for delivering One-Time Passwords (OTPs).
+ * Used across the system for Two-Factor Authentication (2FA) and secure password resets.
+ */
 class OtpMail extends Mailable
 {
     use Queueable, SerializesModels;

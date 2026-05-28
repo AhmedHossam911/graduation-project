@@ -11,6 +11,10 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Services\Membership;
 
+/**
+ * Mailable class triggered when a membership is automatically or manually suspended.
+ * Notifies the member of the suspension due to prolonged financial arrears.
+ */
 class MembershipSuspendedMail extends Mailable
 {
     use Queueable, SerializesModels;

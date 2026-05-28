@@ -10,6 +10,10 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
+/**
+ * Handles the generation of Excel reports for all general financial transactions (inflows/outflows).
+ * Enriches the raw transaction data with human-readable labels for payment categories and methods.
+ */
 class FinanceExport implements FromQuery, WithHeadings, WithMapping, WithStyles
 {
     protected $query;

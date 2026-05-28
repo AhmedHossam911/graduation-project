@@ -4,6 +4,13 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+/**
+ * Console Command: subscriptions:check-overdue
+ * 
+ * A critical scheduled task that enforces the fund's bylaws regarding unpaid subscriptions.
+ * It automatically transitions unpaid dues to overdue, sends escalation warnings via email,
+ * and ultimately suspends memberships if arrears persist beyond the grace period.
+ */
 class CheckOverdueSubscriptions extends Command
 {
     /**
@@ -30,11 +37,14 @@ class CheckOverdueSubscriptions extends Command
         $sixMonthsAgo = $now->copy()->subMonths(6);
 
         // 0. Update status to 'overdue' if due_date has passed
+        // This ensures the dashboard accurately reflects late payments.
         \App\Models\Services\Subscription::where('status', 'unpaid')
             ->where('due_date', '<', $now)
             ->update(['status' => 'overdue']);
 
-        // 1. Send warning (1 to 6 months overdue)
+        // 1. Send late payment warnings.
+        // Target subscriptions that are between 1 and 6 months late.
+        // Ensures we only send one warning per month (grace period between emails).
         $warningSubs = \App\Models\Services\Subscription::with('membership.member.user')
             ->whereIn('status', ['unpaid', 'overdue'])
             ->where('due_date', '<=', $oneMonthAgo)
@@ -57,7 +67,9 @@ class CheckOverdueSubscriptions extends Command
             $sub->update(['last_warning_sent_at' => $now]);
         }
 
-        // 2. Suspend memberships if 1 month passed since official notice (notice_sent_at)
+        // 2. Suspend Memberships.
+        // According to bylaws, if an official notice has been sent and another month passes without payment,
+        // the membership is automatically suspended.
         $suspendSubs = \App\Models\Services\Subscription::with('membership.member.user')
             ->whereIn('status', ['unpaid', 'overdue'])
             ->whereNotNull('notice_sent_at')
@@ -67,6 +79,7 @@ class CheckOverdueSubscriptions extends Command
         foreach ($suspendSubs as $sub) {
             $membership = $sub->membership;
             if ($membership && $membership->status !== 'suspended') {
+                // Execute the suspension
                 $membership->update(['status' => 'suspended']);
 
                 $user = $membership->member->user;
@@ -78,7 +91,7 @@ class CheckOverdueSubscriptions extends Command
                     }
                 }
 
-                // Notify admin/employee
+                // Notify the administration team about the automated suspension so they can take further manual action if needed.
                 $employees = \App\Models\Auth\User::whereHas('roles', function($q) {
                     $q->whereIn('name', ['General Admin', 'Membership Employee']);
                 })->get();

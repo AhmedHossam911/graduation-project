@@ -5,6 +5,10 @@ namespace App\Models\Services;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents a monthly financial subscription (due) that a member must pay to remain active.
+ * Tracks payment status and maintains timestamps for successive arrears warnings to enforce fund bylaws.
+ */
 class Subscription extends Model
 {
     use HasFactory;

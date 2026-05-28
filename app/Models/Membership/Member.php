@@ -9,6 +9,11 @@ use App\Models\Auth\User;
 use App\Models\System\Department;
 use App\Models\Services\Membership;
 
+/**
+ * Represents the core profile of a fund participant.
+ * Contains essential personal data (National ID, Date of Birth, Contact info) and links to
+ * auxiliary data models (EmploymentInfo, FamilyInfo, Attachments, Membership status).
+ */
 class Member extends Model
 {
     use HasFactory, SoftDeletes;

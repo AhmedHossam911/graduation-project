@@ -5,6 +5,10 @@ namespace App\Models\Financial;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Represents a single monthly installment payment toward an active loan.
+ * Tracks the due date, amount, payment status, and whether it was paid as part of an early repayment process.
+ */
 class Installment extends Model
 {
     use HasFactory;

@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * Manages the self-service profile portal for standard members.
+ * Enables them to update basic contact info and securely change their passwords.
+ */
 class ProfileController extends Controller
 {
     /**
@@ -41,7 +45,8 @@ class ProfileController extends Controller
     }
 
     /**
-     * Change the authenticated user's password.
+     * Process a password change request.
+     * Enforces checking the current password before allowing the update for security.
      */
 public function changePassword(Request $request)
 {

@@ -24,7 +24,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-// Authentication Routes
+// ─── Authentication & Access Control ─────────────────────────────────
+// Routes handling login, registration, password resets, and 2-Factor Authentication.
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -53,13 +54,14 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('log-out');
 
-    // Admin Routes (Admin Only)
+    // ─── Administration Panel ──────────────────────────────────────────
+    // Routes strictly reserved for the Super Admin role to manage system-wide settings, permissions, and view high-level reports.
     Route::middleware([EnsureAdmin::class])->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/dashboard/chart-data', [AdminDashboardController::class, 'chartData'])->name('admin.dashboard.chartData');
         Route::get('/admin/search', [AdminDashboardController::class, 'search'])->name('admin.search');
 
-        // Reports Routes
+        // Comprehensive Reporting System
         Route::get('/admin/reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('admin.reports.index');
         
         Route::get('/admin/reports/revenue-expenses', [\App\Http\Controllers\Admin\ReportController::class, 'revenueExpenses'])->name('admin.reports.revenue_expenses');
@@ -118,24 +120,28 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    // Profile
+    // ─── Shared Member Profile ───────────────────────────────────────
+    // Accessible by any logged-in user to manage their own personal account details.
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
 
-    // Notifications
+    // ─── In-App Notifications ────────────────────────────────────────
+    // Handle reading and clearing user alerts.
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
     Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
     Route::delete('/notifications', [NotificationController::class, 'clear'])->name('notifications.clear');
 
-    // Employee Routes
+    // ─── Employee Portal ─────────────────────────────────────────────
+    // Operations handled by staff members: managing members, finances, claims, and loans.
     Route::middleware([EnsureEmployee::class])->group(function () {
         // Dashboard (Employee)
         Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('dashboard');
         Route::get('/dashboard/search-member', [EmployeeDashboardController::class, 'searchMember'])->name('dashboard.searchMember');
-        // ─── Members (member data CRUD) ──────────────────────────────────
+        // ─── Membership Management ───────────────────────────────────────
+        // Create, update, and soft-delete member records.
         Route::middleware(['permission:إدارة الأعضاء'])->group(function () {
             Route::get('members/create', [MemberController::class, 'create'])->name('members.create');
             Route::post('members', [MemberController::class, 'store'])->name('members.store');
@@ -154,7 +160,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/documents/{attachment}/view', [MemberController::class, 'viewDocument'])->name('documents.view');
             Route::get('/documents/{attachment}/download', [MemberController::class, 'downloadDocument'])->name('documents.download');
 
-            // ─── Memberships (membership lifecycle: approve/reject/status) ───
+            // ─── Membership Lifecycle ──────────────────────────────────────
+            // Approve, reject, or manually change the status of a member's application.
             Route::post('/memberships/{membership}/approve', [MembershipController::class, 'approve'])->name('memberships.approve');
             Route::post('/memberships/{membership}/reject', [MembershipController::class, 'reject'])->name('memberships.reject');
             Route::post('/memberships/{membership}/status', [MembershipController::class, 'changeStatus'])->name('memberships.changeStatus');
@@ -165,7 +172,8 @@ Route::middleware('auth')->group(function () {
             Route::get('members/{member}', [MemberController::class, 'show'])->name('members.show');
         });
 
-        // ─── Subscriptions (payment tracking, was previously "memberships") ───
+        // ─── Subscription & Dues Management ──────────────────────────────
+        // Record and track monthly payments. (Previously referred to internally as "memberships").
         Route::middleware(['permission:إدارة الاشتراكات'])->group(function () {
             Route::get('/subscriptions/export', [SubscriptionController::class, 'export'])->name('subscriptions.export');
             Route::get('/subscriptions', [SubscriptionController::class, 'index'])->name('subscriptions.index');
@@ -176,13 +184,14 @@ Route::middleware('auth')->group(function () {
             Route::get('/subscriptions/{subscription}/download-receipt', [SubscriptionController::class, 'downloadReceipt'])->name('subscriptions.download_receipt');
             Route::post('/subscriptions/{subscription}/notify', [SubscriptionController::class, 'notify'])->name('subscriptions.notify');
 
-            // ─── Legacy aliases (keep old route names working) ───────────────
+            // Legacy aliases retained to ensure backward compatibility with older links.
             Route::get('/memberships/export', [SubscriptionController::class, 'export'])->name('memberships.export');
             Route::get('/memberships', [SubscriptionController::class, 'index'])->name('memberships.index');
             Route::post('/subscriptions/{subscription}/send-notice', [SubscriptionController::class, 'sendNotice'])->name('subscriptions.send_notice');
         });
 
-        // Claims Management
+        // ─── Claims Workflow ─────────────────────────────────────────────
+        // Process end-of-service, death, or resignation insurance claims.
         Route::middleware(['permission:إدارة المطالبات'])->group(function () {
             Route::get('/claims/export', [ClaimController::class, 'export'])->name('claims.export');
             Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
@@ -191,7 +200,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/claims/{claim}/finalize', [ClaimController::class, 'finalize'])->name('claims.finalize');
         });
 
-        // ─── Loans Management ──────────────────────────────────────────────
+        // ─── Loan Operations ─────────────────────────────────────────────
+        // Approve loans, track installments, and handle early repayment scenarios.
         Route::middleware(['permission:إدارة القروض'])->group(function () {
             Route::get('/loans/export', [LoanController::class, 'export'])->name('loans.export');
             Route::get('/loans', [LoanController::class, 'index'])->name('loans.index');
@@ -211,14 +221,16 @@ Route::middleware('auth')->group(function () {
             Route::post('/loans/{loan}/early-repayment', [LoanController::class, 'earlyRepayment'])->name('loans.earlyRepayment');
         });
 
-        // ─── Finance Management ─────────────────────────────────────────
+        // ─── General Financial Transactions ──────────────────────────────
+        // Overview of all cash inflows and outflows across the system.
         Route::middleware(['permission:الشؤون المالية'])->group(function () {
             Route::get('/finance/export', [FinanceController::class, 'export'])->name('finance.export');
             Route::get('/finance', [FinanceController::class, 'index'])->name('finance.index');
             Route::post('/finance', [FinanceController::class, 'store'])->name('finance.store');
             Route::get('/finance/{transaction}', [FinanceController::class, 'show'])->name('finance.show');
         });
-        // ─── Print Management ─────────────────────────────────────────
+        // ─── Document Printing ───────────────────────────────────────────
+        // Generate printable receipts, declarations, and reports.
         Route::prefix('print')->name('print.')->group(function () {
             Route::get('/transaction/{id}', [PrintController::class, 'transaction'])->name('transaction');
             Route::get('/claim-receipt/{id}', [PrintController::class, 'claimReceipt'])->name('claim_receipt');

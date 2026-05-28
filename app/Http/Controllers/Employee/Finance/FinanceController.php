@@ -18,12 +18,12 @@ class FinanceController extends Controller
      */
     public function index(Request $request)
     {
-        // ── Summary cards ────────────────────────────────────────────
+        // ── Calculate totals for the summary cards displayed at the top of the dashboard ──
         $totalRevenue = Transaction::where('type', 'IN')->sum('amount');
         $totalExpense = Transaction::where('type', 'OUT')->sum('amount');
         $todayCount   = Transaction::whereDate('created_at', today())->count();
 
-        // ── Filtered queries ─────────────────────────────────────────
+        // ── Build filtered queries for all transactions, revenues, and expenses ──
         $allQuery     = $this->buildFilteredQuery($request);
         $revenueQuery = $this->buildFilteredQuery($request)->where('type', 'IN');
         $expenseQuery = $this->buildFilteredQuery($request)->where('type', 'OUT');
@@ -145,7 +145,7 @@ class FinanceController extends Controller
     {
         $query = Transaction::with(['membership.member']);
 
-        // Search by member name, membership number, or transaction ID
+        // Allow searching transactions by member name, membership number, or the specific transaction ID.
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -164,7 +164,7 @@ class FinanceController extends Controller
             });
         }
 
-        // Filter by date
+        // Apply date filtering to only show transactions that occurred on a specific day.
         if ($request->filled('date')) {
             try {
                 $date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
@@ -180,12 +180,12 @@ class FinanceController extends Controller
             }
         }
 
-        // Filter by payment method
+        // Apply filtering based on the payment method used (e.g., cash, bank transfer).
         if ($request->filled('method') && $request->method !== 'all') {
             $query->where('method', $request->method);
         }
 
-        // Filter by category
+        // Apply filtering based on the transaction category (e.g., loan installment, membership fee).
         if ($request->filled('category') && $request->category !== 'all') {
             $category = $request->category;
             $query->where(function ($q) use ($category) {

@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Services\Membership;
 use App\Models\Auth\User;
 
+/**
+ * Represents a financial loan issued to a member.
+ * Tracks the total principal, applied interest, repayment duration (months), and the monthly installment amount.
+ * A loan is linked to multiple Installment records.
+ */
 class Loan extends Model
 {
     use HasFactory;
@@ -37,8 +42,12 @@ class Loan extends Model
         return $this->hasMany(Installment::class);
     }
     
-        public function getRemainingLoanBalanceAttribute()
-        {
+    /**
+     * Dynamically calculates the outstanding loan balance.
+     * Deducts the sum of all 'paid' installments from the total expected loan amount.
+     */
+    public function getRemainingLoanBalanceAttribute()
+    {
             return $this->total_amount - $this->installments()->sum('amount');
         }
 

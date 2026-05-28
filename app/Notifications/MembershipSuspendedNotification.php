@@ -8,6 +8,11 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use App\Models\Services\Membership;
 
+/**
+ * Database Notification: Triggered when a member's subscription arrears lead to account suspension.
+ * This notification is stored in the database and displayed in the Admin/Employee dashboards 
+ * so they are immediately aware of the automated suspension action taken by the system.
+ */
 class MembershipSuspendedNotification extends Notification
 {
     use Queueable;

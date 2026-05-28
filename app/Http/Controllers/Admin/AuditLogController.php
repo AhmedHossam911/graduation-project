@@ -6,8 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\System\AuditLog;
 use Illuminate\Http\Request;
 
+/**
+ * Handles the administrative view of system-wide audit logs.
+ * This controller allows Super Admins to monitor user actions and detect suspicious activity.
+ */
 class AuditLogController extends Controller
 {
+    /**
+     * Display a paginated list of system audit logs.
+     * Supports dynamic searching by Log ID, Action, or User Name.
+     */
     public function index(Request $request)
     {
         $query = AuditLog::with('user');

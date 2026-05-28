@@ -7,6 +7,11 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
+/**
+ * Handles the generation of Excel reports for member subscriptions (dues).
+ * Uses Maatwebsite Excel to map the data, translating backend status codes into Arabic labels,
+ * and specifically tagging subscriptions that require warnings due to extended arrears.
+ */
 class SubscriptionsExport implements FromQuery, WithMapping, WithHeadings
 {
     protected $query;
@@ -25,6 +30,7 @@ class SubscriptionsExport implements FromQuery, WithMapping, WithHeadings
 
     public function map($subscription): array
     {
+        // Check if the due date has passed to dynamically calculate arrears.
         $isPast = $subscription->due_date && \Carbon\Carbon::parse($subscription->due_date)->isPast();
         $monthsLate = $isPast ? \Carbon\Carbon::parse($subscription->due_date)->diffInMonths(now()) : 0;
         $noticeSent = $subscription->notice_sent_at !== null;

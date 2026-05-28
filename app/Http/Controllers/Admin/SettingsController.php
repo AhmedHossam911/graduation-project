@@ -39,14 +39,14 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        // Load all settings efficiently using Cache and a single query
+        // We load all settings efficiently from the cache using a single query to reduce database load.
         $dbSettings = Cache::rememberForever('system_settings', function () {
             return SystemSetting::pluck('value', 'key')->toArray();
         });
 
         $settings = array_merge($this->defaults, $dbSettings);
 
-        // Get the latest system setting update for audit display
+        // Retrieve the most recent update made to the system settings to display in the audit trail.
         $lastUpdate = SystemSetting::orderBy('updated_at', 'desc')->first();
         $lastUpdateUser = null;
         if ($lastUpdate) {
@@ -99,7 +99,7 @@ class SettingsController extends Controller
 
         Cache::forget('system_settings');
 
-        // Log the action in AuditLog if the audit log system is functional
+        // Attempt to log the update action in the AuditLog to maintain a record of system changes.
         try {
             AuditLog::create([
                 'user_id' => auth()->id(),
@@ -109,7 +109,7 @@ class SettingsController extends Controller
                 'ip_address' => $request->ip()
             ]);
         } catch (\Exception $e) {
-            // Silence log errors if table or fields differ
+            // We silently catch any exceptions here to ensure that a logging failure doesn't interrupt the user's workflow.
         }
 
         return redirect()->back()->with('success', 'تم حفظ التعديلات بنجاح.');
@@ -138,7 +138,7 @@ class SettingsController extends Controller
                 'ip_address' => $request->ip()
             ]);
         } catch (\Exception $e) {
-            // Silence log errors
+            // We silently catch any exceptions here as well, so the reset operation completes smoothly even if logging fails.
         }
 
         return redirect()->back()->with('success', 'تم استعادة قيم اللائحة الأساسية بنجاح.');

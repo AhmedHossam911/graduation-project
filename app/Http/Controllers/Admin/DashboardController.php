@@ -17,7 +17,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Cache available years to prevent full table scan on every dashboard load
+        // We cache the available years to avoid running a full table scan every time the dashboard loads.
         $availableYears = Cache::remember('dashboard_available_years', 3600, function () {
             $years = Transaction::select(DB::raw('YEAR(created_at) as year'))
                 ->distinct()
@@ -29,25 +29,25 @@ class DashboardController extends Controller
 
         $year = $request->input('year', $availableYears[0] ?? date('Y'));
 
-        // Top Cards Statistics
+        // Gather statistics for the top summary cards on the dashboard.
         $totalActiveMembers = Member::whereHas('membershipInfo', function($q) {
             $q->where('status', 'active');
         })->count();
 
-        // Total Granted Loans (All active loans, not filtered by year)
+        // Calculate the total amount of all currently active loans across all years.
         $totalGrantedLoans = Loan::where('status', 'active')->sum('base_amount');
 
-        // Optimize Total Fund Balance to 1 query instead of 2
+        // We optimize the total fund balance calculation by using a single query instead of two separate queries for inputs and outputs.
         $fundTotals = Transaction::selectRaw('
             SUM(CASE WHEN type = "IN" THEN amount ELSE 0 END) as totalIn,
             SUM(CASE WHEN type = "OUT" THEN amount ELSE 0 END) as totalOut
         ')->first();
         $totalFundBalance = ($fundTotals->totalIn ?? 0) - ($fundTotals->totalOut ?? 0);
 
-        // Pending Claims (All pending claims, not filtered by year)
+        // Count the number of claims that are still pending review, regardless of the year.
         $pendingClaims = Claim::where('status', 'pending')->count();
 
-        // 4. Latest Disbursement Operations
+        // Fetch the 5 most recent disbursement operations (outgoing transactions) to display on the dashboard.
         $latestDisbursements = Transaction::with(['membership.member'])
             ->where('type', 'OUT')
             ->orderBy('created_at', 'desc')
@@ -69,7 +69,7 @@ class DashboardController extends Controller
     {
         $year = $request->input('year', date('Y'));
 
-        // 1. Loan Installments Collection Status
+        // 1. Retrieve the collection status of loan installments, grouped by month, to show the paid vs. late trends.
         $installments = Installment::select(
             DB::raw('MONTH(due_date) as month'),
             DB::raw('SUM(CASE WHEN status = "paid" THEN 1 ELSE 0 END) as paid_count'),
@@ -89,7 +89,7 @@ class DashboardController extends Controller
             $lateInstallments[] = $installments->has($m) ? (int)$installments[$m]->late_count : 0;
         }
 
-        // 2. Revenues and Expenses by month
+        // 2. Calculate total revenues and expenses for each month to visualize financial health over the selected year.
         $transactions = Transaction::select(
             DB::raw('MONTH(created_at) as month'),
             DB::raw('SUM(CASE WHEN type = "IN" THEN amount ELSE 0 END) as revenue'),
@@ -108,7 +108,7 @@ class DashboardController extends Controller
             $expenses[] = $transactions->has($m) ? (float)$transactions[$m]->expense : 0;
         }
 
-        // 3. Faculty Participation Percentages
+        // 3. Calculate the percentage of member participation from each faculty/department to display in a pie chart.
         $facultyParticipation = Member::select('department_id', DB::raw('count(*) as count'))
             ->with('department:id,name')
             ->groupBy('department_id')
@@ -143,7 +143,7 @@ class DashboardController extends Controller
 
         $results = [];
 
-        // Search Members (Name, National ID, Membership Number)
+        // Search through members by their full name, national ID, or membership number.
         $members = Member::with('membershipInfo')
             ->where('full_name', 'like', "%{$q}%")
             ->orWhere('national_id', 'like', "%{$q}%")
@@ -160,7 +160,7 @@ class DashboardController extends Controller
             ];
         }
 
-        // Search Loans
+        // If the query is numeric, search for specific loan records by their ID.
         if (is_numeric($q)) {
             $loans = Loan::where('id', $q)->limit(3)->get();
             foreach ($loans as $loan) {
@@ -172,7 +172,7 @@ class DashboardController extends Controller
                 ];
             }
 
-            // Search Claims
+            // Also search for specific claim records by their ID if the query is numeric.
             $claims = Claim::where('id', $q)->limit(3)->get();
             foreach ($claims as $claim) {
                 $results[] = [
@@ -183,7 +183,7 @@ class DashboardController extends Controller
                 ];
             }
 
-            // Search Transactions (Receipt No or ID)
+            // Finally, search for financial transactions by either their ID or receipt number.
             $transactions = Transaction::where('id', $q)
                 ->orWhere('receipt_no', 'like', "%{$q}%")
                 ->limit(3)->get();

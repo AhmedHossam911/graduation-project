@@ -11,6 +11,10 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Membership\Member;
 
+/**
+ * Mailable class responsible for welcoming new Fund Members.
+ * It provides them with their generated dashboard credentials (national ID & password) upon successful application approval.
+ */
 class MemberAccountCreatedMail extends Mailable
 {
     use Queueable, SerializesModels;

@@ -7,6 +7,10 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Auth\User;
 
+/**
+ * Mailable class responsible for sending the initial welcome email to newly created Admin or Employee accounts.
+ * Transmits the auto-generated password and assigned permissions securely.
+ */
 class AccountCreatedMail extends Mailable
 {
     use Queueable, SerializesModels;

@@ -62,7 +62,8 @@ class Transaction extends Model
     ];
 
     /**
-     * System-generated categories (created by other controllers, visible in filters).
+     * Define the transaction categories that are generated automatically by system controllers.
+     * These are also visible when filtering financial records in the dashboard.
      */
     const SYSTEM_CATEGORIES = [
         'membership_fees'         => 'رسوم عضوية جديدة',
@@ -75,7 +76,7 @@ class Transaction extends Model
     ];
 
     /**
-     * All category labels combined (for filter display).
+     * A consolidated list of all possible transaction category labels, used primarily for rendering UI filters.
      */
     const CATEGORY_LABELS = [
         // Revenue
@@ -99,7 +100,7 @@ class Transaction extends Model
     /* ──────────────── Relationships ──────────────── */
 
     /**
-     * Polymorphic reference (subscriptions, loans, etc.).
+     * Establish a polymorphic relationship to link the transaction to its source record (e.g., a specific Subscription or Loan).
      */
     public function reference()
     {
@@ -107,7 +108,7 @@ class Transaction extends Model
     }
 
     /**
-     * Direct membership link (denormalised for fast queries).
+     * Provide a direct link to the associated Membership. This denormalized approach significantly speeds up reporting queries.
      */
     public function membership()
     {

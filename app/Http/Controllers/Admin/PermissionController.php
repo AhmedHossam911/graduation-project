@@ -107,20 +107,20 @@ class PermissionController extends Controller
         $user->name = $validated['name'];
         $user->email = $validated['email'];
 
-        // Assign or update Role
+        // Assign the appropriate role to the user, creating it if it doesn't already exist.
         if (!empty($validated['role_name'])) {
             $role = Role::firstOrCreate(['name' => $validated['role_name']]);
             $user->role_id = $role->id;
         }
 
-        // Assign JSON columns
+        // Assign the faculties and custom permissions as JSON arrays.
         $user->faculties = $validated['faculties'] ?? [];
         $user->custom_permissions = $validated['permissions'] ?? [];
         
-        $user->is_restricted = false; // Mark user as approved
+        $user->is_restricted = false; // Mark the user as approved by lifting any restrictions.
         $user->save();
 
-        // Update or create Member if national_id is provided
+        // If a national ID is provided, either update the existing member record or create a new one.
         if (!empty($validated['national_id'])) {
             $member = Member::firstOrNew(['user_id' => $user->id]);
             $member->national_id = $validated['national_id'];
@@ -147,7 +147,7 @@ class PermissionController extends Controller
 
     public function reject(User $user)
     {
-        // Placeholder: soft delete
+        // We use a soft delete here to mark the request as rejected without permanently removing the record.
         $user->delete();
         return back()->with('success', 'تم رفض الطلب بنجاح.');
     }

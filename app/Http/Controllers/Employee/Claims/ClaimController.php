@@ -30,10 +30,10 @@ class ClaimController extends Controller
         $claims = $query->paginate(10)->withQueryString();
         $claimTypes = Claim::CLAIM_TYPES;
 
-        // Statistics for cards
-        $paidCount = Claim::where('status', 'paid')->count(); // تم صرفها
-        $pendingApprovalCount = Claim::where('status', 'pending')->count(); // بانتظار الأعتماد
-        $pendingSettlementCount = Claim::where('status', 'approved')->count(); // بانتظار التسوية
+        // Gather statistics for the top summary cards on the claims dashboard.
+        $paidCount = Claim::where('status', 'paid')->count(); // Claims that have been paid out
+        $pendingApprovalCount = Claim::where('status', 'pending')->count(); // Claims awaiting administrative approval
+        $pendingSettlementCount = Claim::where('status', 'approved')->count(); // Claims approved but awaiting final settlement
 
         return view('employee.claims.index', compact('claims', 'claimTypes', 'paidCount', 'pendingApprovalCount', 'pendingSettlementCount'));
     }
@@ -42,7 +42,7 @@ class ClaimController extends Controller
     {
         $query = Claim::with(['membership.member'])->latest();
 
-        // Search by member name, membership number or claim id
+        // Allow searching claims by member name, membership number, or the specific claim ID.
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -56,24 +56,24 @@ class ClaimController extends Controller
             });
         }
 
-        // Filter by date
+        // Apply date filtering if a specific date is provided.
         if ($request->filled('date')) {
-            // Expected format from JS might be d/m/Y or Y-m-d. Let's parse it safely.
+            // The frontend might send dates in 'd/m/Y' format. We parse it safely to standard 'Y-m-d' for the database.
             try {
                 $date = \Carbon\Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
                 $query->whereDate('created_at', $date);
             } catch (\Exception $e) {
-                // If the format is already Y-m-d or different
+                // Fallback in case the date is already in 'Y-m-d' format.
                 $query->whereDate('created_at', $request->date);
             }
         }
 
-        // Filter by status
+        // Apply status filtering (e.g., pending, approved, paid).
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('status', $request->status);
         }
 
-        // Filter by type
+        // Apply type filtering based on the claim type (e.g., retirement, death).
         if ($request->filled('type') && $request->type !== 'all') {
             $query->where('type', $request->type);
         }
@@ -121,12 +121,12 @@ class ClaimController extends Controller
             $claim = Claim::create([
                 'membership_id'      => $member->membershipInfo->id,
                 'type'               => $validated['claim_type'],
-                'amount'             => 0, // Amount to be determined by admin during approval
+                'amount'             => 0, // The final amount will be determined by the administrator during the approval phase.
                 'status'             => 'pending',
                 'attachment_receipt'  => null,
             ]);
 
-            // Store claim documents as member attachments with claim-specific types
+            // Save the uploaded claim documents as attachments linked to the member's profile.
             if ($request->hasFile('claim_documents')) {
                 foreach ($request->file('claim_documents') as $docType => $file) {
                     $path = $file->store("members/{$member->id}/claims/{$claim->id}", 'public');
@@ -138,7 +138,7 @@ class ClaimController extends Controller
                 }
             }
 
-            // Audit log
+            // Log the creation of this new claim for auditing purposes.
             $this->logAudit('create', 'claims', $claim->id, null, $claim->toArray());
 
             return $claim;
@@ -154,7 +154,7 @@ class ClaimController extends Controller
      */
     public function show(Claim $claim)
     {
-        // Load relationships needed for the view
+        // Load all related models required to render the claim details view accurately.
         $claim->load(['membership.member.employmentInfo', 'membership.member.department', 'membership.subscriptions', 'membership.loans.installments']);
 
         $claimTypes = Claim::CLAIM_TYPES;
@@ -175,7 +175,7 @@ class ClaimController extends Controller
         $validated = $request->validate([
             'receipt_number' => ['required', 'string', 'max:255'],
             'receipt_file'   => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
-            'amount'         => ['nullable', 'numeric', 'min:0'], // Optional: If admin decides final amount here
+            'amount'         => ['nullable', 'numeric', 'min:0'], // Allow the admin to optionally override and specify the final approved amount.
         ]);
 
         $oldValues = $claim->toArray();
@@ -184,7 +184,7 @@ class ClaimController extends Controller
 
             $updateData = [
                 'status' => 'approved',
-                'attachment_receipt' => $validated['receipt_number'], // Using this field for receipt number or we can add receipt_number to DB
+                'attachment_receipt' => $validated['receipt_number'], // We store the receipt number here for record-keeping.
             ];
 
             if (isset($validated['amount'])) {
@@ -208,7 +208,7 @@ class ClaimController extends Controller
 
             $claim->update($updateData);
 
-            // Audit log
+            // Log the approval action.
             $this->logAudit('approve', 'claims', $claim->id, $oldValues, $claim->fresh()->toArray());
         });
 
@@ -241,7 +241,7 @@ class ClaimController extends Controller
             ]);
 
             $claim->update([
-                'status' => 'delivered' // Or 'ready', as requested by the user
+                'status' => 'delivered' // Mark the claim as delivered to the member.
             ]);
 
             $this->logAudit('finalize', 'claims', $claim->id, $oldValues, $claim->fresh()->toArray());

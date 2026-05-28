@@ -21,7 +21,7 @@ class DashboardController extends Controller
 
         $today = Carbon::today();
 
-        // Stats for the cards
+        // Gather key statistics to display on the dashboard summary cards.
         $activeMembersCount = Member::whereHas('membershipInfo', function($q) {
             $q->where('status', 'active');
         })->count();
@@ -49,7 +49,7 @@ class DashboardController extends Controller
             ->take(1)
             ->get();
 
-        // Members with missing signed form (incomplete documents)
+        // Identify active members who have not yet uploaded their signed membership form (incomplete documentation).
         $membersWithMissingDocs = Member::whereHas('membershipInfo', function($q) {
             $q->where('status', 'active');
         })->whereDoesntHave('attachments', function($q) {
@@ -57,7 +57,7 @@ class DashboardController extends Controller
         })->with('membershipInfo')->take(1)->get();
 
 
-        // Total task count for the header
+        // Calculate the total number of pending tasks to display a notification badge in the header.
         $totalTasksCount = $todaySubscriptionsCount + $dueTodayInstallmentsCount + $pendingClaimsCount + $membersWithMissingDocs->count();
 
         $lateInstallments = Installment::with('loan.membership.member')
@@ -112,10 +112,10 @@ class DashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'العضو ليس لديه عضوية مسجلة']);
         }
 
-        // Active Subscriptions
+        // Retrieve all active and unpaid subscriptions for this member.
         $unpaidSubscriptions = $membership->subscriptions;
 
-        // Active Loan
+        // Fetch the member's currently active loan and any unpaid installments associated with it.
         $activeLoan = $membership->loans->first();
         $unpaidInstallments = collect();
         if ($activeLoan) {

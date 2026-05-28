@@ -5,7 +5,7 @@ namespace App\Traits;
 trait DocumentManagerTrait
 {
     /**
-     * Clean filename by removing invalid characters.
+     * Sanitize a given filename by stripping out any characters that are invalid or unsafe for file systems.
      *
      * @param string $fileName
      * @return string
@@ -16,7 +16,8 @@ trait DocumentManagerTrait
     }
 
     /**
-     * Send a document response either inline (view) or as a download.
+     * Construct and return the appropriate HTTP response for a document.
+     * It handles formatting the headers so the file is either displayed inline in the browser or downloaded.
      *
      * @param string $path
      * @param string $fileName

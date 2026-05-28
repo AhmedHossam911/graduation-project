@@ -12,7 +12,7 @@ class SystemSetting extends Model
     protected $fillable = ['key', 'value'];
 
     /**
-     * Default settings values.
+     * A predefined set of default configuration values used when the database lacks a specific setting.
      */
     public static $defaults = [
         'system_name' => 'صندوق التأمين الخاص لأعضاء هيئة التدريس والعاملين بجامعة العاصمة',
@@ -36,7 +36,8 @@ class SystemSetting extends Model
     ];
 
     /**
-     * Get a setting value by key, fallback to defaults or user specified fallback.
+     * Retrieve a specific configuration setting by its key.
+     * If the setting is missing from the database, it gracefully falls back to the system defaults or a provided fallback.
      */
     public static function get(string $key, $default = null)
     {

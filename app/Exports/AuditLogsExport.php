@@ -9,6 +9,10 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
+/**
+ * Handles the generation of Excel reports for the system audit logs.
+ * Allows administrators to export a traceable history of user activities across all system tables.
+ */
 class AuditLogsExport implements FromQuery, WithHeadings, WithMapping, WithStyles
 {
     protected $query;
