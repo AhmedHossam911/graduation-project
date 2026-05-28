@@ -11,10 +11,12 @@ use App\Models\System\Department;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SubscriptionsExport;
+use App\Traits\DocumentManagerTrait;
 use Carbon\Carbon;
 
 class SubscriptionController extends Controller
 {
+    use DocumentManagerTrait;
     /**
      * Display the subscription list with filtering and stats.
      */
@@ -273,24 +275,33 @@ class SubscriptionController extends Controller
                             $retirementYear = $currentYear + 35; // reasonable fallback
                         }
 
+                        // Optimization: Fetch all existing years in one query
+                        $existingSubscriptions = Subscription::where('membership_id', $subscription->membership_id)
+                            ->pluck('name')
+                            ->toArray();
+
+                        $newSubscriptions = [];
+
                         // Generate subscriptions for every year until retirement
                         for ($year = $currentYear; $year <= $retirementYear; $year++) {
                             $subscriptionName = 'اشتراك عام ' . $year;
                             
-                            // Check if subscription for this year already exists
-                            $exists = Subscription::where('membership_id', $subscription->membership_id)
-                                ->where('name', $subscriptionName)
-                                ->exists();
-
-                            if (!$exists) {
-                                Subscription::create([
+                            if (!in_array($subscriptionName, $existingSubscriptions)) {
+                                $newSubscriptions[] = [
                                     'membership_id' => $subscription->membership_id,
                                     'name'          => $subscriptionName,
                                     'amount'        => $annualFee,
                                     'due_date'      => Carbon::create($year, 7, 1)->startOfDay(),
                                     'status'        => 'unpaid',
-                                ]);
+                                    'created_at'    => now(),
+                                    'updated_at'    => now(),
+                                ];
                             }
+                        }
+
+                        // Optimization: Bulk Insert
+                        if (!empty($newSubscriptions)) {
+                            Subscription::insert($newSubscriptions);
                         }
                     }
                 }
@@ -318,19 +329,16 @@ class SubscriptionController extends Controller
             ->whereNotNull('attachment_path')
             ->first();
 
-        if (!$transaction || !file_exists(storage_path('app/public/' . $transaction->attachment_path))) {
+        if (!$transaction) {
             return back()->with('error', 'لا يوجد إيصال متاح لهذا الاشتراك.');
         }
 
         $subscription->load('membership.member');
         $memberName = $subscription->membership->member->full_name ?? 'عضو';
         $subName = $subscription->name ?? 'اشتراك';
-        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$subName}");
-        $extension = pathinfo($transaction->attachment_path, PATHINFO_EXTENSION);
+        $fileName = "{$memberName} - {$subName}";
 
-        return response()->file(storage_path('app/public/' . $transaction->attachment_path), [
-            'Content-Disposition' => 'inline; filename="' . $fileName . '.' . $extension . '"'
-        ]);
+        return $this->sendDocumentResponse(storage_path('app/public/' . $transaction->attachment_path), $fileName, false);
     }
 
     public function downloadReceipt(Subscription $subscription)
@@ -340,17 +348,15 @@ class SubscriptionController extends Controller
             ->whereNotNull('attachment_path')
             ->first();
 
-        if (!$transaction || !file_exists(storage_path('app/public/' . $transaction->attachment_path))) {
+        if (!$transaction) {
             return back()->with('error', 'لا يوجد إيصال متاح لهذا الاشتراك.');
         }
 
         $subscription->load('membership.member');
         $memberName = $subscription->membership->member->full_name ?? 'عضو';
         $subName = $subscription->name ?? 'اشتراك';
-        // Clean filename of invalid characters
-        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$subName}");
-        $extension = pathinfo($transaction->attachment_path, PATHINFO_EXTENSION);
+        $fileName = "{$memberName} - {$subName}";
 
-        return response()->download(storage_path('app/public/' . $transaction->attachment_path), "{$fileName}.{$extension}");
+        return $this->sendDocumentResponse(storage_path('app/public/' . $transaction->attachment_path), $fileName, true);
     }
 }

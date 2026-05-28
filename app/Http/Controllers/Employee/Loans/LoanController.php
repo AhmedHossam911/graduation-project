@@ -151,7 +151,7 @@ class LoanController extends Controller
             return response()->json(['success' => false, 'message' => 'يوجد قرض نشط أو قيد الانتظار بالفعل لهذا العضو.']);
         }
 
-        $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
+        $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
             return response()->json(['success' => false, 'message' => "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م)."]);
         }
@@ -190,7 +190,7 @@ class LoanController extends Controller
             'declaration_file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg', 'max:5120'],
         ]);
 
-        $member = Member::with('membershipInfo.loans')->findOrFail($validated['member_id']);
+        $member = Member::with(['membershipInfo.loans', 'membershipInfo.subscriptions'])->findOrFail($validated['member_id']);
 
         if (!$member->membershipInfo) {
             return redirect()->route('loans.index')
@@ -214,7 +214,7 @@ class LoanController extends Controller
         }
 
         // Business rule: Paid subscriptions must be >= requested loan amount
-        $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
+        $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
             return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
                 ->with('error', "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م).");

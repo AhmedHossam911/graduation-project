@@ -10,11 +10,13 @@ use App\Models\Membership\Attachment;
 use App\Models\Services\Claim;
 use App\Http\Requests\Employee\Membership\MemberRequest;
 use App\Services\MemberService;
+use App\Traits\DocumentManagerTrait;
 use Carbon\Carbon;
 use Exception;
 
 class MemberController extends Controller
 {
+    use DocumentManagerTrait;
     /**
      * Shared status map used across index, show, and other views.
      */
@@ -142,26 +144,26 @@ class MemberController extends Controller
         $hasOverdueInstallment6Months = false;
 
         if ($member->membershipInfo) {
-            $totalPaidSubscriptions = $member->membershipInfo->subscriptions()->where('status', 'paid')->sum('amount');
+            $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
             
             // Only 1 active/pending/approved loan is allowed at a time based on LoanController rules
-            $activeLoan = $member->membershipInfo->loans()
+            $activeLoan = $member->membershipInfo->loans
                 ->whereIn('status', ['active', 'pending', 'approved'])
                 ->first();
 
+            $sixMonthsAgo = now()->subMonths(6);
+
             // Check for any subscription overdue for 6+ months
-            $hasOverdueSubscription6Months = $member->membershipInfo->subscriptions()
+            $hasOverdueSubscription6Months = $member->membershipInfo->subscriptions
                 ->whereIn('status', ['unpaid', 'overdue'])
-                ->where('due_date', '<=', now()->subMonths(6))
-                ->exists();
+                ->where('due_date', '<=', $sixMonthsAgo)
+                ->isNotEmpty();
 
             // Check for any installment overdue for 6+ months
-            $hasOverdueInstallment6Months = \App\Models\Financial\Installment::whereHas('loan', function($query) use ($member) {
-                    $query->where('membership_id', $member->membershipInfo->id);
-                })
+            $hasOverdueInstallment6Months = $member->membershipInfo->loans->flatMap->installments
                 ->whereIn('status', ['unpaid', 'overdue'])
-                ->where('due_date', '<=', now()->subMonths(6))
-                ->exists();
+                ->where('due_date', '<=', $sixMonthsAgo)
+                ->isNotEmpty();
 
             // User requested notice is ONLY for subscriptions
             $hasOverdue6Months = $hasOverdueSubscription6Months;
@@ -207,20 +209,13 @@ class MemberController extends Controller
         $attachment = Attachment::findOrFail($id);
         $path = storage_path('app/public/' . $attachment->file_path);
 
-        if (!file_exists($path)) {
-            abort(404);
-        }
-
         $member = Member::find($attachment->member_id);
         $memberName = $member ? $member->full_name : 'عضو';
         $documentTypes = MemberService::INITIAL_DOCUMENT_TYPES;
         $docTypeLabel = $documentTypes[$attachment->type] ?? $attachment->type;
-        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$docTypeLabel}");
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $fileName = "{$memberName} - {$docTypeLabel}";
 
-        return response()->file($path, [
-            'Content-Disposition' => 'inline; filename="' . $fileName . '.' . $extension . '"'
-        ]);
+        return $this->sendDocumentResponse($path, $fileName, false);
     }
 
     public function downloadDocument($id)
@@ -228,18 +223,13 @@ class MemberController extends Controller
         $attachment = Attachment::findOrFail($id);
         $path = storage_path('app/public/' . $attachment->file_path);
 
-        if (!file_exists($path)) {
-            abort(404);
-        }
-
         $member = Member::find($attachment->member_id);
         $memberName = $member ? $member->full_name : 'عضو';
         $documentTypes = MemberService::INITIAL_DOCUMENT_TYPES;
         $docTypeLabel = $documentTypes[$attachment->type] ?? $attachment->type;
-        $fileName = str_replace(['/', '\\', ':', '*', '?', '"', '<', '>', '|'], '-', "{$memberName} - {$docTypeLabel}");
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        $fileName = "{$memberName} - {$docTypeLabel}";
 
-        return response()->download($path, "{$fileName}.{$extension}");
+        return $this->sendDocumentResponse($path, $fileName, true);
     }
 
     // ─── Signed Form Upload ──────────────────────────────────────────

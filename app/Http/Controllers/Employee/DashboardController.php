@@ -91,6 +91,8 @@ class DashboardController extends Controller
 
         $member = Member::with(['membershipInfo.loans' => function($q) {
             $q->whereIn('status', ['active', 'pending', 'approved']);
+        }, 'membershipInfo.loans.installments' => function($q) {
+            $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }, 'membershipInfo.subscriptions' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }])->where(function ($q) use ($search) {
@@ -111,16 +113,13 @@ class DashboardController extends Controller
         }
 
         // Active Subscriptions
-        $unpaidSubscriptions = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc')->get();
+        $unpaidSubscriptions = $membership->subscriptions;
 
         // Active Loan
         $activeLoan = $membership->loans->first();
         $unpaidInstallments = collect();
         if ($activeLoan) {
-            $unpaidInstallments = $activeLoan->installments()
-                ->whereIn('status', ['unpaid', 'overdue'])
-                ->orderBy('due_date')
-                ->get();
+            $unpaidInstallments = $activeLoan->installments;
         }
 
         return response()->json([
@@ -141,7 +140,7 @@ class DashboardController extends Controller
             }),
             'loan' => $activeLoan ? [
                 'id' => $activeLoan->id,
-                'remaining_amount' => $activeLoan->total_amount - $activeLoan->installments()->where('status', 'paid')->sum('amount'),
+                'remaining_amount' => $activeLoan->total_amount - $activeLoan->installments->where('status', 'paid')->sum('amount'),
                 'installments' => $unpaidInstallments->map(function ($inst) {
                     return [
                         'id' => $inst->id,

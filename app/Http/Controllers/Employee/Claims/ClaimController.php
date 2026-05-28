@@ -11,9 +11,16 @@ use App\Models\System\AuditLog;
 use Illuminate\Support\Facades\DB;
 use App\Exports\ClaimsExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\ClaimCalculationService;
 
 class ClaimController extends Controller
 {
+    protected $claimCalculationService;
+
+    public function __construct(ClaimCalculationService $claimCalculationService)
+    {
+        $this->claimCalculationService = $claimCalculationService;
+    }
     /**
      * Display a listing of all claims.
      */
@@ -151,53 +158,12 @@ class ClaimController extends Controller
         $claim->load(['membership.member.employmentInfo', 'membership.member.department', 'membership.subscriptions', 'membership.loans.installments']);
 
         $claimTypes = Claim::CLAIM_TYPES;
+        
+        $calculations = $this->claimCalculationService->calculate($claim);
 
-        $basic_percentage = (float) \App\Models\System\SystemSetting::get('claim_basic_percentage', 145) / 100;
-        $transfer_percentage = (float) \App\Models\System\SystemSetting::get('claim_transfer_resignation_percentage', 80) / 100;
-        $funeral_expenses = (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0);
-        
-        $membership = $claim->membership;
-        $joinFeeSub = $membership->subscriptions()->where('name', 'رسم الاشتراك بالصندوق')->first() 
-            ?? $membership->subscriptions()->orderBy('id')->first();
-        $joinFee = ($joinFeeSub && $joinFeeSub->status === 'paid') ? $joinFeeSub->amount : 0;
-        
-        $paidSubsQuery = $membership->subscriptions()->where('status', 'paid');
-        if ($joinFeeSub) {
-            $paidSubsQuery->where('id', '!=', $joinFeeSub->id);
-        }
-        $paidSubscriptionsAmount = $paidSubsQuery->sum('amount');
-        $paidSubscriptionsCount = $paidSubsQuery->count();
-        
-        $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->where('due_date', '<=', now());
-        $overdueSubscriptionsAmount = $overdueSubsQuery->sum('amount');
-        $overdueSubscriptionsCount = $overdueSubsQuery->count();
-        
-        $totalPaid = $joinFee + $paidSubscriptionsAmount;
-        
-        if (in_array($claim->type, ['transfer', 'resignation'])) {
-            $insurance_benefit = $totalPaid * $transfer_percentage;
-        } else {
-            $insurance_benefit = $totalPaid * $basic_percentage;
-            if ($claim->type === 'death') {
-                $insurance_benefit += $funeral_expenses;
-            }
-        }
-        
-        $remaining_loan = $membership->remaining_loan_balance;
-        $net_amount = $insurance_benefit - ($remaining_loan + $overdueSubscriptionsAmount);
-        
-        $unpaidMonths = $overdueSubscriptionsCount * 3;
-        $paidMonths = $paidSubscriptionsCount * 3;
-        
-        $employmentJoinDate = \Carbon\Carbon::parse($membership->member->employmentInfo->join_date);
-        $serviceDuration = $employmentJoinDate->diff(now());
-        $serviceYears = $serviceDuration->y;
-        $serviceMonths = $serviceDuration->m;
-
-        return view('employee.claims.show', compact(
-            'claim', 'claimTypes', 'joinFee', 'paidSubscriptionsAmount', 
-            'insurance_benefit', 'net_amount', 'unpaidMonths', 'paidMonths', 
-            'serviceYears', 'serviceMonths', 'overdueSubscriptionsAmount'
+        return view('employee.claims.show', array_merge(
+            compact('claim', 'claimTypes'),
+            $calculations
         ));
     }
 
@@ -224,39 +190,9 @@ class ClaimController extends Controller
             if (isset($validated['amount'])) {
                 $updateData['amount'] = $validated['amount'];
             } else {
-                $basic_percentage = (float) \App\Models\System\SystemSetting::get('claim_basic_percentage', 145) / 100;
-                $transfer_percentage = (float) \App\Models\System\SystemSetting::get('claim_transfer_resignation_percentage', 80) / 100;
-                $funeral_expenses = (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0);
-                
-                $membership = $claim->membership;
-                $joinFeeSub = $membership->subscriptions()->where('name', 'رسم الاشتراك بالصندوق')->first() 
-                    ?? $membership->subscriptions()->orderBy('id')->first();
-                $joinFee = ($joinFeeSub && $joinFeeSub->status === 'paid') ? $joinFeeSub->amount : 0;
-                
-                $paidSubsQuery = $membership->subscriptions()->where('status', 'paid');
-                if ($joinFeeSub) {
-                    $paidSubsQuery->where('id', '!=', $joinFeeSub->id);
-                }
-                $paidSubscriptionsAmount = $paidSubsQuery->sum('amount');
-                
-                $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue'])->where('due_date', '<=', now());
-                $overdueSubscriptionsAmount = $overdueSubsQuery->sum('amount');
-                
-                $totalPaid = $joinFee + $paidSubscriptionsAmount;
-                
-                if (in_array($claim->type, ['transfer', 'resignation'])) {
-                    $insurance_benefit = $totalPaid * $transfer_percentage;
-                } else {
-                    $insurance_benefit = $totalPaid * $basic_percentage;
-                    if ($claim->type === 'death') {
-                        $insurance_benefit += $funeral_expenses;
-                    }
-                }
-                
-                $remaining_loan = $membership->remaining_loan_balance;
-                $insurance_benefit = $insurance_benefit - ($remaining_loan + $overdueSubscriptionsAmount);
-
-                $updateData['amount'] = $insurance_benefit;
+                $claim->load(['membership.member.employmentInfo', 'membership.subscriptions', 'membership.loans.installments']);
+                $calculations = $this->claimCalculationService->calculate($claim);
+                $updateData['amount'] = $calculations['net_amount'];
             }
 
             if ($request->hasFile('receipt_file')) {
