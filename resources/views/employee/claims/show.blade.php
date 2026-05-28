@@ -158,7 +158,7 @@
                     <hr class="border border-[#6D6D6D] my-4">
                     <div class="flex justify-between">
                         <h3 class="text-sm text-[#6D6D6D] font-medium">
-                            مديونية الاشتراكات المتأخرة
+                            إجمالي الاشتراكات الغير مدفوعة
                         </h3>
                         <p class="text-base text-[#021219] font-semibold">
                             {{ number_format($overdueSubscriptionsAmount, 2) . ' ج.م' }}
@@ -205,7 +205,7 @@
                 <hr class="border border-[#A8A8A8] my-3">
                 <div class="flex justify-between text-base text-[#F4F7F9]">
                     <h3>
-                        مديونية الاشتراكات المتأخرة
+                        إجمالي الاشتراكات الغير مدفوعة
                     </h3>
                     <p class=" font-semibold text-[#D92D20]">
                         {{ number_format($overdueSubscriptionsAmount, 2) . ' ج.م' }}
@@ -223,7 +223,7 @@
                 <hr class="border border-[#A8A8A8] mt-3">
             </div>
             <div
-                class="w-72 gap-3 flex flex-col items-center border border-[#F4F7F933] rounded-[8px] bg-[#F4F7F91A] py-7 px-2">
+                class="w-72 gap-3 flex flex-col items-center border border-[#F4F7F933] rounded-[8px] bg-[#F4F7F91A] py-7 px-2 my-auto">
                 <h3 class="text-base font-normal text-[#F4F7F9]">
                     صافي المبلغ المستحق صرفه
                 </h3>
