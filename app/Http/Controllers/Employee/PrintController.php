@@ -25,15 +25,56 @@ class PrintController extends Controller
 
     public function claimDetails($id)
     {
-        $claim = Claim::with('membership.member')->findOrFail($id);
+        $claim = Claim::with(['membership.member.employmentInfo', 'membership.member.department', 'membership.subscriptions', 'membership.loans.installments'])->findOrFail($id);
         $claimTypes = Claim::CLAIM_TYPES;
         
-        $employmentJoinDate = \Carbon\Carbon::parse($claim->membership->member->employmentInfo->join_date);
-        $serviceYears = (int) $employmentJoinDate->diffInYears(now());
-        $membershipJoinDate = \Carbon\Carbon::parse($claim->membership->member->created_at);
-        $subscriptionMonths = (int) $membershipJoinDate->diffInMonths($claim->created_at);
+        $basic_percentage = (float) \App\Models\System\SystemSetting::get('claim_basic_percentage', 145) / 100;
+        $transfer_percentage = (float) \App\Models\System\SystemSetting::get('claim_transfer_resignation_percentage', 80) / 100;
+        $funeral_expenses = (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0);
+        
+        $membership = $claim->membership;
+        $joinFeeSub = $membership->subscriptions()->where('name', 'رسم الاشتراك بالصندوق')->first() 
+            ?? $membership->subscriptions()->orderBy('id')->first();
+        $joinFee = ($joinFeeSub && $joinFeeSub->status === 'paid') ? $joinFeeSub->amount : 0;
+        
+        $paidSubsQuery = $membership->subscriptions()->where('status', 'paid');
+        if ($joinFeeSub) {
+            $paidSubsQuery->where('id', '!=', $joinFeeSub->id);
+        }
+        $paidSubscriptionsAmount = $paidSubsQuery->sum('amount');
+        $paidSubscriptionsCount = $paidSubsQuery->count();
+        
+        $overdueSubsQuery = $membership->subscriptions()->whereIn('status', ['unpaid', 'overdue']);
+        $overdueSubscriptionsAmount = $overdueSubsQuery->sum('amount');
+        $overdueSubscriptionsCount = $overdueSubsQuery->count();
+        
+        $totalPaid = $joinFee + $paidSubscriptionsAmount;
+        
+        if (in_array($claim->type, ['transfer', 'resignation'])) {
+            $insurance_benefit = $totalPaid * $transfer_percentage;
+        } else {
+            $insurance_benefit = $totalPaid * $basic_percentage;
+            if ($claim->type === 'death') {
+                $insurance_benefit += $funeral_expenses;
+            }
+        }
+        
+        $remaining_loan = $membership->remaining_loan_balance;
+        $net_amount = $insurance_benefit - ($remaining_loan + $overdueSubscriptionsAmount);
+        
+        $unpaidMonths = $overdueSubscriptionsCount * 3;
+        $paidMonths = $paidSubscriptionsCount * 3;
+        
+        $employmentJoinDate = \Carbon\Carbon::parse($membership->member->employmentInfo->join_date);
+        $serviceDuration = $employmentJoinDate->diff(now());
+        $serviceYears = $serviceDuration->y;
+        $serviceMonths = $serviceDuration->m;
 
-        return view('print.claim_details', compact('claim', 'claimTypes', 'serviceYears', 'subscriptionMonths'));
+        return view('print.claim_details', compact(
+            'claim', 'claimTypes', 'joinFee', 'paidSubscriptionsAmount', 
+            'insurance_benefit', 'net_amount', 'unpaidMonths', 'paidMonths', 
+            'serviceYears', 'serviceMonths', 'overdueSubscriptionsAmount'
+        ));
     }
 
     public function claimReceipt($id)

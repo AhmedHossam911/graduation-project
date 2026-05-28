@@ -254,6 +254,47 @@ class SubscriptionController extends Controller
                 'new_values' => $subscription->fresh()->toArray(),
                 'ip_address' => request()->ip(),
             ]);
+
+            // Generate future annual subscriptions if this is the join fee
+            if ($subscription->name === 'رسم الاشتراك بالصندوق' || $subscription->membership->subscriptions()->count() === 1) {
+                $member = $subscription->membership->member;
+                if ($member) {
+                    $employmentInfo = $member->employmentInfo;
+                    if ($employmentInfo && $employmentInfo->starting_salary) {
+                        $annualFee = $employmentInfo->starting_salary * 3;
+                        
+                        $currentYear = Carbon::now()->year;
+                        // Determine retirement year, fallback to 60 years after birth if missing
+                        if ($employmentInfo->retirement_date) {
+                            $retirementYear = Carbon::parse($employmentInfo->retirement_date)->year;
+                        } elseif ($member->birth_date) {
+                            $retirementYear = Carbon::parse($member->birth_date)->addYears(60)->year;
+                        } else {
+                            $retirementYear = $currentYear + 35; // reasonable fallback
+                        }
+
+                        // Generate subscriptions for every year until retirement
+                        for ($year = $currentYear; $year <= $retirementYear; $year++) {
+                            $subscriptionName = 'اشتراك عام ' . $year;
+                            
+                            // Check if subscription for this year already exists
+                            $exists = Subscription::where('membership_id', $subscription->membership_id)
+                                ->where('name', $subscriptionName)
+                                ->exists();
+
+                            if (!$exists) {
+                                Subscription::create([
+                                    'membership_id' => $subscription->membership_id,
+                                    'name'          => $subscriptionName,
+                                    'amount'        => $annualFee,
+                                    'due_date'      => Carbon::create($year, 7, 1)->startOfDay(),
+                                    'status'        => 'unpaid',
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
         });
 
         return back()->with('success', 'تم تسجيل سداد الاشتراك بنجاح.');

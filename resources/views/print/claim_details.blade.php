@@ -3,6 +3,7 @@
 @section('title', 'مطالبة صرف ميزة تأمينية')
 
 @section('content')
+
 <div class="px-12 py-4 space-y-4" dir="rtl">
     <!-- first section -->
     <section class="mb-6">
@@ -35,7 +36,7 @@
 
             <div class="flex-1 flex flex-col justify-center items-center gap-2 py-6 px-4 border-l border-[#1243751a]">
                 <h3 class="text-[11px] text-[#6D6D6D] font-bold uppercase tracking-widest">مدة الخدمة</h3>
-                <p class="font-bold text-[#000000] text-xl">{{ $serviceYears !== '-' ? $serviceYears . ' عاماً' : '-' }}</p>
+                <p class="font-bold text-[#000000] text-xl">{{ $serviceYears }} عام و {{ $serviceMonths }} شهر</p>
             </div>
 
             <div
@@ -72,7 +73,7 @@
                             عدد شهور الاشتراك
                         </h3>
                         <p class="text-base text-[#124375] font-semibold">
-                            {{ $subscriptionMonths !== '-' ? $subscriptionMonths . ' شهر' : '-' }}
+                            {{ $paidMonths . ' شهر' }}
                         </p>
                     </div>
                 </div>
@@ -82,7 +83,7 @@
                         رسم العضوية المسدد
                     </h3>
                     <p class="text-base text-[#021219] font-semibold">
-                        {{ $claim->membership->fees_paid . ' ج.م' }}
+                        {{ number_format($joinFee, 2) . ' ج.م' }}
                     </p>
                 </div>
                 <hr class="border border-[#6D6D6D] my-4">
@@ -91,7 +92,7 @@
                         إجمالي الاشتراكات المسددة
                     </h3>
                     <p class="text-base text-[#021219] font-semibold">
-                        {{ $claim->membership->subscription_total . ' ج.م' }}
+                        {{ number_format($paidSubscriptionsAmount, 2) . ' ج.م' }}
                     </p>
                 </div>
                 <hr class="border border-[#6D6D6D] my-4">
@@ -100,7 +101,7 @@
                         إجمالي المبلغ المدفوع
                     </h3>
                     <p class="text-[28px] text-[#019168] font-semibold">
-                        {{ $claim->membership->fees_paid + $claim->membership->subscription_total . ' ج.م' }}
+                        {{ number_format($joinFee + $paidSubscriptionsAmount, 2) . ' ج.م' }}
                     </p>
                 </div>
             </div>
@@ -129,7 +130,7 @@
                             رصيد القروض المتبقي
                         </h3>
                         <p class="text-base text-[#021219] font-semibold">
-                            {{ $claim->membership->remaining_loan_balance . ' ج.م' }}
+                            {{ number_format($claim->membership->remaining_loan_balance, 2) . ' ج.م' }}
                         </p>
                     </div>
                     <hr class="border border-[#6D6D6D] my-4">
@@ -139,7 +140,7 @@
                         إجمالي المديونية المتبقية
                     </h3>
                     <p class="text-[28px] text-[#D92D20] font-semibold">
-                        {{ $claim->membership->remaining_loan_balance . ' ج.م' }}
+                        {{ number_format($claim->membership->remaining_loan_balance + $overdueSubscriptionsAmount, 2) . ' ج.م' }}
                     </p>
                 </div>
             </div>
@@ -157,7 +158,7 @@
                         قيمة الميزة التأمينية ( الأساسية )
                     </h3>
                     <p class=" font-semibold">
-                        {{ $claim->amount . ' ج.م' }}
+                        {{ number_format($insurance_benefit, 2) . ' ج.م' }}
                     </p>
                 </div>
                 <hr class="border border-[#A8A8A8] my-3">
@@ -166,7 +167,7 @@
                         رصيد القروض المتبقي
                     </h3>
                     <p class=" font-semibold text-[#FFB3B3]">
-                        {{ $claim->membership->remaining_loan_balance . ' ج.م' }}
+                        {{ number_format($claim->membership->remaining_loan_balance, 2) . ' ج.م' }}
                     </p>
                 </div>
                 <hr class="border border-[#A8A8A8] mt-3">
@@ -177,7 +178,7 @@
                     صافي المبلغ المستحق صرفه
                 </h3>
                 <p class="text-[32px] font-medium text-[#85F8C4]">
-                    {{ $claim->amount - $claim->membership->remaining_loan_balance . ' ج.م' }}
+                    {{ number_format($net_amount, 2) . ' ج.م' }}
                 </p>
             </div>
         </div>
