@@ -17,7 +17,7 @@ class TransactionFactory extends Factory
             'reference_id' => Subscription::factory(),
             'amount' => fake()->randomFloat(2, 100, 5000),
             'type' => fake()->randomElement(['IN', 'OUT']),
-            'method' => fake()->randomElement(['Cash', 'Bank']),
+            'method' => fake()->randomElement(['cash', 'bank_transfer', 'salary_deduction']),
             'receipt_no' => 'REC-' . fake()->unique()->numerify('######'),
         ];
     }

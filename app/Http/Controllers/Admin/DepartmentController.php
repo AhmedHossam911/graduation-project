@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\System\Department;
 use App\Models\Membership\Member;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class DepartmentController extends Controller
 {
@@ -30,9 +31,19 @@ class DepartmentController extends Controller
         $activeDepartments = $activeDepartmentsQuery->orderBy('created_at', 'desc')->paginate(10, ['*'], 'active_page');
         $archivedDepartments = $archivedDepartmentsQuery->orderBy('created_at', 'desc')->paginate(10, ['*'], 'archived_page');
 
-        $totalActive = Department::where('status', 'active')->count();
-        $totalArchived = Department::where('status', 'archived')->count();
-        $totalMembers = Member::count();
+        // Optimize counts using a single query
+        $departmentCounts = Department::selectRaw('
+            SUM(CASE WHEN status = "active" THEN 1 ELSE 0 END) as total_active,
+            SUM(CASE WHEN status = "archived" THEN 1 ELSE 0 END) as total_archived
+        ')->first();
+
+        $totalActive = $departmentCounts->total_active ?? 0;
+        $totalArchived = $departmentCounts->total_archived ?? 0;
+
+        // Cache total members count to prevent counting a large table on every request
+        $totalMembers = Cache::remember('total_members_count', 3600, function () {
+            return Member::count();
+        });
 
         return view('admin.departments.index', compact('activeDepartments', 'archivedDepartments', 'totalActive', 'totalArchived', 'totalMembers', 'search'));
     }

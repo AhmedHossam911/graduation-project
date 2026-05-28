@@ -87,14 +87,14 @@
                     @foreach ($members as $member)
                         @if ($member->user->role_id === 3)
                             <tr class="text-center even:bg-[#EFEFEF] odd:bg-[#F4F7F9] text-[#021219] font-medium">
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">
                                     {{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</td>
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->full_name }}</td>
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->full_name }}</td>
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">
                                     {{ $member->department?->name ?? 'لا يوجد بيانات' }}
                                 </td>
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">{{ $member->phone }}</td>
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->phone }}</td>
                                 <td class="py-3 ص border-l border-b border-[#6D6D6D]">
                                     @php
                                         $statusCode = $member->membershipInfo->status ?? 'unknown';
@@ -118,7 +118,7 @@
                                         {{ $statusData['label'] }}
                                     </span>
                                 </td>
-                                <td class="py-3 border-l border-b border-[#6D6D6D]">
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">
                                     {{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}
                                 </td>
                                 <td class="p-3 border-l border-b border-[#6D6D6D]">
@@ -145,7 +145,7 @@
 
 @endsection
 @section('pagination')
-    <div class="sticky bottom-0 bg-[#F4F7FE] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
         {{ $members->links() }}
     </div>
 @endsection

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\System\SystemSetting;
 use App\Models\System\AuditLog;
 
@@ -38,17 +39,18 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        // Load all settings
-        $settings = [];
-        foreach ($this->defaults as $key => $default) {
-            $settings[$key] = SystemSetting::where('key', $key)->first()?->value ?? $default;
-        }
+        // Load all settings efficiently using Cache and a single query
+        $dbSettings = Cache::rememberForever('system_settings', function () {
+            return SystemSetting::pluck('value', 'key')->toArray();
+        });
+
+        $settings = array_merge($this->defaults, $dbSettings);
 
         // Get the latest system setting update for audit display
         $lastUpdate = SystemSetting::orderBy('updated_at', 'desc')->first();
         $lastUpdateUser = null;
         if ($lastUpdate) {
-            $log = AuditLog::with('user')
+            $log = AuditLog::with('user:id,name')
                 ->where('action', 'like', '%إعدادات%')
                 ->orderBy('created_at', 'desc')
                 ->first();
@@ -95,6 +97,8 @@ class SettingsController extends Controller
             );
         }
 
+        Cache::forget('system_settings');
+
         // Log the action in AuditLog if the audit log system is functional
         try {
             AuditLog::create([
@@ -122,6 +126,8 @@ class SettingsController extends Controller
                 ['value' => $value]
             );
         }
+
+        Cache::forget('system_settings');
 
         try {
             AuditLog::create([

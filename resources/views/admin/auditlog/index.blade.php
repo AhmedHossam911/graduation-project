@@ -51,7 +51,7 @@
                         <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">LOG-{{ $log->id }}</td>
                         <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $log->user->name ?? 'نظام' }}</td>
                         <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $log->created_at->translatedFormat('j F Y - g:i A') }}</td>
-                        <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $log->action }}</td>
+                        <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $log->action_description }}</td>
                         <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
                             <iconify-icon icon="solar:eye-outline" class="text-2xl open-modal cursor-pointer"
                                 data-modal="modal-{{ $log->id }}"></iconify-icon>
@@ -70,42 +70,6 @@
 
 
     <!-- start pagination -->
-    <div class="mt-auto">
-        <hr class="border border-[#A8A8A8] mt-5 mb-4">
-        <div class="pagination-container flex items-center justify-center gap-4 mb-4">
-            <div class="next-arr">
-                @if ($auditLogs->hasMorePages())
-                <a href="{{ $auditLogs->nextPageUrl() }}" class="text-[#124375] text-[16px] font-medium">
-                    التالي
-                </a>
-                @else
-                <button disabled class="text-[#6D6D6D] text-[16px] font-medium">
-                    التالي
-                </button>
-                @endif
-            </div>
-            <div class="pages-num flex items-center gap-2 text-[#124375] ">
-                @foreach ($auditLogs->getUrlRange(max(1, $auditLogs->currentPage() - 2), min($auditLogs->lastPage(), $auditLogs->currentPage() + 2)) as $page => $url)
-                @if ($page == $auditLogs->currentPage())
-                <span class="cursor-pointer bg-[#124375] text-white navy-shadow rounded-[6px] px-3 py-1 font-medium">{{ $page }}</span>
-                @else
-                <a href="{{ $url }}" class="cursor-pointer bg-[#F4F7F9] navy-shadow rounded-[6px] px-3 py-1 font-medium hover:bg-[#124375] hover:text-white transition-colors">{{ $page }}</a>
-                @endif
-                @endforeach
-            </div>
-            <div class="prev-arr">
-                @if ($auditLogs->onFirstPage())
-                <button disabled class="text-[#6D6D6D] text-[16px] font-medium ">
-                    السابق
-                </button>
-                @else
-                <a href="{{ $auditLogs->previousPageUrl() }}" class="text-[#124375] text-[16px] font-medium ">
-                    السابق
-                </a>
-                @endif
-            </div>
-        </div>
-    </div>
     <!-- end pagination -->
 
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
@@ -170,7 +134,7 @@
                 <div class="space-y-4">
                     <h3 class="text-[20px] text-[#124375] font-semibold">وصف الإجراء</h3>
                     <div class="bg-[#F4F7F9] navy-shadow py-5 px-3 rounded-[10px]">
-                        <p class="text-[16px] text-[#021219] font-medium">{{ $log->action }}</p>
+                        <p class="text-[16px] text-[#021219] font-medium">{{ $log->action_description }}</p>
                     </div>
                 </div>
                 <div class="space-y-4">
@@ -193,4 +157,10 @@
     @endforeach
 
     <script src="{{ asset('js/admin/auditLogs.js') }}"></script>
+@endsection
+
+@section('pagination')
+    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+        {{ $auditLogs->links() }}
+    </div>
 @endsection

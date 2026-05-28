@@ -183,12 +183,36 @@
             </div>
         </div>
         <!-- Faculty Participation Pie Chart -->
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-2 flex flex-col items-center">
-            <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-6">نسب مشاركة الكليات في الصندوق</h2>
-            <div class="relative w-full max-w-[300px] aspect-square flex-1">
-                <canvas id="facultyChart"></canvas>
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-2 flex flex-col">
+            <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-4">نسب مشاركة الكليات في الصندوق</h2>
+            <div class="flex flex-row items-center justify-between gap-2 h-[250px] w-full">
+                <!-- Chart Container -->
+                <div class="relative w-1/2 h-full flex justify-center items-center">
+                    <canvas id="facultyChart"></canvas>
+                </div>
+                <!-- Custom Legend Container -->
+                <div id="custom-legend" class="w-1/2 h-full overflow-y-auto pl-2 pr-1 flex flex-col gap-1 custom-scrollbar">
+                    <!-- Legend items will be injected here -->
+                </div>
             </div>
         </div>
+
+        <style>
+            .custom-scrollbar::-webkit-scrollbar {
+                width: 4px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+                background: #f1f1f1; 
+                border-radius: 10px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+                background: #c1c1c1; 
+                border-radius: 10px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: #a8a8a8; 
+            }
+        </style>
     </div>
 
     @push('scripts')
@@ -199,126 +223,153 @@
                 // Register DataLabels plugin
                 Chart.register(ChartDataLabels);
 
-                const monthsLabels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر',
-                    'أكتوبر', 'نوفمبر', 'ديسمبر'
-                ];
+                const monthsLabels = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+                const year = document.getElementById('yearInput').value;
 
-                // 1. Installments Chart
-                const ctxInstallments = document.getElementById('installmentsChart').getContext('2d');
-                new Chart(ctxInstallments, {
-                    type: 'bar',
-                    data: {
-                        labels: monthsLabels,
-                        datasets: [{
-                                label: 'أقساط متأخرة',
-                                data: @json($lateInstallments),
-                                backgroundColor: '#D4AF37', // Gold
+                fetch(`{{ route('admin.dashboard.chartData') }}?year=${year}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // 1. Installments Chart
+                        const ctxInstallments = document.getElementById('installmentsChart').getContext('2d');
+                        new Chart(ctxInstallments, {
+                            type: 'bar',
+                            data: {
+                                labels: monthsLabels,
+                                datasets: [{
+                                        label: 'أقساط متأخرة',
+                                        data: data.lateInstallments,
+                                        backgroundColor: '#D4AF37', // Gold
+                                    },
+                                    {
+                                        label: 'أقساط تم تحصيلها',
+                                        data: data.paidInstallments,
+                                        backgroundColor: '#124375', // Navy
+                                    }
+                                ]
                             },
-                            {
-                                label: 'أقساط تم تحصيلها',
-                                data: @json($paidInstallments),
-                                backgroundColor: '#124375', // Navy
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                stacked: true
-                            },
-                            y: {
-                                stacked: true,
-                                beginAtZero: true
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    x: { stacked: true },
+                                    y: { stacked: true, beginAtZero: true }
+                                },
+                                plugins: {
+                                    legend: { position: 'bottom', labels: { usePointStyle: true } },
+                                    datalabels: { display: false }
                                 }
-                            },
-                            datalabels: {
-                                display: false
-                            } // Hide labels for stacked
-                        }
-                    }
-                });
+                            }
+                        });
 
-                // 2. Revenues vs Expenses Chart
-                const ctxRevExp = document.getElementById('revenuesExpensesChart').getContext('2d');
-                new Chart(ctxRevExp, {
-                    type: 'bar',
-                    data: {
-                        labels: monthsLabels,
-                        datasets: [{
-                                label: 'إيرادات',
-                                data: @json($revenues),
-                                backgroundColor: '#124375', // Navy
+                        // 2. Revenues vs Expenses Chart
+                        const ctxRevExp = document.getElementById('revenuesExpensesChart').getContext('2d');
+                        new Chart(ctxRevExp, {
+                            type: 'bar',
+                            data: {
+                                labels: monthsLabels,
+                                datasets: [{
+                                        label: 'إيرادات',
+                                        data: data.revenues,
+                                        backgroundColor: '#124375', // Navy
+                                    },
+                                    {
+                                        label: 'مصروفات',
+                                        data: data.expenses,
+                                        backgroundColor: '#D4AF37', // Gold
+                                    }
+                                ]
                             },
-                            {
-                                label: 'مصروفات',
-                                data: @json($expenses),
-                                backgroundColor: '#D4AF37', // Gold
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { position: 'bottom', labels: { usePointStyle: true } },
+                                    datalabels: { display: false }
+                                },
+                                scales: { y: { beginAtZero: true } }
                             }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true
-                                }
-                            },
-                            datalabels: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
+                        });
 
-                // 3. Faculty Chart
-                const ctxFaculty = document.getElementById('facultyChart').getContext('2d');
-                new Chart(ctxFaculty, {
-                    type: 'pie',
-                    data: {
-                        labels: @json($facultyLabels),
-                        datasets: [{
-                            data: @json($facultyData),
-                            backgroundColor: @json($facultyColors),
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 20,
-                                    font: {
-                                        size: 10
+                        // 3. Faculty Chart
+                        const ctxFaculty = document.getElementById('facultyChart').getContext('2d');
+                        const facultyChart = new Chart(ctxFaculty, {
+                            type: 'doughnut',
+                            data: {
+                                labels: data.facultyLabels,
+                                datasets: [{
+                                    data: data.facultyData,
+                                    backgroundColor: data.facultyColors,
+                                    borderWidth: 2,
+                                    borderColor: '#ffffff',
+                                    hoverOffset: 4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                cutout: '65%',
+                                plugins: {
+                                    legend: { display: false },
+                                    datalabels: { display: false },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                let label = context.label || '';
+                                                if (label) { label += ': '; }
+                                                if (context.parsed !== null) { label += context.parsed; }
+                                                return label;
+                                            }
+                                        }
                                     }
                                 }
-                            },
-                            datalabels: {
-                                display: false
                             }
-                        }
-                    }
-                });
+                        });
+
+                        // Generate Custom HTML Legend
+                        const legendContainer = document.getElementById('custom-legend');
+                        const labels = data.facultyLabels;
+                        const facultyData = data.facultyData;
+                        const bgColors = data.facultyColors;
+                        const total = facultyData.reduce((a, b) => Number(a) + Number(b), 0);
+
+                        let legendHTML = '';
+                        labels.forEach((label, index) => {
+                            const value = facultyData[index];
+                            const color = bgColors[index];
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+
+                            legendHTML += `
+                                <div class="flex items-center justify-between text-sm hover:bg-[#EEF7FF] p-2 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-[#124375]/20 group" 
+                                     onclick="toggleChartSector(this, ${index})">
+                                    <div class="flex items-center gap-2.5 w-2/3">
+                                        <span class="w-3 h-3 rounded-full shadow-sm flex-shrink-0" style="background-color: ${color}"></span>
+                                        <span class="text-[#6D6D6D] group-hover:text-[#124375] font-medium whitespace-nowrap overflow-hidden text-ellipsis transition-colors" title="${label}">${label}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 w-1/3 justify-end">
+                                        <span class="text-[#124375] font-bold">${value}</span>
+                                        <span class="text-[10px] text-[#D4AF37] bg-[#FFFCEF] border border-[#D4AF37]/30 px-1.5 py-0.5 rounded-md flex-shrink-0" dir="ltr">${percentage}%</span>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        legendContainer.innerHTML = legendHTML;
+
+                        window.toggleChartSector = function(element, index) {
+                            const meta = facultyChart.getDatasetMeta(0);
+                            const isHidden = meta.data[index].hidden;
+                            
+                            if (isHidden) {
+                                meta.data[index].hidden = false;
+                                element.style.opacity = '1';
+                                element.classList.remove('grayscale');
+                            } else {
+                                meta.data[index].hidden = true;
+                                element.style.opacity = '0.5';
+                                element.classList.add('grayscale');
+                            }
+                            facultyChart.update();
+                        };
+                    });
             });
         </script>
     @endpush

@@ -5,44 +5,75 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use App\Models\Financial\Transaction;
+use App\Models\Financial\Loan;
+use App\Models\Financial\Installment;
+use App\Models\Services\Claim;
+use App\Models\Membership\Member;
+
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Calculate available years dynamically from transactions
-        $availableYears = \App\Models\Financial\Transaction::select(\Illuminate\Support\Facades\DB::raw('YEAR(created_at) as year'))
-            ->distinct()
-            ->orderBy('year', 'desc')
-            ->pluck('year')
-            ->toArray();
-        if (empty($availableYears)) {
-            $availableYears = [date('Y')];
-        }
+        // Cache available years to prevent full table scan on every dashboard load
+        $availableYears = Cache::remember('dashboard_available_years', 3600, function () {
+            $years = Transaction::select(DB::raw('YEAR(created_at) as year'))
+                ->distinct()
+                ->orderBy('year', 'desc')
+                ->pluck('year')
+                ->toArray();
+            return empty($years) ? [date('Y')] : $years;
+        });
 
         $year = $request->input('year', $availableYears[0] ?? date('Y'));
 
         // Top Cards Statistics
-        $totalActiveMembers = \App\Models\Membership\Member::whereHas('membershipInfo', function($q) {
+        $totalActiveMembers = Member::whereHas('membershipInfo', function($q) {
             $q->where('status', 'active');
         })->count();
 
         // Total Granted Loans (All active loans, not filtered by year)
-        $totalGrantedLoans = \App\Models\Financial\Loan::where('status', 'active')
-            ->sum('base_amount');
+        $totalGrantedLoans = Loan::where('status', 'active')->sum('base_amount');
 
-        // Total Fund Balance
-        $totalFundBalance = \App\Models\Financial\Transaction::where('type', 'IN')->sum('amount')
-                          - \App\Models\Financial\Transaction::where('type', 'OUT')->sum('amount');
+        // Optimize Total Fund Balance to 1 query instead of 2
+        $fundTotals = Transaction::selectRaw('
+            SUM(CASE WHEN type = "IN" THEN amount ELSE 0 END) as totalIn,
+            SUM(CASE WHEN type = "OUT" THEN amount ELSE 0 END) as totalOut
+        ')->first();
+        $totalFundBalance = ($fundTotals->totalIn ?? 0) - ($fundTotals->totalOut ?? 0);
 
         // Pending Claims (All pending claims, not filtered by year)
-        $pendingClaims = \App\Models\Services\Claim::where('status', 'pending')
-            ->count();
+        $pendingClaims = Claim::where('status', 'pending')->count();
 
-        // 1. Loan Installments Collection Status (Count of paid vs late/unpaid by month)
-        $installments = \App\Models\Financial\Installment::select(
-            \Illuminate\Support\Facades\DB::raw('MONTH(due_date) as month'),
-            \Illuminate\Support\Facades\DB::raw('SUM(CASE WHEN status = "paid" THEN 1 ELSE 0 END) as paid_count'),
-            \Illuminate\Support\Facades\DB::raw('SUM(CASE WHEN status IN ("unpaid", "late") THEN 1 ELSE 0 END) as late_count')
+        // 4. Latest Disbursement Operations
+        $latestDisbursements = Transaction::with(['membership.member'])
+            ->where('type', 'OUT')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
+        return view('admin.dashboard.index', compact(
+            'availableYears',
+            'year',
+            'totalActiveMembers',
+            'totalGrantedLoans',
+            'totalFundBalance',
+            'pendingClaims',
+            'latestDisbursements'
+        ));
+    }
+
+    public function chartData(Request $request)
+    {
+        $year = $request->input('year', date('Y'));
+
+        // 1. Loan Installments Collection Status
+        $installments = Installment::select(
+            DB::raw('MONTH(due_date) as month'),
+            DB::raw('SUM(CASE WHEN status = "paid" THEN 1 ELSE 0 END) as paid_count'),
+            DB::raw('SUM(CASE WHEN status IN ("unpaid", "late") THEN 1 ELSE 0 END) as late_count')
         )
         ->whereYear('due_date', $year)
         ->groupBy('month')
@@ -59,10 +90,10 @@ class DashboardController extends Controller
         }
 
         // 2. Revenues and Expenses by month
-        $transactions = \App\Models\Financial\Transaction::select(
-            \Illuminate\Support\Facades\DB::raw('MONTH(created_at) as month'),
-            \Illuminate\Support\Facades\DB::raw('SUM(CASE WHEN type = "IN" THEN amount ELSE 0 END) as revenue'),
-            \Illuminate\Support\Facades\DB::raw('SUM(CASE WHEN type = "OUT" THEN amount ELSE 0 END) as expense')
+        $transactions = Transaction::select(
+            DB::raw('MONTH(created_at) as month'),
+            DB::raw('SUM(CASE WHEN type = "IN" THEN amount ELSE 0 END) as revenue'),
+            DB::raw('SUM(CASE WHEN type = "OUT" THEN amount ELSE 0 END) as expense')
         )
         ->whereYear('created_at', $year)
         ->groupBy('month')
@@ -78,8 +109,8 @@ class DashboardController extends Controller
         }
 
         // 3. Faculty Participation Percentages
-        $facultyParticipation = \App\Models\Membership\Member::select('department_id', \Illuminate\Support\Facades\DB::raw('count(*) as count'))
-            ->with('department')
+        $facultyParticipation = Member::select('department_id', DB::raw('count(*) as count'))
+            ->with('department:id,name')
             ->groupBy('department_id')
             ->get();
 
@@ -94,29 +125,15 @@ class DashboardController extends Controller
             $facultyData[] = $totalMembers > 0 ? round(($item->count / $totalMembers) * 100, 1) : 0;
         }
 
-        // 4. Latest Disbursement Operations
-        $latestDisbursements = \App\Models\Financial\Transaction::with(['membership.member'])
-            ->where('type', 'OUT')
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        return view('admin.dashboard.index', compact(
-            'availableYears',
-            'year',
-            'totalActiveMembers',
-            'totalGrantedLoans',
-            'totalFundBalance',
-            'pendingClaims',
-            'paidInstallments',
-            'lateInstallments',
-            'revenues',
-            'expenses',
-            'facultyLabels',
-            'facultyData',
-            'facultyColors',
-            'latestDisbursements'
-        ));
+        return response()->json([
+            'paidInstallments' => $paidInstallments,
+            'lateInstallments' => $lateInstallments,
+            'revenues' => $revenues,
+            'expenses' => $expenses,
+            'facultyLabels' => $facultyLabels,
+            'facultyData' => $facultyData,
+            'facultyColors' => $facultyColors
+        ]);
     }
 
     public function search(Request $request)
@@ -127,7 +144,7 @@ class DashboardController extends Controller
         $results = [];
 
         // Search Members (Name, National ID, Membership Number)
-        $members = \App\Models\Membership\Member::with('membershipInfo')
+        $members = Member::with('membershipInfo')
             ->where('full_name', 'like', "%{$q}%")
             ->orWhere('national_id', 'like', "%{$q}%")
             ->orWhereHas('membershipInfo', function($query) use ($q) {
@@ -145,7 +162,7 @@ class DashboardController extends Controller
 
         // Search Loans
         if (is_numeric($q)) {
-            $loans = \App\Models\Financial\Loan::where('id', $q)->limit(3)->get();
+            $loans = Loan::where('id', $q)->limit(3)->get();
             foreach ($loans as $loan) {
                 $results[] = [
                     'type' => 'قرض',
@@ -156,7 +173,7 @@ class DashboardController extends Controller
             }
 
             // Search Claims
-            $claims = \App\Models\Services\Claim::where('id', $q)->limit(3)->get();
+            $claims = Claim::where('id', $q)->limit(3)->get();
             foreach ($claims as $claim) {
                 $results[] = [
                     'type' => 'مطالبة',
@@ -167,7 +184,7 @@ class DashboardController extends Controller
             }
 
             // Search Transactions (Receipt No or ID)
-            $transactions = \App\Models\Financial\Transaction::where('id', $q)
+            $transactions = Transaction::where('id', $q)
                 ->orWhere('receipt_no', 'like', "%{$q}%")
                 ->limit(3)->get();
             foreach ($transactions as $transaction) {

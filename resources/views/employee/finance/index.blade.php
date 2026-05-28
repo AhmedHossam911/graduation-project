@@ -105,6 +105,8 @@
         <!-- filteration buttons -->
         <form action="{{ route('finance.index') }}" method="GET"
             class="px-12 flex items-center justify-between gap-5 print:hidden">
+            <input type="hidden" name="active_tab" id="form-active-tab"
+                value="{{ request('active_tab', 'عدد الحركات اليوم') }}">
             <div class="relative flex-1">
                 <input type="search" name="search" value="{{ request('search') }}"
                     placeholder="الاسم أو رقم العضوية أو رقم الحركة"
@@ -216,14 +218,15 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="py-4 text-center">لا توجد حركات مالية</td>
+                                <td colspan="8" class="py-4 text-center">
+                                    <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
+                                        class="w-48 mx-auto py-6">
+                                </td>
+
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                <div class="mt-4 px-4 pb-4">
-                    {{ $transactions->links() }}
-                </div>
             </div>
 
             <!-- Revenue Transactions Tab -->
@@ -267,14 +270,15 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="py-4 text-center">لا توجد حركات إيرادات</td>
+                                <td colspan="8" class="py-4 text-center">
+                                    <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
+                                        class="w-48 mx-auto py-6">
+
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                <div class="mt-4 px-4 pb-4">
-                    {{ $revenueTransactions->links() }}
-                </div>
             </div>
 
             <!-- Expense Transactions Tab -->
@@ -318,14 +322,15 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="py-4 text-center">لا توجد حركات مصروفات</td>
+                                <td colspan="8" class="py-4 text-center">
+                                    <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
+                                        class="w-48 mx-auto py-6">
+
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-                <div class="mt-4 px-4 pb-4">
-                    {{ $expenseTransactions->links() }}
-                </div>
             </div>
         </section>
         <!-- end table -->
@@ -536,4 +541,22 @@
     </div>
 
     <script src="{{ asset('JS/employee/finance.js') }}"></script>
+@endsection
+
+@section('pagination')
+    <div
+        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80 z-[100]">
+        <div class="tab-content {{ request('active_tab', 'عدد الحركات اليوم') === 'عدد الحركات اليوم' ? '' : 'hidden' }}"
+            data-tab="عدد الحركات اليوم">
+            {{ $transactions->links() }}
+        </div>
+        <div class="tab-content {{ request('active_tab') === 'إجمالي الإيرادات' ? '' : 'hidden' }}"
+            data-tab="إجمالي الإيرادات">
+            {{ $revenueTransactions->links() }}
+        </div>
+        <div class="tab-content {{ request('active_tab') === 'إجمالي المصروفات' ? '' : 'hidden' }}"
+            data-tab="إجمالي المصروفات">
+            {{ $expenseTransactions->links() }}
+        </div>
+    </div>
 @endsection

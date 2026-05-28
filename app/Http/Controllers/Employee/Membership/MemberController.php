@@ -50,7 +50,7 @@ class MemberController extends Controller
 
         $this->applyMemberFilters($query, $request);
 
-        $members = $query->paginate(10)->withQueryString();
+        $members = $query->paginate(15)->withQueryString();
 
         return view('employee.members.index', [
             'departments' => $departments,
@@ -145,7 +145,7 @@ class MemberController extends Controller
 
         if ($member->membershipInfo) {
             $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
-            
+
             // Only 1 active/pending/approved loan is allowed at a time based on LoanController rules
             $activeLoan = $member->membershipInfo->loans
                 ->whereIn('status', ['active', 'pending', 'approved'])

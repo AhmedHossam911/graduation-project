@@ -77,16 +77,43 @@ inputsFile.forEach((input) => {
 // start tabs logic
 tabs.forEach(tab => {
     tab.addEventListener("click", () => {
-        const tabName = tab.querySelector(".tab-name").textContent
+        const tabName = tab.querySelector(".tab-name").textContent.trim();
+        
+        // Update URL to preserve active tab in pagination links
+        const url = new URL(window.location);
+        url.searchParams.set("active_tab", tabName);
+        window.history.pushState({}, "", url);
+
+        // Update hidden input in the form
+        const formActiveTab = document.getElementById("form-active-tab");
+        if (formActiveTab) {
+            formActiveTab.value = tabName;
+        }
+
         tabContents.forEach(tabContent => {
-            if (tabContent.dataset.tab === tabName) {
-                tabContent.classList.remove("hidden")
+            if (tabContent.dataset.tab.trim() === tabName) {
+                tabContent.classList.remove("hidden");
             } else {
-                tabContent.classList.add("hidden")
+                tabContent.classList.add("hidden");
             }
-        })
-    })
-})
+        });
+    });
+});
+
+// Select tab on load based on URL
+document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get("active_tab");
+    if (activeTab) {
+        tabContents.forEach(tabContent => {
+            if (tabContent.dataset.tab.trim() === activeTab.trim()) {
+                tabContent.classList.remove("hidden");
+            } else {
+                tabContent.classList.add("hidden");
+            }
+        });
+    }
+});
 // end tabs logic
 
 
@@ -140,17 +167,14 @@ document.addEventListener("click", () => {
 // calendar logic
 $(function () {
     $("#datepicker").datepicker({
+        dateFormat: "dd/mm/yy",
         showOtherMonths: true,
         selectOtherMonths: true,
         showButtonPanel: true,
         currentText: "اليوم",
         closeText: "إغلاق",
-        onSelect: function () {
-            const currentDate = $("#datepicker").datepicker("getDate");
-            const day = currentDate.getDate();
-            const month = currentDate.getMonth() + 1;
-            const year = currentDate.getFullYear();
-            calendarSpan.textContent = day + "/" + month + "/" + year;
+        onSelect: function (dateText) {
+            calendarSpan.textContent = dateText;
         }
     });
 });

@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     // Admin Routes (Admin Only)
     Route::middleware([EnsureAdmin::class])->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+        Route::get('/admin/dashboard/chart-data', [AdminDashboardController::class, 'chartData'])->name('admin.dashboard.chartData');
         Route::get('/admin/search', [AdminDashboardController::class, 'search'])->name('admin.search');
 
         // Reports Routes

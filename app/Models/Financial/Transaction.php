@@ -160,7 +160,8 @@ class Transaction extends Model
      */
     public function getMethodLabelAttribute(): string
     {
-        return self::METHOD_LABELS[$this->method] ?? $this->method ?? '-';
+        $method = strtolower($this->method ?? '');
+        return self::METHOD_LABELS[$method] ?? self::METHOD_LABELS[$this->method] ?? $this->method ?? '-';
     }
 
     /**
