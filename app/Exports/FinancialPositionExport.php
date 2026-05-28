@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Exports;
+
+use Maatwebsite\Excel\Concerns\FromArray;
+use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
+class FinancialPositionExport implements FromArray, WithHeadings, WithStyles
+{
+    public function array(): array
+    {
+        $totalRevenues = \App\Models\Financial\Transaction::where('type', 'IN')->sum('amount');
+        $totalExpenses = \App\Models\Financial\Transaction::where('type', 'OUT')->sum('amount');
+        $netBalance = $totalRevenues - $totalExpenses;
+        $activeLoansBalance = \App\Models\Financial\Loan::whereIn('status', ['active', 'pending'])->sum('total_amount') - \App\Models\Financial\Installment::where('status', 'paid')->sum('amount');
+
+        return [
+            ['إجمالي الإيرادات', number_format($totalRevenues, 2) . ' ج.م'],
+            ['إجمالي المصروفات', number_format($totalExpenses, 2) . ' ج.م'],
+            ['صافي الرصيد', number_format($netBalance, 2) . ' ج.م'],
+            ['رصيد القروض المستحقة', number_format($activeLoansBalance, 2) . ' ج.م'],
+        ];
+    }
+
+    public function headings(): array
+    {
+        return [
+            'البند',
+            'القيمة',
+        ];
+    }
+
+    public function styles(Worksheet $sheet): array
+    {
+        return [
+            1 => [
+                'font' => ['bold' => true, 'size' => 12],
+                'fill' => [
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'EEF7FF'],
+                ],
+            ],
+        ];
+    }
+}

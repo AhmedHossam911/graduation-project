@@ -5,7 +5,7 @@
 @include('partials.flash')
 
 @section('content')
-
+    <link rel="stylesheet" href="{{ asset('css/admin/reports.css') }}">
     <div class="py-7 px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-[20px] text-[#124375]  font-semibold">
@@ -65,11 +65,11 @@
                         عوائد) والمصروفات الإدارية والتشغيلية.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.revenue_expenses') }}"
+                        class="green-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6] hover:bg-[#019168] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -93,11 +93,11 @@
                         والمركز المالي (أصول، خصوم، احتياطيات) للسنة المالية الحالية والمنتهية.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.financial_position') }}"
+                        class="green-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6] hover:bg-[#019168] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -122,11 +122,11 @@
                         الأعضاء (يفرز حسب الكلية/الإدارة).</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.subscriptions') }}"
+                        class="navy-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#124375] bg-[#EEF7FF] hover:bg-[#124375] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -150,11 +150,11 @@
                         وتحديد قيم المديونيات المستحقة عليهم.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.arrears') }}"
+                        class="navy-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#124375] bg-[#EEF7FF] hover:bg-[#124375] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -178,11 +178,11 @@
                         خلال فترة محددة.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.loans') }}"
+                        class="yellow-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#D4AF37] bg-[#FFFDF2] hover:bg-[#D4AF37] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -206,16 +206,16 @@
                         ومقارنتها بالقروض الممنوحة.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.installments') }}"
+                        class="yellow-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#D4AF37] bg-[#FFFDF2] hover:bg-[#D4AF37] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div data-tab="المالية والخزينة" class="tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="المالية والخزينة" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -236,11 +236,11 @@
                         عوائد) والمصروفات الإدارية والتشغيلية.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.revenue_expenses') }}"
+                        class="green-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6] hover:bg-[#019168] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -264,16 +264,16 @@
                         والمركز المالي (أصول، خصوم، احتياطيات) للسنة المالية الحالية والمنتهية.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.financial_position') }}"
+                        class="green-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6] hover:bg-[#019168] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div data-tab="الاشتراكات  والعضوية" class="tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="الاشتراكات والعضوية" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -295,11 +295,11 @@
                         الأعضاء (يفرز حسب الكلية/الإدارة).</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.subscriptions') }}"
+                        class="navy-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#124375] bg-[#EEF7FF] hover:bg-[#124375] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -323,16 +323,16 @@
                         وتحديد قيم المديونيات المستحقة عليهم.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.arrears') }}"
+                        class="navy-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#124375] bg-[#EEF7FF] hover:bg-[#124375] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div data-tab="القروض والسلف" class="tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="القروض والسلف" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -353,11 +353,11 @@
                         ومقارنتها بالقروض الممنوحة.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.installments') }}"
+                        class="yellow-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#D4AF37] bg-[#FFFDF2] hover:bg-[#D4AF37] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -381,16 +381,16 @@
                         خلال فترة محددة.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.loans') }}"
+                        class="yellow-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#D4AF37] bg-[#FFFDF2] hover:bg-[#D4AF37] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div data-tab="المزايا والمطالبات" class="tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="المزايا والمطالبات" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -411,11 +411,11 @@
                         وفاة) وقيمتها المنصرفة للمستفيدين.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.claims') }}"
+                        class="red-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#E11D48] bg-[#FFF0F2] hover:bg-[#E11D48] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -439,16 +439,16 @@
                         استيفاء المستندات أو بانتظار الاعتماد.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.pending_claims') }}"
+                        class="red-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#E11D48] bg-[#FFF0F2] hover:bg-[#E11D48] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div data-tab="إحصائيات إدارية" class="tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="إحصائيات إدارية" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -469,11 +469,11 @@
                         موزعة على كليات وإدارات الجامعة.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.members_distribution') }}"
+                        class="purple-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#5925DC] bg-[#F4F0FF] hover:bg-[#5925DC] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
 
@@ -497,16 +497,15 @@
                         صلاحيات، اعتمادات مالية) التي تمت بالنظام.</p>
                 </div>
                 <div>
-                    <button
-                        class="green-shadow py-3 w-full  font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#019168] bg-[#F0FFF6]">
-                        <iconify-icon icon="ri:file-excel-fill" class="text-3xl"></iconify-icon>
-                        بيانات جدولية ( Excel )
-                    </button>
+                    <a href="{{ route('admin.reports.audit_logs') }}"
+                        class="purple-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#5925DC] bg-[#F4F0FF] hover:bg-[#5925DC] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <script src="{{ asset('js/admin/reports.js') }}"></script>
-
+    <script src="{{ asset('JS/admin/reports.js') }}"></script>
 @endsection

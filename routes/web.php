@@ -57,6 +57,34 @@ Route::middleware('auth')->group(function () {
     Route::middleware([EnsureAdmin::class])->group(function () {
         Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/search', [AdminDashboardController::class, 'search'])->name('admin.search');
+
+        // Reports Routes
+        Route::get('/admin/reports', [\App\Http\Controllers\Admin\ReportController::class, 'index'])->name('admin.reports.index');
+        
+        Route::get('/admin/reports/revenue-expenses', [\App\Http\Controllers\Admin\ReportController::class, 'revenueExpenses'])->name('admin.reports.revenue_expenses');
+        
+        Route::get('/admin/reports/financial-position', [\App\Http\Controllers\Admin\ReportController::class, 'financialPosition'])->name('admin.reports.financial_position');
+        Route::get('/admin/reports/financial-position/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportFinancialPosition'])->name('admin.reports.export_financial_position');
+        
+        Route::get('/admin/reports/subscriptions', [\App\Http\Controllers\Admin\ReportController::class, 'subscriptions'])->name('admin.reports.subscriptions');
+        
+        Route::get('/admin/reports/arrears', [\App\Http\Controllers\Admin\ReportController::class, 'arrears'])->name('admin.reports.arrears');
+        
+        Route::get('/admin/reports/loans', [\App\Http\Controllers\Admin\ReportController::class, 'loans'])->name('admin.reports.loans');
+        
+        Route::get('/admin/reports/installments', [\App\Http\Controllers\Admin\ReportController::class, 'installments'])->name('admin.reports.installments');
+        Route::get('/admin/reports/installments/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportInstallments'])->name('admin.reports.export_installments');
+        
+        Route::get('/admin/reports/claims', [\App\Http\Controllers\Admin\ReportController::class, 'claims'])->name('admin.reports.claims');
+        
+        Route::get('/admin/reports/pending-claims', [\App\Http\Controllers\Admin\ReportController::class, 'pendingClaims'])->name('admin.reports.pending_claims');
+        
+        Route::get('/admin/reports/members-distribution', [\App\Http\Controllers\Admin\ReportController::class, 'membersDistribution'])->name('admin.reports.members_distribution');
+        Route::get('/admin/reports/members-distribution/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportMembersDistribution'])->name('admin.reports.export_members_distribution');
+        
+        Route::get('/admin/reports/audit-logs', [\App\Http\Controllers\Admin\ReportController::class, 'auditLogs'])->name('admin.reports.audit_logs');
+        Route::get('/admin/reports/audit-logs/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportAuditLogs'])->name('admin.reports.export_audit_logs');
+
         Route::middleware(['permission:إعدادات اللائحة'])->group(function () {
             Route::get('/admin/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
             Route::post('/admin/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
