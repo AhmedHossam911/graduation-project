@@ -6,7 +6,7 @@
 
 @section('title', 'لوحة تحكم الإعدادات')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/settings.css') }}">
@@ -510,3 +510,4 @@
 
     <script src="{{ asset('js/admin/settings.js') }}"></script>
 @endsection
+

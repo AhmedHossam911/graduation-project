@@ -4,7 +4,7 @@
     The final step in password recovery where the user enters a new secure password.
 --}}
 @section('title', 'تعيين كلمة مرور جديدة')
-@include('partials.flash')
+@include('partials.common.flash')
 @section('content')
     <h2 class="text-[#333] text-lg font-semibold mb-2.5">تعيين كلمة مرور جديدة</h2>
 
@@ -58,3 +58,4 @@
     }
 </script>
 @endsection
+

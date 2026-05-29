@@ -5,7 +5,7 @@
     Prompts the user to enter the 6-digit code sent to their email.
 --}}
 @section('title', 'إدخال رمز التحقق')
-@include('partials.flash')
+@include('partials.common.flash')
 @section('content')
     <h2 class="text-[#333] text-lg font-semibold mb-2.5">تأكيد الدخول عبر الإيميل</h2>
     <p class="text-[#666] text-sm mb-6 leading-relaxed">تم إرسال رمز التحقق المكون من 6 أرقام إلى بريدك
@@ -36,3 +36,4 @@
     </form>
     </div>
 @endsection
+

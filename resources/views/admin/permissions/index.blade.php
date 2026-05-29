@@ -7,7 +7,7 @@
 
 @section('title', 'صلاحيات المستخدمين')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
 
@@ -405,3 +405,4 @@
     </script>
 
 @endsection
+

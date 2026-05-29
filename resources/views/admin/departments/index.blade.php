@@ -6,7 +6,7 @@
 
 @section('title', 'إدارة كليات وقطاعات الجامعة')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
 
@@ -193,3 +193,4 @@
         <script src="{{ asset('js/admin/departments.js') }}"></script>
 
     @endsection
+

@@ -6,7 +6,7 @@
 
 @section('title', 'سجل العمليات والمراقبة')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/auditLogs.css') }}">
@@ -168,3 +168,4 @@
         {{ $auditLogs->links() }}
     </div>
 @endsection
+

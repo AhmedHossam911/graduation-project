@@ -1,0 +1,17 @@
+*{
+    margin: 0;
+    padding: 0; 
+    box-sizing: border-box;
+}
+
+.navy-shadow{
+    box-shadow: 0px 0px 4px 0px rgba(2, 47, 92, 1);
+}
+
+.red-shadow{
+    box-shadow: 0px 0px 2px 0px rgba(217, 45, 32, 1);
+} 
+
+.orange-shadow{
+    box-shadow: 0px 0px 2px 0px rgba(247, 144, 9, 1);
+}

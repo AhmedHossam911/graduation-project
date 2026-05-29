@@ -6,7 +6,7 @@
 
 @section('title', 'إدارة كليات وقطاعات الجامعة')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/reports.css') }}">
@@ -513,3 +513,4 @@
 
     <script src="{{ asset('JS/admin/reports.js') }}"></script>
 @endsection
+

@@ -8,7 +8,7 @@
 @section('title', 'قائمة القروض')
 
 @section('content')
-    @include('partials.flash')
+    @include('partials.common.flash')
     <link rel="stylesheet" href="{{ asset('css/employee/loans.css') }}">
     <!-- start header -->
     <div class="flex justify-between px-2 py-5">
@@ -78,7 +78,7 @@
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
         </div>
         <div class="relative min-w-[240px]">
-            @include('partials.calendar', [
+            @include('partials.common.calendar', [
                 'name' => 'date',
                 'id' => 'subscriptions-datepicker',
                 'value' => request('date'),
@@ -103,7 +103,7 @@
                     }
                 }
             @endphp
-            @include('partials.dropdown', [
+            @include('partials.common.dropdown', [
                 'name' => 'department',
                 'label' => 'الجهة',
                 'options' => $statusMapping,
@@ -398,3 +398,4 @@
         {{ $loans->links() }}
     </div>
 @endsection
+

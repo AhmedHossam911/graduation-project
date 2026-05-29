@@ -25,7 +25,7 @@
     <!-- filteration buttons -->
     <form action="{{ route('admin.reports.installments') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
         <div class="relative flex-1 min-w-[200px]">
-            @include('partials.calendar', [
+            @include('partials.common.calendar', [
                 'name' => 'date_from',
                 'id' => 'report-datepicker-from',
                 'value' => request('date_from'),
@@ -35,7 +35,7 @@
             ])
         </div>
         <div class="relative flex-1 min-w-[200px]">
-            @include('partials.calendar', [
+            @include('partials.common.calendar', [
                 'name' => 'date_to',
                 'id' => 'report-datepicker-to',
                 'value' => request('date_to'),
@@ -45,7 +45,7 @@
             ])
         </div>
         <div class="relative flex-1 min-w-[200px]">
-            @include('partials.dropdown', [
+            @include('partials.common.dropdown', [
                 'name' => 'status',
                 'options' => ['all' => 'الكل', 'paid' => 'مسدد', 'unpaid' => 'غير مسدد', 'overdue' => 'متأخر'],
                 'selected' => request('status', 'all'),
@@ -109,3 +109,4 @@
         {{ $installments->links() }}
     </div>
 @endsection
+

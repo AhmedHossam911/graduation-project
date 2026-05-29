@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'لوحة التحكم') - صندوق الزمالة كابيتال</title>
+    <title>@yield('title', 'لوحة التحكم') - صندوق الزمالة جامعة العاصمة</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,20 +23,20 @@
 </head>
 
 <body class="bg-[#F4F7F9] text-slate-800 min-h-screen flex flex-col antialiased">
-    @include('partials.flash')
+    @include('partials.common.flash')
 
     {{-- Navbar --}}
-    @include('partials.navbar')
+    @include('partials.common.navbar')
 
     {{-- Main Layout --}}
     <div class="flex-1 flex flex-col min-w-0 print:overflow-visible print:h-auto">
         {{-- Sidebar --}}
         @if (strtolower(auth()->user()->role->name) === 'employee')
-            @include('partials.sidebar')
+            @include('partials.employee.sidebar')
         @elseif (strtolower(auth()->user()->role->name) === 'admin')
-            @include('partials.admin-sidebar')
+            @include('partials.admin.sidebar')
         @else
-            @include('partials.sidebar')
+            @include('partials.employee.sidebar')
         @endif
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden print:overflow-visible print:h-auto">
@@ -53,10 +53,11 @@
     </div>
 
     {{-- Footer (full width) --}}
-    @include('partials.footer')
+    @include('partials.common.footer')
 
     @stack('scripts')
     <script src="{{ asset('js/layouts/Dashboard.js') }}?v={{ time() }}"></script>
 </body>
 
 </html>
+

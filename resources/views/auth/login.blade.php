@@ -5,7 +5,7 @@
     Uses National ID and Password.
 --}}
 @section('title', 'تسجيل الدخول')
-@include('partials.flash')
+@include('partials.common.flash')
 @section('content')
     <h2 class="text-[#333] text-lg font-semibold mb-2.5">تسجيل دخول</h2>
     
@@ -61,3 +61,4 @@
     }
 </script>
 @endsection
+

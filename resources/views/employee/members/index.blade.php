@@ -36,7 +36,7 @@
                         }
                     }
                 @endphp
-                @include('partials.dropdown', [
+                @include('partials.common.dropdown', [
                     'name' => 'department',
                     'label' => 'الجهة',
                     'options' => $deptOptions,
@@ -57,7 +57,7 @@
                         }
                     }
                 @endphp
-                @include('partials.dropdown', [
+                @include('partials.common.dropdown', [
                     'name' => 'status',
                     'label' => 'الحالة',
                     'options' => $statusOptions,
@@ -154,3 +154,4 @@
         {{ $members->links() }}
     </div>
 @endsection
+

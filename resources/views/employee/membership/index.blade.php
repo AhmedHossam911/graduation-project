@@ -73,7 +73,7 @@
             <!-- end search -->
 
             <div class="relative min-w-[200px]">
-                @include('partials.calendar', [
+                @include('partials.common.calendar', [
                     'name' => 'date',
                     'id' => 'subscriptions-datepicker',
                     'value' => request('date'),
@@ -94,7 +94,7 @@
                         'suspended' => 'تم فصل العضوية',
                     ];
                 @endphp
-                @include('partials.dropdown', [
+                @include('partials.common.dropdown', [
                     'name' => 'status',
                     'label' => 'الحالة',
                     'options' => $statusOptions,
@@ -355,3 +355,4 @@
     </script>
     <script src="{{ asset('JS/employee/dashboard.js') }}?v={{ time() }}"></script>
 @endsection
+

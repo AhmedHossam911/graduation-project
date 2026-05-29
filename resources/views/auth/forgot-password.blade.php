@@ -4,7 +4,7 @@
     Allows users to request a password reset link/temporary password using their National ID and Email.
 --}}
 @section('title', 'إعادة تعيين كلمة المرور')
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <h2 class="text-[#333] text-lg font-semibold mb-2.5">إعادة تعيين كلمة المرور</h2>
@@ -45,3 +45,4 @@
         <a href="{{ route('login') }}" class="text-[#193e6a] no-underline font-semibold transition-colors duration-200 hover:text-[#27568f]">الرجوع لتسجيل الدخول</a>
     </div>
 @endsection
+

@@ -187,7 +187,7 @@
                             @enderror
                         </div>
                         <div class="w-80">
-                            @include('partials.dropdown', [
+                            @include('partials.common.dropdown', [
                                 'name' => 'marital_status',
                                 'label' => 'الحالة الاجتماعية',
                                 'options' => [
@@ -224,7 +224,7 @@
                                     $deptOptions[$dept->name] = $dept->name;
                                 }
                             @endphp
-                            @include('partials.dropdown', [
+                            @include('partials.common.dropdown', [
                                 'name' => 'employer_name',
                                 'label' => 'جهة العمل',
                                 'options' => $deptOptions,
@@ -574,3 +574,4 @@
         </script>
     @endif
 @endsection
+

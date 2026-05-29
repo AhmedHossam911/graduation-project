@@ -32,7 +32,7 @@
                     $years[$i] = $i;
                 }
             @endphp
-            @include('partials.dropdown', [
+            @include('partials.common.dropdown', [
                 'name' => 'year',
                 'options' => $years,
                 'selected' => request('year', $currentYear),
@@ -80,3 +80,4 @@
         </div>
     </section>
 @endsection
+

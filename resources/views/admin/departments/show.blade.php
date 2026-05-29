@@ -6,7 +6,7 @@
 
 @section('title', 'عرض كلية او قطاع')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
 
@@ -164,3 +164,4 @@
     <script src="{{ asset('js/admin/departmentsView.js') }}"></script>
 
 @endsection
+

@@ -8,7 +8,7 @@
 @section('title', 'عرض بيانات العضو')
 
 @section('content')
-    @include('partials.flash')
+    @include('partials.common.flash')
     <link rel="stylesheet" href="{{ asset('css/employee/member.css') }}">
 
     @php
@@ -298,3 +298,4 @@
     @include('employee.members.partials.modals')
     @include('employee.members.partials.scripts')
 @endsection
+

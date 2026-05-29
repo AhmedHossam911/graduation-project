@@ -4,7 +4,7 @@
     Used during new user registration to verify the provided email address via OTP.
 --}}
 @section('title', 'تفعيل الحساب')
-@include('partials.flash')
+@include('partials.common.flash')
 @section('content')
     <h2 class="text-[#333] text-lg font-semibold mb-2.5">التحقق من الرمز المكون من 6 أرقام</h2>
     <p class="text-[#666] text-sm mb-6 leading-relaxed">
@@ -28,3 +28,4 @@
         <button type="submit" class="bg-[#193e6a] text-white border-none rounded-lg w-full h-[50px] text-lg font-semibold cursor-pointer transition-all duration-300 mt-2.5 hover:bg-[#27568f] hover:shadow-[0_4px_15px_rgba(25,62,106,0.3)] flex items-center justify-center gap-2">تفعيل الحساب</button>
     </form>
 @endsection
+

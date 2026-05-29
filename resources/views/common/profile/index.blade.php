@@ -6,7 +6,7 @@
 --}}
 @section('title', 'الملف الشخصي')
 @section('content')
-    @include('partials.flash')
+    @include('partials.common.flash')
     <style src="{{ asset('css/common/profile.css') }}"></style>
     <div class="profile transition-all duration-300">
         <div class="profile-header py-7 text-center">
@@ -137,3 +137,4 @@
     <script src="{{ asset('js/common/profile.js') }}"></script>
 
 @endsection
+

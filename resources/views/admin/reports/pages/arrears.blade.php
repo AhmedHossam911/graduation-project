@@ -25,7 +25,7 @@
     <!-- filteration buttons -->
     <form action="{{ route('admin.reports.arrears') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
         <div class="relative flex-1 min-w-[200px]">
-            @include('partials.calendar', [
+            @include('partials.common.calendar', [
                 'name' => 'date_from',
                 'id' => 'report-datepicker-from',
                 'value' => request('date_from'),
@@ -35,7 +35,7 @@
             ])
         </div>
         <div class="relative flex-1 min-w-[200px]">
-            @include('partials.calendar', [
+            @include('partials.common.calendar', [
                 'name' => 'date_to',
                 'id' => 'report-datepicker-to',
                 'value' => request('date_to'),
@@ -53,7 +53,7 @@
                     }
                 }
             @endphp
-            @include('partials.dropdown', [
+            @include('partials.common.dropdown', [
                 'name' => 'department',
                 'options' => $deptOptions,
                 'selected' => request('department', 'all'),
@@ -107,3 +107,4 @@
         {{ $subscriptions->links() }}
     </div>
 @endsection
+

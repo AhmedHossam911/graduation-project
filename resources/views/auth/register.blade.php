@@ -6,7 +6,7 @@
 --}}
 @section('title', 'إنشاء حساب جديد')
 @section('card-width', 'max-w-[800px]')
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <h2 class="text-[#333] text-lg font-semibold mb-2.5">إنشاء حساب جديد</h2>
@@ -125,3 +125,4 @@
         }
     </script>
 @endsection
+

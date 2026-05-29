@@ -2,7 +2,7 @@
 
 @section('title', 'تعديل صلاحية المستخدم')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/grantaccess.css') }}">
@@ -360,3 +360,4 @@
     <script src="{{ asset('js/admin/grantaccess.js') }}"></script>
 
 @endsection
+

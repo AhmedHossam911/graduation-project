@@ -7,7 +7,7 @@
 
 @section('title', 'المالية')
 
-@include('partials.flash')
+@include('partials.common.flash')
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/finance.css') }}">
@@ -120,7 +120,7 @@
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
             </div>
             <div class="relative min-w-[200px]">
-                @include('partials.calendar', [
+                @include('partials.common.calendar', [
                     'name' => 'date',
                     'id' => 'finance-datepicker',
                     'value' => request('date'),
@@ -131,7 +131,7 @@
                 @php
                     $methodOptions = ['all' => 'الكل'] + $methodLabels;
                 @endphp
-                @include('partials.dropdown', [
+                @include('partials.common.dropdown', [
                     'name' => 'method',
                     'label' => 'طريقة الدفع',
                     'options' => $methodOptions,
@@ -145,7 +145,7 @@
                 @php
                     $categoryOptions = ['all' => 'الكل'] + $categoryLabels;
                 @endphp
-                @include('partials.dropdown', [
+                @include('partials.common.dropdown', [
                     'name' => 'category',
                     'label' => 'بند الحركة',
                     'options' => $categoryOptions,
@@ -555,3 +555,4 @@
         </div>
     </div>
 @endsection
+

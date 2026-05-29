@@ -1,4 +1,4 @@
-{{-- 
+{{--
     Pages Layout:
     Alternative layout used for secondary pages (like forms or details views) where the side menu is hidden,
     focusing the user's attention on the content with a top navigation bar for going back.
@@ -9,7 +9,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'لوحة التحكم') - صندوق الزمالة كابيتال</title>
+    <title>@yield('title', 'لوحة التحكم') - صندوق الزمالة جامعة العاصمة</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -102,10 +102,11 @@
     </div>
 
     {{-- Footer (full width) --}}
-    @include('partials.footer')
+    @include('partials.common.footer')
 
     @stack('scripts')
     <script src="{{ asset('js/layouts/Dashboard.js') }}"></script>
 </body>
 
 </html>
+

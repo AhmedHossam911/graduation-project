@@ -78,7 +78,7 @@
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
         </div>
         <div class="relative min-w-[240px]">
-            @include('partials.calendar', [
+            @include('partials.common.calendar', [
                 'name' => 'date',
                 'id' => 'subscriptions-datepicker',
                 'value' => request('date'),
@@ -94,7 +94,7 @@
                     'paid' => 'تم الصرف',
                 ];
             @endphp
-            @include('partials.dropdown', [
+            @include('partials.common.dropdown', [
                 'name' => 'status',
                 'label' => 'الحالة',
                 'options' => $statusOptions,
@@ -108,7 +108,7 @@
             @php
                 $typeOptions = ['all' => 'الكل'] + \App\Models\Services\Claim::CLAIM_TYPES;
             @endphp
-            @include('partials.dropdown', [
+            @include('partials.common.dropdown', [
                 'name' => 'type',
                 'label' => 'نوع المطالبة',
                 'options' => $typeOptions,
@@ -476,3 +476,4 @@
         });
     </script>
 @endpush
+
