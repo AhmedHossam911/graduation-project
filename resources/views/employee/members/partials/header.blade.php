@@ -9,7 +9,7 @@
     <div class="flex justify-between items-center px-10 py-5 print:hidden">
         <div class="flex flex-col gap-4">
             <div class="flex gap-7 items-center">
-                <p class="text-[28px] font-semibold text-[#124375]">{{ $member->full_name }}</p>
+                <p class="text-[28px] font-semibold text-[#124375]">{{ $member->user->name }}</p>
                 <p class="mt-3 status {{ $badgeClass }} rounded-lg px-10 border">{{ $statusData['label'] }}</p>
             </div>
             <p class="text-[#021219] text-sm font-medium flex items-center gap-4">

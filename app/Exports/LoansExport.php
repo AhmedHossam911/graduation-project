@@ -38,7 +38,7 @@ class LoansExport implements FromQuery, WithMapping, WithHeadings
         return [
             $loan->id,
             $loan->membership->membership_number ?? '---',
-            $loan->membership->member->full_name ?? '---',
+            $loan->membership->member->user->name ?? '---',
             number_format($loan->total_amount, 2) . ' ج.م',
             $loan->months . ' شهر',
             number_format($loan->installment_amount, 2) . ' ج.م',

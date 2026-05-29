@@ -54,7 +54,7 @@ class SubscriptionsExport implements FromQuery, WithMapping, WithHeadings
 
         return [
             $subscription->membership->membership_number ?? '---',
-            $subscription->membership->member->full_name ?? 'حدث خطأ',
+            $subscription->membership->member->user->name ?? 'حدث خطأ',
             number_format($subscription->amount, 2) . ' ج.م',
             $status,
             $subscription->due_date ? $subscription->due_date->isoFormat('MMMM YYYY') : '---',

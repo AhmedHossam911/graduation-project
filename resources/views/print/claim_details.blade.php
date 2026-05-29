@@ -24,7 +24,7 @@
             <tbody>
                 <tr>
                     <th class="border border-black px-4 py-2 bg-gray-100 w-1/4">الاسم</th>
-                    <td class="border border-black px-4 py-2 w-1/4">{{ $claim->membership->member->full_name }}</td>
+                    <td class="border border-black px-4 py-2 w-1/4">{{ $claim->membership->member->user->name }}</td>
                     <th class="border border-black px-4 py-2 bg-gray-100 w-1/4">رقم العضوية</th>
                     <td class="border border-black px-4 py-2 w-1/4 font-bold">{{ $claim->membership->membership_number }}</td>
                 </tr>

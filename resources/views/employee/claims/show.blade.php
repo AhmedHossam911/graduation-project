@@ -38,7 +38,7 @@
             <div class="flex-[2] flex flex-col justify-center gap-3 py-6 px-8 border-l border-[#1243751a]">
                 <div class="space-y-1">
                     <h2 class="text-[#124375] font-bold text-[26px] leading-tight">
-                        {{ $claim->membership->member->full_name }}</h2>
+                        {{ $claim->membership->member->user->name }}</h2>
                     <p class="text-sm text-[#6D6D6D] font-medium">
                         {{ $claim->membership->member->employmentInfo->job_title ?? '' }}
                         <span class="mx-1 text-[#1243754d]">|</span>
@@ -258,7 +258,7 @@
                 <div class="space-y-3">
                     <div class="flex gap-4 ">
                         <p class="text-[#124375] text-base font-medium">الأسم : <span
-                                class="text-[#021219] text-base font-semibold">{{ $claim->membership->member->full_name }}</span>
+                                class="text-[#021219] text-base font-semibold">{{ $claim->membership->member->user->name }}</span>
                         </p>
                         <p class="text-[#124375] text-base font-medium">رقم العضوية : <span
                                 class="text-[#021219] text-base font-semibold">{{ $claim->membership->membership_number }}</span>

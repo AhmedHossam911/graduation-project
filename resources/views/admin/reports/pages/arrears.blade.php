@@ -86,7 +86,7 @@
                     @forelse($subscriptions as $sub)
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $sub->membership->membership_number }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $sub->membership->member->full_name }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $sub->membership->member->user->name }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $sub->membership->member->department->name ?? '-' }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#D92D20] font-bold">{{ number_format($sub->amount, 2) }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $sub->due_date }}</td>

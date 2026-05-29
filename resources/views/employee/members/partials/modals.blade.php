@@ -63,7 +63,7 @@
             <div class="space-y-4">
                 <div class="flex gap-3">
                     <p class="text-base font-medium text-[#124375]">الأسم : <span
-                            class="text-[#021219] font-semibold text-base">{{ $member->full_name }}</span></p>
+                            class="text-[#021219] font-semibold text-base">{{ $member->user->name }}</span></p>
                     <p class="text-base font-medium text-[#124375]">رقم العضوية : <span
                             class="text-[#021219] font-semibold text-base">
                             {{ $membership->membership_number ?? '-' }}
@@ -293,7 +293,7 @@
                         </h2>
                         <div class="flex gap-3">
                             <p class="text-base font-medium text-[#124375]">اسم العضو :<span
-                                    class="text-[#021219] font-semibold text-base">{{ $member->full_name }}</span></p>
+                                    class="text-[#021219] font-semibold text-base">{{ $member->user->name }}</span></p>
                             <p class="text-base font-medium text-[#124375]">رقم القرض :<span
                                     class="text-[#021219] font-semibold text-base">{{ $activeLoan->id ?? 'غير متوفر' }}</span>
                             </p>
@@ -686,7 +686,7 @@
                     <div class="grid grid-cols-3 gap-4 ">
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">الاسم : <span
-                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->full_name }}</span></p>
+                                    class="text-[#021219] text-[16px] font-semibold">{{ $member->user->name }}</span></p>
                         </div>
                         <div class="flex bg-[#EFEFEF] py-4 px-2 rounded-[10px]">
                             <p class="text-[#124375] text-[16px] ">رقم العضوية : <span

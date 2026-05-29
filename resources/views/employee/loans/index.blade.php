@@ -151,7 +151,7 @@
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $loan->id }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#124375] font-medium hover:underline">
                                 <a href="{{ route('members.show', ['member' => $loan->membership->member_id, 'tab' => 'loans']) }}">
-                                    {{ $loan->membership->member->full_name ?? 'غير متوفر' }}
+                                    {{ $loan->membership->member->user->name ?? 'غير متوفر' }}
                                 </a>
                             </td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">

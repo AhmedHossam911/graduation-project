@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'a511r811r174@gmail.com'],
             [
                 'name' => 'أحمد محمد',
+                'national_id' => '12345678912345',
                 'role_id' => $adminRole->id,
                 'password' => Hash::make('Medo@511'),
                 'is_restricted' => false,
@@ -80,9 +81,7 @@ class DatabaseSeeder extends Seeder
         Member::firstOrCreate(
             ['user_id' => $adminUser->id],
             [
-                'department_id' => $departments[0]->id,
-                'full_name' => 'أحمد محمد',
-                'national_id' => '12345678912345'
+                'department_id' => $departments[0]->id
             ]
         );
 

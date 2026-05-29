@@ -21,12 +21,12 @@
                     <div class="space-y-3">
                         <div class="flex gap-4">
                             <p class="text-[#124375] text-base font-medium">الأسم : <span
-                                    class="text-[#021219] text-base font-semibold">{{ $member->full_name }}</span></p>
+                                    class="text-[#021219] text-base font-semibold">{{ $member->user->name }}</span></p>
                             <p class="text-[#124375] text-base font-medium">رقم العضوية : <span
                                     class="text-[#021219] text-base font-semibold">{{ $member->membershipInfo->membership_number ?? '-' }}</span>
                             </p>
                             <p class="text-[#124375] text-base font-medium">الرقم القومي : <span
-                                    class="text-[#021219] text-base font-semibold">{{ $member->national_id }}</span>
+                                    class="text-[#021219] text-base font-semibold">{{ $member->user->national_id }}</span>
                             </p>
                         </div>
                         <p>يرجى إرفاق المستندات التالية لإتمام مطالبة ({{ $claims[request('claim_type')] ?? '' }})
@@ -244,7 +244,7 @@
                     {{-- <div class="declaration space-y-3" id="declaration-content">
                         <h3 class="text-center font-medium">إقرار</h3>
                         <p class="font-medium text-lg leading-loose">
-                            أقر أنا / <span class="font-bold">{{ $member->full_name }}</span> بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان،
+                            أقر أنا / <span class="font-bold">{{ $member->user->name }}</span> بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة حلوان،
                             وذلك اعتبارًا من تاريخ {{ date('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي مستحقات أخرى بعد هذا التاريخ
                         </p>
                         <p class="font-medium text-lg mt-8 text-left">

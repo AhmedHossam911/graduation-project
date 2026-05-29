@@ -80,7 +80,7 @@
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">INS-{{ $ins->id }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">LOAN-{{ $ins->loan_id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $ins->loan->membership->member->full_name }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $ins->loan->membership->member->user->name }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#124375] font-bold">{{ number_format($ins->amount, 2) }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $ins->due_date }}</td>
                             <td class="py-3 border-l border-[#6D6D6D]">

@@ -91,7 +91,7 @@ class MembershipController extends Controller
 
         // Inject the fixed DB values back into the validated array 
         // so the service can still update them as needed.
-        $validated['full_name']     = $member->full_name ?? $user->name;
+        $validated['full_name']     = $user->name;
         $validated['employer_name'] = $member->employmentInfo->workplace ?? '';
         $validated['job_title']     = $member->employmentInfo->job_title ?? '';
         

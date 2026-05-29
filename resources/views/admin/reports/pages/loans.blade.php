@@ -69,7 +69,7 @@
                     @forelse($loans as $loan)
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">LOAN-{{ $loan->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $loan->membership->member->full_name }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $loan->membership->member->user->name }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#124375] font-bold">{{ number_format($loan->total_amount, 2) }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $loan->months }} شهر</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219] font-bold">{{ number_format($loan->monthly_installment, 2) }}</td>

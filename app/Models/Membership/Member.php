@@ -19,7 +19,7 @@ class Member extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'department_id', 'full_name', 'national_id', 'birth_date',
+        'user_id', 'department_id', 'birth_date',
         'phone', 'address', 'marital_status', 'landline'
     ];
 

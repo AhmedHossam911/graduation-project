@@ -17,9 +17,9 @@
     <h3 class="text-center font-bold text-2xl text-[#124375] mb-6">بيانات العضو وطلب القرض</h3>
     
     <div class="grid grid-cols-2 gap-6 text-xl border-b-2 pb-6 border-[#124375]">
-        <p><strong>اسم العضو:</strong> <span class="font-medium">{{ $member->full_name }}</span></p>
+        <p><strong>اسم العضو:</strong> <span class="font-medium">{{ $member->user->name }}</span></p>
         <p><strong>رقم العضوية:</strong> <span class="font-medium">{{ $membership->membership_number ?? '-' }}</span></p>
-        <p><strong>الرقم القومي:</strong> <span class="font-medium">{{ $member->national_id }}</span></p>
+        <p><strong>الرقم القومي:</strong> <span class="font-medium">{{ $member->user->national_id }}</span></p>
         <p><strong>الراتب الأساسي:</strong> <span class="font-medium">{{ $member->employmentInfo->starting_salary ? number_format($member->employmentInfo->starting_salary, 2) . ' ج.م' : 'غير متوفر' }}</span></p>
     </div>
     

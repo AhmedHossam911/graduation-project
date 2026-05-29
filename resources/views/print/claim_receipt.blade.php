@@ -27,7 +27,7 @@
         <div class="flex justify-between items-center">
             <div class="flex flex-col gap-2">
                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">اسم العضو</h2>
-                <p class="text-[#124375] text-[25px] font-semibold">{{ $claim->membership->member->full_name }}</p>
+                <p class="text-[#124375] text-[25px] font-semibold">{{ $claim->membership->member->user->name }}</p>
             </div>
             <div class="flex flex-col gap-2">
                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم العضوية </h2>

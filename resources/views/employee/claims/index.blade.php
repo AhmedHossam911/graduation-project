@@ -146,7 +146,7 @@
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                {{ $claim->membership->member->full_name ?? 'N/A' }}</td>
+                                {{ $claim->membership->member->user->name ?? 'N/A' }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                 {{ $claim->created_at->translatedFormat('d F Y') }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
@@ -296,7 +296,7 @@
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">اسم العضو</h2>
                                 <p class="text-[#124375] text-[25px] font-semibold">
-                                    {{ $claim->membership->member->full_name }}</p>
+                                    {{ $claim->membership->member->user->name }}</p>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم العضوية </h2>

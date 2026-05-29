@@ -61,6 +61,7 @@ class MemberService
             $memberRole = Role::where('name', 'Member')->first();
             $user = User::create([
                 'name'     => $validated['full_name'],
+                'national_id' => $nationalId,
                 'email'    => $validated['email'],
                 'password' => Hash::make($nationalId),
                 'role_id'  => $memberRole ? $memberRole->id : null,
@@ -69,8 +70,6 @@ class MemberService
             $member = Member::create([
                 'user_id'        => $user->id,
                 'department_id'  => $departmentId,
-                'full_name'      => $validated['full_name'],
-                'national_id'    => $nationalId,
                 'birth_date'     => $this->dateFromParts($request, 'birth'),
                 'phone'          => $this->digitsToString($request, 'phone_digits'),
                 'landline'       => $this->digitsToString($request, 'landline_digits'),
@@ -150,10 +149,13 @@ class MemberService
 
             $departmentId = $this->resolveDepartmentId($validated);
 
+            $member->user->update([
+                'name' => $validated['full_name'],
+                'national_id' => $nationalId,
+            ]);
+
             $member->update([
                 'department_id'  => $departmentId,
-                'full_name'      => $validated['full_name'],
-                'national_id'    => $nationalId,
                 'birth_date'     => $this->dateFromParts($request, 'birth'),
                 'phone'          => $this->digitsToString($request, 'phone_digits'),
                 'landline'       => $this->digitsToString($request, 'landline_digits'),
@@ -274,8 +276,11 @@ class MemberService
         return DB::transaction(function () use ($request, $validated, $member, $age) {
             $oldValues = $member->toArray();
 
+            $member->user->update([
+                'name' => $validated['full_name'],
+            ]);
+
             $member->update([
-                'full_name'      => $validated['full_name'],
                 'birth_date'     => $this->dateFromParts($request, 'birth'),
                 'phone'          => $this->digitsToString($request, 'phone_digits'),
                 'landline'       => $this->digitsToString($request, 'landline_digits'),

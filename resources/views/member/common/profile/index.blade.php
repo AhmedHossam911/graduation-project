@@ -30,7 +30,7 @@
                 <div
                     class="absolute -bottom-12 right-9 bg-[#F4F7F9] rounded-full navy-shadow w-24 h-24 flex flex-col items-center">
                     <p class="text-[60px] font-extrabold text-[#124375]">
-                        {{ mb_substr($user->member->full_name ?? $user->name, 0, 1) }}</p>
+                        {{ mb_substr($user->member->user->name ?? $user->name, 0, 1) }}</p>
                 </div>
             </div>
             <div class="px-5 pb-5 space-y-7">
@@ -48,7 +48,7 @@
                         <input type="hidden" name="name" value="{{ $user->name }}">
                         <input type="text" disabled
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            value="{{ $user->member->full_name ?? $user->name }}" placeholder="الاسم رباعي">
+                            value="{{ $user->member->user->name ?? $user->name }}" placeholder="الاسم رباعي">
                     </div>
                     <div class="relative w-full">
                         <label
@@ -62,7 +62,7 @@
                             لا يمكن تعديل الرقم القومي بعد التسجيل</p>
                         <input type="number" disabled
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            value="{{ $user->member->national_id ?? '' }}" placeholder="الرقم القومي">
+                            value="{{ $user->member->user->national_id ?? '' }}" placeholder="الرقم القومي">
                     </div>
                     <div class="relative w-full">
                         <label

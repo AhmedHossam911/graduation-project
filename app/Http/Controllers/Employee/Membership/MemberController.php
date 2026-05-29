@@ -79,8 +79,8 @@ class MemberController extends Controller
             $result = $this->memberService->createMember($validated, $request, $nationalId);
 
             $receiptData = [
-                'name' => $result['member']->full_name,
-                'national_id' => $result['member']->national_id,
+                'name' => $result['member']->user ? $result['member']->user->name : 'غير معروف',
+                'national_id' => $result['member']->user ? $result['member']->user->national_id : '-',
                 'membership_number' => $result['membership']->membership_number,
                 'amount' => number_format($result['totalFee'], 2),
                 'date' => now()->format('Y-m-d')
@@ -210,7 +210,7 @@ class MemberController extends Controller
         $path = storage_path('app/public/' . $attachment->file_path);
 
         $member = Member::find($attachment->member_id);
-        $memberName = $member ? $member->full_name : 'عضو';
+        $memberName = $member && $member->user ? $member->user->name : 'عضو';
         $documentTypes = MemberService::INITIAL_DOCUMENT_TYPES;
         $docTypeLabel = $documentTypes[$attachment->type] ?? $attachment->type;
         $fileName = "{$memberName} - {$docTypeLabel}";
@@ -224,7 +224,7 @@ class MemberController extends Controller
         $path = storage_path('app/public/' . $attachment->file_path);
 
         $member = Member::find($attachment->member_id);
-        $memberName = $member ? $member->full_name : 'عضو';
+        $memberName = $member && $member->user ? $member->user->name : 'عضو';
         $documentTypes = MemberService::INITIAL_DOCUMENT_TYPES;
         $docTypeLabel = $documentTypes[$attachment->type] ?? $attachment->type;
         $fileName = "{$memberName} - {$docTypeLabel}";
@@ -302,8 +302,10 @@ class MemberController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('national_id', 'like', "%{$search}%")
+                $q->whereHas('user', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%")
+                         ->orWhere('national_id', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('membershipInfo', function ($sq) use ($search) {
                       $sq->where('membership_number', 'like', "%{$search}%");
                   });

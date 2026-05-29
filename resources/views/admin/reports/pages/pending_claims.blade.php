@@ -68,7 +68,7 @@
                     @forelse($claims as $claim)
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claim->membership->member->full_name }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claim->membership->member->user->name }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $claim->created_at->format('Y-m-d') }}</td>
                             <td class="py-3 border-l border-[#6D6D6D]">

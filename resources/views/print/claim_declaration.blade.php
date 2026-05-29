@@ -17,7 +17,7 @@
     <h3 class="text-center font-bold text-2xl text-[#124375] mb-8">إقرار استلام المستحقات</h3>
     <p class="font-medium text-xl leading-loose border-2 border-[#124375] p-6 rounded-xl bg-[#F4F7F9] text-[#021219]">
         أقر أنا / <span
-            class="font-bold underline decoration-dotted">{{ $member->full_name }}</span>
+            class="font-bold underline decoration-dotted">{{ $member->user->name }}</span>
         بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس
         ومعاونيهم
         والعاملين بجامعة العاصمة،
@@ -26,8 +26,8 @@
         أخرى بعد هذا التاريخ.
     </p>
     <div class="font-medium text-lg mt-12 flex justify-between text-[#124375]">
-        <span>الاسم / <span class="font-bold text-[#021219]">{{ $member->full_name }}</span></span>
-        <span>الرقم القومي / <span class="font-bold text-[#021219]">{{ $member->national_id }}</span></span>
+        <span>الاسم / <span class="font-bold text-[#021219]">{{ $member->user->name }}</span></span>
+        <span>الرقم القومي / <span class="font-bold text-[#021219]">{{ $member->user->national_id }}</span></span>
         <span>التوقيع / ________________</span>
     </div>
 </div>

@@ -5,7 +5,7 @@
 <x-mail::message>
 # تنبيه تأخر سداد اشتراك صندوق الزمالة
 
-عزيزي العضو / **{{ $subscription->membership->member->full_name }}**،
+عزيزي العضو / **{{ $subscription->membership->member->user->name }}**،
 
 نحيط سيادتكم علماً بأنه يوجد اشتراك متأخر السداد على عضويتكم بصندوق الزمالة.
 

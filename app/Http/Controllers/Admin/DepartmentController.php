@@ -53,12 +53,14 @@ class DepartmentController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
-        $membersQuery = $department->members()->with('membershipInfo');
+        $membersQuery = $department->members()->with(['membershipInfo', 'user']);
 
         if ($search) {
             $membersQuery->where(function($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('national_id', 'like', "%{$search}%")
+                $q->whereHas('user', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%")
+                         ->orWhere('national_id', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('membershipInfo', function($q2) use ($search) {
                       $q2->where('membership_number', 'like', "%{$search}%");
                   });

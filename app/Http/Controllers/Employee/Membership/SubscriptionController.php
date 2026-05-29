@@ -133,8 +133,10 @@ class SubscriptionController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->whereHas('membership.member', function ($q) use ($search) {
-                $q->where('full_name', 'like', "%{$search}%")
-                  ->orWhere('national_id', 'like', "%{$search}%")
+                $q->whereHas('user', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%")
+                         ->orWhere('national_id', 'like', "%{$search}%");
+                  })
                   ->orWhereHas('membershipInfo', function ($sq) use ($search) {
                       $sq->where('membership_number', 'like', "%{$search}%");
                   });
@@ -334,7 +336,7 @@ class SubscriptionController extends Controller
         }
 
         $subscription->load('membership.member');
-        $memberName = $subscription->membership->member->full_name ?? 'عضو';
+        $memberName = $subscription->membership->member->user->name ?? 'عضو';
         $subName = $subscription->name ?? 'اشتراك';
         $fileName = "{$memberName} - {$subName}";
 
@@ -353,7 +355,7 @@ class SubscriptionController extends Controller
         }
 
         $subscription->load('membership.member');
-        $memberName = $subscription->membership->member->full_name ?? 'عضو';
+        $memberName = $subscription->membership->member->user->name ?? 'عضو';
         $subName = $subscription->name ?? 'اشتراك';
         $fileName = "{$memberName} - {$subName}";
 

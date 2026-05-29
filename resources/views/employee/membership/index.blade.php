@@ -132,7 +132,7 @@
                             <td class="py-4 border-l border-[#D1D5DB] text-[#124375] font-medium hover:underline">
                                 <a
                                     href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}">
-                                    {{ $subscription->membership->member->full_name ?? 'حدث خطأ' }}
+                                    {{ $subscription->membership->member->user->name ?? 'حدث خطأ' }}
                                 </a>
                             </td>
                             <td class="px-3 py-3 border-l border-[#6D6D6D]">{{ number_format($subscription->amount, 2) }}

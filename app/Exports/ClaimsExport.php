@@ -40,7 +40,7 @@ class ClaimsExport implements FromQuery, WithMapping, WithHeadings
         return [
             $claim->id,
             $claim->membership->membership_number ?? '---',
-            $claim->membership->member->full_name ?? ($claim->membership->member->name ?? '---'),
+            $claim->membership->member->user->name ?? '---',
             $type,
             number_format($claim->amount, 2) . ' ج.م',
             $status,

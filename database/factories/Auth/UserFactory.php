@@ -23,6 +23,7 @@ class UserFactory extends Factory
         return [
             'role_id' => Role::factory(),
             'name' => $firstName . ' ' . $lastName,
+            'national_id' => fake()->unique()->numerify('2#############'), // 14 digits
             'email' => $email,
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),

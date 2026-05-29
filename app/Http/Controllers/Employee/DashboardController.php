@@ -89,15 +89,17 @@ class DashboardController extends Controller
 
         $search = $request->get('q', '');
 
-        $member = Member::with(['membershipInfo.loans' => function($q) {
+        $member = Member::with(['user', 'membershipInfo.loans' => function($q) {
             $q->whereIn('status', ['active', 'pending', 'approved']);
         }, 'membershipInfo.loans.installments' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }, 'membershipInfo.subscriptions' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }])->where(function ($q) use ($search) {
-            $q->where('full_name', 'LIKE', "%{$search}%")
-              ->orWhere('national_id', 'LIKE', "%{$search}%")
+            $q->whereHas('user', function($q2) use ($search) {
+                  $q2->where('name', 'LIKE', "%{$search}%")
+                     ->orWhere('national_id', 'LIKE', "%{$search}%");
+              })
               ->orWhereHas('membershipInfo', function ($q2) use ($search) {
                   $q2->where('membership_number', 'LIKE', "%{$search}%");
               });
@@ -126,8 +128,8 @@ class DashboardController extends Controller
             'success' => true,
             'member' => [
                 'id' => $member->id,
-                'full_name' => $member->full_name,
-                'national_id' => $member->national_id,
+                'full_name' => $member->user ? $member->user->name : 'غير معروف',
+                'national_id' => $member->user ? $member->user->national_id : '-',
                 'membership_id' => $membership->id,
                 'membership_number' => $membership->membership_number,
             ],

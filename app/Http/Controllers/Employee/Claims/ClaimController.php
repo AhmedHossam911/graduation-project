@@ -49,8 +49,9 @@ class ClaimController extends Controller
                 $q->where('id', 'LIKE', "%{$search}%")
                   ->orWhereHas('membership', function ($q2) use ($search) {
                       $q2->where('membership_number', 'LIKE', "%{$search}%")
-                         ->orWhereHas('member', function ($q3) use ($search) {
-                             $q3->where('full_name', 'LIKE', "%{$search}%");
+                         ->orWhereHas('member.user', function ($q3) use ($search) {
+                             $q3->where('name', 'LIKE', "%{$search}%")
+                                ->orWhere('national_id', 'LIKE', "%{$search}%");
                          });
                   });
             });

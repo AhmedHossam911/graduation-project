@@ -130,7 +130,7 @@
                                         <div>
                                             <h3 class="text-[#021219] text-sm font-medium">اشتراك مستحق اليوم</h3>
                                             <p class="text-[#6D6D6D] text-sm font-normal">
-                                                {{ $sub->membership->member->full_name ?? 'عضو' }}</p>
+                                                {{ $sub->membership->member->user->name ?? 'عضو' }}</p>
                                         </div>
                                     </div>
                                     <a href="{{ route('members.show', $sub->membership->member->id) }}?tab=الاشتراكات"
@@ -146,7 +146,7 @@
                                         <div>
                                             <h3 class="text-[#021219] text-sm font-medium">قسط متأخر</h3>
                                             <p class="text-[#6D6D6D] text-sm font-normal">
-                                                {{ $installment->loan->membership->member->full_name ?? 'عضو' }}</p>
+                                                {{ $installment->loan->membership->member->user->name ?? 'عضو' }}</p>
                                         </div>
                                     </div>
                                     <a href="{{ route('members.show', $installment->loan->membership->member->id) }}?tab=قروض"
@@ -162,7 +162,7 @@
                                         <div>
                                             <h3 class="text-[#021219] text-sm font-medium">مطالبة قيد المراجعة</h3>
                                             <p class="text-[#6D6D6D] text-sm font-normal">
-                                                {{ $claim->membership->member->full_name ?? 'عضو' }}</p>
+                                                {{ $claim->membership->member->user->name ?? 'عضو' }}</p>
                                         </div>
                                     </div>
                                     <a href="{{ route('members.show', $claim->membership->member->id) }}?tab=مطالبات&view_claim={{ $claim->id }}"
@@ -238,7 +238,7 @@
                             @foreach ($lateInstallments as $installment)
                                 <tr class="text-center">
                                     <td class="py-3 border-l border-[#6D6D6D]">
-                                        {{ $installment->loan->membership->member->full_name ?? 'عضو' }}</td>
+                                        {{ $installment->loan->membership->member->user->name ?? 'عضو' }}</td>
                                     <td class="py-3 border-l border-[#6D6D6D]">
                                         {{ $installment->loan->membership->membership_number ?? '-' }}</td>
                                     <td class="py-3 border-l border-[#6D6D6D]">{{ $installment->amount }} ج.م</td>

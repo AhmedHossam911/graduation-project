@@ -25,7 +25,7 @@
     <div class="mb-4">
         <h3 class="text-lg font-bold mb-2 text-[#124375]">بيانات العضو</h3>
         <div class="flex flex-row-reverse justify-between items-center text-[#124375]">
-            <div><span>الأسم رباعي :</span> <span class="text-[#6D6D6D]">{{ $member->full_name }}</span></div>
+            <div><span>الأسم رباعي :</span> <span class="text-[#6D6D6D]">{{ $member->user->name }}</span></div>
             <div><span>رقم العضوية :</span> <span class="text-[#6D6D6D]">{{ $member->membershipInfo->membership_number }}</span></div>
         </div>
     </div>

@@ -44,6 +44,9 @@ class PermissionController extends Controller
         $user = new User();
         $user->name = $validated['name'];
         $user->email = $validated['email'];
+        if (!empty($validated['national_id'])) {
+            $user->national_id = $validated['national_id'];
+        }
         $passwordStr = !empty($validated['national_id']) ? $validated['national_id'] : '12345678';
         $user->password = bcrypt($passwordStr);
 
@@ -59,10 +62,8 @@ class PermissionController extends Controller
 
         if (!empty($validated['national_id'])) {
             $member = Member::firstOrNew(['user_id' => $user->id]);
-            $member->national_id = $validated['national_id'];
             
             if (!$member->exists) {
-                $member->full_name = $validated['name'];
                 $department = null;
                 if (!empty($validated['faculties'])) {
                     $department = Department::where('name', $validated['faculties'][0])->first();
@@ -106,6 +107,9 @@ class PermissionController extends Controller
 
         $user->name = $validated['name'];
         $user->email = $validated['email'];
+        if (!empty($validated['national_id'])) {
+            $user->national_id = $validated['national_id'];
+        }
 
         // Assign the appropriate role to the user, creating it if it doesn't already exist.
         if (!empty($validated['role_name'])) {
@@ -123,10 +127,8 @@ class PermissionController extends Controller
         // If a national ID is provided, either update the existing member record or create a new one.
         if (!empty($validated['national_id'])) {
             $member = Member::firstOrNew(['user_id' => $user->id]);
-            $member->national_id = $validated['national_id'];
             
             if (!$member->exists) {
-                $member->full_name = $validated['name'];
                 $department = null;
                 if (!empty($validated['faculties'])) {
                     $department = Department::where('name', $validated['faculties'][0])->first();

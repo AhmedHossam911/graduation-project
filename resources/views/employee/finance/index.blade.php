@@ -187,7 +187,7 @@
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->membership?->member?->full_name ?? 'معاملة غير مربوطة بعضو' }}</td>
+                                    {{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة بعضو' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}
                                 </td>
@@ -246,7 +246,7 @@
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->membership?->member?->full_name ?? '-' }}</td>
+                                    {{ $transaction->membership?->member?->user?->name ?? '-' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
@@ -298,7 +298,7 @@
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->membership?->member?->full_name ?? '-' }}</td>
+                                    {{ $transaction->membership?->member?->user?->name ?? '-' }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
                                     {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
@@ -485,7 +485,7 @@
                         <div class="space-y-5">
                             <div class="flex gap-3">
                                 <p class="text-[#124375] text-[16px] font-semibold">اسم العضو : <span
-                                        class="text-[#021219]">{{ $t->membership?->member?->full_name ?? '-' }}</span></p>
+                                        class="text-[#021219]">{{ $t->membership?->member?->user?->name ?? '-' }}</span></p>
                                 <p class="text-[#124375] text-[16px] font-semibold">رقم العضوية : <span
                                         class="text-[#021219]">{{ $t->membership?->membership_number ?? '-' }}</span></p>
                                 <p class="text-[#124375] text-[16px] font-semibold">المبلغ الإجمالي : <span

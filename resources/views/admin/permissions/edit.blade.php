@@ -54,7 +54,7 @@
                             class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الرقم
                             القومي</label>
                         <input type="text" name="national_id"
-                            value="{{ old('national_id', $user->member ? $user->member->national_id : '') }}"
+                            value="{{ old('national_id', $user->member ? $user->member->user->national_id : '') }}"
                             placeholder="12345678912345"
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full text-center rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] py-2"
                             minlength="14" maxlength="14">

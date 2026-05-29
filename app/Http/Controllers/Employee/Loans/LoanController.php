@@ -61,8 +61,8 @@ class LoanController extends Controller
                 $q->where('id', 'LIKE', "%{$search}%")
                     ->orWhereHas('membership', function ($q2) use ($search) {
                         $q2->where('membership_number', 'LIKE', "%{$search}%")
-                            ->orWhereHas('member', function ($q3) use ($search) {
-                                $q3->where('full_name', 'LIKE', "%{$search}%")
+                            ->orWhereHas('member.user', function ($q3) use ($search) {
+                                $q3->where('name', 'LIKE', "%{$search}%")
                                     ->orWhere('national_id', 'LIKE', "%{$search}%");
                             });
                     });
@@ -386,9 +386,9 @@ class LoanController extends Controller
 
         $data = [
             'id' => $loan->id,
-            'member_name' => $loan->membership->member->full_name ?? 'غير متوفر',
+            'member_name' => $loan->membership->member->user->name ?? 'غير متوفر',
             'membership_number' => $loan->membership->membership_number ?? '-',
-            'national_id' => $loan->membership->member->national_id ?? '-',
+            'national_id' => $loan->membership->member->user->national_id ?? '-',
             'unpaid_installments' => $unpaidInstallments->map(function ($inst) {
                 // Return formatted date like 'أبريل 2026'
                 $date = \Carbon\Carbon::parse($inst->due_date)->locale('ar');
@@ -411,13 +411,15 @@ class LoanController extends Controller
     {
         $search = $request->get('q', '');
 
-        $members = Member::with('membershipInfo')
+        $members = Member::with(['membershipInfo', 'user'])
             ->where(function ($q) use ($search) {
-                $q->where('full_name', 'LIKE', "%{$search}%")
-                    ->orWhere('national_id', 'LIKE', "%{$search}%")
-                    ->orWhereHas('membershipInfo', function ($q2) use ($search) {
+                $q->whereHas('user', function($q2) use ($search) {
+                      $q2->where('name', 'LIKE', "%{$search}%")
+                         ->orWhere('national_id', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('membershipInfo', function ($q2) use ($search) {
                         $q2->where('membership_number', 'LIKE', "%{$search}%");
-                    });
+                  });
             })
             ->limit(10)
             ->get();
@@ -426,8 +428,8 @@ class LoanController extends Controller
             return [
                 'id'                => $m->id,
                 'membership_id'     => $m->membershipInfo->id ?? null,
-                'full_name'         => $m->full_name,
-                'national_id'       => $m->national_id,
+                'full_name'         => $m->user ? $m->user->name : 'غير معروف',
+                'national_id'       => $m->user ? $m->user->national_id : '-',
                 'membership_number' => $m->membershipInfo->membership_number ?? '-',
                 'has_active_loan'   => $m->membershipInfo
                     ? $m->membershipInfo->loans()->whereIn('status', ['active', 'pending', 'approved'])->exists()

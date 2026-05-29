@@ -12,8 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('department_id')->constrained('departments')->restrictOnDelete();
-            $table->string('full_name');
-            $table->string('national_id', 14)->unique();
             $table->date('birth_date')->nullable();
             $table->string('phone')->nullable();
             $table->string('landline')->nullable();

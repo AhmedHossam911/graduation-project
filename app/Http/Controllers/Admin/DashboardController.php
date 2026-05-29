@@ -144,9 +144,11 @@ class DashboardController extends Controller
         $results = [];
 
         // Search through members by their full name, national ID, or membership number.
-        $members = Member::with('membershipInfo')
-            ->where('full_name', 'like', "%{$q}%")
-            ->orWhere('national_id', 'like', "%{$q}%")
+        $members = Member::with(['membershipInfo', 'user'])
+            ->whereHas('user', function($query) use ($q) {
+                $query->where('name', 'like', "%{$q}%")
+                      ->orWhere('national_id', 'like', "%{$q}%");
+            })
             ->orWhereHas('membershipInfo', function($query) use ($q) {
                 $query->where('membership_number', 'like', "%{$q}%");
             })->limit(5)->get();
@@ -154,7 +156,7 @@ class DashboardController extends Controller
         foreach ($members as $member) {
             $results[] = [
                 'type' => 'عضو',
-                'title' => $member->full_name . ' (' . ($member->membershipInfo->membership_number ?? 'بدون رقم') . ')',
+                'title' => ($member->user ? $member->user->name : 'غير معروف') . ' (' . ($member->membershipInfo->membership_number ?? 'بدون رقم') . ')',
                 'url' => route('members.show', $member->id),
                 'icon' => 'mdi:account'
             ];

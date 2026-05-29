@@ -157,7 +157,7 @@
                         @forelse($latestDisbursements as $transaction)
                             <tr class="border-b border-gray-200 text-[#124375] font-medium text-sm">
                                 {{-- <td class="py-3 px-4 border border-gray-200">
-                                    {{ $transaction->membership->member->full_name ?? 'غير معروف' }}</td> --}}
+                                    {{ $transaction->membership->member->user->name ?? 'غير معروف' }}</td> --}}
                                 <td class="py-3 px-4 border border-gray-200">
                                     {{ $transaction->created_at->translatedFormat('d F Y') }}</td>
                                 @if ($transaction->type === 'IN')

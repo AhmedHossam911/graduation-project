@@ -40,8 +40,11 @@
 
     <div class="print:hidden">
 
-    <form action="{{ route('members.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ isset($mode) && $mode === 'upload_signed' ? route('members.signed-form', $member->id) : (isset($member) ? route('members.update', $member->id) : route('members.store')) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @if(isset($mode) && $mode === 'edit')
+            @method('PUT')
+        @endif
 
         <!-- start Form -->
         <!-- start personalData section -->
@@ -57,7 +60,7 @@
                             <label
                                 class="absolute top-[-15px] right-5 @error('full_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
                                 الأسم رباعي <span class="text-[#D92D20]">*</span></label>
-                            <input type="text" name="full_name" value="{{ old('full_name') }}"
+                            <input type="text" name="full_name" value="{{ old('full_name', isset($member) ? $member->user->name : '') }}"
                                 placeholder="مثال : أحمد محمد إسماعيل محمود"
                                 class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             @error('full_name')
@@ -69,7 +72,7 @@
                             <label
                                 class="absolute top-[-15px] right-5 @error('email') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
                                 البريد الإلكتروني <span class="text-[#D92D20]">*</span></label>
-                            <input type="email" name="email" value="{{ old('email') }}"
+                            <input type="email" name="email" value="{{ old('email', isset($member) ? $member->user->email : '') }}"
                                 placeholder="ahmed@gmail.com : مثال"
                                 class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('email') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             @error('email')
@@ -131,7 +134,7 @@
                             <div class="flex gap-3 justify-end py-3 px-3">
                                 @for ($i = 13; $i >= 0; $i--)
                                     <input type="text" name="national_id_digits[]"
-                                        value="{{ old('national_id_digits.' . (13 - $i)) }}" placeholder="{{ $i + 1 }}"
+                                        value="{{ old('national_id_digits.' . (13 - $i), isset($member) && $member->user ? substr($member->user->national_id, 13 - $i, 1) : '') }}" placeholder="{{ $i + 1 }}"
                                         maxlength="1"
                                         class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 @endfor

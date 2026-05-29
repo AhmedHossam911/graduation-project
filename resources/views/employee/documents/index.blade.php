@@ -12,7 +12,7 @@
         <div class="space-y-2">
             <h1 class="text-[#124375] text-[28px] font-semibold flex items-center gap-2">
                 <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}" class="hover:text-[#0e3560] transition-colors">
-                    {{ $member->full_name }}
+                    {{ $member->user->name }}
                 </a>
                 <span>/ المستندات</span>
             </h1>

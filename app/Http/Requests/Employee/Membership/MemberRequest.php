@@ -4,6 +4,7 @@ namespace App\Http\Requests\Employee\Membership;
 
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Membership\Member;
+use App\Models\Auth\User;
 
 class MemberRequest extends FormRequest
 {
@@ -113,11 +114,15 @@ class MemberRequest extends FormRequest
             $nationalIdDigits = $this->input('national_id_digits');
             if (is_array($nationalIdDigits) && count($nationalIdDigits) === 14) {
                 $nationalId = implode('', $nationalIdDigits);
-                $memberId = $this->route('member') ?? $this->route('id'); // depends on route parameter name
+                $memberParam = $this->route('member') ?? $this->route('id');
+                $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
 
-                $query = Member::where('national_id', $nationalId);
+                $query = User::where('national_id', $nationalId);
                 if ($memberId) {
-                    $query->where('id', '!=', $memberId);
+                    $member = Member::find($memberId);
+                    if ($member && $member->user_id) {
+                        $query->where('id', '!=', $member->user_id);
+                    }
                 }
 
                 if ($query->exists()) {

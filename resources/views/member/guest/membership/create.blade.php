@@ -51,7 +51,7 @@
                                     class="absolute top-[-15px] right-5 @error('full_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
                                     الأسم رباعي <span class="text-[#D92D20]">*</span></label>
                                 <input type="text" name="full_name"
-                                    value="{{ old('full_name', $user->member->full_name ?? ($user->name ?? '')) }}"
+                                    value="{{ old('full_name', $user->member->user->name ?? ($user->name ?? '')) }}"
                                     placeholder="مثال : أحمد محمد إسماعيل محمود" disabled
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
                                 @error('full_name')
@@ -129,7 +129,7 @@
                                     القومي <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
                                     @php
-                                        $nidStr = old('national_id', $user->member->national_id ?? '');
+                                        $nidStr = old('national_id', $user->member->user->national_id ?? '');
                                         $nidDigits = str_split(str_pad($nidStr, 14, ' ', STR_PAD_LEFT));
                                     @endphp
                                     @for ($i = 13; $i >= 0; $i--)

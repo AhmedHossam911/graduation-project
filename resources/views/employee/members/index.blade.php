@@ -94,8 +94,8 @@
                             <tr class="text-center even:bg-[#EFEFEF] odd:bg-[#F4F7F9] text-[#021219] font-medium">
                                 <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">
                                     {{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</td>
-                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->full_name }}</td>
-                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->national_id }}</td>
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->user->name }}</td>
+                                <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">{{ $member->user->national_id }}</td>
                                 <td class="px-3 py-3 border-l border-b border-[#6D6D6D]">
                                     {{ $member->department?->name ?? 'لا يوجد بيانات' }}
                                 </td>

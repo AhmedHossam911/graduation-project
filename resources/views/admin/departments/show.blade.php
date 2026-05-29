@@ -93,8 +93,8 @@
                     @forelse($members as $index => $member)
                         <tr class="text-center {{ $index % 2 !== 0 ? 'bg-[#EFEFEF]' : 'border-b border-[#6D6D6D]' }}">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $member->membershipInfo->membership_number ?? '-' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $member->full_name }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $member->national_id }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $member->user->name }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $member->user->national_id }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $department->name }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $member->phone ?? '-' }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] ">

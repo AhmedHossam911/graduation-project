@@ -13,12 +13,12 @@
                     <div class="grid grid-cols-3 gap-4">
                         <div class="relative w-full">
                             <label class="{{ $labelClass }}">الاسم كامل</label>
-                            <input type="text" disabled value="{{ $member->full_name ?? 'بيانات مفقودة' }}"
+                            <input type="text" disabled value="{{ $member->user->name ?? 'بيانات مفقودة' }}"
                                 class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">
                             <label class="{{ $labelClass }}">الرقم القومي</label>
-                            <input type="text" disabled value="{{ $member->national_id ?? 'بيانات مفقودة' }}"
+                            <input type="text" disabled value="{{ $member->user->national_id ?? 'بيانات مفقودة' }}"
                                 class="{{ $fieldClass }}">
                         </div>
                         <div class="relative w-full">

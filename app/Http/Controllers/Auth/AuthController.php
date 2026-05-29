@@ -49,13 +49,11 @@ class AuthController extends Controller
             'password.required' => 'يرجى إدخال كلمة المرور.'
         ]);
 
-        $member = Member::where('national_id', $request->national_id)->first();
+        $user = User::where('national_id', $request->national_id)->first();
 
-        if (!$member || !$member->user) {
+        if (!$user) {
             return back()->withErrors(['national_id' => 'الرقم القومي غير مسجل لدينا.'])->withInput();
         }
-
-        $user = $member->user;
 
         if (!Hash::check($request->password, $user->password)) {
             return back()->withErrors(['password' => 'كلمة المرور غير صحيحة.'])->withInput();
@@ -183,7 +181,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'national_id' => 'required|string|size:14|unique:members,national_id',
+            'national_id' => 'required|string|size:14|unique:users,national_id',
             'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed',
             'phone' => 'required|string|max:20',
             'workplace' => 'required|string|max:255',
@@ -207,6 +205,7 @@ class AuthController extends Controller
             $memberRole = \App\Models\Auth\Role::where('name', 'member')->first();
             $user = User::create([
                 'name' => $request->name,
+                'national_id' => $request->national_id,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role_id' => $memberRole ? $memberRole->id : 3,
@@ -218,8 +217,6 @@ class AuthController extends Controller
             $member = Member::create([
                 'user_id' => $user->id,
                 'department_id' => $department->id,
-                'full_name' => $request->name,
-                'national_id' => $request->national_id,
                 'phone' => $request->phone,
             ]);
 
@@ -293,13 +290,12 @@ class AuthController extends Controller
             'email' => 'required|email'
         ]);
 
-        $member = Member::where('national_id', $request->national_id)->first();
+        $user = User::where('national_id', $request->national_id)->first();
 
-        if (!$member || !$member->user || $member->user->email !== $request->email) {
+        if (!$user || $user->email !== $request->email) {
             return back()->with('error', 'البيانات غير متطابقة.');
         }
 
-        $user = $member->user;
         $otp = rand(100000, 999999);
 
         OtpCode::create([

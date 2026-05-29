@@ -41,7 +41,7 @@ class InstallmentsExport implements FromQuery, WithHeadings, WithMapping, WithSt
 
     public function map($installment): array
     {
-        $memberName = $installment->loan->membership->member->full_name ?? '-';
+        $memberName = $installment->loan->membership->member->user->name ?? '-';
 
         $statusLabel = match($installment->status) {
             'paid' => 'تم الدفع',

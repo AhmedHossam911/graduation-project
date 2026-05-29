@@ -46,7 +46,7 @@ class FinanceExport implements FromQuery, WithHeadings, WithMapping, WithStyles
     {
         $memberName = '-';
         if ($transaction->membership && $transaction->membership->member) {
-            $memberName = $transaction->membership->member->full_name;
+            $memberName = $transaction->membership->member->user->name ?? '-';
         }
 
         $categoryLabel = Transaction::CATEGORY_LABELS[$transaction->category] ?? $transaction->category ?? '-';
