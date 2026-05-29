@@ -24,15 +24,19 @@
         @include('partials.member.sidebar')
         <!-- start main -->
 
-        <main class="flex-1">
+        <main class="flex-1 flex flex-col min-h-screen">
             <!-- start header -->
             @include('partials.member.navbar')
             <!-- end header -->
 
-            @yield('content')
+            <div class="flex-1">
+                @yield('content')
+            </div>
 
             <!-- start footer -->
-            @include('partials.common.footer')
+            <div class="mt-12">
+                @include('partials.common.footer')
+            </div>
         </main>
     </div>
 </body>

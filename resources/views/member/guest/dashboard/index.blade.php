@@ -90,16 +90,6 @@
                     </a>
                 </div>
             </div>
-            <!-- start footer -->
-            <footer class="bg-[#EEF7FF] text-sm text-[#124375] font-normal text-center py-4 surface-shadow">
-                <div class="flex items-center justify-center gap-2">
-                    <p>
-                        جميع الحقوق محفوظة لجامعة العاصمة لعام 2026
-                    </p>
-                    <iconify-icon icon="tabler:copyright-filled" class="text-lg"></iconify-icon>
-                </div>
-            </footer>
-            <!-- end footer -->
         </main>
     </div>
 

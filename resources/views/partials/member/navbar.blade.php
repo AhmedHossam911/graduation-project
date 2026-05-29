@@ -3,7 +3,9 @@
    <header class="bg-[#F4F7F9] surface-shadow px-7 py-3">
        <nav class="flex items-center justify-between  ">
            <div class="flex items-center gap-3 text-[#124375]">
-               <h1 class="text-xl font-semibold">الرئيسية</h1>
+               <h1 class="text-xl font-semibold">
+                     @yield('title', 'الرئيسية')
+               </h1>
            </div>
             <div class="flex items-center gap-4 text-[#124375] text-4xl">
                 <div class="relative">
@@ -15,11 +17,11 @@
                         <h1 class="text-lg font-semibold text-[#124375]">
                             إشعارات
                         </h1>
-                        
+
                         @php
                             $unreadNotifications = auth()->user()->notifications()->whereNull('read_at')->latest()->take(2)->get();
                         @endphp
-                        
+
                         @forelse($unreadNotifications as $notification)
                         <div class="notification surface-shadow bg-[#EEF7FF] rounded-xl p-2">
                             <p class="notifcation-body text-sm font-medium text-[#124375]">{{ $notification->message ?? $notification->title ?? 'إشعار جديد' }}</p>
