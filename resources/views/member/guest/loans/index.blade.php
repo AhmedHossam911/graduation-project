@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/guestLoan.css">
-</head>
-<body>
+@extends('layouts.member')
+
+@section('title', 'القروض')
+
+@section('content')
+
+    <link rel="stylesheet" href="{{ asset('css/member/guestLoan.css') }}">
+
     <div class="flex flex-col justify-center items-center min-h-screen">
         <div class="flex flex-col gap-12">
             <div class="flex justify-center">
@@ -22,11 +19,13 @@
                 </div>
                 <div>
                     <p class="text-[#021219] text-[16px] font-medium">
-                        لفتح تقديم طلب قرض من "صندوق الزمالة"، يلزم وجود عضوية نشطة. الانضمام يدعم المجتمع ويمنحك الوصول لمزايا مالية حصرية.
+                        لفتح تقديم طلب قرض من "صندوق الزمالة"، يلزم وجود عضوية نشطة. الانضمام يدعم المجتمع ويمنحك الوصول
+                        لمزايا مالية حصرية.
                     </p>
                 </div>
                 <div>
-                    <button class="hover:bg-[#0e3560] transition-colors gap-3 flex items-center rounded-[12px] bg-[#124375] text-[#F4F7F9] w-full justify-center py-2">
+                    <button
+                        class="hover:bg-[#0e3560] transition-colors gap-3 flex items-center rounded-[12px] bg-[#124375] text-[#F4F7F9] w-full justify-center py-2">
                         <iconify-icon icon="ic:round-plus" class="text-3xl mt-1"></iconify-icon>
                         تقديم طلب عضوية
                     </button>
@@ -34,5 +33,7 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    <script src="{{ asset('JS/member/memberLoan.js') }}"></script>
+
+@endsection

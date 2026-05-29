@@ -1,17 +1,11 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+@extends('layouts.member')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/memberLoan.css">
-</head>
+@section('title', 'طلب الحصول على قرض')
 
-<body>
+@section('content')
 
+    <link rel="stylesheet" href="{{ asset('css/memberLoan.css') }}">
+    {{-- لو معندوش قرض ده اللي يظهر --}}
     <section class="py-7 px-12">
         <div class="flex items-center justify-between">
             <div class="flex flex-col gap-3">
@@ -68,7 +62,8 @@
                             class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                 class="text-xl "></iconify-icon></span></button>
                     <label
-                        class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">قيمة القرض</label>
+                        class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">قيمة
+                        القرض</label>
                     <div
                         class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-2 px-5 py-4 rounded-xl navy-shadow w-full">
                         <button type="button" class=" navy-shadow py-2 px-7 rounded-xl text-sm font-medium">5,000</button>
@@ -82,8 +77,8 @@
                             class="text-[#021219] text-center flex-1">اختر</span><span
                             class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                 class="text-xl "></iconify-icon></span></button>
-                    <label
-                        class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">مدة السداد</label>
+                    <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">مدة
+                        السداد</label>
                     <div
                         class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-2 px-5 py-4 rounded-xl navy-shadow w-full">
                         <button type="button" class=" navy-shadow py-2 px-7 rounded-xl text-sm font-medium">12 شهر</button>
@@ -94,44 +89,54 @@
             </div>
             <div>
                 <div class="relative w-full">
-                    <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">السبب أو الغرض من القرض</label>
-                    <textarea class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] px-2 py-3 resize-none"></textarea>
+                    <label
+                        class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">السبب
+                        أو الغرض من القرض</label>
+                    <textarea
+                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] px-2 py-3 resize-none"></textarea>
                 </div>
             </div>
             <label class="flex  gap-5 cursor-pointer">
                 <input type="checkbox" class="hidden peer item" value="يناير 2026">
-                <span class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
+                <span
+                    class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                     <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
                 </span>
-                <p>أقر أنا الموقع أعلاه بصحة البيانات المذكورة، وأفوض إدارة الجامعة بخصم الأقساط الشهرية للقرض المذكور أعلاه من راتبي الشهري وتوريدها لحساب صندوق الزمالة حتى سداد كامل المديونية. وأتعهد بعدم ممانعة جهة العمل.</p>
+                <p>أقر أنا الموقع أعلاه بصحة البيانات المذكورة، وأفوض إدارة الجامعة بخصم الأقساط الشهرية للقرض المذكور أعلاه
+                    من راتبي الشهري وتوريدها لحساب صندوق الزمالة حتى سداد كامل المديونية. وأتعهد بعدم ممانعة جهة العمل.</p>
             </label>
             <div>
-                <button class="hover:bg-[#0e3560] transition-colors  flex items-center gap-5 bg-[#124375] text-[#F4F7F9] w-full justify-center py-3 rounded-[12px] ">
+                <button
+                    class="hover:bg-[#0e3560] transition-colors  flex items-center gap-5 bg-[#124375] text-[#F4F7F9] w-full justify-center py-3 rounded-[12px] ">
                     <iconify-icon icon="boxicons:send-filled" class="text-2xl mt-1"></iconify-icon>
                     تقديم طلب القرض
                 </button>
             </div>
-        </div> 
+        </div>
     </section>
 
-    <!-- <div class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-auto flex flex-col gap-7 justify-center items-center">
+    {{-- لو العضو عنده قرض ده اللي يظهر --}}
+    <div
+        class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-auto flex flex-col gap-7 justify-center items-center">
         <div>
-            <iconify-icon icon="material-symbols:info-rounded" class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
+            <iconify-icon icon="material-symbols:info-rounded"
+                class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
         </div>
         <div>
             <p class="text-[#124375] text-[20px] font-semibold">عذرا، لايمكنك طلب قرض جديد</p>
         </div>
         <div>
-            <p class="text-[#6D6D6D] text-[14px] font-medium">لا يجوز للعضو الحصول علي أكثر من قرض واحد في نفس الوقت. يجد الانتهاء من سدادالقرض الحالي بالكامل قبل التقدم بطلب للحصول علي قرض جديد</p>
+            <p class="text-[#6D6D6D] text-[14px] font-medium">لا يجوز للعضو الحصول علي أكثر من قرض واحد في نفس الوقت. يجد
+                الانتهاء من سدادالقرض الحالي بالكامل قبل التقدم بطلب للحصول علي قرض جديد</p>
         </div>
         <div>
-            <a href="../MemberHomePage/memberhome.html" class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full py-3 px-8 rounded-[12px] navy-shadow ">
-                متابعة سداد القرض الحالي 
+            <a href="../MemberHomePage/memberhome.html"
+                class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full py-3 px-8 rounded-[12px] navy-shadow ">
+                متابعة سداد القرض الحالي
                 <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
             </a>
         </div>
-    </div> -->
+    </div>
 
-    <script src="../js/memberLoan.js"></script>
-</body>
-</html>
+    <script src="{{ asset('JS/member/memberLoan.js') }}"></script>
+@endsection

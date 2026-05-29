@@ -1,17 +1,10 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+@extends('layouts.member')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/memberProfile.css">
-</head>
+@section('title', 'الملف الشخصي')
 
-<body>
+@section('content')
 
+    <link rel="stylesheet" href="{{ asset('css/member/memberProfile.css') }}">
     <section class="px-12 py-7">
         <div class="flex justify-between items-center bg-[#F4F7F9] navy-shadow rounded-[16px] py-5 px-4">
             <div class="flex items-center gap-2">
@@ -48,8 +41,7 @@
                                 الاسم رباعي
                             </span>
                         </label>
-                        <p
-                            class="bg-[#F4F7F9] px-1 absolute text-[12px] font-medium text-[#124375] right-7 bottom-[-6px]">
+                        <p class="bg-[#F4F7F9] px-1 absolute text-[12px] font-medium text-[#124375] right-7 bottom-[-6px]">
                             لا يمكن تعديل الاسم بعد التسجيل</p>
                         <input type="text" disabled
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
@@ -63,8 +55,7 @@
                                 الرقم القومي
                             </span>
                         </label>
-                        <p
-                            class="bg-[#F4F7F9] px-1 absolute text-[12px] font-medium text-[#124375] right-7 bottom-[-6px]">
+                        <p class="bg-[#F4F7F9] px-1 absolute text-[12px] font-medium text-[#124375] right-7 bottom-[-6px]">
                             لا يمكن تعديل الرقم القومي بعد التسجيل</p>
                         <input type="number" disabled
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
@@ -132,8 +123,5 @@
         </div>
     </section>
 
-
-    <script src="../js/memberProfile.js"></script>
-</body>
-
-</html>
+    <script src="{{ asset('JS/member/memberProfile.js') }}"></script>
+@endsection
