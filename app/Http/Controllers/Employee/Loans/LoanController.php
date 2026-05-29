@@ -365,6 +365,15 @@ class LoanController extends Controller
             'approved_by' => auth()->id(),
         ]);
 
+        $user = $loan->membership->member->user ?? null;
+        if ($user) {
+            \App\Models\Auth\Notification::create([
+                'user_id' => $user->id,
+                'title'   => 'اعتماد طلب القرض',
+                'message' => 'تم اعتماد طلب القرض الخاص بك بنجاح.',
+            ]);
+        }
+
         $this->logAudit('approve', 'loans', $loan->id, $oldValues, $loan->fresh()->toArray());
 
         return redirect()->route('loans.index')
@@ -517,6 +526,15 @@ class LoanController extends Controller
                 'created_by' => auth()->id(),
             ]);
 
+            $user = $loan->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'بدء صرف القرض',
+                    'message' => 'تم تفعيل القرض الخاص بك وجدولة الأقساط بنجاح.',
+                ]);
+            }
+
             $this->logAudit('start', 'loans', $loan->id, $oldValues, $loan->fresh()->toArray());
         });
 
@@ -539,6 +557,15 @@ class LoanController extends Controller
             $loan->update([
                 'status' => 'rejected'
             ]);
+
+            $user = $loan->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'إلغاء طلب القرض',
+                    'message' => 'تم إلغاء/رفض طلب القرض الخاص بك.',
+                ]);
+            }
 
             $this->logAudit('cancel', 'loans', $loan->id, $oldValues, array_merge($loan->fresh()->toArray(), [
                 'cancel_reason' => $request->reason,
@@ -604,6 +631,15 @@ class LoanController extends Controller
             $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
             if ($unpaidCount === 0) {
                 $loan->update(['status' => 'completed']);
+            }
+
+            $user = $loan->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تسديد قسط قرض',
+                    'message' => 'تم تسجيل سداد القسط الخاص بك بنجاح بقيمة ' . $installment->amount . ' ج.م.',
+                ]);
             }
 
             // Audit log
@@ -678,6 +714,15 @@ class LoanController extends Controller
                 'attachment_path' => $path,
                 'created_by' => auth()->id(),
             ]);
+
+            $user = $loan->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تسديد مبكر للقرض',
+                    'message' => 'تم تسجيل السداد المبكر للقرض بنجاح وتم إغلاق القرض.',
+                ]);
+            }
 
             // Audit log
             $this->logAudit('early_repayment', 'loans', $loan->id, $oldValues, array_merge($loan->fresh()->toArray(), [

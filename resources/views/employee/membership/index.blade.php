@@ -251,10 +251,13 @@
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
                         <input type="search" id="sub-search-input"
-                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
-                            class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
+                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي" autocomplete="off"
+                            class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
+                        <div id="sub-member-results"
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                        </div>
                     </div>
                     <button id="sub-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
@@ -283,20 +286,18 @@
                         </div>
                     </div>
                     <div class="relative w-fit">
+                        <input type="hidden" id="sub-payment-method" value="salary_deduction">
                         <button type="button"
                             class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
-                            الدفع<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]"> خصم من
+                            الدفع<span class="text-[#D92D20]">*</span> : <span id="sub-payment-method-text" class="text-[#021219] text-[14px]"> خصم من
                                 المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl"></iconify-icon></span></button>
-                        <div
+                        <div id="sub-payment-methods"
                             class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
-                            <button type="button" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من
-                                المرتب</button>
-                            <button type="button" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل
-                                بنكي</button>
-                            <button type="button" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع
-                                بجواب
-                                مسبق</button>
+                            <button type="button" data-value="salary_deduction" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من المرتب</button>
+                            <button type="button" data-value="bank_transfer" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
+                            <button type="button" data-value="university_payment_order" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب مسبق</button>
+                            <button type="button" data-value="cash" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">نقدي</button>
                         </div>
                     </div>
                 </div>
@@ -339,6 +340,7 @@
     <script>
         window.appRoutes = {
             searchMember: "{{ route('dashboard.searchMember') }}",
+            searchMembersList: "{{ route('loans.searchMembers') }}",
             paySubscription: function(id) {
                 return "{{ url('/subscriptions') }}/" + id + "/pay";
             },

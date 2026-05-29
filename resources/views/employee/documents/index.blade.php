@@ -58,7 +58,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($member->attachments as $attachment)
+                    @forelse($attachments as $attachment)
                         @php
                             $ext = strtolower(pathinfo($attachment->file_path, PATHINFO_EXTENSION));
                             $isPdf = $ext === 'pdf';
@@ -101,6 +101,9 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4">
+            {{ $attachments->links() }}
         </div>
     </section>
 

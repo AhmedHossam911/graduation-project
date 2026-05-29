@@ -261,6 +261,11 @@ class SubscriptionController extends Controller
 
             // If this payment represents the initial joining fee, generate the schedule for future annual subscriptions.
             if ($subscription->name === 'رسم الاشتراك بالصندوق' || $subscription->membership->subscriptions()->count() === 1) {
+                // Activate the membership if it's not active already
+                if ($subscription->membership->status !== 'active') {
+                    $subscription->membership->update(['status' => 'active']);
+                }
+
                 $member = $subscription->membership->member;
                 if ($member) {
                     $employmentInfo = $member->employmentInfo;

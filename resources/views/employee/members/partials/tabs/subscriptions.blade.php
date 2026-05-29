@@ -7,11 +7,11 @@
     <div data-tab="الاشتراكات"
         class="{{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }} tab-content px-7 py-2 print:hidden">
         @if ($member->membershipInfo && $member->membershipInfo->subscriptions->count() > 0)
-            <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
-                <table class="w-full">
-                    <thead>
+            <div class="rounded-[14px] overflow-x-auto border border-[#D1D5DB]">
+                <table class="w-full md:min-w-max md:whitespace-nowrap">
+                    <thead class="hidden md:table-header-group">
                         <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
-                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم الأشتراك</th>
+                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">اسم الاشتراك</th>
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">المبلغ</th>
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">الحالة</th>
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ الإستحقاق</th>
@@ -20,33 +20,41 @@
                             <th class="py-4 font-medium text-[#021219]">الإجراء</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="block md:table-row-group">
                         @foreach ($member->membershipInfo->subscriptions as $subscription)
-                            <tr class="text-center border-b border-[#D1D5DB] {{ $loop->even ? 'bg-[#EFEFEF]' : '' }}">
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">{{ $subscription->id }}</td>
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ number_format($subscription->amount, 2) }}</td>
-                                <td class="py-4 border-l border-[#D1D5DB]">
+                            <tr class="block md:table-row bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none mb-4 md:mb-0 border md:border-none border-gray-200 text-right md:text-center {{ $loop->even ? 'md:bg-[#EFEFEF]' : '' }}">
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">اسم الاشتراك:</span>
+                                    <span>{{ $subscription->name }}</span>
+                                </td>
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">المبلغ:</span>
+                                    <span>{{ number_format($subscription->amount, 2) }}</span>
+                                </td>
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l">
+                                    <span class="md:hidden font-bold text-[#124375]">الحالة:</span>
                                     @if ($subscription->status === 'paid')
-                                        <span
-                                            class="bg-[#ECFDF333] text-[#067647CC] border border-[#067647CC] px-12 py-1 text-sm rounded-lg">مدفوع</span>
+                                        <span class="bg-[#ECFDF333] text-[#067647CC] border border-[#067647CC] px-4 md:px-12 py-1 text-sm rounded-lg">مدفوع</span>
                                     @elseif($subscription->status === 'unpaid' && \Carbon\Carbon::parse($subscription->due_date)->isPast())
-                                        <span
-                                            class="bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] px-12 py-1 text-sm rounded-lg">متأخر</span>
+                                        <span class="bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] px-4 md:px-12 py-1 text-sm rounded-lg">متأخر</span>
                                     @else
-                                        <span
-                                            class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-12 py-1 text-sm rounded-lg">مستحق</span>
+                                        <span class="bg-[#F2F4F7] text-[#6D6D6D] border border-[#6D6D6D] px-4 md:px-12 py-1 text-sm rounded-lg">مستحق</span>
                                     @endif
                                 </td>
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ \Carbon\Carbon::parse($subscription->due_date)->format('Y-m-d') }}</td>
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ $subscription->paid_at ? \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') : '-' }}
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">تاريخ الإستحقاق:</span>
+                                    <span>{{ \Carbon\Carbon::parse($subscription->due_date)->format('Y-m-d') }}</span>
                                 </td>
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ match ($subscription->transaction?->method ?? '') {'cash' => 'نقدي','bank_transfer' => 'تحويل بنكي','salary_deduction' => 'خصم من المرتب','university_payment_order' => 'أمر دفع من الجامعة',default => '-'} }}
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">تاريخ السداد:</span>
+                                    <span>{{ $subscription->paid_at ? \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') : '-' }}</span>
                                 </td>
-                                <td class="py-5">
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">طريقة الدفع:</span>
+                                    <span>{{ match ($subscription->transaction?->method ?? '') {'cash' => 'نقدي','bank_transfer' => 'تحويل بنكي','salary_deduction' => 'خصم من المرتب','university_payment_order' => 'أمر دفع من الجامعة',default => '-'} }}</span>
+                                </td>
+                                <td class="flex justify-between items-center md:table-cell px-4 py-5 border-b-0 md:border-b md:border-[#D1D5DB]">
+                                    <span class="md:hidden font-bold text-[#124375]">الإجراء:</span>
                                     @php
                                         $hasReceipt =
                                             \App\Models\Financial\Transaction::where(
@@ -61,7 +69,7 @@
                                                 ->exists();
                                     @endphp
                                     @if ($subscription->status === 'paid')
-                                        <div class="text-2xl flex gap-7 items-center justify-center text-[#124375]">
+                                        <div class="text-2xl flex gap-4 md:gap-7 items-center justify-center text-[#124375]">
                                             @if ($hasReceipt)
                                                 <a href="{{ route('subscriptions.view_receipt', $subscription->id) }}"
                                                     target="_blank" class="hover:text-blue-700 transition-colors"
@@ -85,7 +93,7 @@
                                         <div>
                                             <button data-modal="modal7"
                                                 onclick="document.getElementById('paySubscriptionForm').action='{{ route('subscriptions.pay', $subscription->id) }}'"
-                                                class="open-modal bg-[#124375] text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-2 px-4">
+                                                class="open-modal bg-[#124375] text-[14px] md:text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-1.5 md:py-2 px-3 md:px-4">
                                                 تسجيل السداد
                                             </button>
                                         </div>

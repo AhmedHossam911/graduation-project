@@ -16,7 +16,7 @@ class AuditLogFactory extends Factory
         
         return [
             'user_id' => User::factory(),
-            'impersonator_id' => null,
+
             'action' => fake()->randomElement(['Created', 'Updated', 'Deleted', 'Approved']),
             'table_name' => fake()->randomElement($tables),
             'record_id' => fake()->numberBetween(1, 1000),

@@ -22,7 +22,6 @@ class MemberController extends Controller
      */
     public const STATUS_MAP = [
         'active'               => ['label' => 'نشط',              'class' => 'active'],
-        'registering'          => ['label' => 'قيد التسجيل',      'class' => 'registering'],
         'pending_registration' => ['label' => 'قيد الانتظار',     'class' => 'pending'],
         'loaned'               => ['label' => 'إعارة',            'class' => 'loan'],
         'pension_eligible'     => ['label' => 'محال للمعاش',      'class' => 'pension'],
@@ -87,7 +86,7 @@ class MemberController extends Controller
             ];
 
             return redirect()
-                ->route('members.show', $result['member']->id)
+                ->route('members.show', ['member' => $result['member']->id, 'tab' => 'subscriptions'])
                 ->with('success', 'تم حفظ بيانات العضو بنجاح وتوليد الإيصال.')
                 ->with('receipt_data', json_encode($receiptData));
 
@@ -183,10 +182,12 @@ class MemberController extends Controller
 
     public function documents(Request $request, $id)
     {
-        $member = Member::with('attachments')->findOrFail($id);
+        $member = Member::findOrFail($id);
+        $attachments = $member->attachments()->latest()->paginate(10);
 
         return view('employee.documents.index', [
             'member' => $member,
+            'attachments' => $attachments,
         ]);
     }
 
@@ -257,7 +258,7 @@ class MemberController extends Controller
         $this->memberService->uploadSignedForm($member, $request->file('documents.signed_membership_form'));
 
         return redirect()
-            ->route('members.show', $member->id)
+            ->route('members.show', ['member' => $member->id, 'tab' => 'subscriptions'])
             ->with('success', 'تم رفع الاستمارة وإنشاء الاشتراك بنجاح.');
     }
 

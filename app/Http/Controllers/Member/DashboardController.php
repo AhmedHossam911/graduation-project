@@ -17,7 +17,6 @@ class DashboardController extends Controller
         // Define status map
         $statusMap = [
             'active'               => ['text' => 'نشط',                  'color' => 'text-[#019168] bg-[#D8FFE8]', 'icon' => 'material-symbols:list-alt-check-rounded'],
-            'registering'          => ['text' => 'قيد التسجيل',          'color' => 'text-[#EAB308] bg-[#FEF08A]', 'icon' => 'material-symbols:how-to-reg'],
             'pending_registration' => ['text' => 'قيد الانتظار',         'color' => 'text-[#F59E0B] bg-[#FEF3C7]', 'icon' => 'material-symbols:hourglass-top-rounded'],
             'loaned'               => ['text' => 'إعارة',                'color' => 'text-[#3B82F6] bg-[#DBEAFE]', 'icon' => 'material-symbols:flight-takeoff'],
             'pension_eligible'     => ['text' => 'محال لسن التقاعد',      'color' => 'text-[#8B5CF6] bg-[#EDE9FE]', 'icon' => 'material-symbols:elderly'],
@@ -33,7 +32,7 @@ class DashboardController extends Controller
         $statusColor = $status && isset($statusMap[$status]) ? $statusMap[$status]['color'] : 'text-[#019168] bg-[#D8FFE8]';
         $statusIcon  = $status && isset($statusMap[$status]) ? $statusMap[$status]['icon'] : 'material-symbols:list-alt-check-rounded';
         
-        // Members who are completely approved/active or any other state except pending/registering/rejected
+        // Members who are completely approved/active or any other state except pending/rejected
         // should probably see the active dashboard, or at least they are not "guests".
         // Let's route active, loaned, pension_eligible, withdrawn, dismissed, unpaid_leave, membership_expired, suspended to active dashboard.
         $activeStatuses = ['active', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];

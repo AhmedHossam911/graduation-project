@@ -34,7 +34,7 @@
                             المستحقات.</p>
                     </div>
 
-                    <div class="documents grid grid-cols-2 gap-y-5 gap-x-4">
+                    <div class="documents grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-4">
                         <!-- common inputs -->
                         @if (request('claim_type') !== 'transfer')
                             <div class="relative border border-[#124375] rounded-2xl w-full">
@@ -212,7 +212,7 @@
                                 </div>
                             </div>
 
-                            <div id="minors_files" class="col-span-2 grid grid-cols-2 gap-y-5 gap-x-4 hidden">
+                            <div id="minors_files" class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-4 hidden">
                                 <div class="relative border border-[#124375] rounded-2xl w-full">
                                     <span
                                         class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
@@ -277,9 +277,9 @@
             </div>
         @elseif ($memberClaims->isNotEmpty() && request('claim_type') === null)
             <!-- requests table -->
-            <div class="requests-table rounded-[14px] overflow-hidden border border-[#D1D5DB]">
-                <table class="w-full">
-                    <thead>
+            <div class="requests-table rounded-[14px] overflow-x-auto border border-[#D1D5DB]">
+                <table class="w-full md:min-w-max md:whitespace-nowrap">
+                    <thead class="hidden md:table-header-group">
                         <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم المطالبة</th>
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">نوع المطالبة</th>
@@ -288,30 +288,36 @@
                             <th class="py-4 font-medium text-[#021219]">الإجراء</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="block md:table-row-group">
                         @foreach ($memberClaims as $claim)
-                            <tr class="text-center border-b border-[#D1D5DB] {{ $loop->even ? 'bg-[#EFEFEF]' : '' }}">
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">{{ $claim->id }}</td>
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ $claims[$claim->type] ?? $claim->type }}</td>
-                                <td class="py-4 border-l border-[#D1D5DB]">
-                                    <span
-                                        class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100' }} border px-4 py-1.5 text-sm rounded-lg">
+                            <tr class="block md:table-row bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none mb-4 md:mb-0 border md:border-none border-gray-200 text-right md:text-center {{ $loop->even ? 'md:bg-[#EFEFEF]' : '' }}">
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">رقم المطالبة:</span>
+                                    <span>{{ $claim->id }}</span>
+                                </td>
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">نوع المطالبة:</span>
+                                    <span>{{ $claims[$claim->type] ?? $claim->type }}</span>
+                                </td>
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l">
+                                    <span class="md:hidden font-bold text-[#124375]">حالة الطلب:</span>
+                                    <span class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100' }} border px-4 md:px-4 py-1.5 text-sm rounded-lg">
                                         {{ $claimStatusLabels[$claim->status] ?? $claim->status }}
                                     </span>
                                 </td>
-                                <td class="py-4 border-l border-[#D1D5DB] text-[#021219]">
-                                    {{ $claim->created_at->format('Y-m-d') }}
+                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                    <span class="md:hidden font-bold text-[#124375]">تاريخ التقديم:</span>
+                                    <span>{{ $claim->created_at->format('Y-m-d') }}</span>
                                 </td>
-                                <td class="py-5">
+                                <td class="flex justify-between items-center md:table-cell px-4 py-5 border-b-0 md:border-b md:border-[#D1D5DB]">
+                                    <span class="md:hidden font-bold text-[#124375]">الإجراء:</span>
                                     @if ($claim->status === 'approved')
                                         <a href="?tab=مطالبات&view_claim={{ $claim->id }}"
-                                            class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium inline-block">عرض
-                                            التفاصيل</a>
+                                            class="bg-[#124375] text-white py-2 md:py-3 navy-shadow px-4 md:px-8 rounded-xl font-medium inline-block text-[14px] md:text-[16px]">عرض التفاصيل</a>
                                     @elseif($claim->status === 'pending')
                                         @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
                                             <a href="{{ route('claims.show', $claim->id) }}"
-                                                class="bg-[#124375] text-white py-3 navy-shadow px-8 rounded-xl font-medium inline-block">اعتماد</a>
+                                                class="bg-[#124375] text-white py-2 md:py-3 navy-shadow px-4 md:px-8 rounded-xl font-medium inline-block text-[14px] md:text-[16px]">اعتماد</a>
                                         @endif
                                     @endif
                                 </td>
@@ -353,15 +359,15 @@
                                 </label>
                             </div>
 
-                            <div class="btns flex gap-4 mt-6">
+                            <div class="btns flex flex-col sm:flex-row gap-4 mt-6">
                                 <button type="button" id="print-claim-declaration-btn"
                                     onclick="window.open('{{ route('print.claim_declaration', $claim->id) }}', '_blank'); document.getElementById('confirm-claim-payment-btn').disabled = false; document.getElementById('confirm-claim-payment-btn').classList.remove('btn-disabled', 'bg-[#A8A8A8]', 'cursor-not-allowed'); document.getElementById('confirm-claim-payment-btn').classList.add('bg-[#124375]', 'hover:bg-opacity-90');"
-                                    class="border-2 border-[#124375] text-[#124375] font-bold w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
+                                    class="border-2 border-[#124375] text-[#124375] font-bold w-full sm:w-1/3 py-3 rounded-[14px] flex items-center justify-center gap-2 navy-shadow hover:bg-[#F4F7F9] transition-colors">
                                     <iconify-icon icon="material-symbols:print" class="text-2xl"></iconify-icon>
                                     طباعة الإقرار
                                 </button>
                                 <button type="submit" id="confirm-claim-payment-btn" disabled
-                                    class="submit-btn rounded-[14px] w-2/3 py-3 bg-[#A8A8A8] btn-disabled cursor-not-allowed text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2 transition-colors">
+                                    class="submit-btn rounded-[14px] w-full sm:w-2/3 py-3 bg-[#A8A8A8] btn-disabled cursor-not-allowed text-[#EEF7FF] navy-shadow text-base font-medium flex items-center justify-center gap-2 transition-colors">
                                     تأكيد دفع الشيك (رفع الإقرار الموقع)
                                 </button>
                             </div>

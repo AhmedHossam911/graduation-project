@@ -35,7 +35,7 @@
         $statusData = $statusMap[$statusCode] ?? ['label' => 'غير معروف', 'class' => 'unknown'];
         $badgeClass = match ($statusCode) {
             'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
-            'registering', 'pending_registration' => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
+            'pending_registration' => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
             'loaned' => 'bg-[#F9F5FF] text-[#6941C6] border-[#6941C6]',
             'pension_eligible' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
             'withdrawn' => 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]',
@@ -168,7 +168,7 @@
     <!-- tabs -->
     <section class="px-7 print:hidden">
         <div class="flex items-center justify-between border border-[#124375] p-3 rounded-xl">
-            <div class="tabs flex gap-2">
+            <div class="tabs flex flex-wrap gap-2">
                 <button
                     class="{{ $activeTabName === 'الاشتراكات' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">الاشتراكات</button>
                 <button
@@ -221,42 +221,42 @@
                     <div class="flex gap-3">
                         @if ($activeLoan === null)
                             <button id="request-loan-btn"
-                                class="tab-content {{ $activeTabName === 'قروض' ? '' : 'hidden' }} flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
+                                class="tab-content {{ $activeTabName === 'قروض' ? '' : 'hidden' }} flex gap-3 py-3 px-4 sm:px-20 w-full sm:w-auto rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
                                 data-tab="قروض">
                                 <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
                                 طلب قرض
                             </button>
                         @endif
                         <div id="loans-action-buttons"
-                            class="tab-content flex gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}" data-tab="قروض">
+                            class="tab-content flex flex-col sm:flex-row flex-wrap gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}" data-tab="قروض">
                             @if ($activeLoan && $activeLoan->status === 'active')
                                 <button data-modal="modal6"
-                                    class="open-modal text-[16px] font-medium  w-52  bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
+                                    class="open-modal text-[16px] font-medium w-full sm:w-52 bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
                                     تسديد القرض بالكامل
                                 </button>
                             @endif
                             @if ($activeLoan && $activeLoan->status === 'pending')
                                 <button type="button"
                                     onclick="window.open('{{ route('print.board_details', $activeLoan->id) }}', '_blank')"
-                                    class="flex w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
+                                    class="flex w-full sm:w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
                                     <iconify-icon icon="material-symbols:print"
                                         class="text-xl flex items-center"></iconify-icon>
                                     طباعة التفاصيل للمجلس
                                 </button>
                                 <button data-modal="modal3"
-                                    class="open-modal text-[16px] font-medium bg-[#124375] w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
+                                    class="open-modal text-[16px] font-medium bg-[#124375] w-full sm:w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
                                     بدء القرض
                                 </button>
                             @endif
                             @if ($memberLoans->count() > 0)
                                 <a href="{{ route('members.previous-loans', $member->id) }}"
-                                    class="text-center text-[16px] font-medium bg-[#F4F7F9] w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
+                                    class="text-center text-[16px] font-medium bg-[#F4F7F9] w-full sm:w-52 navy-shadow py-2 rounded-[12px] text-[#124375]">
                                     عرض القروض السابقة
                                 </a>
                             @endif
                             @if ($activeLoan && ($activeLoan->status === 'pending' || $activeLoan->status === 'rejected'))
                                 <button data-modal="modal4"
-                                    class="open-modal flex text-[16px] font-medium items-center w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px]">
+                                    class="open-modal flex text-[16px] font-medium items-center w-full sm:w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px]">
                                     <iconify-icon icon="zondicons:close-solid"
                                         class="text-xl flex items-center"></iconify-icon>
                                     إلغاء أو رفض الطلب
@@ -267,12 +267,12 @@
 
                 @endif
                 <!-- end loans only -->
-                <div class="tab-content flex gap-2 {{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }}"
+                <div class="tab-content flex flex-col sm:flex-row flex-wrap gap-2 {{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }}"
                     data-tab="الاشتراكات">
                     @if (auth()->user() && auth()->user()->hasPermission('إدارة الاشتراكات'))
                         @if ($hasOverdue6Months)
                             <button type="button" data-modal="modal8"
-                                class="open-modal flex gap-3 py-3 px-12 rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
+                                class="open-modal flex gap-3 py-3 px-4 sm:px-12 w-full sm:w-auto rounded-[12px] justify-center items-center border border-[#F79009] text-[#F79009] text-[16px] font-medium bg-[#FFF7ED]">
                                 <iconify-icon icon="fluent:mail-warning-24-filled"
                                     class="flex items-center text-2xl"></iconify-icon>
                                 إرسال إخطار مسجل بعلم الوصول
@@ -280,7 +280,7 @@
                         @endif
                     @endif
                     <a href="{{ route('members.documents', $member->id) }}"
-                        class=" flex gap-3 py-3 px-20 rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
+                        class=" flex gap-3 py-3 px-4 sm:px-20 w-full sm:w-auto rounded-[12px] justify-center items-center text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow">
                         <iconify-icon icon="mdi:file-account" class="flex items-center text-2xl"></iconify-icon>
                         عرض المستندات
                     </a>

@@ -20,7 +20,7 @@ class ClaimController extends Controller
         return view('member.guest.claims.index');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, \App\Services\ClaimCalculationService $claimCalculationService)
     {
         $user = Auth::user();
         $member = $user->member;
@@ -28,6 +28,11 @@ class ClaimController extends Controller
         if (!$member || !$member->membershipInfo) {
             return redirect()->route('member.claims.index')
                 ->with('error', 'لا يوجد عضوية مسجلة.');
+        }
+
+        if ($member->membershipInfo->claims()->exists()) {
+            return redirect()->route('member.claims.index')
+                ->with('error', 'لقد قمت بتقديم مطالبة مسبقاً ولا يمكن تقديم أكثر من طلب.');
         }
 
         $validated = $request->validate([
@@ -47,11 +52,19 @@ class ClaimController extends Controller
             ]);
         }
 
-        $claim = \Illuminate\Support\Facades\DB::transaction(function () use ($request, $validated, $member, $user) {
+        $claim = \Illuminate\Support\Facades\DB::transaction(function () use ($request, $validated, $member, $user, $claimCalculationService) {
+            $tempClaim = new \App\Models\Services\Claim([
+                'membership_id' => $member->membershipInfo->id,
+                'type'          => $validated['claim_type'],
+            ]);
+            $tempClaim->setRelation('membership', $member->membershipInfo->load(['subscriptions', 'member.employmentInfo', 'loans.installments']));
+            
+            $calculations = $claimCalculationService->calculate($tempClaim);
+
             $claim = \App\Models\Services\Claim::create([
                 'membership_id'      => $member->membershipInfo->id,
                 'type'               => $validated['claim_type'],
-                'amount'             => 0, // Final amount determined by admin
+                'amount'             => max(0, $calculations['net_amount']), // Initial calculated amount
                 'status'             => 'pending',
                 'attachment_receipt'  => null,
             ]);

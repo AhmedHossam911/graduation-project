@@ -27,7 +27,6 @@ class LoanController extends Controller
         $validated = $request->validate([
             'total_amount'     => ['required', 'numeric'],
             'months'           => ['required', 'integer'],
-            'declaration_file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg', 'max:5120'],
         ]);
 
         $user = Auth::user();
@@ -97,16 +96,9 @@ class LoanController extends Controller
                 'months'             => $validated['months'],
                 'installment_amount' => $installmentAmount,
                 'status'             => 'pending',
+                'digital_declaration' => true,
             ]);
 
-            if ($request->hasFile('declaration_file')) {
-                $path = $request->file('declaration_file')->store('members/declarations', 'public');
-                \App\Models\Membership\Attachment::create([
-                    'member_id' => $member->id,
-                    'file_path' => $path,
-                    'type'      => 'loan_declaration',
-                ]);
-            }
 
             \App\Models\System\AuditLog::create([
                 'user_id'    => $user->id,

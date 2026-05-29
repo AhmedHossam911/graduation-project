@@ -37,6 +37,23 @@ class MembershipController extends Controller
             'approved_by' => auth()->id(),
         ]);
 
+        $user = $membership->member->user ?? null;
+        if ($user) {
+            \App\Models\Auth\Notification::create([
+                'user_id' => $user->id,
+                'title'   => 'تم قبول العضوية',
+                'message' => 'تم اعتماد عضويتك بنجاح وهي الآن نشطة.',
+            ]);
+
+            if ($user->email) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\MembershipApprovedMail($membership));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to send membership approved mail: ' . $e->getMessage());
+                }
+            }
+        }
+
         return redirect()
             ->route('members.show', $membership->member_id)
             ->with('success', 'تم اعتماد العضوية بنجاح.');
@@ -65,6 +82,15 @@ class MembershipController extends Controller
             'status' => 'inactive',
             'reason' => $request->reason,
         ]);
+
+        $user = $membership->member->user ?? null;
+        if ($user) {
+            \App\Models\Auth\Notification::create([
+                'user_id' => $user->id,
+                'title'   => 'تم رفض العضوية',
+                'message' => 'تم رفض طلب العضوية الخاص بك للسبب التالي: ' . $request->reason,
+            ]);
+        }
 
         return redirect()
             ->route('members.show', $membership->member_id)
@@ -98,6 +124,15 @@ class MembershipController extends Controller
 
         $statusLabels = MemberController::STATUS_MAP;
         $newLabel = $statusLabels[$request->status]['label'] ?? $request->status;
+
+        $user = $membership->member->user ?? null;
+        if ($user) {
+            \App\Models\Auth\Notification::create([
+                'user_id' => $user->id,
+                'title'   => 'تحديث حالة العضوية',
+                'message' => 'تم تغيير حالة عضويتك إلى: ' . $newLabel,
+            ]);
+        }
 
         return redirect()
             ->route('members.show', $membership->member_id)

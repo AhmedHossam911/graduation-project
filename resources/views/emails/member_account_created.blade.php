@@ -1,25 +1,24 @@
-{{--
-    Member Account Created Email:
-    Sent to members once their fund membership is approved and their dashboard account is generated.
---}}
 <x-mail::message>
-# مرحباً،
+    # مرحباً،
 
-تم إنشاء حساب العضوية الخاص بك في صندوق الزمالة بنجاح.
+    تم إنشاء حساب العضوية الخاص بك في صندوق الزمالة بنجاح.
 
-بإمكانك الآن تسجيل الدخول للنظام باستخدام البيانات التالية:
+    بإمكانك الآن تسجيل الدخول للنظام باستخدام البيانات التالية:
 
-- **البريد الإلكتروني:** {{ $member->user->email ?? 'البريد المسجل' }}
-- **كلمة المرور:** {{ $password }}
+    **البريد الإلكتروني:** {{ $member->user->email ?? 'البريد المسجل' }}<br>
+    **كلمة المرور الافتراضية:** {{ $password }}
 
-يرجى تغيير كلمة المرور بعد تسجيل الدخول لأول مرة حفاظاً على سرية بياناتك.
 
-<x-mail::button :url="route('login')">
-تسجيل الدخول للنظام
-</x-mail::button>
+    <x-mail::button :url="route('login')">
+        تسجيل الدخول للنظام
+    </x-mail::button>
 
-<div style="text-align: left;" dir="rtl">
-مع تحيات،<br>
-{{ config('app.name') }}
-</div>
+    <x-mail::panel>
+        **نصيحة أمنية هامة:** يرجى تغيير كلمة المرور الافتراضية فور تسجيل دخولك الأول من خلال صفحة الملف الشخصي.
+    </x-mail::panel>
+
+    <div style="text-align: left;" dir="rtl">
+        مع تحيات،<br>
+        {{ config('app.name') }}
+    </div>
 </x-mail::message>

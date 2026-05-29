@@ -13,7 +13,7 @@
                 <h1 class="text-[28px] text-[#124375] font-semibold">الإشعارات</h1>
             </div>
             <div>
-                <form action="{{ route('notifications.read-all') }}" method="POST">
+                <form action="{{ route('member.notifications.read-all') }}" method="POST">
                     @csrf
                     <button type="submit" class="mark-as-read text-[#124375] underline text-[20px] font-semibold">
                         تحديد الكل كمقروء

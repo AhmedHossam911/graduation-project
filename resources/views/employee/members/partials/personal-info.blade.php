@@ -10,7 +10,7 @@
             </h2>
             <div class="information py-7 px-7">
                 <div class="space-y-5">
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div class="relative w-full">
                             <label class="{{ $labelClass }}">الاسم كامل</label>
                             <input type="text" disabled value="{{ $member->user->name ?? 'بيانات مفقودة' }}"
@@ -27,7 +27,7 @@
                                 class="{{ $fieldClass }}">
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div class="relative w-full">
                             <label class="{{ $labelClass }}">الوظيفة</label>
                             <input type="text" disabled
@@ -46,7 +46,7 @@
                                 class="{{ $fieldClass }}">
                         </div>
                     </div>
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div class="relative w-full">
                             <label class="{{ $labelClass }}">تاريخ الانضمام</label>
                             <input type="text" disabled value="{{ $member->created_at?->isoFormat('D MMMM YYYY') }}"

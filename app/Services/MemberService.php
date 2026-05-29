@@ -92,7 +92,7 @@ class MemberService
                 'membership_id' => $membership->id,
                 'name'          => 'رسم الاشتراك بالصندوق',
                 'amount'        => $totalFee,
-                'due_date'      => now(),
+                'due_date'      => now()->addWeek(),
                 'status'        => 'unpaid',
             ]);
 
@@ -240,7 +240,7 @@ class MemberService
             Subscription::create([
                 'membership_id' => $member->membershipInfo->id,
                 'amount'        => 0, // Default fee, to be adjusted later
-                'due_date'      => now(),
+                'due_date'      => now()->addWeek(),
                 'status'        => 'pending',
             ]);
         }
@@ -326,7 +326,7 @@ class MemberService
                 'membership_id' => $membership->id,
                 'name'          => 'رسم الاشتراك بالصندوق',
                 'amount'        => $totalFee,
-                'due_date'      => now(),
+                'due_date'      => now()->addWeek(),
                 'status'        => 'unpaid',
             ]);
 

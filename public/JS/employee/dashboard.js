@@ -123,11 +123,12 @@ document.addEventListener("click", () => {
         };
     }
 
-    async function searchMember(query, type) {
-        if (!query.trim()) return;
+    async function searchMemberData(queryOrId, type, isId = false) {
+        if (!queryOrId || (typeof queryOrId === 'string' && !queryOrId.trim())) return;
         
         try {
-            const url = window.appRoutes ? window.appRoutes.searchMember + '?q=' + encodeURIComponent(query) : `/dashboard/search-member?q=${encodeURIComponent(query)}`;
+            let param = isId ? `member_id=${encodeURIComponent(queryOrId)}` : `q=${encodeURIComponent(queryOrId)}`;
+            const url = window.appRoutes ? window.appRoutes.searchMember + '?' + param : `/dashboard/search-member?${param}`;
             const res = await fetch(url, {
                 headers: {
                     'Accept': 'application/json',
@@ -280,28 +281,106 @@ document.addEventListener("click", () => {
         }
     }
 
+    function setupDropdownSearch(inputId, resultsId, type) {
+        const input = document.getElementById(inputId);
+        const resultsContainer = document.getElementById(resultsId);
+        if (!input || !resultsContainer) return;
+
+        input.addEventListener('input', debounce(async function() {
+            const query = input.value.trim();
+            if (query.length < 2) {
+                resultsContainer.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const searchListUrl = (window.appRoutes && window.appRoutes.searchMembersList) 
+                            ? window.appRoutes.searchMembersList 
+                            : '/loans/search-members';
+                const url = searchListUrl + '?q=' + encodeURIComponent(query);
+                            
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                const data = await res.json();
+                
+                resultsContainer.innerHTML = '';
+                if (data.length === 0) {
+                    resultsContainer.innerHTML = '<div class="p-3 text-center text-gray-500">لا يوجد نتائج</div>';
+                } else {
+                    data.forEach(member => {
+                        const div = document.createElement('div');
+                        div.className = 'p-3 cursor-pointer hover:bg-[#124375] hover:text-white transition-colors border-b border-gray-200 last:border-0 text-right';
+                        div.innerHTML = `
+                            <div class="font-bold">${member.full_name}</div>
+                            <div class="text-sm">رقم العضوية: ${member.membership_number} | القومي: ${member.national_id}</div>
+                        `;
+                        div.addEventListener('click', () => {
+                            input.value = '';
+                            resultsContainer.classList.add('hidden');
+                            searchMemberData(member.id, type, true);
+                        });
+                        resultsContainer.appendChild(div);
+                    });
+                }
+                resultsContainer.classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+            }
+        }, 300));
+
+        // Hide when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
+                resultsContainer.classList.add('hidden');
+            }
+        });
+    }
+
+    function setupPaymentMethodDropdown(prefix) {
+        const container = document.getElementById(`${prefix}-payment-methods`);
+        const input = document.getElementById(`${prefix}-payment-method`);
+        const textSpan = document.getElementById(`${prefix}-payment-method-text`);
+        if(container && input && textSpan) {
+            container.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    input.value = btn.getAttribute('data-value');
+                    textSpan.textContent = btn.innerText.trim();
+                    container.classList.add('hidden');
+                });
+            });
+        }
+    }
+    
+    // Setup payment methods
+    setupPaymentMethodDropdown('sub');
+
     // Modal 1: Subscription
-    const subInput = document.getElementById('sub-search-input');
+    setupDropdownSearch('sub-search-input', 'sub-member-results', 'subscription');
     const subBtn = document.getElementById('sub-search-btn');
-    if (subInput && subBtn) {
-        subInput.addEventListener('input', debounce(() => searchMember(subInput.value, 'subscription'), 500));
-        subBtn.addEventListener('click', () => searchMember(subInput.value, 'subscription'));
+    if (subBtn) {
+        subBtn.addEventListener('click', () => {
+            const input = document.getElementById('sub-search-input');
+            if(input) searchMemberData(input.value, 'subscription', false);
+        });
     }
 
     // Modal 2: Installment
-    const instInput = document.getElementById('inst-search-input');
+    setupDropdownSearch('inst-search-input', 'inst-member-results', 'installment');
     const instBtn = document.getElementById('inst-search-btn');
-    if (instInput && instBtn) {
-        instInput.addEventListener('input', debounce(() => searchMember(instInput.value, 'installment'), 500));
-        instBtn.addEventListener('click', () => searchMember(instInput.value, 'installment'));
+    if (instBtn) {
+        instBtn.addEventListener('click', () => {
+            const input = document.getElementById('inst-search-input');
+            if(input) searchMemberData(input.value, 'installment', false);
+        });
     }
 
     // Modal 3: Claim
-    const claimInput = document.getElementById('claim-search-input');
+    setupDropdownSearch('claim-search-input', 'claim-member-results', 'claim');
     const claimBtn = document.getElementById('claim-search-btn');
-    if (claimInput && claimBtn) {
-        claimInput.addEventListener('input', debounce(() => searchMember(claimInput.value, 'claim'), 500));
-        claimBtn.addEventListener('click', () => searchMember(claimInput.value, 'claim'));
+    if (claimBtn) {
+        claimBtn.addEventListener('click', () => {
+            const input = document.getElementById('claim-search-input');
+            if(input) searchMemberData(input.value, 'claim', false);
+        });
     }
     
     // Set Claim Type hidden input when clicked
@@ -329,14 +408,14 @@ document.addEventListener("click", () => {
     }
 
     if (globalInput && globalBtn) {
-        globalInput.addEventListener('input', debounce(() => searchMember(globalInput.value, 'global'), 500));
-        globalBtn.addEventListener('click', () => searchMember(globalInput.value, 'global'));
+        globalInput.addEventListener('input', debounce(() => searchMemberData(globalInput.value, 'global', false), 500));
+        globalBtn.addEventListener('click', () => searchMemberData(globalInput.value, 'global', false));
         
         // Also allow pressing Enter
         globalInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
-                searchMember(globalInput.value, 'global');
+                searchMemberData(globalInput.value, 'global', false);
             }
         });
     }
@@ -368,6 +447,8 @@ document.addEventListener("click", () => {
                 const formData = new FormData();
                 formData.append('receipt_number', receiptNum);
                 formData.append('receipt_image', receiptImg);
+                const subPaymentMethod = document.getElementById('sub-payment-method');
+                if (subPaymentMethod) formData.append('payment_method', subPaymentMethod.value);
                 formData.append('_token', csrfToken);
                 formData.append('source', 'dashboard');
                 

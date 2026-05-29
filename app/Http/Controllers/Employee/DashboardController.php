@@ -83,27 +83,30 @@ class DashboardController extends Controller
 
     public function searchMember(\Illuminate\Http\Request $request)
     {
-        if (auth()->check() && auth()->user()->role && strtolower(auth()->user()->role->name) === 'admin') {
-            return response()->json(['success' => false, 'message' => 'غير مصرح']);
-        }
-
         $search = $request->get('q', '');
+        $memberId = $request->get('member_id');
 
-        $member = Member::with(['user', 'membershipInfo.loans' => function($q) {
+        $query = Member::with(['user', 'membershipInfo.loans' => function($q) {
             $q->whereIn('status', ['active', 'pending', 'approved']);
         }, 'membershipInfo.loans.installments' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }, 'membershipInfo.subscriptions' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
-        }])->where(function ($q) use ($search) {
-            $q->whereHas('user', function($q2) use ($search) {
-                  $q2->where('name', 'LIKE', "%{$search}%")
-                     ->orWhere('national_id', 'LIKE', "%{$search}%");
-              })
-              ->orWhereHas('membershipInfo', function ($q2) use ($search) {
-                  $q2->where('membership_number', 'LIKE', "%{$search}%");
-              });
-        })->first();
+        }]);
+
+        if ($memberId) {
+            $member = $query->find($memberId);
+        } else {
+            $member = $query->where(function ($q) use ($search) {
+                $q->whereHas('user', function($q2) use ($search) {
+                      $q2->where('name', 'LIKE', "%{$search}%")
+                         ->orWhere('national_id', 'LIKE', "%{$search}%");
+                  })
+                  ->orWhereHas('membershipInfo', function ($q2) use ($search) {
+                      $q2->where('membership_number', 'LIKE', "%{$search}%");
+                  });
+            })->first();
+        }
 
         if (!$member) {
             return response()->json(['success' => false, 'message' => 'لم يتم العثور على العضو']);

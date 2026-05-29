@@ -101,6 +101,12 @@ class ClaimController extends Controller
                 ->with('error', 'لا يوجد عضوية مسجلة لهذا العضو.');
         }
 
+        if ($member->membershipInfo->claims()->exists()) {
+            return redirect()
+                ->route('members.show', $member->id)
+                ->with('error', 'يوجد مطالبة مسجلة مسبقاً لهذا العضو.');
+        }
+
         $validated = $request->validate([
             'claim_type'       => ['required', 'string', 'in:' . implode(',', array_keys(Claim::CLAIM_TYPES))],
             'has_minors'       => ['nullable', 'boolean'],
@@ -119,10 +125,18 @@ class ClaimController extends Controller
         }
 
         $claim = DB::transaction(function () use ($request, $validated, $member) {
+            $tempClaim = new Claim([
+                'membership_id' => $member->membershipInfo->id,
+                'type'          => $validated['claim_type'],
+            ]);
+            $tempClaim->setRelation('membership', $member->membershipInfo->load(['subscriptions', 'member.employmentInfo', 'loans.installments']));
+            
+            $calculations = $this->claimCalculationService->calculate($tempClaim);
+
             $claim = Claim::create([
                 'membership_id'      => $member->membershipInfo->id,
                 'type'               => $validated['claim_type'],
-                'amount'             => 0, // The final amount will be determined by the administrator during the approval phase.
+                'amount'             => max(0, $calculations['net_amount']), // The initial calculated amount
                 'status'             => 'pending',
                 'attachment_receipt'  => null,
             ]);
@@ -185,7 +199,6 @@ class ClaimController extends Controller
 
             $updateData = [
                 'status' => 'approved',
-                'attachment_receipt' => $validated['receipt_number'], // We store the receipt number here for record-keeping.
             ];
 
             if (isset($validated['amount'])) {
@@ -196,18 +209,50 @@ class ClaimController extends Controller
                 $updateData['amount'] = $calculations['net_amount'];
             }
 
+            $attachmentPath = null;
             if ($request->hasFile('receipt_file')) {
                 $memberId = $claim->membership->member_id;
-                $path = $request->file('receipt_file')->store("members/{$memberId}/claims/{$claim->id}", 'public');
+                $attachmentPath = $request->file('receipt_file')->store("members/{$memberId}/claims/{$claim->id}", 'public');
 
                 Attachment::create([
                     'member_id' => $memberId,
                     'type'      => "claim_{$claim->id}_approval_receipt",
-                    'file_path' => $path,
+                    'file_path' => $attachmentPath,
                 ]);
             }
 
             $claim->update($updateData);
+
+            \App\Models\Financial\Transaction::create([
+                'membership_id'   => $claim->membership_id,
+                'reference_type'  => \App\Models\Services\Claim::class,
+                'reference_id'    => $claim->id,
+                'amount'          => $updateData['amount'],
+                'type'            => \App\Models\Financial\Transaction::TYPE_OUT,
+                'method'          => 'check', 
+                'category'        => 'claim_payment',
+                'description'     => 'صرف مستحقات المطالبة',
+                'receipt_no'      => $validated['receipt_number'],
+                'attachment_path' => $attachmentPath,
+                'created_by'      => auth()->id(),
+            ]);
+
+            $user = $claim->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'اعتماد مطالبة صرف مستحقات',
+                    'message' => 'تم اعتماد المطالبة الخاصة بك بنجاح، يرجى التوجه لإدارة الصندوق لاستلام الشيك.',
+                ]);
+
+                if ($user->email) {
+                    try {
+                        \Illuminate\Support\Facades\Mail::to($user->email)->send(new \App\Mail\ClaimApprovedMail($claim));
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to send claim approved mail: ' . $e->getMessage());
+                    }
+                }
+            }
 
             // Log the approval action.
             $this->logAudit('approve', 'claims', $claim->id, $oldValues, $claim->fresh()->toArray());
@@ -242,13 +287,24 @@ class ClaimController extends Controller
             ]);
 
             $claim->update([
-                'status' => 'delivered' // Mark the claim as delivered to the member.
+                'status' => 'paid', // Mark the claim as delivered (paid) to the member.
+                'attachment_receipt' => $path
             ]);
+
+            $user = $claim->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تسليم مستحقات المطالبة',
+                    'message' => 'تم تسليمك شيك المطالبة الخاص بك بنجاح.',
+                ]);
+            }
 
             $this->logAudit('finalize', 'claims', $claim->id, $oldValues, $claim->fresh()->toArray());
         });
-
-        return back()->with('success', 'تم رفع الإقرار الموقع ودفع الشيك بنجاح.');
+        return redirect()
+            ->route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims'])
+            ->with('success', 'تم رفع الإقرار الموقع ودفع الشيك بنجاح.');
     }
 
     private function logAudit(string $action, string $tableName, int $recordId, ?array $oldValues, ?array $newValues): void

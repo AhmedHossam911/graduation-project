@@ -96,7 +96,7 @@
                     </div>
                     <div class="flex flex-col gap-3">
                         <h3 class="text-sm text-[#6D6D6D] font-medium">
-                            عدد شهور الاشتراك
+                            عدد شهور الاشتراك المدفوعة
                         </h3>
                         <p class="text-base text-[#124375] font-semibold">
                             {{ $paidMonths . ' شهر' }}

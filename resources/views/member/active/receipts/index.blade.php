@@ -17,37 +17,9 @@
         </div>
     </div>
 
-    @php
-        $allReceipts = collect();
-        foreach($subscriptions ?? [] as $sub) {
-            $allReceipts->push((object)[
-                'id' => 'sub_'.$sub->id,
-                'type' => 'اشتراك شهرية',
-                'title' => 'رسوم اشتراك العضوية',
-                'receipt_no' => 'REC-SUB-' . str_pad($sub->id, 3, '0', STR_PAD_LEFT),
-                'date' => $sub->created_at->format('Y-m-d'),
-                'amount' => $sub->amount,
-                'status' => $sub->status,
-                'icon' => 'material-symbols:list-alt-check-rounded',
-            ]);
-        }
-        foreach($installments ?? [] as $inst) {
-            $allReceipts->push((object)[
-                'id' => 'inst_'.$inst->id,
-                'type' => 'قسط قرض',
-                'title' => 'قسط قرض شخصي',
-                'receipt_no' => 'REC-LOAN-' . str_pad($inst->id, 3, '0', STR_PAD_LEFT),
-                'date' => $inst->due_date ?? $inst->created_at->format('Y-m-d'),
-                'amount' => $inst->amount,
-                'status' => $inst->status,
-                'icon' => 'ion:cash',
-            ]);
-        }
-        $allReceipts = $allReceipts->sortByDesc('date')->values();
-    @endphp
 
     <div class="grid grid-cols-3 gap-7 px-12">
-        @forelse($allReceipts as $index => $receipt)
+        @forelse($paginatedReceipts as $index => $receipt)
             @php
                 $isPaid = $receipt->status === 'paid';
                 $statusColor = $isPaid ? 'border-[#019168] text-[#019168] bg-[#F0FFF6]' : 'border-[#F79009] text-[#F79009] bg-[#FFF7ED]';
@@ -93,9 +65,14 @@
         @endforelse
     </div>
 
+    <!-- Pagination Links -->
+    <div class="px-12 mt-8">
+        {{ $paginatedReceipts->links() }}
+    </div>
+
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
 
-    @foreach($allReceipts as $index => $receipt)
+    @foreach($paginatedReceipts as $index => $receipt)
         @php
             $isPaid = $receipt->status === 'paid';
             $statusBadgeClass = $isPaid ? 'text-[#019168] border-[#019168] bg-[#F0FFF6]' : 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]';

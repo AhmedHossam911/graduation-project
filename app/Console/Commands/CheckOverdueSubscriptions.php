@@ -64,6 +64,13 @@ class CheckOverdueSubscriptions extends Command
                     \Illuminate\Support\Facades\Log::error('Failed to send late payment reminder to ' . $user->email . ': ' . $e->getMessage());
                 }
             }
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تأخر سداد الاشتراك',
+                    'message' => 'لديك اشتراك متأخر الدفع بقيمة ' . number_format($sub->amount, 2) . ' يرجى سداده لتجنب إيقاف العضوية.',
+                ]);
+            }
             $sub->update(['last_warning_sent_at' => $now]);
         }
 
@@ -97,9 +104,19 @@ class CheckOverdueSubscriptions extends Command
                 })->get();
 
                 foreach ($employees as $emp) {
-                    if (class_exists(\App\Notifications\MembershipSuspendedNotification::class)) {
-                        $emp->notify(new \App\Notifications\MembershipSuspendedNotification($membership));
-                    }
+                    \App\Models\Auth\Notification::create([
+                        'user_id' => $emp->id,
+                        'title'   => 'إيقاف عضوية تلقائي',
+                        'message' => 'تم إيقاف العضوية رقم ' . $membership->membership_number . ' تلقائياً بسبب تأخر السداد.',
+                    ]);
+                }
+
+                if ($user) {
+                    \App\Models\Auth\Notification::create([
+                        'user_id' => $user->id,
+                        'title'   => 'تم إيقاف العضوية',
+                        'message' => 'تم إيقاف عضويتك تلقائياً لتأخرك في السداد، يرجى مراجعة إدارة الصندوق.',
+                    ]);
                 }
             }
         }

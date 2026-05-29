@@ -105,7 +105,6 @@
                                         $status = $user->member?->membershipInfo?->status;
                                         $statusText = match ($status) {
                                             'active' => 'نشط',
-                                            'registering' => 'قيد التسجيل',
                                             'pending_registration' => 'قيد الانتظار',
                                             'loaned' => 'إعارة',
                                             'pension_eligible' => 'محال لسن التقاعد',

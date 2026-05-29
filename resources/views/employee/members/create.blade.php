@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- start Header -->
-    <div class="flex justify-between items-center py-5 px-7">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center py-5 px-4 sm:px-7 gap-4">
         <div class="logo surface-shadow">
             <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" class="w-16">
         </div>
@@ -20,7 +20,7 @@
             </h1>
         </div>
 
-        <div class="flex items-center gap-4 relative">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 relative w-full sm:w-auto">
             @if ($errors->any())
                 <div
                     class="absolute left-[calc(100%)] ml-12 flex items-center w-max gap-2 border border-[#D92D20] bg-[#FFF4F2] text-[#D92D20] px-4 py-2 rounded-xl font-medium">
@@ -55,7 +55,7 @@
                 </h2>
                 <div class="space-y-7">
                     <!-- START FULL NAME & EMAIL -->
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class="w-full relative">
                             <label
                                 class="absolute top-[-15px] right-5 @error('full_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
@@ -84,7 +84,7 @@
                     <!-- END FULL NAME & EMAIL -->
 
                     <!-- START LANDLINE & PHONE -->
-                    <div class="flex gap-6">
+                    <div class="flex flex-col lg:flex-row gap-6">
                         <div
                             class="phone relative border @error('phone_digits') border-[#D92D20] @elseif($errors->has('phone_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl flex-1 min-w-0">
                             <label
@@ -125,7 +125,7 @@
                     </div>
                     <!-- END LANDLINE & PHONE -->
                     <!-- START DATE OF BIRTH -->
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div
                             class=" relative border @error('national_id_digits') border-[#D92D20] @elseif($errors->has('national_id_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl flex-1 min-w-0">
                             <label
@@ -177,7 +177,7 @@
                     </div>
                     <!-- END LANDLINE & PHONE -->
                     <!-- START SOCIAL STATUS & PLACE OF RESIDENCE -->
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class=" relative flex-1 min-w-0">
                             <label
                                 class="absolute top-[-15px] right-5 @error('address') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">محل
@@ -189,7 +189,7 @@
                                     class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="w-80">
+                        <div class="w-full lg:w-80">
                             @include('partials.common.dropdown', [
                                 'name' => 'marital_status',
                                 'label' => 'الحالة الاجتماعية',
@@ -218,7 +218,7 @@
             <div class="functional-data rounded-2xl border-2 border-[#124375] py-7 px-7 relative">
                 <div class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">البيانات
                     الوظيفية</div>
-                <div class="flex gap-5">
+                <div class="flex flex-col lg:flex-row gap-5">
                     <div class="flex-1 min-w-0 space-y-7">
                         <div class="w-full relative pt-2">
                             @php
@@ -250,7 +250,7 @@
                                     class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="flex gap-5">
+                        <div class="flex flex-col lg:flex-row gap-5">
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('financial_category') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الفئة
@@ -334,7 +334,7 @@
                 <div class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">البيانات
                     العائلية</div>
                 <div class="wrapper space-y-5">
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div
                             class="childern flex-1 min-w-0 relative border @error('children_count') border-[#D92D20] @else border-[#124375] @enderror rounded-xl">
                             <label
@@ -367,7 +367,7 @@
                             @endif
                         </div>
                     </div>
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class="w-full relative">
                             <label
                                 class="absolute top-[-15px] right-5 @error('spouse_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">اسم
@@ -393,7 +393,7 @@
                             @enderror
                         </div>
                     </div>
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class="w-full relative">
                             <label
                                 class="absolute top-[-15px] right-5 @error('child_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">اسم
@@ -430,7 +430,7 @@
                 <h2 class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">المرفقات
                 </h2>
                 <div class="wrapper space-y-7">
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class="w-full relative">
                             <span
                                 class="absolute top-[-15px] right-5 @error('documents.national_id_card') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
@@ -456,7 +456,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class="w-full relative">
                             <span
                                 class="absolute top-[-15px] right-5 @error('documents.basic_salary_letter') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
@@ -482,7 +482,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-5">
                         <div class="w-full relative">
                             <span
                                 class="absolute top-[-15px] right-5 @error('documents.work_declaration') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">اقرار
@@ -514,9 +514,9 @@
         <!-- end files section -->
 
         <!-- start declaration section -->
-        <div class="flex justify-center mt-16 mb-16">
+        <div class="flex justify-center mt-16 mb-16 px-4">
             <button type="submit"
-                class="flex gap-3 py-3 w-2/4 justify-center rounded-2xl surface-shadow items-center bg-[#124375] text-white text-base font-medium hover:bg-[#0e3560] transition-colors"><iconify-icon
+                class="flex gap-3 py-3 w-full lg:w-2/4 justify-center rounded-2xl surface-shadow items-center bg-[#124375] text-white text-base font-medium hover:bg-[#0e3560] transition-colors"><iconify-icon
                     icon="material-symbols:print-rounded" class="text-2xl"></iconify-icon> حفظ البيانات
             </button>
         </div>

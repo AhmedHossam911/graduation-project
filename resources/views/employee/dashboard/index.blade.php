@@ -42,8 +42,8 @@
                                 icon="weui:close-filled" class="text-2xl"></iconify-icon></button>
                     </div>
                     <div class="rounded-[14px] overflow-hidden border border-[#6D6D6D]">
-                        <table class="w-full">
-                            <thead>
+                        <table class="w-full md:min-w-max md:whitespace-nowrap">
+                            <thead class="hidden md:table-header-group">
                                 <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                                     <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
                                     <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
@@ -52,7 +52,7 @@
                                     <th class="py-3 font-medium text-[#021219]">إجراءات</th>
                                 </tr>
                             </thead>
-                            <tbody id="search-results-tbody">
+                            <tbody id="search-results-tbody" class="block md:table-row-group">
                                 <!-- Populated via JS -->
                             </tbody>
                         </table>
@@ -220,7 +220,7 @@
                 </div>
                 @if ($lateInstallments->isEmpty())
                     <div class="rounded-2xl overflow-hidden text-center surface-shadow">
-                        <img src="{{ asset('IMGs/no-members-alert.png') }}" alt="no alerts" style="width: 200px"
+                        <img src="{{ asset('IMGs/Dashboard-no-members.png') }}" alt="no alerts" style="width: 200px"
                             class="mx-auto py-10">
                         <p class="text-base font-medium text-[#124375]">
                             ممتاز! لا يوجد أعضاء متأخرين يستوجب إنذارهم حالياً.
@@ -228,24 +228,37 @@
                     </div>
                 @else
                     <div class="rounded-2xl overflow-hidden  surface-shadow">
-                        <table class="w-full">
-                            <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                                <th class="py-3 border-l border-[#6D6D6D]">اسم العضو</th>
-                                <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
-                                <th class="py-3 border-l border-[#6D6D6D]">المبلغ المستحق</th>
-                                <th class="py-3 border-l border-[#6D6D6D]">مدة التأخير</th>
-                            </tr>
-                            @foreach ($lateInstallments as $installment)
-                                <tr class="text-center">
-                                    <td class="py-3 border-l border-[#6D6D6D]">
-                                        {{ $installment->loan->membership->member->user->name ?? 'عضو' }}</td>
-                                    <td class="py-3 border-l border-[#6D6D6D]">
-                                        {{ $installment->loan->membership->membership_number ?? '-' }}</td>
-                                    <td class="py-3 border-l border-[#6D6D6D]">{{ $installment->amount }} ج.م</td>
-                                    <td class="py-3 border-l border-[#6D6D6D]">
-                                        {{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}</td>
+                        <table class="w-full md:min-w-max md:whitespace-nowrap">
+                            <thead class="hidden md:table-header-group">
+                                <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ المستحق</th>
+                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">مدة التأخير</th>
                                 </tr>
-                            @endforeach
+                            </thead>
+                            <tbody class="block md:table-row-group">
+                                @foreach ($lateInstallments as $installment)
+                                    <tr class="block md:table-row bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none mb-4 md:mb-0 border md:border-none border-gray-200 text-right md:text-center {{ $loop->even ? 'md:bg-[#EFEFEF]' : '' }}">
+                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b border-dashed md:border-solid border-gray-300 md:border-[#6D6D6D] md:border-l text-[#021219]">
+                                            <span class="md:hidden font-bold text-[#124375]">اسم العضو:</span>
+                                            <span>{{ $installment->loan->membership->member->user->name ?? 'عضو' }}</span>
+                                        </td>
+                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b border-dashed md:border-solid border-gray-300 md:border-[#6D6D6D] md:border-l text-[#021219]">
+                                            <span class="md:hidden font-bold text-[#124375]">رقم العضوية:</span>
+                                            <span>{{ $installment->loan->membership->membership_number ?? '-' }}</span>
+                                        </td>
+                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b border-dashed md:border-solid border-gray-300 md:border-[#6D6D6D] md:border-l text-[#021219]">
+                                            <span class="md:hidden font-bold text-[#124375]">المبلغ المستحق:</span>
+                                            <span>{{ $installment->amount }} ج.م</span>
+                                        </td>
+                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b-0 md:border-b md:border-[#6D6D6D] md:border-l text-[#021219]">
+                                            <span class="md:hidden font-bold text-[#124375]">مدة التأخير:</span>
+                                            <span>{{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
                 @endif
@@ -283,10 +296,13 @@
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
                         <input type="search" id="sub-search-input"
-                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
-                            class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
+                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي" autocomplete="off"
+                            class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
+                        <div id="sub-member-results"
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                        </div>
                     </div>
                     <button id="sub-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
@@ -316,20 +332,18 @@
                         </div>
                     </div>
                     <div class="relative w-fit">
+                        <input type="hidden" id="sub-payment-method" value="salary_deduction">
                         <button type="button"
                             class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
-                            الدفع<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]"> خصم من
+                            الدفع<span class="text-[#D92D20]">*</span> : <span id="sub-payment-method-text" class="text-[#021219] text-[14px]"> خصم من
                                 المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl"></iconify-icon></span></button>
-                        <div
+                        <div id="sub-payment-methods"
                             class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
-                            <button type="button" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من
-                                المرتب</button>
-                            <button type="button" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل
-                                بنكي</button>
-                            <button type="button" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع
-                                بجواب
-                                مسبق</button>
+                            <button type="button" data-value="salary_deduction" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من المرتب</button>
+                            <button type="button" data-value="bank_transfer" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
+                            <button type="button" data-value="university_payment_order" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب مسبق</button>
+                            <button type="button" data-value="cash" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">نقدي</button>
                         </div>
                     </div>
                 </div>
@@ -398,10 +412,13 @@
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
                         <input type="search" id="inst-search-input"
-                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
-                            class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
+                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي" autocomplete="off"
+                            class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
+                        <div id="inst-member-results"
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                        </div>
                     </div>
                     <button id="inst-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
@@ -495,10 +512,13 @@
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
                         <input type="search" id="claim-search-input"
-                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
-                            class="w-full py-2 pr-7 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
+                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي" autocomplete="off"
+                            class="w-full py-2 pr-7 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
+                        <div id="claim-member-results"
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                        </div>
                     </div>
                     <button id="claim-search-btn" type="button"
                         class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
@@ -556,6 +576,7 @@
     <script>
         window.appRoutes = {
             searchMember: "{{ route('dashboard.searchMember') }}",
+            searchMembersList: "{{ route('loans.searchMembers') }}",
             paySubscription: function(id) {
                 return "{{ url('/subscriptions') }}/" + id + "/pay";
             },

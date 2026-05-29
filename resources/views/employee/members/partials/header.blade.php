@@ -6,9 +6,9 @@
 <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60] print:hidden"></div>
 
     {{-- head --}}
-    <div class="flex justify-between items-center px-10 py-5 print:hidden">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-10 py-5 gap-4 print:hidden">
         <div class="flex flex-col gap-4">
-            <div class="flex gap-7 items-center">
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-7 items-start sm:items-center">
                 <p class="text-[28px] font-semibold text-[#124375]">{{ $member->user->name }}</p>
                 <p class="mt-3 status {{ $badgeClass }} rounded-lg px-10 border">{{ $statusData['label'] }}</p>
             </div>
@@ -17,14 +17,14 @@
                 <span class="text-[#124375] font-semibold text-xl">{{ $membership->membership_number ?? '-' }}</span>
             </p>
         </div>
-        <div class="space-y-2 mt-3">
+        <div class="space-y-2 mt-3 w-full md:w-auto">
             @if (auth()->user() && auth()->user()->hasPermission('إدارة الأعضاء'))
                 <button data-modal="modal-edit"
                     class="open-modal flex items-center justify-center navy-shadow bg-[#124375] text-[#FEFFFC] rounded-xl gap-2 w-full  py-3 ">
                     <iconify-icon icon="ic:round-edit" class="mt-1 text-xl"></iconify-icon> تعديل بيانات
                 </button>
                 <button data-modal="modal1"
-                    class="flex open-modal items-center red-shadow bg-[#F4F7F9] text-[#D92D20] rounded-xl gap-2 px-20 py-3 border border-[#D92D20]">
+                    class="flex open-modal justify-center items-center red-shadow bg-[#F4F7F9] text-[#D92D20] rounded-xl gap-2 px-4 sm:px-20 py-3 border border-[#D92D20] w-full">
                     <iconify-icon icon="carbon:close-filled" class="mt-1 text-xl"></iconify-icon> إيقاف العضوية
                 </button>
             @endif

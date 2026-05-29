@@ -219,14 +219,15 @@
                 </h1>
             </div>
             <div class="space-y-3">
-                <!-- <div class="flex gap-3 items-center">
-                                        <p class="text-base font-medium text-[#124375]">الأسم : <span class="text-[#021219] font-semibold text-base">أحمد محمد</span></p>
-                                        <p class="text-base font-medium text-[#124375]">رقم العضوية : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                        <p class="text-base font-medium text-[#124375]">الرقم القومي : <span class="text-[#021219] font-semibold text-base">12345678901234</span></p>
-                                        <p class="text-base font-medium text-[#124375]">رقم القرض : <span class="text-[#021219] font-semibold text-base">123456789</span></p>
-                                        <iconify-icon icon="pajamas:redo" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"></iconify-icon>
-                                    </div> -->
-                <div class="flex items-center justify-between gap-4 ">
+                <div id="selected-member-details" class="hidden flex gap-3 items-center">
+                    <p class="text-base font-medium text-[#124375]">الاسم : <span id="selected-member-name" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span id="selected-member-number" class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span id="selected-member-national-id" class="text-[#021219] font-semibold text-base"></span></p>
+                    <button type="button" id="clear-selected-member" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2 hover:bg-[#D92D20] transition-colors">
+                        <iconify-icon icon="weui:close-filled"></iconify-icon>
+                    </button>
+                </div>
+                <div id="search-member-wrapper" class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium min-w-fit">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
                         <input type="search" id="claim-member-search"
@@ -265,8 +266,8 @@
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
                         الأختيار</button>
                 </form>
-                <button
-                    class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
+                <button type="button" onclick="this.closest('.modal').classList.add('hidden'); document.querySelector('.overlay').classList.add('hidden');"
+                    class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
     </div>
@@ -421,9 +422,17 @@
                                 <div class="text-sm">رقم العضوية: ${member.membership_number} | القومي: ${member.national_id}</div>
                             `;
                                     div.addEventListener('click', () => {
-                                        searchInput.value = member.full_name;
-                                        selectedMemberId = member.member_id;
+                                        searchInput.value = '';
+                                        selectedMemberId = member.id;
                                         resultsContainer.classList.add('hidden');
+                                        
+                                        // Hide search, show details
+                                        document.getElementById('search-member-wrapper').classList.add('hidden');
+                                        document.getElementById('selected-member-name').textContent = member.full_name;
+                                        document.getElementById('selected-member-number').textContent = member.membership_number;
+                                        document.getElementById('selected-member-national-id').textContent = member.national_id;
+                                        document.getElementById('selected-member-details').classList.remove('hidden');
+                                        document.getElementById('selected-member-details').classList.add('flex');
                                     });
                                     resultsContainer.appendChild(div);
                                 });
@@ -431,6 +440,18 @@
                             resultsContainer.classList.remove('hidden');
                         });
                 });
+
+                // Clear selected member
+                const clearBtn = document.getElementById('clear-selected-member');
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', () => {
+                        selectedMemberId = null;
+                        document.getElementById('selected-member-details').classList.add('hidden');
+                        document.getElementById('selected-member-details').classList.remove('flex');
+                        document.getElementById('search-member-wrapper').classList.remove('hidden');
+                        searchInput.focus();
+                    });
+                }
 
                 // Hide dropdown when clicking outside
                 document.addEventListener('click', (e) => {
