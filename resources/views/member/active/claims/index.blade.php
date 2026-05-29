@@ -16,9 +16,9 @@
                 </p>
             </div>
             <div>
-                <button class="text-[#D92D20] bg-[#F4F7F9] rounded-[16px] py-2 px-12 red-shadow">
+                <a href="{{ route('member.dashboard') }}" class="block text-center text-[#D92D20] bg-[#F4F7F9] rounded-[16px] py-2 px-12 red-shadow">
                     إلغاء
-                </button>
+                </a>
             </div>
         </div>
     </section>

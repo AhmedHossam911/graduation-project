@@ -5,6 +5,8 @@
 @section('content')
 
     <link rel="stylesheet" href="{{ asset('css/memberLoan.css') }}">
+    
+    @if(!$activeLoan)
     {{-- لو معندوش قرض ده اللي يظهر --}}
     <section class="py-7 px-12">
         <div class="flex items-center justify-between">
@@ -18,9 +20,9 @@
                 </p>
             </div>
             <div>
-                <button class="text-[#D92D20] bg-[#F4F7F9] rounded-[16px] py-2 px-12 red-shadow">
+                <a href="{{ route('member.dashboard') }}" class="block text-center text-[#D92D20] bg-[#F4F7F9] rounded-[16px] py-2 px-12 red-shadow">
                     إلغاء
-                </button>
+                </a>
             </div>
         </div>
     </section>
@@ -114,7 +116,8 @@
             </div>
         </div>
     </section>
-
+    
+    @else
     {{-- لو العضو عنده قرض ده اللي يظهر --}}
     <div
         class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-auto flex flex-col gap-7 justify-center items-center">
@@ -130,13 +133,14 @@
                 الانتهاء من سدادالقرض الحالي بالكامل قبل التقدم بطلب للحصول علي قرض جديد</p>
         </div>
         <div>
-            <a href="../MemberHomePage/memberhome.html"
-                class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full py-3 px-8 rounded-[12px] navy-shadow ">
+            <a href="{{ route('member.dashboard') }}"
+                class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
                 متابعة سداد القرض الحالي
                 <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
             </a>
         </div>
     </div>
+    @endif
 
     <script src="{{ asset('JS/member/memberLoan.js') }}"></script>
 @endsection

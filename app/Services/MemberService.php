@@ -257,6 +257,98 @@ class MemberService
         ]);
     }
 
+    public function registerMembership(Member $member, array $validated, Request $request): array
+    {
+        $birthDate = $this->dateFromParts($request, 'birth');
+        $age = 0;
+        if ($birthDate) {
+            $age = Carbon::parse($birthDate)->age;
+            $minAge = (int) SystemSetting::get('membership_min_age', 21);
+            $maxAge = (int) SystemSetting::get('membership_max_age', 59);
+
+            if ($age < $minAge || $age > $maxAge) {
+                throw new Exception("عمر العضو ($age عامًا) غير مطابق للوائح. السن المسموح به من $minAge إلى $maxAge عامًا.");
+            }
+        }
+
+        return DB::transaction(function () use ($request, $validated, $member, $age) {
+            $oldValues = $member->toArray();
+
+            $member->update([
+                'full_name'      => $validated['full_name'],
+                'birth_date'     => $this->dateFromParts($request, 'birth'),
+                'phone'          => $this->digitsToString($request, 'phone_digits'),
+                'landline'       => $this->digitsToString($request, 'landline_digits'),
+                'address'        => $validated['address'] ?? null,
+                'marital_status' => $validated['marital_status'],
+            ]);
+
+            $member->employmentInfo()->updateOrCreate(
+                ['member_id' => $member->id],
+                [
+                    'workplace'          => $validated['employer_name'],
+                    'job_title'          => $validated['job_title'],
+                    'financial_category' => $validated['financial_category'],
+                    'join_date'          => $this->dateFromParts($request, 'hire'),
+                    'retirement_date'    => $this->dateFromParts($request, 'retirement'),
+                    'starting_salary'    => $validated['salary'] ?? null,
+                ]
+            );
+
+            $member->familyInfo()->updateOrCreate(
+                ['member_id' => $member->id],
+                [
+                    'children_count'   => $validated['children_count'] ?? 0,
+                    'spouse_name'      => $this->nullIfPlaceholder($validated['spouse_name'] ?? null) ?? 'لا يوجد',
+                    'spouse_phone'     => $this->digitsToString($request, 'spouse_phone_digits') ?? 'لا يوجد',
+                    'spouse_workplace' => $this->nullIfPlaceholder($validated['spouse_workplace'] ?? null) ?? 'لا يوجد',
+                    'child_name'       => $this->nullIfPlaceholder($validated['child_name'] ?? null) ?? 'لا يوجد',
+                    'child_workplace'  => $this->nullIfPlaceholder($validated['child_workplace'] ?? null) ?? 'لا يوجد',
+                ]
+            );
+
+            $membership = Membership::create([
+                'member_id'            => $member->id,
+                'membership_number'    => 'MS-' . str_pad($member->id, 5, '0', STR_PAD_LEFT),
+                'status'               => 'pending_registration',
+                'declaration_accepted' => true,
+                'approved_by'          => null,
+            ]);
+
+            $totalFee = $this->calculateFees($age, (float)($validated['salary'] ?? 0));
+
+            Subscription::create([
+                'membership_id' => $membership->id,
+                'name'          => 'رسم الاشتراك بالصندوق',
+                'amount'        => $totalFee,
+                'due_date'      => now(),
+                'status'        => 'unpaid',
+            ]);
+
+            $documentTypes = [
+                'national_id_card'    => 'بطاقة الرقم القومي',
+                'basic_salary_letter' => 'خطاب الأجر الأساسي',
+                'work_declaration'    => 'إقرار القيام بالعمل',
+                'over_21_request'     => 'طلب تجاوز فوق سن ٢١ عام',
+                'appointment_decision'=> 'قرار التعيين',
+            ];
+
+            foreach ($documentTypes as $type => $label) {
+                if ($request->hasFile("documents.$type")) {
+                    $this->storeDocument($member, $request->file("documents.$type"), $type);
+                }
+            }
+
+            $this->logAudit('update', 'members', $member->id, $oldValues, $member->fresh()->toArray());
+
+            return [
+                'member' => $member,
+                'membership' => $membership,
+                'totalFee' => $totalFee
+            ];
+        });
+    }
+
     private function calculateFees(int $age, float $basicSalary): float
     {
         $retirementAge = (int) SystemSetting::get('retirement_age', 60);

@@ -23,12 +23,12 @@
                 <div class=" grid grid-cols-3 gap-5">
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
-                            <iconify-icon icon="material-symbols:list-alt-check-rounded"
-                                class=" text-4xl text-[#019168] bg-[#D8FFE8] rounded-lg px-3 py-3"></iconify-icon>
+                            <iconify-icon icon="{{ $statusIcon }}"
+                                class=" text-4xl {{ $statusColor }} rounded-lg px-3 py-3"></iconify-icon>
                         </div>
                         <div class="flex flex-col items-center text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">حالة العضوية</p>
-                            <p class="text-4xl font-extrabold">غير مسجل</p>
+                            <p class="text-4xl font-extrabold">{{ $statusText }}</p>
                         </div>
                     </div>
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
@@ -38,7 +38,7 @@
                         </div>
                         <div class="flex flex-col items-center text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ الانضمام</p>
-                            <p class="text-4xl font-extrabold">لم يتم التسجيل</p>
+                            <p class="text-4xl font-extrabold">{{ $joinDate }}</p>
                         </div>
                     </div>
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
@@ -48,7 +48,7 @@
                         </div>
                         <div class="flex flex-col items-center text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">المطالبات السابقة</p>
-                            <p class="text-4xl font-extrabold">0</p>
+                            <p class="text-4xl font-extrabold">{{ $claimsCount }}</p>
                         </div>
                     </div>
                 </div>
@@ -58,13 +58,13 @@
                         أخر الطلبات
                     </h2>
                     <div class="flex flex-col justify-center py-3 items-center gap-5">
-                        <img src="../IMGs/no-requests.png">
+                        <img src="{{ asset('IMGs/no-requests.png') }}">
                         <p class="text-[16px] font-medium text-[#6D6D6D]">لم تقم بتقديم أي طلبات بعد.</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-3 gap-7">
-                    <a href=""
+                    <a href="{{ route('member.membership.create') }}"
                         class="flex flex-col gap-2 py-5 text-[#16A34A] items-center bg-[#F4F7F9] surface-shadow rounded-[16px] border-s-8 border-[#16A34A]">
                         <div>
                             <iconify-icon icon="material-symbols:list-alt-rounded"
@@ -72,7 +72,7 @@
                         </div>
                         <p class="text-[16px] font-medium">تقديم استمارة عضوية</p>
                     </a>
-                    <a href="../GuestLoanPage/guestLoan.html"
+                    <a href="{{ route('member.loans.index') }}"
                         class="flex flex-col gap-2 py-5 text-[#124375] items-center bg-[#F4F7F9] surface-shadow rounded-[16px] border-s-8 border-[#124375]">
                         <div>
                             <iconify-icon icon="fluent:money-24-filled"
@@ -80,7 +80,7 @@
                         </div>
                         <p class="text-[16px] font-medium">طلب قرض جديد</p>
                     </a>
-                    <a href="../GuestClaimPage/guestClaim.html"
+                    <a href="{{ route('member.claims.index') }}"
                         class="flex flex-col gap-2 py-5 text-[#E11D48] items-center bg-[#F4F7F9] surface-shadow rounded-[16px] border-s-8 border-[#E11D48]">
                         <div>
                             <iconify-icon icon="octicon:shield-16"

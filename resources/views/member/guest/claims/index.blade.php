@@ -8,7 +8,7 @@
     <div class="flex flex-col justify-center items-center min-h-screen">
         <div class="flex flex-col gap-12">
             <div class="flex justify-center">
-                <img src="../IMGs/guest.png" class="w-[220px]">
+                <img src="{{ asset('IMGs/no-requests.png') }}" class="w-[220px]">
             </div>
             <div class="max-w-xl space-y-7">
                 <div>
@@ -23,11 +23,11 @@
                     </p>
                 </div>
                 <div>
-                    <button
+                    <a href="{{ route('member.membership.create') }}"
                         class="hover:bg-[#0e3560] transition-colors flex gap-3 items-center rounded-[12px] bg-[#124375] text-[#F4F7F9] w-full justify-center py-2">
                         <iconify-icon icon="ic:round-plus" class="text-3xl mt-1"></iconify-icon>
                         تقديم طلب عضوية
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

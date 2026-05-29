@@ -1,0 +1,104 @@
+<?php
+
+namespace App\Http\Controllers\Member;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\System\Department;
+use App\Services\MemberService;
+use Exception;
+
+class MembershipController extends Controller
+{
+    protected $memberService;
+
+    public function __construct(MemberService $memberService)
+    {
+        $this->memberService = $memberService;
+    }
+
+    public function create()
+    {
+        $user = Auth::user();
+        $membership = $user->member?->membershipInfo;
+        
+        if ($membership) {
+            return redirect()->route('member.dashboard')->with('error', 'لقد قمت بتقديم طلب بالفعل أو أنك عضو حالي.');
+        }
+        
+        $departments = Department::all();
+
+        return view('member.guest.membership.create', compact('user', 'departments'));
+    }
+
+    public function store(Request $request)
+    {
+        $user = Auth::user();
+        $member = $user->member;
+
+        if (!$member) {
+            return redirect()->route('member.dashboard')->with('error', 'بيانات العضو غير مكتملة.');
+        }
+
+        if ($member->membershipInfo) {
+            return redirect()->route('member.dashboard')->with('error', 'لقد قمت بتقديم طلب بالفعل أو أنك عضو حالي.');
+        }
+
+        // Validate request
+        $validated = $request->validate([
+            'full_name'              => ['required', 'string', 'max:255'],
+            'phone_digits'           => ['required', 'array'],
+            'phone_digits.*'         => ['nullable', 'digits:1'],
+            'landline_digits'        => ['nullable', 'array'],
+            'landline_digits.*'      => ['nullable', 'digits:1'],
+            'birth_day'              => ['required', 'integer', 'between:1,31'],
+            'birth_month'            => ['required', 'integer', 'between:1,12'],
+            'birth_year'             => ['required', 'integer', 'between:1900,2100'],
+            'address'                => ['required', 'string', 'max:1000'],
+            'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
+            'employer_name'          => ['required', 'string', 'max:255'],
+            'job_title'              => ['required', 'string', 'max:255'],
+            'financial_category'     => ['required', 'string', 'max:255'],
+            'hire_day'               => ['required', 'integer', 'between:1,31'],
+            'hire_month'             => ['required', 'integer', 'between:1,12'],
+            'hire_year'              => ['required', 'integer', 'between:1900,2100'],
+            'retirement_day'         => ['required', 'integer', 'between:1,31'],
+            'retirement_month'       => ['required', 'integer', 'between:1,12'],
+            'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
+            'salary'                 => ['required', 'numeric', 'min:0'],
+            'children_count'         => ['nullable', 'integer', 'min:0'],
+            'spouse_phone_digits'    => ['nullable', 'array'],
+            'spouse_phone_digits.*'  => ['nullable', 'digits:1'],
+            'spouse_name'            => ['nullable', 'string', 'max:255'],
+            'spouse_workplace'       => ['nullable', 'string', 'max:255'],
+            'child_name'             => ['nullable', 'string', 'max:255'],
+            'child_workplace'        => ['nullable', 'string', 'max:255'],
+            'declaration_accepted'   => ['required', 'accepted'],
+            
+            // Documents
+            'documents' => ['required', 'array'],
+            'documents.national_id_card'    => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.basic_salary_letter' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.work_declaration'    => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.over_21_request'     => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'documents.appointment_decision'=> ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+        ], [
+            'required' => 'هذا الحقل مطلوب ولا يمكن تركه فارغاً.',
+            'accepted' => 'يجب الموافقة على الإقرار.',
+        ]);
+
+        try {
+            $this->memberService->registerMembership($member, $validated, $request);
+
+            return redirect()
+                ->route('member.dashboard')
+                ->with('success', 'تم تقديم طلب الاشتراك بنجاح. يرجى الانتظار لحين المراجعة والموافقة.');
+
+        } catch (Exception $e) {
+            return redirect()->back()->withInput()->withErrors([
+                'birth_year' => $e->getMessage(),
+            ]);
+        }
+    }
+}

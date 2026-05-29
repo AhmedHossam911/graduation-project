@@ -120,19 +120,42 @@ Route::middleware('auth')->group(function () {
     });
 
 
-    // ─── Shared Member Profile ───────────────────────────────────────
-    // Accessible by any logged-in user to manage their own personal account details.
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
+    Route::middleware(['staff'])->group(function () {
+        // ─── Shared Staff Profile ───────────────────────────────────────
+        Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/change-password', [ProfileController::class, 'changePassword'])->name('profile.change-password');
 
-    // ─── In-App Notifications ────────────────────────────────────────
-    // Handle reading and clearing user alerts.
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
-    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
-    Route::delete('/notifications', [NotificationController::class, 'clear'])->name('notifications.clear');
+        // ─── In-App Notifications (Staff) ───────────────────────────────
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');
+        Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+        Route::delete('/notifications', [NotificationController::class, 'clear'])->name('notifications.clear');
+    });
+
+    // ─── Member Portal ───────────────────────────────────────────────
+    Route::middleware(['member'])->prefix('member')->name('member.')->group(function () {
+        Route::get('/dashboard', [\App\Http\Controllers\Member\DashboardController::class, 'index'])->name('dashboard');
+        
+        Route::get('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'index'])->name('profile');
+        Route::post('/profile', [\App\Http\Controllers\Member\ProfileController::class, 'update'])->name('profile.update');
+        Route::post('/profile/change-password', [\App\Http\Controllers\Member\ProfileController::class, 'changePassword'])->name('profile.change-password');
+        
+        Route::get('/notifications', [\App\Http\Controllers\Member\NotificationController::class, 'index'])->name('notifications');
+        Route::post('/notifications/{notification}/read', [\App\Http\Controllers\Member\NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [\App\Http\Controllers\Member\NotificationController::class, 'readAll'])->name('notifications.read-all');
+        Route::delete('/notifications/{notification}', [\App\Http\Controllers\Member\NotificationController::class, 'destroy'])->name('notifications.destroy');
+        Route::delete('/notifications', [\App\Http\Controllers\Member\NotificationController::class, 'clear'])->name('notifications.clear');
+
+        Route::get('/loans', [\App\Http\Controllers\Member\LoanController::class, 'index'])->name('loans.index');
+        Route::post('/loans', [\App\Http\Controllers\Member\LoanController::class, 'store'])->name('loans.store');
+        Route::get('/claims', [\App\Http\Controllers\Member\ClaimController::class, 'index'])->name('claims.index');
+        Route::post('/claims', [\App\Http\Controllers\Member\ClaimController::class, 'store'])->name('claims.store');
+        Route::get('/receipts', [\App\Http\Controllers\Member\ReceiptController::class, 'index'])->name('receipts.index');
+        Route::get('/membership/create', [\App\Http\Controllers\Member\MembershipController::class, 'create'])->name('membership.create');
+        Route::post('/membership', [\App\Http\Controllers\Member\MembershipController::class, 'store'])->name('membership.store');
+    });
 
     // ─── Employee Portal ─────────────────────────────────────────────
     // Operations handled by staff members: managing members, finances, claims, and loans.

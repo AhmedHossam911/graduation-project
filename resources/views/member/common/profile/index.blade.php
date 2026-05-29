@@ -23,12 +23,13 @@
     </section>
 
     <section class="px-12 relative py-3">
-        <div class="bg-[#F4F7F9] navy-shadow rounded-2xl space-y-20">
+        <form action="{{ route('profile.update') }}" method="POST" class="bg-[#F4F7F9] navy-shadow rounded-2xl space-y-20">
+            @csrf
             <div class="relative">
                 <div class="bg-gradient-to-t from-[#124375] to-[#2A6B9E] h-[150px] rounded-tl-2xl rounded-tr-2xl"></div>
                 <div
                     class="absolute -bottom-12 right-9 bg-[#F4F7F9] rounded-full navy-shadow w-24 h-24 flex flex-col items-center">
-                    <p class="text-[60px] font-extrabold text-[#124375]">ي</p>
+                    <p class="text-[60px] font-extrabold text-[#124375]">{{ mb_substr($user->member->full_name ?? $user->name, 0, 1) }}</p>
                 </div>
             </div>
             <div class="px-5 pb-5 space-y-7">
@@ -43,9 +44,10 @@
                         </label>
                         <p class="bg-[#F4F7F9] px-1 absolute text-[12px] font-medium text-[#124375] right-7 bottom-[-6px]">
                             لا يمكن تعديل الاسم بعد التسجيل</p>
+                        <input type="hidden" name="name" value="{{ $user->name }}">
                         <input type="text" disabled
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            placeholder="احمد محمد ابراهيم خليل">
+                            value="{{ $user->member->full_name ?? $user->name }}" placeholder="الاسم رباعي">
                     </div>
                     <div class="relative w-full">
                         <label
@@ -59,7 +61,7 @@
                             لا يمكن تعديل الرقم القومي بعد التسجيل</p>
                         <input type="number" disabled
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            placeholder="12345678901234">
+                            value="{{ $user->member->national_id ?? '' }}" placeholder="الرقم القومي">
                     </div>
                     <div class="relative w-full">
                         <label
@@ -69,9 +71,9 @@
                                 البريد الإلكتروني
                             </span>
                         </label>
-                        <input type="email" disabled
+                        <input type="email" disabled name="email"
                             class="input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            placeholder="youssef@gmail.com">
+                            value="{{ $user->email }}" placeholder="البريد الإلكتروني">
                     </div>
                     <div class="relative w-full">
                         <label
@@ -81,9 +83,9 @@
                                 رقم التليفون
                             </span>
                         </label>
-                        <input type="tel" disabled
+                        <input type="tel" disabled name="phone"
                             class="input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            placeholder="010000000000">
+                            value="{{ $user->member->phone ?? '' }}" placeholder="رقم التليفون">
                     </div>
                 </div>
 
@@ -97,7 +99,19 @@
                             </div>
                             <div class="flex flex-col items-center text-[#124375] gap-2">
                                 <p class="text-[16px] font-medium text-[#6D6D6D]">حالة العضوية</p>
-                                <p class="text-[20px] font-semibold text-[#021219]">نشط</p>
+                                <p class="text-[20px] font-semibold text-[#021219]">
+                                    @php
+                                        $status = $user->member?->membershipInfo?->status;
+                                        $statusText = match($status) {
+                                            'active' => 'نشط',
+                                            'pending' => 'قيد المراجعة',
+                                            'rejected' => 'مرفوض',
+                                            'suspended' => 'موقوف',
+                                            default => 'غير مسجل'
+                                        };
+                                    @endphp
+                                    {{ $statusText }}
+                                </p>
                             </div>
                         </div>
                         <div class="navy-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
@@ -106,21 +120,21 @@
                             </div>
                             <div class="flex flex-col items-center text-[#124375] gap-2">
                                 <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ الانضمام</p>
-                                <p class="text-[20px] font-semibold text-[#021219]">10 مايو 2024</p>
+                                <p class="text-[20px] font-semibold text-[#021219]">{{ $user->member?->membershipInfo ? $user->member->membershipInfo->created_at->format('Y-m-d') : '---' }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="flex justify-end">
-                    <button
+                    <button type="submit"
                         class="save-btn hidden hover:bg-[#0e3560] transition-colors flex items-center gap-3 bg-[#124375] text-[#F4F7F9] py-3 px-14 rounded-[12px] navy-shadow ">
                         <iconify-icon icon="fluent:save-16-filled" class="text-2xl"></iconify-icon>
                         حفظ التعديلات
                     </button>
                 </div>
             </div>
-        </div>
+        </form>
     </section>
 
     <script src="{{ asset('JS/member/memberProfile.js') }}"></script>
