@@ -39,6 +39,8 @@
             </div>
         </main>
     </div>
+    <script src="{{ asset('JS/layouts/Dashboard.js') }}?v={{ time() }}"></script>
+    @stack('scripts')
 </body>
 
 </html>

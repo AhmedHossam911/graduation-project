@@ -24,12 +24,12 @@
                 <div class=" grid grid-cols-3 gap-5">
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
-                            <iconify-icon icon="material-symbols:list-alt-check-rounded"
-                                class=" text-4xl text-[#019168] bg-[#D8FFE8] rounded-lg px-3 py-3"></iconify-icon>
+                            <iconify-icon icon="{{ $statusIcon }}"
+                                class=" text-4xl {{ $statusColor }} rounded-lg px-3 py-3"></iconify-icon>
                         </div>
                         <div class="flex flex-col items-center text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">حالة العضوية</p>
-                            <p class="text-4xl font-extrabold">نشط</p>
+                            <p class="text-4xl font-extrabold">{{ $statusText }}</p>
                         </div>
                     </div>
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">

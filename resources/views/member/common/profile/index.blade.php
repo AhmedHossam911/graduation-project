@@ -29,7 +29,8 @@
                 <div class="bg-gradient-to-t from-[#124375] to-[#2A6B9E] h-[150px] rounded-tl-2xl rounded-tr-2xl"></div>
                 <div
                     class="absolute -bottom-12 right-9 bg-[#F4F7F9] rounded-full navy-shadow w-24 h-24 flex flex-col items-center">
-                    <p class="text-[60px] font-extrabold text-[#124375]">{{ mb_substr($user->member->full_name ?? $user->name, 0, 1) }}</p>
+                    <p class="text-[60px] font-extrabold text-[#124375]">
+                        {{ mb_substr($user->member->full_name ?? $user->name, 0, 1) }}</p>
                 </div>
             </div>
             <div class="px-5 pb-5 space-y-7">
@@ -102,12 +103,19 @@
                                 <p class="text-[20px] font-semibold text-[#021219]">
                                     @php
                                         $status = $user->member?->membershipInfo?->status;
-                                        $statusText = match($status) {
+                                        $statusText = match ($status) {
                                             'active' => 'نشط',
-                                            'pending' => 'قيد المراجعة',
-                                            'rejected' => 'مرفوض',
+                                            'registering' => 'قيد التسجيل',
+                                            'pending_registration' => 'قيد الانتظار',
+                                            'loaned' => 'إعارة',
+                                            'pension_eligible' => 'محال لسن التقاعد',
+                                            'withdrawn' => 'منسحب',
+                                            'dismissed' => 'تم فصل العضوية',
+                                            'unpaid_leave' => 'اجازة بدون مرتب',
+                                            'membership_expired' => 'انتهت صلاحية العضوية',
                                             'suspended' => 'موقوف',
-                                            default => 'غير مسجل'
+                                            'rejected' => 'مرفوض',
+                                            default => 'غير مسجل',
                                         };
                                     @endphp
                                     {{ $statusText }}
@@ -118,9 +126,10 @@
                             <div>
                                 <iconify-icon icon="uil:calender" class=" text-4xl text-[#124375]"></iconify-icon>
                             </div>
-                            <div class="flex flex-col items-center text-[#124375] gap-2">
-                                <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ الانضمام</p>
-                                <p class="text-[20px] font-semibold text-[#021219]">{{ $user->member?->membershipInfo ? $user->member->membershipInfo->created_at->format('Y-m-d') : '---' }}</p>
+                            <div class="flex flex-col  text-[#124375] gap-2">
+                                <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ انشاء الحساب</p>
+                                <p class="text-[20px] font-semibold text-[#021219]">
+                                    {{ $user->created_at ? $user->created_at->format('Y-m-d') : '---' }} </p>
                             </div>
                         </div>
                     </div>

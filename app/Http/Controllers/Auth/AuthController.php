@@ -28,7 +28,8 @@ class AuthController extends Controller
     }
 
     public function showRegister() {
-        return view('auth.register');
+        $departments = \App\Models\System\Department::all();
+        return view('auth.register', compact('departments'));
     }
 
     public function showForgotPassword() {
@@ -203,11 +204,12 @@ class AuthController extends Controller
 
         $user = null;
         DB::transaction(function() use ($request, &$user) {
+            $memberRole = \App\Models\Auth\Role::where('name', 'member')->first();
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'role_id' => 3,
+                'role_id' => $memberRole ? $memberRole->id : 3,
                 'is_restricted' => true
             ]);
 

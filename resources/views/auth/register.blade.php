@@ -1,5 +1,5 @@
 @extends('layouts.auth')
-{{-- 
+{{--
     Register View:
     Form for new users to request an account in the system.
     Collects personal, employment, and credential details.
@@ -58,7 +58,15 @@
                         <div class="bg-[#193e6a] w-[50px] flex justify-center items-center text-white text-lg shrink-0">
                             <i class="fa-solid fa-building"></i>
                         </div>
-                        <input type="text" name="workplace" value="{{ old('workplace') }}" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="جهة العمل" required>
+                        <select name="workplace" class="grow border-none bg-transparent px-4 text-[15px] {{ old('workplace') ? 'text-[#333]' : 'text-[#999]' }} outline-none w-full appearance-none cursor-pointer" required onchange="this.classList.remove('text-[#999]'); this.classList.add('text-[#333]');">
+                            <option value="" disabled {{ !old('workplace') ? 'selected' : '' }}>جهة العمل</option>
+                            @foreach($departments as $dept)
+                                <option value="{{ $dept->name }}" class="text-[#333]" {{ old('workplace') == $dept->name ? 'selected' : '' }}>{{ $dept->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="bg-transparent flex justify-center items-center text-[#888] px-3 pointer-events-none">
+                            <i class="fa-solid fa-chevron-down text-sm"></i>
+                        </div>
                     </div>
                 </div>
 
@@ -96,7 +104,7 @@
                 </div>
             </div>
         </div>
-        <div class="text-[#666] text-[10px] text-right -mt-4 mb-4 font-medium">
+        <div class="text-[#666] text-[14px] text-right mt-1 mb-4 font-medium">
             يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، بما في ذلك حرف كبير واحد، حرف صغير واحد، رقم واحد، ورمز خاص (@#$%^&*).
         </div>
 

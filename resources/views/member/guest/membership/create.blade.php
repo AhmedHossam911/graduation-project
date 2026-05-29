@@ -39,7 +39,7 @@
             <!-- start Form -->
             <!-- start personalData section -->
             <section class="px-6 py-7">
-                <div class="personal-data rounded-2xl border-2 border-[#124375] py-7 px-7 relative">
+                <div class="personal-data rounded-2xl border-2 border-[#124375] py-7 px-7 relative z-50">
                     <h2 class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">
                         البيانات الشخصية
                     </h2>
@@ -51,9 +51,9 @@
                                     class="absolute top-[-15px] right-5 @error('full_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
                                     الأسم رباعي <span class="text-[#D92D20]">*</span></label>
                                 <input type="text" name="full_name"
-                                    value="{{ old('full_name', $user->member->full_name ?? '') }}"
-                                    placeholder="مثال : أحمد محمد إسماعيل محمود"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                    value="{{ old('full_name', $user->member->full_name ?? ($user->name ?? '')) }}"
+                                    placeholder="مثال : أحمد محمد إسماعيل محمود" disabled
+                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
                                 @error('full_name')
                                     <span
                                         class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
@@ -64,7 +64,7 @@
                                     class="absolute top-[-15px] right-5 @error('email') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
                                     البريد الإلكتروني <span class="text-[#D92D20]">*</span></label>
                                 <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}"
-                                    placeholder="ahmed@gmail.com : مثال" readonly
+                                    placeholder="ahmed@gmail.com : مثال" disabled
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('email') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
                                 @error('email')
                                     <span
@@ -89,8 +89,8 @@
                                     @for ($i = 10; $i >= 0; $i--)
                                         <input type="tel" name="phone_digits[]"
                                             value="{{ old('phone_digits.' . (10 - $i), trim($phoneDigits[10 - $i] ?? '')) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
-                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            placeholder="{{ $i }}" maxlength="1" disabled
+                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     @endfor
                                 </div>
                                 @if ($errors->has('phone_digits') || $errors->has('phone_digits.*'))
@@ -135,7 +135,7 @@
                                     @for ($i = 13; $i >= 0; $i--)
                                         <input type="text" name="national_id_digits[]"
                                             value="{{ old('national_id_digits.' . (13 - $i), trim($nidDigits[13 - $i] ?? '')) }}"
-                                            placeholder="{{ $i + 1 }}" maxlength="1" readonly
+                                            placeholder="{{ $i + 1 }}" maxlength="1" disabled
                                             class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     @endfor
                                 </div>
@@ -223,24 +223,13 @@
                     <div class="flex gap-5">
                         <div class="flex-1 min-w-0 space-y-7">
                             <div class="w-full relative pt-2">
-                                @php
-                                    $deptOptions = [];
-                                    foreach ($departments as $dept) {
-                                        $deptOptions[$dept->name] = $dept->name;
-                                    }
-                                @endphp
-                                @include('partials.common.dropdown', [
-                                    'name' => 'employer_name',
-                                    'label' => 'جهة العمل',
-                                    'options' => $deptOptions,
-                                    'selected' => old(
-                                        'employer_name',
-                                        $user->member->employmentInfo->workplace ?? ''),
-                                    'placeholder' => 'أختر',
-                                    'required' => true,
-                                    'floatingLabel' => true,
-                                    'showConfirm' => true,
-                                ])
+                                <label
+                                    class="absolute top-[-15px] right-5 @error('employer_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">جهة
+                                    العمل <span class="text-[#D92D20]">*</span></label>
+                                <input type="text" name="employer_name"
+                                    value="{{ old('employer_name', $user->member->employmentInfo->workplace ?? '') }}"
+                                    disabled
+                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('employer_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
                             </div>
                             <div class="w-full relative">
                                 <label
@@ -248,8 +237,8 @@
                                     <span class="text-[#D92D20]">*</span></label>
                                 <input type="text" name="job_title"
                                     value="{{ old('job_title', $user->member->employmentInfo->job_title ?? '') }}"
-                                    placeholder="مثال : مدرس مساعد مادة المحاسبة"
-                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('job_title') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
+                                    placeholder="مثال : مدرس مساعد مادة المحاسبة" disabled
+                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('job_title') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
                                 @error('job_title')
                                     <span
                                         class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
@@ -599,6 +588,6 @@
                 }
             }
         </script>
-        <script src="{{ asset('js/employee/MembershipForm.js') }}?v={{ time() }}"></script>
+        <script src="{{ asset('JS/member/MembershipForm.js') }}?v={{ time() }}"></script>
 
     @endsection

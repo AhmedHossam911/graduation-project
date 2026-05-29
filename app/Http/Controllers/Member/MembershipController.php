@@ -45,11 +45,13 @@ class MembershipController extends Controller
             return redirect()->route('member.dashboard')->with('error', 'لقد قمت بتقديم طلب بالفعل أو أنك عضو حالي.');
         }
 
+        // The signup inputs (full_name, email, national_id, phone, employer_name, job_title) 
+        // are disabled in the view, so they are not pulled from the request.
+        // We will inject them into the validated array before saving.
+
         // Validate request
         $validated = $request->validate([
-            'full_name'              => ['required', 'string', 'max:255'],
-            'phone_digits'           => ['required', 'array'],
-            'phone_digits.*'         => ['nullable', 'digits:1'],
+
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
             'birth_day'              => ['required', 'integer', 'between:1,31'],
@@ -57,8 +59,7 @@ class MembershipController extends Controller
             'birth_year'             => ['required', 'integer', 'between:1900,2100'],
             'address'                => ['required', 'string', 'max:1000'],
             'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
-            'employer_name'          => ['required', 'string', 'max:255'],
-            'job_title'              => ['required', 'string', 'max:255'],
+
             'financial_category'     => ['required', 'string', 'max:255'],
             'hire_day'               => ['required', 'integer', 'between:1,31'],
             'hire_month'             => ['required', 'integer', 'between:1,12'],
@@ -86,6 +87,17 @@ class MembershipController extends Controller
         ], [
             'required' => 'هذا الحقل مطلوب ولا يمكن تركه فارغاً.',
             'accepted' => 'يجب الموافقة على الإقرار.',
+        ]);
+
+        // Inject the fixed DB values back into the validated array 
+        // so the service can still update them as needed.
+        $validated['full_name']     = $member->full_name ?? $user->name;
+        $validated['employer_name'] = $member->employmentInfo->workplace ?? '';
+        $validated['job_title']     = $member->employmentInfo->job_title ?? '';
+        
+        // phone digits are used by digitsToString in the service, so we temporarily inject them back into the request.
+        $request->merge([
+            'phone_digits' => str_split($member->phone ?? '')
         ]);
 
         try {
