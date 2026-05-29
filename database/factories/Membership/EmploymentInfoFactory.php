@@ -12,15 +12,25 @@ class EmploymentInfoFactory extends Factory
 
     public function definition(): array
     {
-        $joinDate = fake()->dateTimeBetween('-20 years', '-1 year');
-        $retirementDate = (clone $joinDate)->modify('+35 years');
-
         return [
             'member_id' => Member::factory(),
             'workplace' => 'Helwan University',
             'job_title' => fake()->jobTitle(),
-            'join_date' => $joinDate->format('Y-m-d'),
-            'retirement_date' => $retirementDate->format('Y-m-d'),
+            'join_date' => function (array $attributes) {
+                $member = Member::find($attributes['member_id']);
+                if ($member) {
+                    $birthDate = \Carbon\Carbon::parse($member->birth_date);
+                    return fake()->dateTimeBetween($birthDate->copy()->addYears(21), 'now')->format('Y-m-d');
+                }
+                return fake()->dateTimeBetween('-20 years', '-1 year')->format('Y-m-d');
+            },
+            'retirement_date' => function (array $attributes) {
+                $member = Member::find($attributes['member_id']);
+                if ($member) {
+                    return \Carbon\Carbon::parse($member->birth_date)->addYears(60)->format('Y-m-d');
+                }
+                return \Carbon\Carbon::now()->addYears(10)->format('Y-m-d');
+            },
             'starting_salary' => fake()->randomFloat(2, 5000, 25000),
         ];
     }

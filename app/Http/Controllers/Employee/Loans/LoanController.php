@@ -629,7 +629,7 @@ class LoanController extends Controller
         // Enforce business rule: Early repayment is only permitted if there are 6 or fewer remaining installments.
         $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();
         if ($unpaidCount > 6) {
-            return back()->with('error', 'لا يمكن السداد المبكر إلا إذا كان المتبقي من القرض 6 أشهر أو أقل.');
+            return back()->with('error', ' يمكنك فقط سداد القرض مبكراً إذا كان عدد الأقساط المتبقية 6 اقساط أو أقل.');
         }
 
         // Calculate early repayment amount: subtract remaining interest

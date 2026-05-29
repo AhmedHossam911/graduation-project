@@ -132,9 +132,12 @@ class DatabaseSeeder extends Seeder
                 ]);
 
                 // Simulate a history of monthly subscription dues and corresponding payment transactions.
-                $subscriptions = Subscription::factory()->count(rand(3, 8))->create(['membership_id' => $membership->id]);
+                // We generate enough subscriptions to potentially cover a loan.
+                $subscriptions = Subscription::factory()->count(rand(30, 80))->create(['membership_id' => $membership->id]);
+                $paidSum = 0;
                 foreach($subscriptions as $sub) {
                     if ($sub->status === 'paid') {
+                        $paidSum += $sub->amount;
                         Transaction::factory()->create([
                             'reference_type' => Subscription::class,
                             'reference_id' => $sub->id,
@@ -145,9 +148,15 @@ class DatabaseSeeder extends Seeder
                 }
 
                 // Give roughly 30% of members an active or past loan, complete with installment schedules.
-                if (rand(1, 100) <= 30) {
+                if (rand(1, 100) <= 30 && $paidSum > 5000) {
+                    $loanAmount = fake()->randomFloat(2, 5000, min($paidSum, 20000));
+                    $months = fake()->randomElement([12, 24, 36]);
+                    
                     $loan = Loan::factory()->create([
                         'membership_id' => $membership->id,
+                        'total_amount' => $loanAmount,
+                        'months' => $months,
+                        'installment_amount' => $loanAmount / $months,
                         'approved_by' => $adminUser->id
                     ]);
 

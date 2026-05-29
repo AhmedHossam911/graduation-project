@@ -18,7 +18,7 @@ class MemberFactory extends Factory
             'department_id' => Department::factory(),
             'full_name' => fake('ar_EG')->name(),
             'national_id' => fake()->unique()->numerify('2#############'), // 14 digits starts with 2 (e.g. 1900s) or 3 (2000s)
-            'birth_date' => fake()->dateTimeBetween('-60 years', '-25 years')->format('Y-m-d'),
+            'birth_date' => fake()->dateTimeBetween('-59 years', '-21 years')->format('Y-m-d'),
             'phone' => fake()->phoneNumber(),
             'address' => fake('ar_EG')->address(),
         ];

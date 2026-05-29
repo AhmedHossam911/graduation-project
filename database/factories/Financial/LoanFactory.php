@@ -13,15 +13,15 @@ class LoanFactory extends Factory
 
     public function definition(): array
     {
-        $totalAmount = fake()->randomFloat(2, 5000, 50000);
-        $months = fake()->randomElement([12, 24, 36, 48]);
+        $totalAmount = fake()->randomFloat(2, 5000, 20000);
+        $months = fake()->randomElement([12, 24, 36]);
 
         return [
             'membership_id' => Membership::factory(),
             'total_amount' => $totalAmount,
             'months' => $months,
             'installment_amount' => $totalAmount / $months,
-            'status' => fake()->randomElement(['pending', 'active', 'active', 'completed', 'rejected']),
+            'status' => fake()->randomElement(['pending', 'active', 'completed', 'rejected']),
             'approved_by' => User::factory(),
         ];
     }
