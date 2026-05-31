@@ -21,11 +21,3 @@ editBtn.addEventListener('click', () => {
     }
 });
 
-saveBtn.addEventListener('click', () => {
-    isEditMode = false;
-    inputs.forEach(input => {
-        input.disabled = true;
-    });
-    saveBtn.classList.add('hidden');
-    editBtn.innerHTML = '<iconify-icon icon="ic:round-edit" class="text-2xl"></iconify-icon> تعديل البيانات';
-});

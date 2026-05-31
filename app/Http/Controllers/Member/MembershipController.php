@@ -24,7 +24,7 @@ class MembershipController extends Controller
         $membership = $user->member?->membershipInfo;
         
         if ($membership) {
-            return redirect()->route('member.dashboard')->with('error', 'لقد قمت بتقديم طلب بالفعل أو أنك عضو حالي.');
+            return redirect()->route('member.dashboard')->with('error', 'لديك طلب عضوية مقدم بالفعل.');
         }
         
         $departments = Department::all();
@@ -42,7 +42,7 @@ class MembershipController extends Controller
         }
 
         if ($member->membershipInfo) {
-            return redirect()->route('member.dashboard')->with('error', 'لقد قمت بتقديم طلب بالفعل أو أنك عضو حالي.');
+            return redirect()->route('member.dashboard')->with('error', 'لديك طلب عضوية مقدم بالفعل.');
         }
 
         // The signup inputs (full_name, email, national_id, phone, employer_name, job_title) 

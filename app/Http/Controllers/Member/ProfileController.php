@@ -22,9 +22,19 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'phone' => ['required', 'string', 'max:20'],
         ]);
 
-        $user->update($validated);
+        $user->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+        ]);
+
+        if ($user->member) {
+            $user->member->update([
+                'phone' => $validated['phone'],
+            ]);
+        }
 
         return redirect()->route('member.profile')->with('success', 'تم تحديث البيانات بنجاح.');
     }

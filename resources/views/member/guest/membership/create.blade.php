@@ -81,16 +81,16 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('phone_digits') text-[#D92D20] @elseif($errors->has('phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     التليفون <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex flex-wrap gap-1 md:gap-3 justify-end py-3 px-2 md:px-3">
+                                <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3" dir="ltr">
                                     @php
                                         $phoneStr = old('phone', $user->member->phone ?? '');
                                         $phoneDigits = str_split(str_pad($phoneStr, 11, ' ', STR_PAD_LEFT));
                                     @endphp
-                                    @for ($i = 10; $i >= 0; $i--)
+                                    @for ($i = 0; $i < 11; $i++)
                                         <input type="tel" name="phone_digits[]"
-                                            value="{{ old('phone_digits.' . (10 - $i), trim($phoneDigits[10 - $i] ?? '')) }}"
-                                            placeholder="{{ $i }}" maxlength="1" disabled
-                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                            value="{{ old('phone_digits.' . $i, trim($phoneDigits[$i] ?? '')) }}"
+                                            placeholder="{{ $i + 1 }}" maxlength="1" disabled
+                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 max-w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     @endfor
                                 </div>
                                 @if ($errors->has('phone_digits') || $errors->has('phone_digits.*'))
@@ -104,12 +104,12 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('landline_digits') text-[#D92D20] @elseif($errors->has('landline_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     هاتف المنزل</label>
-                                <div class="flex flex-wrap gap-1 md:gap-2 justify-end py-3 px-2 md:px-3">
-                                    @for ($i = 7; $i >= 0; $i--)
+                                <div class="grid grid-cols-[repeat(8,minmax(0,max-content))] gap-1 md:gap-2 justify-end py-3 px-2 md:px-3" dir="ltr">
+                                    @for ($i = 0; $i < 8; $i++)
                                         <input type="tel" name="landline_digits[]"
-                                            value="{{ old('landline_digits.' . (7 - $i)) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
-                                            class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-14 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            value="{{ old('landline_digits.' . $i) }}"
+                                            placeholder="{{ $i + 1 }}" maxlength="1"
+                                            class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-14 max-w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
                                 @if ($errors->has('landline_digits') || $errors->has('landline_digits.*'))
@@ -127,16 +127,16 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('national_id_digits') text-[#D92D20] @elseif($errors->has('national_id_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الرقم
                                     القومي <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex flex-wrap gap-1 md:gap-3 justify-end py-3 px-2 md:px-3">
+                                <div class="grid grid-cols-[repeat(14,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3" dir="ltr">
                                     @php
                                         $nidStr = old('national_id', $user->member->user->national_id ?? '');
                                         $nidDigits = str_split(str_pad($nidStr, 14, ' ', STR_PAD_LEFT));
                                     @endphp
-                                    @for ($i = 13; $i >= 0; $i--)
+                                    @for ($i = 0; $i < 14; $i++)
                                         <input type="text" name="national_id_digits[]"
-                                            value="{{ old('national_id_digits.' . (13 - $i), trim($nidDigits[13 - $i] ?? '')) }}"
+                                            value="{{ old('national_id_digits.' . $i, trim($nidDigits[$i] ?? '')) }}"
                                             placeholder="{{ $i + 1 }}" maxlength="1" disabled
-                                            class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-9 md:w-16 text-xs md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                            class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-9 md:w-16 max-w-full text-xs md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     @endfor
                                 </div>
                                 @error('national_id_digits')
@@ -344,16 +344,16 @@
 
                             </div>
                             <div
-                                class="phone relative border @error('spouse_phone_digits') border-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl min-w-0">
+                                class="phone relative border @error('spouse_phone_digits') border-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl flex-[3] min-w-0">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('spouse_phone_digits') text-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب</label>
-                                <div class="flex flex-wrap gap-1 md:gap-2 justify-end py-3 px-2 md:px-3">
-                                    @for ($i = 10; $i >= 0; $i--)
+                                <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-2 justify-end py-3 px-2 md:px-3" dir="ltr">
+                                    @for ($i = 0; $i < 11; $i++)
                                         <input type="tel" name="spouse_phone_digits[]"
-                                            value="{{ old('spouse_phone_digits.' . (10 - $i)) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
-                                            class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-24 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            value="{{ old('spouse_phone_digits.' . $i) }}"
+                                            placeholder="{{ $i + 1 }}" maxlength="1"
+                                            class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 max-w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
                                 @if ($errors->has('spouse_phone_digits') || $errors->has('spouse_phone_digits.*'))

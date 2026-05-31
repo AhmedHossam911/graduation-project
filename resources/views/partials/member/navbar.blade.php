@@ -1,4 +1,3 @@
-   <link rel="stylesheet" href="{{ asset('css/member/memberNavbar.css') }}">
    <!-- start header -->
    <header class="bg-[#F4F7F9] surface-shadow px-7 py-3">
        <nav class="flex items-center justify-between  ">

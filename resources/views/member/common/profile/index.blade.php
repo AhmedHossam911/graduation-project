@@ -3,6 +3,7 @@
 @section('title', 'الملف الشخصي')
 
 @section('content')
+    @include('partials.common.flash')
 
     <link rel="stylesheet" href="{{ asset('css/member/memberProfile.css') }}">
     <section class="px-4 md:px-12 py-7">
@@ -23,7 +24,7 @@
     </section>
 
     <section class="px-4 md:px-12 relative py-3">
-        <form action="{{ route('profile.update') }}" method="POST" class="bg-[#F4F7F9] navy-shadow rounded-2xl space-y-20">
+        <form action="{{ route('member.profile.update') }}" method="POST" class="bg-[#F4F7F9] navy-shadow rounded-2xl space-y-20">
             @csrf
             <div class="relative">
                 <div class="bg-gradient-to-t from-[#124375] to-[#2A6B9E] h-[150px] rounded-tl-2xl rounded-tr-2xl"></div>
@@ -74,7 +75,7 @@
                         </label>
                         <input type="email" disabled name="email"
                             class="input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            value="{{ $user->email }}" placeholder="البريد الإلكتروني">
+                            value="{{ old('email', $user->email) }}" placeholder="البريد الإلكتروني">
                     </div>
                     <div class="relative w-full">
                         <label
@@ -86,7 +87,7 @@
                         </label>
                         <input type="tel" disabled name="phone"
                             class="input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
-                            value="{{ $user->member->phone ?? '' }}" placeholder="رقم التليفون">
+                            value="{{ old('phone', $user->member->phone ?? '') }}" placeholder="رقم التليفون">
                     </div>
                 </div>
 
