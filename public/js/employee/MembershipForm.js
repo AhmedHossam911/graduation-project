@@ -22,7 +22,7 @@ inputFile.forEach((input, index) => {
 
 
 // Dynamic date
-const today = date.toLocaleDateString('ar-EG' , {
+const today = date.toLocaleDateString('ar-EG', {
     day: 'numeric',
     month: 'long',
     year: 'numeric'
@@ -72,7 +72,7 @@ if (confirmStatusBtn && statusText) {
 }
 
 // Handle Inputs
-function handleInputs (Inputs) {
+function handleInputs(Inputs) {
     if (!Inputs || Inputs.length === 0) return;
     Inputs.forEach((input, index) => {
         input.addEventListener("input", (e) => {
@@ -146,7 +146,7 @@ if (birthDay && birthMonth && birthYear && retDay && retMonth && retYear) {
         const d = toEnglishDigits(birthDay.value.trim());
         const m = toEnglishDigits(birthMonth.value.trim());
         let y = toEnglishDigits(birthYear.value.trim());
-        
+
         if (d && m && y && (y.length === 4 || y.length === 2)) {
             let yearNum = parseInt(y, 10);
             let dayNum = parseInt(d, 10);
@@ -179,4 +179,3 @@ if (birthDay && birthMonth && birthYear && retDay && retMonth && retYear) {
     // Run on initial load in case values are prepopulated by old()
     calculateRetirement();
 }
-

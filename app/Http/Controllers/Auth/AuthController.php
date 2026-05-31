@@ -189,11 +189,15 @@ class AuthController extends Controller
         ], [
             'name.required' => 'يرجى إدخال الاسم.',
             'email.required' => 'يرجى إدخال البريد الإلكتروني.',
+            'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
             'email.unique' => 'البريد الإلكتروني مسجل مسبقاً.',
             'national_id.required' => 'يرجى إدخال الرقم القومي.',
-            'national_id.size' => 'الرقم القومي يجب أن يكون 14 رقماً.',
+            'national_id.size' => 'الرقم القومي يجب أن يتكون من 14 رقماً.',
             'national_id.unique' => 'الرقم القومي مسجل مسبقاً.',
             'password.required' => 'يرجى إدخال كلمة المرور.',
+            'password.min' => 'كلمة المرور يجب أن تتكون من 6 أحرف على الأقل.',
+            'password.max' => 'كلمة المرور يجب ألا تتجاوز 20 حرفاً.',
+            'password.regex' => 'كلمة المرور يجب أن تحتوي على حرف كبير ورمز خاص.',
             'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
             'phone.required' => 'يرجى إدخال رقم التليفون.',
             'workplace.required' => 'يرجى إدخال جهة العمل.',
@@ -252,7 +256,10 @@ class AuthController extends Controller
     }
 
     public function verifyRegistrationOtp(Request $request) {
-        $request->validate(['code' => 'required|digits:6']);
+        $request->validate(['code' => 'required|digits:6'], [
+            'code.required' => 'يرجى إدخال رمز التحقق.',
+            'code.digits' => 'الرمز يجب أن يتكون من 6 أرقام.'
+        ]);
         $userId = session('register_user_id');
 
         $otpRecord = OtpCode::where('user_id', $userId)
@@ -291,6 +298,10 @@ class AuthController extends Controller
         $request->validate([
             'national_id' => 'required',
             'email' => 'required|email'
+        ], [
+            'national_id.required' => 'يرجى إدخال الرقم القومي.',
+            'email.required' => 'يرجى إدخال البريد الإلكتروني.',
+            'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.'
         ]);
 
         $user = User::where('national_id', $request->national_id)->first();
@@ -326,7 +337,10 @@ class AuthController extends Controller
      * Grants temporary authorization in the session to reset the password.
      */
     public function verifyOtp(Request $request) {
-        $request->validate(['code' => 'required|digits:6']);
+        $request->validate(['code' => 'required|digits:6'], [
+            'code.required' => 'يرجى إدخال رمز التحقق.',
+            'code.digits' => 'الرمز يجب أن يتكون من 6 أرقام.'
+        ]);
         $userId = session('reset_user_id');
 
         $otpRecord = OtpCode::where('user_id', $userId)
@@ -354,6 +368,13 @@ class AuthController extends Controller
     public function resetPassword(Request $request) {
         $request->validate([
             'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed'
+        ], [
+            'password.required' => 'يرجى إدخال كلمة المرور.',
+            'password.string' => 'كلمة المرور يجب أن تكون نصاً.',
+            'password.min' => 'كلمة المرور يجب أن تتكون من 6 أحرف على الأقل.',
+            'password.max' => 'كلمة المرور يجب ألا تتجاوز 20 حرفاً.',
+            'password.regex' => 'كلمة المرور يجب أن تحتوي على حرف كبير ورمز خاص.',
+            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.'
         ]);
 
         $userId = session('reset_user_id');
