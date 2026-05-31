@@ -50,11 +50,11 @@
     <!-- end tabs -->
 
 <section class="px-4 md:px-12 py-7">
-        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data"  class=" rounded-2xl border-2 border-[#124375] py-7 px-7 relative tab-content"
+        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data"  class=" rounded-2xl border-2 border-[#124375] py-7 px-4 md:px-7 relative tab-content"
             data-tab="بلوغ سن التقاعد القانوني">
             @csrf
             <input type="hidden" name="claim_type" value="retirement">
-            <h2 class="absolute top-[-15px] right-5 px-2 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+            <h2 class="absolute top-[-15px] right-2 md:right-5 px-2 text-[#124375] text-sm md:text-base font-medium bg-[#F4F7F9]">
                 المستندات المطلوبة لإتمام الطلب <span class="text-[#D92D20]">*</span>
             </h2>
             <div class="space-y-5">
@@ -156,15 +156,15 @@
             </div>
         </form>
 
-        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-7 relative tab-content" data-tab="النقل">
+        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-4 md:px-7 relative tab-content" data-tab="النقل">
             @csrf
             <input type="hidden" name="claim_type" value="transfer">
-            <h2 class="absolute top-[-15px] right-5 px-2 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+            <h2 class="absolute top-[-15px] right-2 md:right-5 px-2 text-[#124375] text-sm md:text-base font-medium bg-[#F4F7F9]">
                 المستندات المطلوبة لإتمام الطلب <span class="text-[#D92D20]">*</span>
             </h2>
             <div class="space-y-5">
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">صورة قرار النقل<span
@@ -180,7 +180,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بيان بالمبالغ المخصومة <span
@@ -196,7 +196,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بطاقة الرقم القومي<span
@@ -212,7 +212,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">قرار التعيين<span
@@ -228,7 +228,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">صورة إخلاء الطرف
@@ -271,15 +271,15 @@
             </div>
         </form>
 
-        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-7 relative tab-content" data-tab="الاستقالة">
+        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-4 md:px-7 relative tab-content" data-tab="الاستقالة">
             @csrf
             <input type="hidden" name="claim_type" value="resignation">
-            <h2 class="absolute top-[-15px] right-5 px-2 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+            <h2 class="absolute top-[-15px] right-2 md:right-5 px-2 text-[#124375] text-sm md:text-base font-medium bg-[#F4F7F9]">
                 المستندات المطلوبة لإتمام الطلب <span class="text-[#D92D20]">*</span>
             </h2>
             <div class="space-y-5">
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">خطاب بالمرتب الأساسي<span
@@ -295,7 +295,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بيان بالمبالغ المخصومة <span
@@ -311,7 +311,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بطاقة الرقم القومي<span
@@ -327,7 +327,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">قرار التعيين<span
@@ -343,7 +343,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش
@@ -385,15 +385,15 @@
             </div>
         </form>
 
-        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-7 relative tab-content" data-tab="المعاش المبكر">
+        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-4 md:px-7 relative tab-content" data-tab="المعاش المبكر">
             @csrf
             <input type="hidden" name="claim_type" value="early_retirement">
-            <h2 class="absolute top-[-15px] right-5 px-2 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+            <h2 class="absolute top-[-15px] right-2 md:right-5 px-2 text-[#124375] text-sm md:text-base font-medium bg-[#F4F7F9]">
                 المستندات المطلوبة لإتمام الطلب <span class="text-[#D92D20]">*</span>
             </h2>
             <div class="space-y-5">
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">خطاب بالمرتب الأساسي<span
@@ -409,7 +409,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بيان بالمبالغ المخصومة <span
@@ -425,7 +425,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بطاقة الرقم القومي<span
@@ -441,7 +441,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">قرار التعيين<span
@@ -457,7 +457,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش
@@ -499,15 +499,15 @@
             </div>
         </form>
 
-        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-7 relative tab-content" data-tab="العجز المهني">
+        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-4 md:px-7 relative tab-content" data-tab="العجز المهني">
             @csrf
             <input type="hidden" name="claim_type" value="professional_disability">
-            <h2 class="absolute top-[-15px] right-5 px-2 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+            <h2 class="absolute top-[-15px] right-2 md:right-5 px-2 text-[#124375] text-sm md:text-base font-medium bg-[#F4F7F9]">
                 المستندات المطلوبة لإتمام الطلب <span class="text-[#D92D20]">*</span>
             </h2>
             <div class="space-y-5">
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">خطاب بالمرتب الأساسي<span
@@ -523,7 +523,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بيان بالمبالغ المخصومة <span
@@ -539,7 +539,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بطاقة الرقم القومي<span
@@ -555,7 +555,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">قرار التعيين<span
@@ -571,7 +571,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش
@@ -613,15 +613,15 @@
             </div>
         </form>
 
-        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-7 relative tab-content" data-tab="الانسحاب">
+        <form action="{{ route('member.claims.store') }}" method="POST" enctype="multipart/form-data" class="hidden rounded-2xl border-2 border-[#124375] py-7 px-4 md:px-7 relative tab-content" data-tab="الانسحاب">
             @csrf
             <input type="hidden" name="claim_type" value="withdrawal">
-            <h2 class="absolute top-[-15px] right-5 px-2 text-[#124375] text-base font-medium bg-[#F4F7F9]">
+            <h2 class="absolute top-[-15px] right-2 md:right-5 px-2 text-[#124375] text-sm md:text-base font-medium bg-[#F4F7F9]">
                 المستندات المطلوبة لإتمام الطلب <span class="text-[#D92D20]">*</span>
             </h2>
             <div class="space-y-5">
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">خطاب بالمرتب الأساسي<span
@@ -637,7 +637,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بيان بالمبالغ المخصومة <span
@@ -653,7 +653,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">بطاقة الرقم القومي<span
@@ -669,7 +669,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">قرار التعيين<span
@@ -685,7 +685,7 @@
                     </div>
                 </div>
                 <div
-                    class="flex justify-between bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4">
+                    class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
                         <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش

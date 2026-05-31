@@ -7,7 +7,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/grantaccess.css') }}">
 
-    <div class="flex justify-between items-center py-7 px-12">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375] font-semibold">
                 إضافة و تفويض مستخدم جديد
@@ -24,13 +24,13 @@
 
     <form action="{{ route('admin.permissions.store') }}" method="POST">
         @csrf
-        <div class="px-12 py-4 ">
-            <div class="space-y-10 py-10 px-7 bg-[#F4F7F9] navy-shadow rounded-[16px]">
+        <div class="px-4 md:px-12 py-4">
+            <div class="space-y-6 md:space-y-10 py-6 md:py-10 px-4 md:px-7 bg-[#F4F7F9] navy-shadow rounded-[16px]">
                 <div class="flex items-center gap-4">
                     <iconify-icon icon="tdesign:user-filled" class="text-3xl text-[#124375] mt-1"></iconify-icon>
                     <h2 class="text-[20px] text-[#021219] font-semibold">البيانات الأساسية</h2>
                 </div>
-                <div class="grid grid-cols-2 gap-7">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-7">
                     <div class="relative">
                         <label class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الاسم رباعي</label>
                         <input type="text" name="name" value="{{ old('name') }}" placeholder="الاسم المدرج بقرار التعيين"
@@ -70,9 +70,9 @@
             if (!is_array($userFaculties)) $userFaculties = [];
         @endphp
 
-        <div class="px-12 py-4">
-            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-10 pb-3 px-7 ">
-                <div class="flex justify-between items-center ">
+        <div class="px-4 md:px-12 py-4">
+            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-6 md:pt-10 pb-3 px-4 md:px-7">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="bi:buildings-fill" class="text-3xl mt-1 text-[#124375]"></iconify-icon>
@@ -85,7 +85,7 @@
                             class="select-btn text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow py-3 px-10 rounded-[10px]">تحديد كافة الكليات</button>
                     </div>
                 </div>
-                <div class="grid grid-cols-4 gap-7 py-5 ">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-7 py-5">
                     @foreach($departments as $department)
                     <label class="flex items-center gap-2 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <input type="checkbox" name="faculties[]" class="hidden peer item" value="{{ $department->name }}" {{ in_array($department->name, $userFaculties) ? 'checked' : '' }}>
@@ -104,9 +104,9 @@
             if (!is_array($userPermissions)) $userPermissions = [];
         @endphp
 
-        <div class="px-12 py-4">
-            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-10 pb-3 px-7">
-                <div class="flex justify-between items-center">
+        <div class="px-4 md:px-12 py-4">
+            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-6 md:pt-10 pb-3 px-4 md:px-7">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="mage:key-fill" class="text-3xl mt-1 text-[#124375]"></iconify-icon>
@@ -119,8 +119,8 @@
                             class="select-btn text-[#124375] text-[16px] font-medium bg-[#F4F7F9] navy-shadow py-3 px-10 rounded-[10px]">تحديد الكل (مدير النظام)</button>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-5 py-5 ">
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 py-5">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="إدارة الأعضاء" {{ in_array('إدارة الأعضاء', $userPermissions) ? 'checked' : '' }}>
@@ -136,7 +136,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="إدارة الصلاحيات" {{ in_array('إدارة الصلاحيات', $userPermissions) ? 'checked' : '' }}>
@@ -152,7 +152,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="إدارة الاشتراكات" {{ in_array('إدارة الاشتراكات', $userPermissions) ? 'checked' : '' }}>
@@ -168,7 +168,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="إعدادات اللائحة" {{ in_array('إعدادات اللائحة', $userPermissions) ? 'checked' : '' }}>
@@ -184,7 +184,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="إدارة القروض" {{ in_array('إدارة القروض', $userPermissions) ? 'checked' : '' }}>
@@ -200,7 +200,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="عرض التقارير" {{ in_array('عرض التقارير', $userPermissions) ? 'checked' : '' }}>
@@ -216,7 +216,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="إدارة المطالبات" {{ in_array('إدارة المطالبات', $userPermissions) ? 'checked' : '' }}>
@@ -232,7 +232,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="الشؤون المالية" {{ in_array('الشؤون المالية', $userPermissions) ? 'checked' : '' }}>
@@ -248,7 +248,7 @@
                         </div>
                     </label>
 
-                    <label class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                    <label class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item" value="سجل العمليات" {{ in_array('سجل العمليات', $userPermissions) ? 'checked' : '' }}>
@@ -267,7 +267,7 @@
             </div>
         </div>
 
-        <div class="px-12 py-4 mb-4">
+        <div class="px-4 md:px-12 py-4 mb-4">
             <button type="submit"
                 class="bg-[#124375] text-[#F4F7F9] w-full  rounded-[12px] flex items-center py-3 justify-center gap-5 hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="mage:key-fill" class="text-xl mt-1"></iconify-icon>

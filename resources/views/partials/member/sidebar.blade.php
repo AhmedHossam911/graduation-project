@@ -40,8 +40,8 @@
         </div>
     </div>
     <div class="mt-8 flex flex-col gap-3">
-        <a href="{{ route('profile.index') }}"
-            class="md:hidden {{ request()->routeIs('profile.*') ? 'active bg-[#F4F7F933] side-bar-shadow' : '' }} cursor-pointer hover:bg-[#F4F7F933] hover:side-bar-shadow transition py-2 page  rounded-xl px-2 text-lg font-medium flex items-center gap-2  text-[#F4F7F9]">
+        <a href="{{ route('member.profile') }}"
+            class="md:hidden {{ request()->routeIs('member.profile') ? 'active bg-[#F4F7F933] side-bar-shadow' : '' }} cursor-pointer hover:bg-[#F4F7F933] hover:side-bar-shadow transition py-2 page  rounded-xl px-2 text-lg font-medium flex items-center gap-2  text-[#F4F7F9]">
             <div>
                 <iconify-icon icon="boxicons:user-filled" class="text-3xl mt-1"></iconify-icon>
             </div>

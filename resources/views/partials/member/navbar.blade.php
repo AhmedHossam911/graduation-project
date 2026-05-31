@@ -3,6 +3,10 @@
    <header class="bg-[#F4F7F9] surface-shadow px-7 py-3">
        <nav class="flex items-center justify-between  ">
            <div class="flex items-center gap-3 text-[#124375]">
+               <!-- Mobile Menu Toggle Button -->
+               <button id="Nav-menu" class="md:hidden text-3xl flex items-center">
+                   <iconify-icon icon="ic:round-menu"></iconify-icon>
+               </button>
                <h1 class="text-xl font-semibold">
                      @yield('title', 'الرئيسية')
                </h1>
@@ -46,11 +50,10 @@
                             كل الإشعارات</a>
                     </div>
                 </div>
-                <a href="{{ route('member.profile') }}" class="cursor-pointer">
+                <a href="{{ route('member.profile') }}" class="cursor-pointer hidden md:block">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>
        </nav>
    </header>
    <!-- end header -->
-   <script src="{{ asset('JS/member/memberNavbar.js') }}"></script>

@@ -19,6 +19,8 @@
 
 <body>
     <div class="flex">
+        <!-- Overlay -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden"></div>
 
         {{-- Sidebar --}}
         @include('partials.member.sidebar')

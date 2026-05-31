@@ -7,7 +7,7 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/grantaccess.css') }}">
 
-    <div class="flex justify-between items-center py-7 px-12">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375] font-semibold">
                 تعديل صلاحيات مستخدم
@@ -24,13 +24,13 @@
 
     <form action="{{ route('admin.permissions.approve', $user->id) }}" method="POST">
         @csrf
-        <div class="px-12 py-4 ">
-            <div class="space-y-10 py-10 px-7 bg-[#F4F7F9] navy-shadow rounded-[16px]">
+        <div class="px-4 md:px-12 py-4">
+            <div class="space-y-6 md:space-y-10 py-6 md:py-10 px-4 md:px-7 bg-[#F4F7F9] navy-shadow rounded-[16px]">
                 <div class="flex items-center gap-4">
                     <iconify-icon icon="tdesign:user-filled" class="text-3xl text-[#124375] mt-1"></iconify-icon>
                     <h2 class="text-[20px] text-[#021219] font-semibold">البيانات الأساسية</h2>
                 </div>
-                <div class="grid grid-cols-2 gap-7">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-7">
                     <div class="relative">
                         <label
                             class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">الاسم
@@ -87,9 +87,9 @@
             }
         @endphp
 
-        <div class="px-12 py-4">
-            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-10 pb-3 px-7 ">
-                <div class="flex justify-between items-center ">
+        <div class="px-4 md:px-12 py-4">
+            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-6 md:pt-10 pb-3 px-4 md:px-7">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="bi:buildings-fill" class="text-3xl mt-1 text-[#124375]"></iconify-icon>
@@ -103,7 +103,7 @@
                             كافة الكليات</button>
                     </div>
                 </div>
-                <div class="grid grid-cols-4 gap-7 py-5 ">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 md:gap-7 py-5">
                     @foreach ($departments as $department)
                         <label
                             class="flex items-center gap-2 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
@@ -128,9 +128,9 @@
             }
         @endphp
 
-        <div class="px-12 py-4">
-            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-10 pb-3 px-7">
-                <div class="flex justify-between items-center">
+        <div class="px-4 md:px-12 py-4">
+            <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-6 md:pt-10 pb-3 px-4 md:px-7">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="mage:key-fill" class="text-3xl mt-1 text-[#124375]"></iconify-icon>
@@ -145,9 +145,9 @@
                             الكل (مدير النظام)</button>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-5 py-5 ">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5 py-5">
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -169,7 +169,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -191,7 +191,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -213,7 +213,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -236,7 +236,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -258,7 +258,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -280,7 +280,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -302,7 +302,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -324,7 +324,7 @@
                     </label>
 
                     <label
-                        class="flex justify-between cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
+                        class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 cursor-pointer navy-shadow py-5 px-4 rounded-[8px] border-2 border-transparent has-[:checked]:border-[#124375]">
                         <div class="flex flex-col gap-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" name="permissions[]" class="hidden peer item"
@@ -348,7 +348,7 @@
             </div>
         </div>
 
-        <div class="px-12 py-4 mb-4">
+        <div class="px-4 md:px-12 py-4 mb-4">
             <button type="submit"
                 class="bg-[#124375] text-[#F4F7F9] w-full  rounded-[12px] flex items-center py-3 justify-center gap-5 hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="mage:key-fill" class="text-xl mt-1"></iconify-icon>

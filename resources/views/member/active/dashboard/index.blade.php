@@ -4,8 +4,8 @@
 
 @section('content')
 
-    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/memberhome.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/member/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/member/memberhome.css') }}">
 
     <div class="flex">
 
@@ -22,33 +22,33 @@
 
                 <!-- start cards -->
                 <div class=" grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
+                    <div class="surface-shadow flex gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
                             <iconify-icon icon="{{ $statusIcon }}"
                                 class=" text-4xl {{ $statusColor }} rounded-lg px-3 py-3"></iconify-icon>
                         </div>
-                        <div class="flex flex-col items-center text-[#124375] gap-2">
+                        <div class="flex flex-col text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">حالة العضوية</p>
                             <p class="text-4xl font-extrabold">{{ $statusText }}</p>
                         </div>
                     </div>
-                    <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
+                    <div class="surface-shadow flex gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
                             <iconify-icon icon="sidekickicons:arrow-path-clock-16-solid"
                                 class=" text-4xl text-[#175CD3] bg-[#D2EBFF] rounded-lg px-3 py-3"></iconify-icon>
                         </div>
-                        <div class="flex flex-col items-center text-[#124375] gap-2">
-                            <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ الانضمام</p>
+                        <div class="flex flex-col text-[#124375] gap-2">
+                            <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ انشاء الحساب</p>
                             <p class="text-4xl font-extrabold">
-                                {{ $user->created_at ? $user->created_at->format('Y-m-d') : '---' }} </p>
+                                {{ $user->created_at ? $user->created_at->format('Y-m') : '---' }} </p>
                         </div>
                     </div>
-                    <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
+                    <div class="surface-shadow flex gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
                             <iconify-icon icon="f7:exclamationmark-shield-fill"
                                 class=" text-4xl text-[#E11D48] bg-[#FFE4E6] rounded-lg px-3 py-3"></iconify-icon>
                         </div>
-                        <div class="flex flex-col items-center text-[#124375] gap-2">
+                        <div class="flex flex-col text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">المطالبات السابقة</p>
                             <p class="text-4xl font-extrabold">{{ $claimsCount }}</p>
                         </div>

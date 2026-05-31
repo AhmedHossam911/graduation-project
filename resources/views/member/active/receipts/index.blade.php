@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <link rel="stylesheet" href="{{ asset('css/receipts.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/member/receipts.css') }}">
 
     <div class="py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
@@ -138,7 +138,7 @@
                     <p class="text-[#021219] text-[14px] font-medium">المبلغ المطلوب</p>
                     <p class="text-[20px] text-[#124375] font-semibold">{{ $receipt->amount }} ج.م</p>
                 </div>
-                
+
                 @if(!$isPaid)
                 <div class="space-y-4 surface-shadow rounded-[16px] py-4 px-2">
                     <div class="flex gap-4 items-center border-b-2 border-[#A8A8A8] pb-2">
