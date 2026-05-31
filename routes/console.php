@@ -16,3 +16,6 @@ Schedule::command('installments:check-overdue')->hourly();
 
 // Generate annual subscriptions for active members daily at 01:00 AM
 Schedule::command('subscriptions:generate-annual')->dailyAt('01:00');
+
+// Check for members who reached retirement age daily at 02:00 AM
+Schedule::command('memberships:check-retirement')->dailyAt('02:00');

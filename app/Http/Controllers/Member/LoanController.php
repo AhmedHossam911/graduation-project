@@ -48,6 +48,11 @@ class LoanController extends Controller
                 ->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
         }
 
+        if ($member->membershipInfo->claims()->where('status', '!=', 'rejected')->exists()) {
+            return back()->withInput()
+                ->with('error', 'لقد قمت بتقديم مطالبة مسبقاً، لا يمكنك التقديم على قرض جديد.');
+        }
+
         $hasActiveLoan = $member->membershipInfo->loans()
             ->whereIn('status', ['active', 'pending', 'approved'])
             ->exists();

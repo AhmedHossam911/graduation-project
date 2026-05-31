@@ -144,6 +144,10 @@ class LoanController extends Controller
             return response()->json(['success' => false, 'message' => 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.']);
         }
 
+        if ($member->membershipInfo->claims()->where('status', '!=', 'rejected')->exists()) {
+            return response()->json(['success' => false, 'message' => 'يوجد مطالبة مسجلة لهذا العضو. لا يمكن إنشاء قرض جديد.']);
+        }
+
         $hasActiveLoan = $member->membershipInfo->loans()
             ->whereIn('status', ['active', 'pending', 'approved'])
             ->exists();
@@ -223,6 +227,10 @@ class LoanController extends Controller
         $forbiddenStatuses = ['pending_registration', 'pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
         if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
             return back()->withInput()->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
+        }
+
+        if ($member->membershipInfo->claims()->where('status', '!=', 'rejected')->exists()) {
+            return back()->withInput()->with('error', 'يوجد مطالبة مسجلة لهذا العضو. لا يمكن إنشاء قرض جديد.');
         }
 
         // Enforce business rule: A member is only allowed to have one active or pending loan at a time.

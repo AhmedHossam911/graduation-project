@@ -35,12 +35,29 @@ class ClaimController extends Controller
                 ->with('error', 'لقد قمت بتقديم مطالبة مسبقاً ولا يمكن تقديم أكثر من طلب.');
         }
 
+        $forbiddenStatuses = ['withdrawn', 'dismissed', 'suspended'];
+        if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
+            return redirect()->route('member.claims.index')
+                ->with('error', 'حالة العضوية الحالية لا تسمح بتقديم مطالبة.');
+        }
+
         $validated = $request->validate([
             'claim_type'       => ['required', 'string', 'in:' . implode(',', array_keys(\App\Models\Services\Claim::CLAIM_TYPES))],
             'has_minors'       => ['nullable', 'boolean'],
             'claim_documents'  => ['nullable', 'array'],
             'claim_documents.*'=> ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
+
+        if ($member->membershipInfo->status === 'membership_expired' && $validated['claim_type'] !== 'retirement') {
+            return redirect()->back()->with('error', 'حالة العضوية منتهية، يمكنك فقط تقديم مطالبة ببلوغ سن التقاعد.')->withInput();
+        }
+
+        if ($validated['claim_type'] === 'retirement') {
+            $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
+            if ($member->date_of_birth && \Carbon\Carbon::parse($member->date_of_birth)->age < $retirementAge) {
+                return redirect()->back()->with('error', "لا يمكن تقديم مطالبة تقاعد لأنك لم تبلغ سن التقاعد ($retirementAge عاماً).")->withInput();
+            }
+        }
 
         if ($validated['claim_type'] === 'death' && $request->input('has_minors') == 1) {
             $request->validate([

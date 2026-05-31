@@ -107,12 +107,26 @@ class ClaimController extends Controller
                 ->with('error', 'يوجد مطالبة مسجلة مسبقاً لهذا العضو.');
         }
 
+        $forbiddenStatuses = ['withdrawn', 'dismissed', 'suspended'];
+        if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
+            return redirect()
+                ->route('members.show', $member->id)
+                ->with('error', 'حالة العضوية الحالية لا تسمح بإنشاء مطالبة.');
+        }
+
         $validated = $request->validate([
             'claim_type'       => ['required', 'string', 'in:' . implode(',', array_keys(Claim::CLAIM_TYPES))],
             'has_minors'       => ['nullable', 'boolean'],
             'claim_documents'  => ['nullable', 'array'],
             'claim_documents.*'=> ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
+
+        if ($validated['claim_type'] === 'retirement') {
+            $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
+            if ($member->date_of_birth && \Carbon\Carbon::parse($member->date_of_birth)->age < $retirementAge) {
+                return redirect()->back()->with('error', "لا يمكن إنشاء مطالبة تقاعد لأن العضو لم يبلغ سن التقاعد ($retirementAge عاماً).")->withInput();
+            }
+        }
 
         if ($validated['claim_type'] === 'death' && $request->input('has_minors') == 1) {
             $request->validate([
@@ -244,6 +258,23 @@ class ClaimController extends Controller
             }
 
             $claim->update($updateData);
+
+            $membershipStatusMapping = [
+                'retirement'              => 'pension_eligible',
+                'early_retirement'        => 'withdrawn',
+                'resignation'             => 'withdrawn',
+                'withdrawal'              => 'withdrawn',
+                'expulsion'               => 'dismissed',
+                'professional_disability' => 'membership_expired',
+                'transfer'                => 'withdrawn',
+                'death'                   => 'membership_expired',
+            ];
+
+            if (isset($membershipStatusMapping[$claim->type])) {
+                $claim->membership()->update([
+                    'status' => $membershipStatusMapping[$claim->type]
+                ]);
+            }
 
             \App\Models\Financial\Transaction::create([
                 'membership_id'   => $claim->membership_id,

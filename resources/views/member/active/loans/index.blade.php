@@ -9,28 +9,7 @@
     @if (!$activeLoan)
         {{-- لو معندوش قرض ده اللي يظهر --}}
         <section class="py-7 px-4 md:px-12">
-            @if (session('success'))
-                <div class="mb-4 bg-[#ECFDF3] text-[#067647] border border-[#067647] p-4 rounded-xl flex items-center gap-3">
-                    <iconify-icon icon="healthicons:yes" class="text-2xl"></iconify-icon>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-            @if (session('error'))
-                <div
-                    class="mb-4 bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] p-4 rounded-xl flex items-center gap-3">
-                    <iconify-icon icon="material-symbols:error-outline" class="text-2xl"></iconify-icon>
-                    <span>{{ session('error') }}</span>
-                </div>
-            @endif
-            @if ($errors->any())
-                <div class="mb-4 bg-[#FFEAE880] text-[#D92D20] border border-[#D92D20] p-4 rounded-xl">
-                    <ul class="list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            @include('partials.common.flash')
 
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div class="flex flex-col gap-3">
@@ -51,7 +30,7 @@
             </div>
         </section>
 
-        <form action="{{ route('loans.store') }}" method="POST">
+        <form action="{{ route('member.loans.store') }}" method="POST">
             @csrf
             <input type="hidden" name="total_amount" id="total_amount_input">
             <input type="hidden" name="months" id="months_input">
