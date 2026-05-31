@@ -8,7 +8,7 @@
 
     @if(!$activeLoan)
     {{-- لو معندوش قرض ده اللي يظهر --}}
-    <section class="py-7 px-12">
+    <section class="py-7 px-4 md:px-12">
         @if(session('success'))
             <div class="mb-4 bg-[#ECFDF3] text-[#067647] border border-[#067647] p-4 rounded-xl flex items-center gap-3">
                 <iconify-icon icon="healthicons:yes" class="text-2xl"></iconify-icon>
@@ -31,7 +31,7 @@
             </div>
         @endif
 
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex flex-col gap-3">
                 <h1 class="text-xl text-[#124375]  font-semibold">
                     طلب الحصول على قرض
@@ -41,8 +41,8 @@
                     قيمة القرض.
                 </p>
             </div>
-            <div>
-                <a href="{{ route('member.dashboard') }}" class="block text-center text-[#D92D20] bg-[#F4F7F9] rounded-[16px] py-2 px-12 red-shadow">
+            <div class="w-full md:w-auto">
+                <a href="{{ route('member.dashboard') }}" class="block text-center text-[#D92D20] bg-[#F4F7F9] rounded-[16px] py-2 px-12 red-shadow w-full md:w-auto">
                     إلغاء
                 </a>
             </div>
@@ -54,13 +54,13 @@
         <input type="hidden" name="total_amount" id="total_amount_input">
         <input type="hidden" name="months" id="months_input">
 
-        <div class="py-3 px-12 ">
+        <div class="py-3 px-4 md:px-12 ">
             <div class="bg-[#EEF7FF] space-y-7 navy-shadow rounded-[16px] py-5 px-4">
                 <div class="flex gap-4 items-center">
                     <iconify-icon icon="material-symbols:info-rounded" class="text-2xl text-[#175CD3]"></iconify-icon>
                     <p class="text-[#124375] text-[18px] font-medium">ملخص حساب القرض</p>
                 </div>
-                <div class="flex justify-between px-7">
+                <div class="flex flex-col sm:flex-row justify-between px-2 sm:px-7 gap-4">
                     <div class="flex flex-col gap-3 ">
                         <p class="text-[16px] text-[#175CD3] font-medium">المبلغ المطلوب</p>
                         <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_amount">0</span> ج.م</p>
@@ -81,9 +81,9 @@
             </div>
         </div>
 
-        <section class="py-3 px-12 ">
+        <section class="py-3 px-4 md:px-12 ">
             <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] py-8 px-3 space-y-7">
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-4 mt-2">
                     <div class="relative">
                         <button type="button"
                             class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base gap-3 flex justify-between items-center"><span
@@ -140,7 +140,7 @@
     @else
     {{-- لو العضو عنده قرض ده اللي يظهر --}}
     <div
-        class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-auto flex flex-col gap-7 justify-center items-center">
+        class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-4 md:mx-auto mt-7 flex flex-col gap-7 justify-center items-center text-center">
         <div>
             <iconify-icon icon="material-symbols:info-rounded"
                 class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>

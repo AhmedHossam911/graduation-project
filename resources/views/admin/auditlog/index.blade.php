@@ -10,7 +10,7 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/auditLogs.css') }}">
-    <div class="py-7 px-12">
+    <div class="py-4 md:py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375] font-semibold">
                 سجل العمليات والمراقبة
@@ -21,7 +21,7 @@
         </div>
     </div>
 
-    <form class="px-12 flex items-center justify-between gap-5" action="{{ route('admin.auditlog.index') }}" method="GET">
+    <form class="px-4 md:px-12 flex items-center justify-between gap-5" action="{{ route('admin.auditlog.index') }}" method="GET">
         <div class="relative flex-1">
             <input type="search" name="search" value="{{ request('search') }}" placeholder="رقم السجل أو اسم المستخدم"
                 class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
@@ -37,9 +37,9 @@
     </form>
 
     <!-- start table -->
-    <section class="px-12 py-7">
-        <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">
-            <table class="w-full">
+    <section class="px-4 md:px-12 py-7">
+        <div class="rounded-[14px] overflow-hidden border border-[#6D6D6D]">
+            <table class="hidden md:table w-full">
                 <thead>
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم السجل</th>
@@ -68,6 +68,29 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <!-- Mobile Cards View -->
+            <div class="md:hidden flex flex-col gap-4 p-4 bg-white">
+                @forelse($auditLogs as $log)
+                <div class="border border-[#6D6D6D]/30 rounded-xl p-4 shadow-sm flex flex-col gap-2 relative">
+                    <div class="flex justify-between items-start border-b border-gray-100 pb-2 mb-1">
+                        <span class="font-semibold text-[#124375]">LOG-{{ $log->id }}</span>
+                        <span class="text-xs text-[#6D6D6D] bg-[#F4F7F9] px-2 py-1 rounded-md">{{ $log->created_at->translatedFormat('j M Y - g:i A') }}</span>
+                    </div>
+                    <div class="flex flex-col gap-1 text-sm text-[#021219]">
+                        <p><span class="text-[#6D6D6D] ml-1">المنفذ:</span> {{ $log->user->name ?? 'نظام' }}</p>
+                        <p class="truncate"><span class="text-[#6D6D6D] ml-1">الإجراء:</span> {{ $log->action_description }}</p>
+                    </div>
+                    <div class="flex justify-end mt-2 pt-2 border-t border-gray-100">
+                        <button type="button" class="open-modal text-[#124375] bg-[#EEF7FF] rounded-lg p-2 flex items-center justify-center" data-modal="modal-{{ $log->id }}">
+                            <iconify-icon icon="solar:eye-outline" class="text-xl"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+                @empty
+                <div class="text-center py-4 text-gray-500 border border-gray-200 rounded-xl">لا توجد سجلات.</div>
+                @endforelse
+            </div>
         </div>
     </section>
     <!-- end table -->
@@ -81,7 +104,7 @@
 
     @foreach($auditLogs as $log)
     <div id="modal-{{ $log->id }}"
-        class="flex flex-col hidden w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-5 max-h-[95vh]">
+        class="flex flex-col hidden w-[95%] md:w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-5 max-h-[95vh]">
         <div class="flex justify-end shrink-0">
             <button
                 class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
@@ -101,7 +124,7 @@
             </div>
             <div class="flex-1 py-3 overflow-y-auto px-2 no-scrollbar space-y-3">
                 <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="space-y-2 navy-shadow bg-[#F4F7F9] rounded-[16px] py-3 px-4">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="tabler:clock-filled"
@@ -153,7 +176,7 @@
             <div class="btns flex gap-2 shrink-0 pt-4">
                 <form class="w-full flex justify-end">
                     <button type="button"
-                        class="modal-close close-btn rounded-[14px]  py-3 px-20 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors">إغلاق</button>
+                        class="modal-close close-btn rounded-[14px] w-full md:w-auto py-3 md:px-20 btn-disabled text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors">إغلاق</button>
                 </form>
             </div>
         </div>

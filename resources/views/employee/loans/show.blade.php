@@ -8,17 +8,18 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/previousLoans.css') }}">
     <!-- start header -->
-    <div class="py-4 px-12">
-        <h1 class="text-[#124375] text-[28px] font-semibold">
+    <div class="py-4 px-4 md:px-12">
+        <h1 class="text-[#124375] text-[24px] md:text-[28px] font-semibold">
             القروض السابقة
         </h1>
-        <p class="text-[#124375] text-[18px] font-medium">القروض التي تم طلبها سابقاً</p>
+        <p class="text-[#124375] text-[16px] md:text-[18px] font-medium">القروض التي تم طلبها سابقاً</p>
     </div>
     <!-- end header -->
 
 
-    <section class="px-12 py-5">
-        <div class="rounded-[14px] overflow-hidden border border-[#D1D5DB]">
+    <section class="px-4 md:px-12 py-5">
+        <div class="rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
+            <div class="hidden md:block overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
@@ -69,6 +70,73 @@
                     @endforelse
                 </tbody>
             </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden flex flex-col gap-4">
+                @forelse ($loans as $loan)
+                    @php
+                        $firstInstallment = $loan->installments->sortBy('due_date')->first();
+                        $lastInstallment = $loan->installments->sortByDesc('due_date')->first();
+                        
+                        $statusHtml = '';
+                        $statusBorder = '';
+                        if ($loan->status === 'overdue') {
+                            $statusHtml = 'متأخر';
+                            $statusBorder = 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]';
+                        } elseif ($loan->status === 'completed') {
+                            $statusHtml = 'مكتمل';
+                            $statusBorder = 'bg-[#EEF7FF] text-[#124375] border-[#124375]';
+                        } elseif ($loan->status === 'active') {
+                            $statusHtml = 'نشط';
+                            $statusBorder = 'bg-[#ECFDF3] text-[#067647] border-[#067647]';
+                        } elseif ($loan->status === 'pending') {
+                            $statusHtml = 'قيد المراجعة';
+                            $statusBorder = 'bg-[#FFF8E1] text-[#E6B800] border-[#E6B800]';
+                        } elseif ($loan->status === 'rejected') {
+                            $statusHtml = 'مرفوض';
+                            $statusBorder = 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]';
+                        } else {
+                            $statusHtml = $loan->status;
+                            $statusBorder = 'bg-[#EFEFEF] text-[#6D6D6D] border-[#6D6D6D]';
+                        }
+                    @endphp
+                    <div class="bg-white rounded-[14px] border border-[#D1D5DB] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div class="flex flex-col gap-1">
+                                <span class="text-sm text-[#6D6D6D]">رقم القرض: {{ $loan->id }}</span>
+                                <span class="text-lg text-[#067647] font-bold">{{ number_format($loan->total_amount) }} ج.م</span>
+                            </div>
+                            <span class="{{ $statusBorder }} border rounded-[8px] py-[2px] px-3 text-xs text-center font-medium">
+                                {{ $statusHtml }}
+                            </span>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2 mt-2">
+                            <div class="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
+                                <span class="text-[#6D6D6D]">مدة السداد:</span>
+                                <span class="text-[#021219] font-medium">{{ $loan->months }} شهر</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
+                                <span class="text-[#6D6D6D]">تاريخ تقديم الطلب:</span>
+                                <span class="text-[#021219] font-medium">{{ $loan->created_at?->isoFormat('D MMMM YYYY') }}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
+                                <span class="text-[#6D6D6D]">تاريخ البداية:</span>
+                                <span class="text-[#021219] font-medium">{{ $firstInstallment ? $firstInstallment->due_date?->isoFormat('D MMMM YYYY') : '-' }}</span>
+                            </div>
+                            <div class="flex justify-between items-center text-sm">
+                                <span class="text-[#6D6D6D]">تاريخ الإنتهاء:</span>
+                                <span class="text-[#021219] font-medium">{{ $lastInstallment ? $lastInstallment->due_date?->isoFormat('D MMMM YYYY') : '-' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="bg-white rounded-[14px] border border-[#D1D5DB] p-8 flex flex-col items-center justify-center text-center shadow-sm">
+                        <p class="text-[#6D6D6D] font-medium text-lg">لا توجد قروض سابقة لهذا العضو</p>
+                    </div>
+                @endforelse
+            </div>
         </div>
     </section>
 

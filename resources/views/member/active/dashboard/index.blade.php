@@ -21,7 +21,7 @@
                 <!-- end header main -->
 
                 <!-- start cards -->
-                <div class=" grid grid-cols-3 gap-5">
+                <div class=" grid grid-cols-1 md:grid-cols-3 gap-5">
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
                             <iconify-icon icon="{{ $statusIcon }}"
@@ -39,7 +39,8 @@
                         </div>
                         <div class="flex flex-col items-center text-[#124375] gap-2">
                             <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ الانضمام</p>
-                            <p class="text-4xl font-extrabold">{{ $joinDate }}</p>
+                            <p class="text-4xl font-extrabold">
+                                {{ $user->created_at ? $user->created_at->format('Y-m-d') : '---' }} </p>
                         </div>
                     </div>
                     <div class="surface-shadow flex items-center  gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
@@ -55,8 +56,8 @@
                 </div>
                 <!-- end cards -->
 
-                <div class=" grid grid-cols-5 gap-7">
-                    <div class="col-span-2 space-y-7 bg-[#F4F7F9] surface-shadow rounded-[16px] py-7 px-5">
+                <div class=" grid grid-cols-1 md:grid-cols-5 gap-7">
+                    <div class="md:col-span-2 space-y-7 bg-[#F4F7F9] surface-shadow rounded-[16px] py-7 px-5">
                         <div class="flex items-center gap-4">
                             <div>
                                 <iconify-icon icon="uil:calender"
@@ -67,13 +68,13 @@
                                 <p class="text-[16px] font-medium text-[#6D6D6D]">موقف سداد اشتراكات العضوية</p>
                             </div>
                         </div>
-                        <div class="flex gap-12">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-12">
                             <div class="flex flex-col gap-5">
                                 <p class="text-[#6D6D6D] text-[16px] font-medium"> موقف السداد</p>
-                                <div
-                                    class="flex gap-1 items-center {{ $subscriptionColor }} rounded-[8px] px-4">
+                                <div class="flex gap-1 items-center {{ $subscriptionColor }} rounded-[8px] px-4">
                                     <iconify-icon icon="{{ $subscriptionIcon }}" class=" text-lg "></iconify-icon>
-                                    <p class=" text-[14px] font-medium">{{ $subscriptionStatus }} (لعام <span>{{ $subscriptionYear }}</span>)</p>
+                                    <p class=" text-[14px] font-medium">{{ $subscriptionStatus }} (لعام
+                                        <span>{{ $subscriptionYear }}</span>)</p>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-5">
@@ -89,8 +90,8 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-span-3 space-y-7 bg-[#F4F7F9] surface-shadow rounded-[16px] py-7 px-5">
-                        <div class="flex justify-between">
+                    <div class="md:col-span-3 space-y-7 bg-[#F4F7F9] surface-shadow rounded-[16px] py-7 px-5">
+                        <div class="flex flex-col sm:flex-row justify-between gap-4">
                             <div class="flex items-center gap-4">
                                 <div>
                                     <iconify-icon icon="fluent:money-16-filled"
@@ -101,48 +102,51 @@
                                     <p class="text-[16px] font-medium text-[#6D6D6D]">متابعة سداد أقساط قرضك الفعال</p>
                                 </div>
                             </div>
-                            @if($activeLoan)
-                            <div
-                                class="flex h-fit gap-1 items-center bg-[#FFEDD5] border border-[#EA580C] text-[#EA580C] rounded-[8px] px-4">
-                                <iconify-icon icon="material-symbols:info-rounded" class=" text-lg "></iconify-icon>
-                                <p class=" text-[14px] font-medium">قيد السداد</p>
-                            </div>
+                            @if ($activeLoan)
+                                <div
+                                    class="flex h-fit gap-1 items-center bg-[#FFEDD5] border border-[#EA580C] text-[#EA580C] rounded-[8px] px-4">
+                                    <iconify-icon icon="material-symbols:info-rounded" class=" text-lg "></iconify-icon>
+                                    <p class=" text-[14px] font-medium">قيد السداد</p>
+                                </div>
                             @endif
                         </div>
-                        @if($activeLoan)
+                        @if ($activeLoan)
                             @php
                                 $paidAmount = $activeLoan->installments()->where('status', 'paid')->sum('amount');
                                 $remainingAmount = $activeLoan->total_amount - $paidAmount;
-                                $progress = $activeLoan->total_amount > 0 ? ($paidAmount / $activeLoan->total_amount) * 100 : 0;
+                                $progress =
+                                    $activeLoan->total_amount > 0 ? ($paidAmount / $activeLoan->total_amount) * 100 : 0;
                                 $paidMonths = $activeLoan->installments()->where('status', 'paid')->count();
                             @endphp
-                        <div class="flex justify-between">
-                            <div>
-                                <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة : <span
-                                        class="text-[20px] text-[#021219]">{{ $paidAmount }} ج.م</span></p>
+                            <div class="flex flex-col md:flex-row justify-between gap-4">
+                                <div>
+                                    <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة : <span
+                                            class="text-[20px] text-[#021219]">{{ $paidAmount }} ج.م</span></p>
+                                </div>
+                                <div>
+                                    <p class="text-[#6D6D6D] text-[16px] font-medium">المتبقي : <span
+                                            class="text-[20px] text-[#021219]">{{ $remainingAmount }} ج.م</span></p>
+                                </div>
                             </div>
-                            <div>
-                                <p class="text-[#6D6D6D] text-[16px] font-medium">المتبقي : <span
-                                        class="text-[20px] text-[#021219]">{{ $remainingAmount }} ج.م</span></p>
+                            <div class="bg-[#EFEFEF] rounded-[50px] w-full h-4">
+                                <span class="bg-[#F79009] rounded-[50px] w-[{{ $progress }}%] h-full block"></span>
                             </div>
-                        </div>
-                        <div class="bg-[#EFEFEF] rounded-[50px] w-full h-4">
-                            <span class="bg-[#F79009] rounded-[50px] w-[{{ $progress }}%] h-full block"></span>
-                        </div>
-                        <div class="flex justify-between bg-[#FFF7ED] py-2 px-2">
-                            <div class="flex flex-col gap-3">
-                                <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة</p>
-                                <p class="text-[20px] text-[#021219] font-semibold">{{ $paidMonths }} من {{ $activeLoan->months }} شهر</p>
+                            <div class="flex justify-between bg-[#FFF7ED] py-2 px-2">
+                                <div class="flex flex-col gap-3">
+                                    <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة</p>
+                                    <p class="text-[20px] text-[#021219] font-semibold">{{ $paidMonths }} من
+                                        {{ $activeLoan->months }} شهر</p>
+                                </div>
+                                <div class="flex flex-col gap-3">
+                                    <p class="text-[#6D6D6D] text-[16px] font-medium">القسط القادم</p>
+                                    <p class="text-[20px] text-[#021219] font-semibold">
+                                        {{ $activeLoan->installment_amount }} ج.م</p>
+                                </div>
                             </div>
-                            <div class="flex flex-col gap-3">
-                                <p class="text-[#6D6D6D] text-[16px] font-medium">القسط القادم</p>
-                                <p class="text-[20px] text-[#021219] font-semibold">{{ $activeLoan->installment_amount }} ج.م</p>
-                            </div>
-                        </div>
                         @else
-                        <div class="flex flex-col items-center justify-center py-5">
-                            <p class="text-[16px] font-medium text-[#6D6D6D]">ليس لديك قرض فعال حالياً</p>
-                        </div>
+                            <div class="flex flex-col items-center justify-center py-5">
+                                <p class="text-[16px] font-medium text-[#6D6D6D]">ليس لديك قرض فعال حالياً</p>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -151,12 +155,16 @@
                     <h2 class="text-[#124375] text-[28px] font-semibold">
                         أخر الطلبات
                     </h2>
-                    @if(count($lastRequests) > 0)
-                        @foreach($lastRequests as $req)
+                    @if (count($lastRequests) > 0)
+                        @foreach ($lastRequests as $req)
                             @php
                                 $isLoan = class_basename($req) === 'Loan';
-                                $title = $isLoan ? 'طلب قرض شخصي' : 'طلب مطالبة - ' . ($req->type ?? 'مكافأة نهاية الخدمة'); 
-                                $reqId = $isLoan ? 'LOAN-' . str_pad($req->id, 3, '0', STR_PAD_LEFT) : 'CLM-' . str_pad($req->id, 3, '0', STR_PAD_LEFT);
+                                $title = $isLoan
+                                    ? 'طلب قرض شخصي'
+                                    : 'طلب مطالبة - ' . ($req->type ?? 'مكافأة نهاية الخدمة');
+                                $reqId = $isLoan
+                                    ? 'LOAN-' . str_pad($req->id, 3, '0', STR_PAD_LEFT)
+                                    : 'CLM-' . str_pad($req->id, 3, '0', STR_PAD_LEFT);
                                 $statusColors = [
                                     'pending' => 'bg-[#FFF8E1] border border-[#E6B800] text-[#E6B800]',
                                     'approved' => 'bg-[#F0FFF6] border border-[#019168] text-[#019168]',
@@ -179,15 +187,16 @@
                                     'completed' => 'مكتمل',
                                 ];
                             @endphp
-                            <div class="flex justify-between">
-                                <div class="flex items-center gap-4">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                <div class="flex items-start md:items-center gap-4">
                                     <div class="flex items-center">
                                         <iconify-icon icon="{{ $statusIcons[$req->status] ?? 'tabler:clock-filled' }}"
                                             class=" text-2xl text-[#6D6D6D] bg-[#EFEFEF] rounded-full px-3 py-3 "></iconify-icon>
                                     </div>
                                     <div class="flex flex-col gap-2">
                                         <p class="text-[20px] font-medium text-[#124375]">{{ $title }}</p>
-                                        <div class="flex gap-1 text-[16px] font-medium text-[#6D6D6D]">
+                                        <div
+                                            class="flex flex-col sm:flex-row gap-1 sm:gap-2 text-[14px] sm:text-[16px] font-medium text-[#6D6D6D]">
                                             <p>رقم الطلب: </p>
                                             <p>{{ $reqId }}</p>
                                             <p> {{ $req->created_at->format('Y-m-d') }}</p>
@@ -196,11 +205,12 @@
                                 </div>
                                 <div
                                     class="flex h-fit gap-1 items-center rounded-[8px] px-4 {{ $statusColors[$req->status] ?? '' }}">
-                                    <p class=" text-[14px] font-medium">{{ $statusLabels[$req->status] ?? $req->status }}</p>
+                                    <p class=" text-[14px] font-medium">{{ $statusLabels[$req->status] ?? $req->status }}
+                                    </p>
                                 </div>
                             </div>
-                            @if(!$loop->last)
-                            <hr class="border border-[#A8A8A8] mt-3">
+                            @if (!$loop->last)
+                                <hr class="border border-[#A8A8A8] mt-3">
                             @endif
                         @endforeach
                     @else
@@ -208,7 +218,7 @@
                     @endif
                 </div>
 
-                <div class="grid grid-cols-2 gap-7">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-7">
                     <a href="{{ route('member.loans.index') }}"
                         class="flex flex-col gap-2 py-5 text-[#124375] items-center bg-[#F4F7F9] surface-shadow rounded-[16px] border-s-8 border-[#124375]">
                         <div>

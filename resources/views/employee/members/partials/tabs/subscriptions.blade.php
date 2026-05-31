@@ -7,7 +7,8 @@
     <div data-tab="الاشتراكات"
         class="{{ $activeTabName === 'الاشتراكات' ? '' : 'hidden' }} tab-content px-7 py-2 print:hidden">
         @if ($member->membershipInfo && $member->membershipInfo->subscriptions->count() > 0)
-            <div class="rounded-[14px] overflow-x-auto border border-[#D1D5DB]">
+            <div class="rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
+                <div class="hidden md:block overflow-x-auto">
                 <table class="w-full md:min-w-max md:whitespace-nowrap">
                     <thead class="hidden md:table-header-group">
                         <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
@@ -103,6 +104,96 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
+
+                <!-- Mobile Cards -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @foreach ($member->membershipInfo->subscriptions as $subscription)
+                        @php
+                            $statusHtml = '';
+                            $statusBorder = '';
+                            if ($subscription->status === 'paid') {
+                                $statusHtml = 'مدفوع';
+                                $statusBorder = 'bg-[#ECFDF333] text-[#067647CC] border-[#067647CC]';
+                            } elseif ($subscription->status === 'unpaid' && \Carbon\Carbon::parse($subscription->due_date)->isPast()) {
+                                $statusHtml = 'متأخر';
+                                $statusBorder = 'bg-[#FFEAE880] text-[#D92D20] border-[#D92D20]';
+                            } else {
+                                $statusHtml = 'مستحق';
+                                $statusBorder = 'bg-[#F2F4F7] text-[#6D6D6D] border-[#6D6D6D]';
+                            }
+                        @endphp
+                        <div class="bg-white rounded-[14px] border border-[#D1D5DB] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <h3 class="text-[#124375] font-bold text-lg">{{ $subscription->name }}</h3>
+                                    <span class="text-sm text-[#067647] font-semibold">{{ number_format($subscription->amount, 2) }} ج.م</span>
+                                </div>
+                                <span class="{{ $statusBorder }} border rounded-[8px] py-[2px] px-3 text-xs text-center font-medium">
+                                    {{ $statusHtml }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex flex-col gap-2 mt-2">
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar-clock" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">تاريخ الإستحقاق:</span>
+                                    <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($subscription->due_date)->format('Y-m-d') }}</span>
+                                </div>
+                                @if($subscription->paid_at)
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar-check" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">تاريخ السداد:</span>
+                                    <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') }}</span>
+                                </div>
+                                @endif
+                                @if($subscription->transaction)
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:cash" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">طريقة الدفع:</span>
+                                    <span class="text-[#021219] font-medium">{{ match ($subscription->transaction?->method ?? '') {'cash' => 'نقدي','bank_transfer' => 'تحويل بنكي','salary_deduction' => 'خصم من المرتب','university_payment_order' => 'أمر دفع من الجامعة',default => '-'} }}</span>
+                                </div>
+                                @endif
+                            </div>
+
+                            <div class="flex justify-center mt-2 pt-3 border-t border-gray-100">
+                                @php
+                                    $hasReceipt = \App\Models\Financial\Transaction::where('reference_type', \App\Models\Services\Subscription::class)
+                                                    ->where('reference_id', $subscription->id)
+                                                    ->whereNotNull('attachment_path')
+                                                    ->exists() ||
+                                                \App\Models\Membership\Attachment::where('member_id', $member->id)
+                                                    ->where('type', "subscription_{$subscription->id}_receipt")
+                                                    ->exists();
+                                @endphp
+                                @if ($subscription->status === 'paid')
+                                    <div class="flex gap-4 items-center justify-center w-full">
+                                        @if ($hasReceipt)
+                                            <a href="{{ route('subscriptions.view_receipt', $subscription->id) }}" target="_blank"
+                                                class="flex-1 flex justify-center items-center gap-2 border border-[#124375] bg-white text-[#124375] py-2 rounded-[8px] text-sm hover:bg-[#F4F7F9] transition-colors" title="عرض الإيصال">
+                                                <iconify-icon icon="solar:eye-linear" class="text-lg"></iconify-icon> عرض
+                                            </a>
+                                            <a href="{{ route('subscriptions.download_receipt', $subscription->id) }}"
+                                                class="flex-1 flex justify-center items-center gap-2 border border-[#124375] bg-[#124375] text-white py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors" title="تحميل الإيصال">
+                                                <iconify-icon icon="material-symbols:download-rounded" class="text-lg"></iconify-icon> تحميل
+                                            </a>
+                                        @else
+                                            <span class="flex-1 flex justify-center items-center gap-2 border border-gray-300 bg-gray-100 text-gray-400 py-2 rounded-[8px] text-sm cursor-not-allowed" title="لا يوجد إيصال مرفق">
+                                                <iconify-icon icon="solar:eye-linear" class="text-lg"></iconify-icon> لا يوجد
+                                            </span>
+                                        @endif
+                                    </div>
+                                @else
+                                    <button data-modal="modal7"
+                                        onclick="document.getElementById('paySubscriptionForm').action='{{ route('subscriptions.pay', $subscription->id) }}'"
+                                        class="open-modal w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">
+                                        تسجيل السداد
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @else
             <div class="no-requests flex justify-center py-14">

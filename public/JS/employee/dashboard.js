@@ -268,6 +268,38 @@ document.addEventListener("click", () => {
                         </tr>
                     `;
                 }
+                
+                const cardsContainer = document.getElementById('search-results-cards');
+                if (cardsContainer) {
+                    cardsContainer.innerHTML = `
+                        <div class="bg-white rounded-[14px] border border-[#124375] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-[#124375]"></div>
+                            <div class="flex flex-col gap-2 mr-3">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="text-[#021219] font-bold text-lg">${member.full_name}</h3>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <span class="text-[#6D6D6D]">رقم العضوية:</span>
+                                    <span class="text-[#124375] font-semibold">${member.membership_number || '-'}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <span class="text-[#6D6D6D]">الرقم القومي:</span>
+                                    <span class="text-[#124375] font-semibold">${member.national_id}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <span class="text-[#6D6D6D]">رقم القرض:</span>
+                                    <span class="text-[#124375] font-semibold">${loanNum}</span>
+                                </div>
+                                <div class="flex justify-end mt-2 pt-2 border-t border-gray-100">
+                                    <a href="${window.appRoutes ? window.appRoutes.memberProfile(member.id) + '?tab=subscriptions' : '/members/' + member.id + '?tab=subscriptions'}" class="flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                        <iconify-icon icon="solar:eye-linear" class="text-lg ml-2"></iconify-icon>
+                                        عرض التفاصيل
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
 
                 // Show dropdown instead of modal
                 const searchResultsContainer = document.getElementById('global-search-results');

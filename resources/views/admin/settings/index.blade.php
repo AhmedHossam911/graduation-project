@@ -22,48 +22,48 @@
         </div>
         <!-- end header main -->
 
-        <div class="bg-white border border-[#124375] surface-shadow rounded-2xl overflow-hidden flex flex-row min-h-[700px]"
+        <div class="bg-white border border-[#124375] surface-shadow rounded-2xl overflow-hidden flex flex-col md:flex-row min-h-auto md:min-h-[700px]"
             dir="rtl">
 
             <!-- INNER RIGHT MENU -->
             <aside
-                class="w-[320px] px-4 py-8 bg-[#F4F7F9] border-l border-[#124375] flex flex-col justify-start items-center gap-6 flex-shrink-0">
+                class="w-full md:w-[320px] px-4 py-4 md:py-8 bg-[#F4F7F9] border-b md:border-b-0 md:border-l border-[#124375] flex flex-row md:flex-col justify-start items-center gap-2 md:gap-6 flex-shrink-0 overflow-x-auto no-scrollbar">
                 <!-- ITEM (Basic) -->
                 <div data-tab="basic" data-title="البيانات الأساسية للصندوق"
-                    class="tab-button surface-shadow rounded-xl text-base font-semibold px-4 py-3 flex items-center gap-3.5 text-[#124375] bg-[#f7f9fc] w-full cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
+                    class="tab-button surface-shadow rounded-xl text-sm md:text-base font-semibold px-4 py-3 flex items-center gap-2 md:gap-3.5 text-[#124375] bg-[#f7f9fc] w-auto md:w-full flex-shrink-0 cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
                     <iconify-icon icon="material-symbols:list-alt-check-rounded" width="24" height="24">
                     </iconify-icon>
-                    <div class="tab-label text-right">البيانات الأساسية للصندوق</div>
+                    <div class="tab-label text-right whitespace-nowrap">البيانات الأساسية للصندوق</div>
                 </div>
 
                 <!-- ITEM (Subscriptions) -->
                 <div data-tab="subscriptions" data-title="الاشتراكات والرسوم"
-                    class="tab-button rounded-xl text-base font-medium px-4 py-3 flex items-center gap-3.5 text-[#6D6D6D] hover:bg-white hover:text-[#124375] w-full cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
+                    class="tab-button rounded-xl text-sm md:text-base font-medium px-4 py-3 flex items-center gap-2 md:gap-3.5 text-[#6D6D6D] hover:bg-white hover:text-[#124375] w-auto md:w-full flex-shrink-0 cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
                     <iconify-icon icon="tabler:clipboard-list-filled" width="24" height="24" class="text-gray-500">
                     </iconify-icon>
-                    <div class="tab-label text-right">الاشتراكات والرسوم</div>
+                    <div class="tab-label text-right whitespace-nowrap">الاشتراكات والرسوم</div>
                 </div>
 
                 <!-- ITEM (Loans) -->
                 <div data-tab="loans" data-title="القروض والتمويل"
-                    class="tab-button rounded-xl text-base font-medium px-4 py-3 flex items-center gap-3.5 text-[#6D6D6D] hover:bg-white hover:text-[#124375] w-full cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
+                    class="tab-button rounded-xl text-sm md:text-base font-medium px-4 py-3 flex items-center gap-2 md:gap-3.5 text-[#6D6D6D] hover:bg-white hover:text-[#124375] w-auto md:w-full flex-shrink-0 cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
                     <iconify-icon icon="fluent:money-16-filled" width="24" height="24" class="text-gray-500">
                     </iconify-icon>
-                    <div class="tab-label text-right">القروض والتمويل</div>
+                    <div class="tab-label text-right whitespace-nowrap">القروض والتمويل</div>
                 </div>
 
                 <!-- ITEM (Claims) -->
                 <div data-tab="claims" data-title="المزايا التأمينية"
-                    class="tab-button rounded-xl text-base font-medium px-4 py-3 flex items-center gap-3.5 text-[#6D6D6D] hover:bg-white hover:text-[#124375] w-full cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
+                    class="tab-button rounded-xl text-sm md:text-base font-medium px-4 py-3 flex items-center gap-2 md:gap-3.5 text-[#6D6D6D] hover:bg-white hover:text-[#124375] w-auto md:w-full flex-shrink-0 cursor-pointer transition-all duration-300 transform active:scale-[0.98] hover:translate-x-[-4px]">
                     <iconify-icon icon="ph:user-list-fill" width="24" height="24" class="text-gray-500">
                     </iconify-icon>
-                    <div class="tab-label text-right">المزايا التأمينية</div>
+                    <div class="tab-label text-right whitespace-nowrap">المزايا التأمينية</div>
                 </div>
             </aside>
 
             <!-- FORM -->
             <form method="POST" action="{{ route('admin.settings.update') }}"
-                class="flex-1 px-6 py-8 bg-[#f7f9fc] flex flex-col justify-between items-stretch gap-8">
+                class="flex-1 px-4 md:px-6 py-6 md:py-8 bg-[#f7f9fc] flex flex-col justify-between items-stretch gap-8">
                 @csrf
                 <div class="self-stretch flex flex-col justify-start items-end gap-8">
                     <!-- FORM TITLE -->
@@ -97,7 +97,7 @@
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- RETIREMENT -->
                             <div class="relative">
                                 <label
@@ -171,7 +171,7 @@
                         --}}
 
                         <!-- AGE LIMITS -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- MIN AGE -->
                             <div class="relative">
                                 <label
@@ -206,7 +206,7 @@
                         </div>
 
                         <!-- MODAL & DISMISSAL NOTICE -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- DISMISSAL NOTICE -->
                             <div class="relative">
                                 <label
@@ -250,7 +250,7 @@
                     <!-- TAB 3: Loans -->
                     <div id="tab-loans-content" class="tab-content w-full hidden">
                         <!-- ROW 1: Percentage & Interest -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- LOAN PERCENTAGE -->
                             <div class="relative">
                                 <label
@@ -285,7 +285,7 @@
                         </div>
 
                         <!-- ROW 2: Max Amount & Repayment -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- MAX AMOUNT -->
                             <div class="relative">
                                 <label
@@ -320,7 +320,7 @@
                         </div>
 
                         <!-- ROW 3: Centered Min Subscription Years -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
@@ -342,7 +342,7 @@
                     <!-- TAB 4: Claims -->
                     <div id="tab-claims-content" class="tab-content w-full hidden">
                         <!-- ROW 1: Claim Percentages -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- BASIC PERCENTAGE -->
                             <div class="relative">
                                 <label
@@ -375,7 +375,7 @@
                         </div>
 
                         <!-- ROW 2: Funeral & Min Years -->
-                        <div class="grid grid-cols-2 gap-6 mb-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-6 mb-12">
                             <!-- FUNERAL EXPENSES -->
                             <div class="relative">
                                 <label
@@ -410,7 +410,7 @@
                 </div>
 
                 <!-- FOOT & BUTTONS -->
-                <div class="self-stretch inline-flex justify-between items-center mt-8 pt-6 border-t border-slate-200">
+                <div class="self-stretch flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0 mt-8 pt-6 border-t border-slate-200">
                     <!-- LAST UPDATE -->
                     <div class="flex justify-start items-center gap-2 text-[#6D6D6D]">
                         <iconify-icon icon="mdi:clock-outline" class="text-lg"></iconify-icon>
@@ -427,12 +427,12 @@
                     <!-- BUTTONS -->
                     <div class="flex justify-center items-center gap-4">
                         <button type="button" onclick="submitResetForm()"
-                            class="w-64 h-12 p-2 bg-[#EFEFEF] hover:bg-red-50 text-[#6D6D6D] rounded-xl flex justify-center items-center gap-4 text-center text-base font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
+                            class="w-full md:w-64 h-12 p-2 bg-[#EFEFEF] hover:bg-red-50 text-[#6D6D6D] rounded-xl flex justify-center items-center gap-4 text-center text-sm md:text-base font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
                             <span>استعادة قيم اللائحة الافتراضية</span>
                         </button>
 
                         <button type="submit"
-                            class="w-64 h-12 px-6 py-2 bg-[#124375] hover:bg-[#0e3560] text-white surface-shadow rounded-xl flex justify-center items-center gap-4 text-center text-[16px] font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
+                            class="w-full md:w-64 h-12 px-6 py-2 bg-[#124375] hover:bg-[#0e3560] text-white surface-shadow rounded-xl flex justify-center items-center gap-4 text-center text-sm md:text-[16px] font-semibold font-['Noto_Sans_Arabic'] transition cursor-pointer border-none outline-none">
                             <iconify-icon icon="fluent:save-16-filled" class="text-xl text-white"></iconify-icon>
                             <span>حفظ التعديلات</span>
                         </button>
@@ -464,8 +464,8 @@
 
                 <!-- Modal Body -->
                 <div class="flex-1 overflow-y-auto">
-                    <div class="bg-white rounded-2xl border border-[#D0D5DD] overflow-hidden">
-                        <table class="w-full text-center border-collapse" id="joinFeeTable">
+                    <div class="bg-white rounded-2xl border border-[#D0D5DD] overflow-x-auto">
+                        <table class="w-full text-center border-collapse min-w-[500px]" id="joinFeeTable">
                             <thead class="bg-[#F0F7FF] text-[#021219] border-b border-[#D0D5DD]">
                                 <tr>
                                     <th class="py-4 px-6 font-bold text-lg w-1/2">المدة المتبقية علي بلوغ سن التقاعد</th>

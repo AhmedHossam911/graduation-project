@@ -29,7 +29,7 @@
     @include('partials.common.navbar')
 
     {{-- Main Layout --}}
-    <div class="flex-1 flex flex-col min-w-0 print:overflow-visible print:h-auto">
+    <div class="flex-1 flex min-w-0 print:overflow-visible print:h-auto relative">
         {{-- Sidebar --}}
         @if (strtolower(auth()->user()->role->name) === 'employee')
             @include('partials.employee.sidebar')
@@ -38,6 +38,9 @@
         @else
             @include('partials.employee.sidebar')
         @endif
+
+        {{-- Sidebar Overlay for Mobile --}}
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity"></div>
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden print:overflow-visible print:h-auto">
             {{-- Page Content --}}

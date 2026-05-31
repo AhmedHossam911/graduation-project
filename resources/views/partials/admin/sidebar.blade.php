@@ -3,7 +3,7 @@
     Navigation links and structure specifically for the Super Admin dashboard,
     including advanced reports, audit logs, and system settings.
 --}}
-    <div class="flex">
+
         <!-- start SideBar -->
         <aside
             class="print:hidden SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375]">

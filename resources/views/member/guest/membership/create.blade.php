@@ -45,7 +45,7 @@
                     </h2>
                     <div class="space-y-7">
                         <!-- START FULL NAME & EMAIL -->
-                        <div class="flex gap-5">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-5">
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('full_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
@@ -75,13 +75,13 @@
                         <!-- END FULL NAME & EMAIL -->
 
                         <!-- START LANDLINE & PHONE -->
-                        <div class="flex gap-6">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-6 mt-4 md:mt-0">
                             <div
                                 class="phone relative border @error('phone_digits') border-[#D92D20] @elseif($errors->has('phone_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl flex-1 min-w-0">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('phone_digits') text-[#D92D20] @elseif($errors->has('phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     التليفون <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
+                                <div class="flex flex-wrap gap-1 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     @php
                                         $phoneStr = old('phone', $user->member->phone ?? '');
                                         $phoneDigits = str_split(str_pad($phoneStr, 11, ' ', STR_PAD_LEFT));
@@ -90,7 +90,7 @@
                                         <input type="tel" name="phone_digits[]"
                                             value="{{ old('phone_digits.' . (10 - $i), trim($phoneDigits[10 - $i] ?? '')) }}"
                                             placeholder="{{ $i }}" maxlength="1" disabled
-                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     @endfor
                                 </div>
                                 @if ($errors->has('phone_digits') || $errors->has('phone_digits.*'))
@@ -104,12 +104,12 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('landline_digits') text-[#D92D20] @elseif($errors->has('landline_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     هاتف المنزل</label>
-                                <div class="flex gap-2 justify-end py-3 px-3">
+                                <div class="flex flex-wrap gap-1 md:gap-2 justify-end py-3 px-2 md:px-3">
                                     @for ($i = 7; $i >= 0; $i--)
                                         <input type="tel" name="landline_digits[]"
                                             value="{{ old('landline_digits.' . (7 - $i)) }}"
                                             placeholder="{{ $i }}" maxlength="1"
-                                            class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-14 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
                                 @if ($errors->has('landline_digits') || $errors->has('landline_digits.*'))
@@ -121,13 +121,13 @@
                         </div>
                         <!-- END LANDLINE & PHONE -->
                         <!-- START DATE OF BIRTH -->
-                        <div class="flex gap-5">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-5 mt-4 md:mt-0">
                             <div
                                 class=" relative border @error('national_id_digits') border-[#D92D20] @elseif($errors->has('national_id_digits.*')) border-[#D92D20] @else border-[#124375] @enderror rounded-xl flex-1 min-w-0">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('national_id_digits') text-[#D92D20] @elseif($errors->has('national_id_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الرقم
                                     القومي <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
+                                <div class="flex flex-wrap gap-1 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     @php
                                         $nidStr = old('national_id', $user->member->user->national_id ?? '');
                                         $nidDigits = str_split(str_pad($nidStr, 14, ' ', STR_PAD_LEFT));
@@ -136,7 +136,7 @@
                                         <input type="text" name="national_id_digits[]"
                                             value="{{ old('national_id_digits.' . (13 - $i), trim($nidDigits[13 - $i] ?? '')) }}"
                                             placeholder="{{ $i + 1 }}" maxlength="1" disabled
-                                            class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                            class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-9 md:w-16 text-xs md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     @endfor
                                 </div>
                                 @error('national_id_digits')
@@ -154,16 +154,16 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @if ($errors->has('birth_day') || $errors->has('birth_month') || $errors->has('birth_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
                                     الميلاد <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
+                                <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     <input type="text" id="birth_day" name="birth_day" value="{{ old('birth_day') }}"
                                         placeholder="اليوم" maxlength="2"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" id="birth_month" name="birth_month"
                                         value="{{ old('birth_month') }}" placeholder="الشهر" maxlength="2"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" id="birth_year" name="birth_year" value="{{ old('birth_year') }}"
                                         placeholder="السنة" maxlength="4"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
                                 @if ($errors->has('birth_year'))
                                     <span
@@ -177,7 +177,7 @@
                         </div>
                         <!-- END LANDLINE & PHONE -->
                         <!-- START SOCIAL STATUS & PLACE OF RESIDENCE -->
-                        <div class="flex gap-5">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-5 mt-4 md:mt-0">
                             <div class=" relative flex-1 min-w-0">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('address') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">محل
@@ -190,7 +190,7 @@
                                         class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="w-80">
+                            <div class="w-full md:w-80">
                                 @include('partials.common.dropdown', [
                                     'name' => 'marital_status',
                                     'label' => 'الحالة الاجتماعية',
@@ -220,7 +220,7 @@
                     <div class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9] px-1">
                         البيانات
                         الوظيفية</div>
-                    <div class="flex gap-5">
+                    <div class="flex flex-col lg:flex-row gap-6 md:gap-5 mt-4 lg:mt-0">
                         <div class="flex-1 min-w-0 space-y-7">
                             <div class="w-full relative pt-2">
                                 <label
@@ -244,7 +244,7 @@
                                         class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="flex gap-5">
+                            <div class="flex flex-col md:flex-row gap-6 md:gap-5 mt-4 md:mt-0">
                                 <div class="w-full relative">
                                     <label
                                         class="absolute top-[-15px] right-5 @error('financial_category') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الفئة
@@ -271,22 +271,22 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="space-y-12">
+                        <div class="flex flex-col md:flex-row lg:flex-col gap-6 md:gap-5 lg:gap-12 mt-4 md:mt-0">
                             <div
                                 class="relative border @if ($errors->has('hire_day') || $errors->has('hire_month') || $errors->has('hire_year')) border-[#D92D20] @else border-[#124375] @endif rounded-xl flex-1 min-w-0">
                                 <label
                                     class="absolute top-[-15px] right-5 @if ($errors->has('hire_day') || $errors->has('hire_month') || $errors->has('hire_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
                                     إستلام العمل <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
+                                <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     <input type="text" name="hire_day" value="{{ old('hire_day') }}"
                                         placeholder="اليوم" maxlength="2"
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="hire_month" value="{{ old('hire_month') }}"
                                         placeholder="الشهر" maxlength="2"
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="hire_year" value="{{ old('hire_year') }}"
                                         placeholder="السنة" maxlength="4"
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                 </div>
                                 @if ($errors->has('hire_day') || $errors->has('hire_month') || $errors->has('hire_year'))
                                     <span
@@ -299,17 +299,17 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @if ($errors->has('retirement_day') || $errors->has('retirement_month') || $errors->has('retirement_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
                                     الإحالة إلي المعاش <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
+                                <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     <input type="text" id="retirement_day" name="retirement_day"
                                         value="{{ old('retirement_day') }}" placeholder="اليوم" maxlength="2" readonly
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     <input type="text" id="retirement_month" name="retirement_month"
                                         value="{{ old('retirement_month') }}" placeholder="الشهر" maxlength="2"
                                         readonly
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     <input type="text" id="retirement_year" name="retirement_year"
                                         value="{{ old('retirement_year') }}" placeholder="السنة" maxlength="4" readonly
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                 </div>
                                 @if ($errors->has('retirement_day') || $errors->has('retirement_month') || $errors->has('retirement_year'))
                                     <span
@@ -330,7 +330,7 @@
                         البيانات
                         العائلية</div>
                     <div class="wrapper space-y-5">
-                        <div class="flex gap-5">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-5 mt-4 md:mt-0">
                             <div
                                 class="childern flex-1 min-w-0 relative border @error('children_count') border-[#D92D20] @else border-[#124375] @enderror rounded-xl">
                                 <label
@@ -348,12 +348,12 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('spouse_phone_digits') text-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب</label>
-                                <div class="flex gap-2 justify-end py-3 px-3">
+                                <div class="flex flex-wrap gap-1 md:gap-2 justify-end py-3 px-2 md:px-3">
                                     @for ($i = 10; $i >= 0; $i--)
                                         <input type="tel" name="spouse_phone_digits[]"
                                             value="{{ old('spouse_phone_digits.' . (10 - $i)) }}"
                                             placeholder="{{ $i }}" maxlength="1"
-                                            class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-24 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
                                 @if ($errors->has('spouse_phone_digits') || $errors->has('spouse_phone_digits.*'))
@@ -363,7 +363,7 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="flex gap-5">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-5 mt-4 md:mt-0">
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('spouse_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">اسم
@@ -389,7 +389,7 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="flex gap-5">
+                        <div class="flex flex-col md:flex-row gap-6 md:gap-5 mt-4 md:mt-0">
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 @error('child_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">اسم
@@ -430,7 +430,7 @@
 
                         <!-- File 1 -->
                         <div
-                            class="flex justify-between items-center border @error('documents.basic_salary_letter') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 border @error('documents.basic_salary_letter') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="solar:document-text-bold"
                                     class="text-2xl text-[#6D6D6D]"></iconify-icon>
@@ -453,7 +453,7 @@
 
                         <!-- File 2 -->
                         <div
-                            class="flex justify-between items-center border @error('documents.national_id_card') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 border @error('documents.national_id_card') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="solar:document-text-bold"
                                     class="text-2xl text-[#6D6D6D]"></iconify-icon>
@@ -476,7 +476,7 @@
 
                         <!-- File 3 -->
                         <div
-                            class="flex justify-between items-center border @error('documents.appointment_decision') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 border @error('documents.appointment_decision') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="solar:document-text-bold"
                                     class="text-2xl text-[#6D6D6D]"></iconify-icon>
@@ -500,7 +500,7 @@
 
                         <!-- File 4 -->
                         <div
-                            class="flex justify-between items-center border @error('documents.over_21_request') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 border @error('documents.over_21_request') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="solar:document-text-bold"
                                     class="text-2xl text-[#6D6D6D]"></iconify-icon>
@@ -523,7 +523,7 @@
 
                         <!-- File 5 -->
                         <div
-                            class="flex justify-between items-center border @error('documents.work_declaration') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
+                            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 border @error('documents.work_declaration') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-4 py-3 bg-[#F4F7F9]">
                             <div class="flex items-center gap-2">
                                 <iconify-icon icon="solar:document-text-bold"
                                     class="text-2xl text-[#6D6D6D]"></iconify-icon>

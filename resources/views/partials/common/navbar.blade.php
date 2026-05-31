@@ -11,17 +11,17 @@
                 </button>
                 @if (auth()->user()->isAdmin())
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                        <div class="logo">
-                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                        <div class="logo shrink-0">
+                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" class="w-10 md:w-[54px] h-auto" />
                         </div>
-                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-sm md:text-xl font-semibold hidden xs:block sm:block truncate">صندوق الزمالة - جامعة العاصمة</h1>
                     </a>
                 @else
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <div class="logo">
-                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                        <div class="logo shrink-0">
+                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" class="w-10 md:w-[54px] h-auto" />
                         </div>
-                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-sm md:text-xl font-semibold hidden xs:block sm:block truncate">صندوق الزمالة - جامعة العاصمة</h1>
                     </a>
                 @endif
             </div>
@@ -39,7 +39,7 @@
                         @endif
                     </a>
                     <div
-                        class="notifications-box hidden absolute w-max left-0 z-50 bg-white  text-center surface-shadow rounded-lg   p-4 space-y-3 min-w-[250px]">
+                        class="notifications-box hidden absolute w-[280px] max-w-[90vw] md:w-max left-0 md:-left-4 z-50 bg-white text-center surface-shadow rounded-lg p-4 space-y-3 min-w-[250px] top-full mt-2">
                         <h1 class="text-lg font-semibold text-[#124375] border-b pb-2">
                             إشعارات
                         </h1>

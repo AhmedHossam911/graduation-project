@@ -68,9 +68,9 @@
     <div id="loans-content-container" data-tab="قروض"
         class="{{ $activeTabName === 'قروض' ? '' : 'hidden' }}  tab-content px-7 py-5 print:hidden">
         @if ($activeLoan && $activeLoan->installments->count() > 0)
-            <div class="rounded-[14px] overflow-x-auto border border-[#D1D5DB]">
+            <div class="rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
+                <div class="hidden md:block overflow-x-auto">
                 <table class="w-full md:min-w-max md:whitespace-nowrap" id="installments-table">
-                    <thead class="hidden md:table-header-group">
                         <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم القسط</th>
                             <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">المبلغ</th>
@@ -157,6 +157,94 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
+                
+                <!-- Mobile Cards -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @foreach ($activeLoan->installments as $index => $installment)
+                        @php
+                            $statusHtml = '';
+                            $statusBorder = '';
+                            if ($installment->status === 'paid') {
+                                $statusHtml = 'مدفوع';
+                                $statusBorder = 'bg-[#ECFDF333] text-[#067647CC] border-[#067647CC]';
+                            } elseif ($installment->status === 'unpaid' && \Carbon\Carbon::parse($installment->due_date)->isPast()) {
+                                $statusHtml = 'متأخر';
+                                $statusBorder = 'bg-[#FFEAE880] text-[#D92D20] border-[#D92D20]';
+                            } else {
+                                $statusHtml = 'مستحق';
+                                $statusBorder = 'bg-[#F2F4F7] text-[#6D6D6D] border-[#6D6D6D]';
+                            }
+                        @endphp
+                        <div class="bg-white rounded-[14px] border border-[#D1D5DB] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <h3 class="text-[#124375] font-bold text-lg">قسط {{ $index + 1 }}</h3>
+                                    <span class="text-sm text-[#067647] font-semibold">{{ number_format($installment->amount, 2) }} ج.م</span>
+                                </div>
+                                <span class="{{ $statusBorder }} border rounded-[8px] py-[2px] px-3 text-xs text-center font-medium">
+                                    {{ $statusHtml }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex flex-col gap-2 mt-2">
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar-clock" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">تاريخ الإستحقاق:</span>
+                                    <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($installment->due_date)->format('Y-m-d') }}</span>
+                                </div>
+                                @if($installment->paid_at)
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar-check" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">تاريخ السداد:</span>
+                                    <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($installment->paid_at)->format('Y-m-d') }}</span>
+                                </div>
+                                @endif
+                                @if($installment->transaction)
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:cash" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">طريقة الدفع:</span>
+                                    <span class="text-[#021219] font-medium">{{ match ($installment->transaction?->method ?? '') {'cash' => 'نقدي','bank_transfer' => 'تحويل بنكي','salary_deduction' => 'خصم من المرتب','university_payment_order' => 'أمر دفع من الجامعة',default => '-'} }}</span>
+                                </div>
+                                @endif
+                            </div>
+
+                            <div class="flex justify-center mt-2 pt-3 border-t border-gray-100">
+                                @php
+                                    $receipt = \App\Models\Membership\Attachment::where('member_id', $member->id)
+                                        ->where('type', "installment_{$installment->id}_receipt")
+                                        ->first();
+                                @endphp
+                                @if ($installment->status === 'paid')
+                                    <div class="flex gap-4 items-center justify-center w-full">
+                                        @if ($receipt)
+                                            <a href="{{ route('documents.view', $receipt->id) }}" target="_blank"
+                                                class="flex-1 flex justify-center items-center gap-2 border border-[#124375] bg-white text-[#124375] py-2 rounded-[8px] text-sm hover:bg-[#F4F7F9] transition-colors" title="عرض الإيصال">
+                                                <iconify-icon icon="solar:eye-linear" class="text-lg"></iconify-icon> عرض
+                                            </a>
+                                            <a href="{{ route('documents.download', $receipt->id) }}"
+                                                class="flex-1 flex justify-center items-center gap-2 border border-[#124375] bg-[#124375] text-white py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors" title="تحميل الإيصال">
+                                                <iconify-icon icon="material-symbols:download-rounded" class="text-lg"></iconify-icon> تحميل
+                                            </a>
+                                        @else
+                                            <span class="flex-1 flex justify-center items-center gap-2 border border-gray-300 bg-gray-100 text-gray-400 py-2 rounded-[8px] text-sm cursor-not-allowed" title="لا يوجد إيصال مرفق">
+                                                <iconify-icon icon="solar:eye-linear" class="text-lg"></iconify-icon> لا يوجد
+                                            </span>
+                                        @endif
+                                    </div>
+                                @else
+                                    @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
+                                        <button data-modal="modal5"
+                                            onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
+                                            class="open-modal w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">
+                                            تسجيل السداد
+                                        </button>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @else
             <div class="no-requests flex justify-center py-14">

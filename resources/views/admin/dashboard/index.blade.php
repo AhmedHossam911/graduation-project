@@ -12,7 +12,7 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/admindashboard.css') }}">
-    <div class="py-7 px-12">
+    <div class="py-4 md:py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375]  font-semibold">
                 مرحبا، <span>{{ Auth::user()->name ?? 'مدير النظام' }}</span>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- start cards -->
-    <div class="py-4 grid grid-cols-4 gap-4 px-12">
+    <div class="py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-12">
         <div
             class="navy-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
             <div>
@@ -73,7 +73,7 @@
     <!-- end cards -->
 
     <form id="dashboardForm" action="{{ route('admin.dashboard') }}" method="GET"
-        class="px-12 flex items-center justify-between gap-5 py-3">
+        class="px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-5 py-3">
         <div class="relative flex-1">
             <input type="search" id="globalSearchInput" autocomplete="off"
                 placeholder="الاسم أو رقم العضوية أو رقم الحركة أو رقم القرض أو رقم المطالبة أو رقم الإيصال"
@@ -115,7 +115,7 @@
     </form>
 
     <!-- Charts section -->
-    <div class="px-12 py-6 grid grid-cols-2 gap-6">
+    <div class="px-4 md:px-12 py-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Installments Chart -->
         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-4">موقف تحصيل أقساط القروض</h2>
@@ -134,16 +134,16 @@
     </div>
 
     <!-- Bottom Row: Table and Pie Chart -->
-    <div class="px-12 py-6 grid grid-cols-5 gap-6">
+    <div class="px-4 md:px-12 py-6 grid grid-cols-1 lg:grid-cols-5 gap-6">
         <!-- Latest Disbursements Table -->
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-3">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-1 lg:col-span-3">
             <div class="flex items-center  gap-2 mb-4 border-b pb-2">
                 <iconify-icon icon="mdi:cash-multiple" class="text-xl text-[#D4AF37]"></iconify-icon>
                 <h2 class="text-[#124375] text-lg text-right font-semibold">أحدث عمليات الصرف</h2>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-center border-collapse">
+                <table class="hidden md:table w-full text-center border-collapse">
                     <thead>
                         <tr class="bg-[#EEF7FF] text-[#6D6D6D] text-sm">
                             {{-- <th class="py-3 px-4 border border-gray-200">اسم العضو</th> --}}
@@ -188,18 +188,48 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- Mobile Cards View -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @forelse($latestDisbursements as $transaction)
+                        <div class="bg-[#F4F7F9] p-4 rounded-xl border border-gray-200 flex flex-col gap-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs text-gray-500">{{ $transaction->created_at->translatedFormat('d F Y') }}</span>
+                                @if ($transaction->type === 'IN')
+                                    <span class="text-xs font-bold text-[#019168] bg-[#F0FFF6] px-2 py-1 rounded">ايراد</span>
+                                @elseif ($transaction->type === 'OUT')
+                                    <span class="text-xs font-bold text-[#D92D20] bg-[#FFEAE8] px-2 py-1 rounded">مصروف</span>
+                                @else
+                                    <span class="text-xs font-bold text-gray-600 bg-gray-200 px-2 py-1 rounded">غير معروف</span>
+                                @endif
+                            </div>
+                            <div class="flex justify-between items-center mt-1">
+                                <span class="font-bold text-[#124375] text-lg">{{ number_format($transaction->amount) }} ج.م</span>
+                                @if (Route::has('finance.show'))
+                                    <a href="{{ route('finance.show', $transaction->id) }}" class="text-[#124375] hover:text-[#0e3560] p-2 bg-white rounded-lg shadow-sm border">
+                                        <iconify-icon icon="mdi:eye" class="text-xl"></iconify-icon>
+                                    </a>
+                                @else
+                                    <iconify-icon icon="mdi:eye" class="text-xl opacity-50"></iconify-icon>
+                                @endif
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-gray-500 border border-gray-200 rounded-xl bg-white">لا توجد عمليات صرف حديثة</div>
+                    @endforelse
+                </div>
             </div>
         </div>
         <!-- Faculty Participation Pie Chart -->
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-2 flex flex-col">
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 col-span-1 lg:col-span-2 flex flex-col">
             <h2 class="text-center text-[#6D6D6D] text-lg font-semibold mb-4">نسب مشاركة الكليات في الصندوق</h2>
-            <div class="flex flex-row items-center justify-between gap-2 h-[250px] w-full">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-2 h-auto lg:h-[250px] w-full">
                 <!-- Chart Container -->
-                <div class="relative w-1/2 h-full flex justify-center items-center">
+                <div class="relative w-full lg:w-1/2 h-[200px] lg:h-full flex justify-center items-center">
                     <canvas id="facultyChart"></canvas>
                 </div>
                 <!-- Custom Legend Container -->
-                <div id="custom-legend" class="w-1/2 h-full overflow-y-auto pl-2 pr-1 flex flex-col gap-1 custom-scrollbar">
+                <div id="custom-legend" class="w-full lg:w-1/2 h-[200px] lg:h-full overflow-y-auto pl-2 pr-1 flex flex-col gap-1 custom-scrollbar">
                     <!-- Legend items will be injected here -->
                 </div>
             </div>

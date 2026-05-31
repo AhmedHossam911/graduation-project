@@ -166,22 +166,22 @@
     @include('employee.members.partials.header')
     @include('employee.members.partials.personal-info')
     <!-- tabs -->
-    <section class="px-7 print:hidden">
-        <div class="flex items-center justify-between border border-[#124375] p-3 rounded-xl">
-            <div class="tabs flex flex-wrap gap-2">
+    <section class="px-4 md:px-7 print:hidden">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border border-[#124375] p-3 rounded-xl gap-4 md:gap-0">
+            <div class="tabs flex flex-wrap gap-2 w-full md:w-auto">
                 <button
-                    class="{{ $activeTabName === 'الاشتراكات' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">الاشتراكات</button>
+                    class="{{ $activeTabName === 'الاشتراكات' ? 'active-tab' : 'tab' }} text-[#124375] text-sm md:text-base font-medium rounded-tl-2xl rounded-tr-2xl py-2 md:py-3 px-3 md:px-4 navy-shadow flex-1 md:flex-none">الاشتراكات</button>
                 <button
-                    class="{{ $activeTabName === 'قروض' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">قروض</button>
+                    class="{{ $activeTabName === 'قروض' ? 'active-tab' : 'tab' }} text-[#124375] text-sm md:text-base font-medium rounded-tl-2xl rounded-tr-2xl py-2 md:py-3 px-3 md:px-4 navy-shadow flex-1 md:flex-none">قروض</button>
                 <button
-                    class="{{ $activeTabName === 'مطالبات' ? 'active-tab' : 'tab' }} text-[#124375] text-base font-medium rounded-tl-2xl rounded-tr-2xl py-3 px-4 navy-shadow">مطالبات</button>
+                    class="{{ $activeTabName === 'مطالبات' ? 'active-tab' : 'tab' }} text-[#124375] text-sm md:text-base font-medium rounded-tl-2xl rounded-tr-2xl py-2 md:py-3 px-3 md:px-4 navy-shadow flex-1 md:flex-none">مطالبات</button>
             </div>
-            <div>
+            <div class="w-full md:w-auto">
                 <!-- requests only -->
-                <div class="tab-content relative" data-tab="مطالبات">
+                <div class="tab-content relative w-full md:w-auto" data-tab="مطالبات">
                     @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
                         <button
-                            class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex gap-3">نوع
+                            class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex justify-between md:justify-start gap-3 w-full md:w-auto">نوع
                             المطالبة : @if (isset($selectedClaimType))
                                 <span class="text-[#021219]">{{ $claims[$selectedClaimType] ?? 'أختر' }}</span>
                             @else

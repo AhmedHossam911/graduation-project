@@ -24,7 +24,7 @@
             </div> <!-- end header main -->
 
             <!-- start search -->
-            <div class="relative mt-6 z-[60]">
+            <div class="relative mt-6">
                 <div class="flex items-center gap-5">
                     <input type="search" id="global-search-input"
                         placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض"
@@ -42,29 +42,34 @@
                                 icon="weui:close-filled" class="text-2xl"></iconify-icon></button>
                     </div>
                     <div class="rounded-[14px] overflow-hidden border border-[#6D6D6D]">
-                        <table class="w-full md:min-w-max md:whitespace-nowrap">
-                            <thead class="hidden md:table-header-group">
-                                <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم القرض</th>
-                                    <th class="py-3 font-medium text-[#021219]">إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="search-results-tbody" class="block md:table-row-group">
-                                <!-- Populated via JS -->
-                            </tbody>
-                        </table>
+                        <div class="hidden md:block overflow-x-auto">
+                            <table class="w-full text-center">
+                                <thead>
+                                    <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم القرض</th>
+                                        <th class="py-3 font-medium text-[#021219]">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-results-tbody">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="md:hidden flex flex-col gap-4 p-4" id="search-results-cards">
+                            <!-- Populated via JS -->
+                        </div>
                     </div>
                 </div>
             </div>
             <!-- end search -->
 
             <!-- start cards -->
-            <div class="py-4 grid grid-cols-4 gap-4">
+            <div class="py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div
-                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
                     <div>
                         <iconify-icon icon="mdi:account-group"
                             class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
@@ -75,7 +80,7 @@
                     </div>
                 </div>
                 <div
-                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#D4AF37] hover:border-4 hover:border-[#D4AF37] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#D4AF37] hover:border-4 hover:border-[#D4AF37] transition-colors">
                     <div>
                         <iconify-icon icon="mdi:account-file"
                             class="surface-shadow text-4xl text-[#D4AF37] bg-[#FFFCEF] rounded-lg px-2 py-1"></iconify-icon>
@@ -86,7 +91,7 @@
                     </div>
                 </div>
                 <div
-                    class="surface-shadow flex  items-center justify-center gap-4 bg-[#124375] rounded-xl px-4 py-4 border-s-8 border-[#EEF7FF] hover:border-4 hover:border-[#EEF7FF] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#124375] rounded-xl px-4 py-4 border-s-8 border-[#EEF7FF] hover:border-4 hover:border-[#EEF7FF] transition-colors">
                     <div>
                         <iconify-icon icon="material-symbols:assignment-late"
                             class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
@@ -111,8 +116,8 @@
             <!-- end cards -->
 
             <!-- start tasks -->
-            <div class="py-5 grid grid-cols-3 gap-7">
-                <div class="col-span-2 space-y-5">
+            <div class="py-5 grid grid-cols-1 lg:grid-cols-3 gap-7">
+                <div class="col-span-1 lg:col-span-2 space-y-5">
                     <div class="flex items-center gap-2">
                         <iconify-icon icon="material-symbols:edit-notifications-rounded" class="text-2xl"></iconify-icon>
                         <h2 class="text-base font-medium">المهام المطلوبة اليوم <span
@@ -227,39 +232,63 @@
                         </p>
                     </div>
                 @else
-                    <div class="rounded-2xl overflow-hidden  surface-shadow">
-                        <table class="w-full md:min-w-max md:whitespace-nowrap">
-                            <thead class="hidden md:table-header-group">
-                                <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ المستحق</th>
-                                    <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">مدة التأخير</th>
-                                </tr>
-                            </thead>
-                            <tbody class="block md:table-row-group">
-                                @foreach ($lateInstallments as $installment)
-                                    <tr class="block md:table-row bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none mb-4 md:mb-0 border md:border-none border-gray-200 text-right md:text-center {{ $loop->even ? 'md:bg-[#EFEFEF]' : '' }}">
-                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b border-dashed md:border-solid border-gray-300 md:border-[#6D6D6D] md:border-l text-[#021219]">
-                                            <span class="md:hidden font-bold text-[#124375]">اسم العضو:</span>
-                                            <span>{{ $installment->loan->membership->member->user->name ?? 'عضو' }}</span>
-                                        </td>
-                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b border-dashed md:border-solid border-gray-300 md:border-[#6D6D6D] md:border-l text-[#021219]">
-                                            <span class="md:hidden font-bold text-[#124375]">رقم العضوية:</span>
-                                            <span>{{ $installment->loan->membership->membership_number ?? '-' }}</span>
-                                        </td>
-                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b border-dashed md:border-solid border-gray-300 md:border-[#6D6D6D] md:border-l text-[#021219]">
-                                            <span class="md:hidden font-bold text-[#124375]">المبلغ المستحق:</span>
-                                            <span>{{ $installment->amount }} ج.م</span>
-                                        </td>
-                                        <td class="flex justify-between items-center md:table-cell px-4 py-3 border-b-0 md:border-b md:border-[#6D6D6D] md:border-l text-[#021219]">
-                                            <span class="md:hidden font-bold text-[#124375]">مدة التأخير:</span>
-                                            <span>{{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}</span>
-                                        </td>
+                    <div class="rounded-2xl overflow-hidden surface-shadow bg-transparent md:bg-white border-0 md:border border-[#6D6D6D]">
+                        <div class="hidden md:block">
+                            <table class="w-full text-center">
+                                <thead>
+                                    <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ المستحق</th>
+                                        <th class="py-3 font-medium text-[#021219]">مدة التأخير</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($lateInstallments as $installment)
+                                        <tr class="border-b border-[#6D6D6D] {{ $loop->even ? 'bg-[#EFEFEF]' : '' }}">
+                                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                                {{ $installment->loan->membership->member->user->name ?? 'عضو' }}
+                                            </td>
+                                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                                {{ $installment->loan->membership->membership_number ?? '-' }}
+                                            </td>
+                                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                                {{ $installment->amount }} ج.م
+                                            </td>
+                                            <td class="py-3 text-[#021219]">
+                                                {{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Mobile Cards -->
+                        <div class="md:hidden flex flex-col gap-4">
+                            @foreach ($lateInstallments as $installment)
+                                <div class="bg-white rounded-[14px] border border-[#D92D20] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                                    <div class="absolute top-0 right-0 w-2 h-full bg-[#D92D20]"></div>
+                                    <div class="flex flex-col gap-2 mr-3">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="text-[#021219] font-bold text-lg">{{ $installment->loan->membership->member->user->name ?? 'عضو' }}</h3>
+                                            <span class="text-[#D92D20] bg-[#FFEAE880] border border-[#FDA29B] rounded-[8px] py-[1px] px-2 text-xs flex items-center gap-1">
+                                                <iconify-icon icon="mdi:clock-alert-outline"></iconify-icon>
+                                                {{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}
+                                            </span>
+                                        </div>
+                                        <div class="flex gap-2 items-center text-sm">
+                                            <span class="text-[#6D6D6D]">رقم العضوية:</span>
+                                            <span class="text-[#124375] font-semibold">{{ $installment->loan->membership->membership_number ?? '-' }}</span>
+                                        </div>
+                                        <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                                            <span class="text-[#6D6D6D] text-sm">المبلغ المستحق</span>
+                                            <span class="text-[#D92D20] font-bold text-lg">{{ $installment->amount }} ج.م</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
             </section>

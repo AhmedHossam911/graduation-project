@@ -6,7 +6,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/receipts.css') }}">
 
-    <div class="py-7 px-12">
+    <div class="py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375]  font-semibold">
                 الإيصالات
@@ -18,7 +18,7 @@
     </div>
 
 
-    <div class="grid grid-cols-3 gap-7 px-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-7 px-4 md:px-12">
         @forelse($paginatedReceipts as $index => $receipt)
             @php
                 $isPaid = $receipt->status === 'paid';
@@ -66,7 +66,7 @@
     </div>
 
     <!-- Pagination Links -->
-    <div class="px-12 mt-8">
+    <div class="px-4 md:px-12 mt-8">
         {{ $paginatedReceipts->links() }}
     </div>
 
@@ -80,7 +80,7 @@
             $statusBadgeLabel = $isPaid ? 'تم الدفع' : 'مستحق ( غير مدفوع )';
         @endphp
         <div id="modal-{{ $index }}"
-            class="hidden flex flex-col max-h-[95vh] w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
+            class="hidden flex flex-col max-h-[90vh] w-[95%] md:w-full max-w-xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10 overflow-hidden">
             <div class="flex shrink-0">
                 <button
                     class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
@@ -100,7 +100,7 @@
                         {{ $statusBadgeLabel }}
                     </p>
                 </div>
-                <div class="grid grid-cols-4 gap-3 bg-[#F4F7F9] surface-shadow rounded-[16px] py-4 px-2">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 bg-[#F4F7F9] surface-shadow rounded-[16px] py-4 px-2">
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="bxs:user" class="text-xl mt-1 text-[#124375]"></iconify-icon>
@@ -161,7 +161,7 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <p class="text-[14px] font-medium text-[#6D6D6D]">عنوان InstaPay :</p>
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 mt-2 sm:mt-0">
                             <iconify-icon icon="tabler:copy-filled" class="cursor-pointer copy-btn text-2xl text-[#94A3B8] flex items-center"></iconify-icon>
                             <p class="text-[16px] font-semibold text-[#155DFC] insta-pay-value">cu_fund@nbe</p>
                         </div>

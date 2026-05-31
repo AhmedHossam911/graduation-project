@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/admin/departments.css') }}">
 
-        <div class="flex justify-between items-center py-7 px-12">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-4 md:py-7 px-4 md:px-12 gap-4 md:gap-0">
             <div class="flex flex-col gap-3">
                 <div class="flex gap-4 items-center">
                     <h1 class="text-xl text-[#124375] font-semibold">
@@ -37,8 +37,8 @@
             </div>
         </div>
 
-        <div class="px-12">
-            <form action="{{ route('admin.departments.index') }}" method="GET" class="grid grid-cols-6 gap-10 items-center navy-shadow rounded-[16px] py-5 px-3">
+        <div class="px-4 md:px-12">
+            <form action="{{ route('admin.departments.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-10 items-center navy-shadow rounded-[16px] py-5 px-3">
                 <div class="flex gap-2 col-span-3">
                     <div class="w-full relative">
                         <input name="search" value="{{ request('search') }}"
@@ -60,7 +60,7 @@
                     data-tab="الأرشيف">
                     <p class="text-[#D92D20]">إجمالي الجهات :<span>{{ $totalArchived }}</span></p>
                 </div>
-                <div class="flex items-center bg-[#F4F7F9] navy-shadow col-span-2 py-2 px-3 gap-3 rounded-[8px]">
+                <div class="flex items-center bg-[#F4F7F9] navy-shadow md:col-span-2 py-2 px-3 gap-3 rounded-[8px]">
                     <button type="button"
                         class="tab bg-[#124375] flex items-center navy-shadow gap-2 text-[#EEF7FF] w-full justify-center rounded-[8px] py-2 hover:bg-[#0e3560] transition-colors">
                         <iconify-icon icon="healthicons:yes" class="text-xl flex items-center"></iconify-icon>
@@ -75,9 +75,9 @@
             </form>
         </div>
 
-        <section class="px-12 py-8">
+        <section class="px-4 md:px-12 py-8">
             <div class=" rounded-[14px] tab-content overflow-hidden border border-[#6D6D6D]" data-tab="الكليات الحالية">
-                <table class="w-full border-collapse">
+                <table class="hidden md:table w-full border-collapse">
                     <thead>
                         <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                             <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">الاسم / الوصف </th>
@@ -119,13 +119,48 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- Mobile Cards View -->
+                <div class="md:hidden flex flex-col gap-4 mt-2 px-2">
+                    @forelse($activeDepartments as $department)
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-[#6D6D6D]/30 flex flex-col gap-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $department->name }}</h3>
+                                    <p class="text-sm text-[#6D6D6D]">كود: {{ $department->code }}</p>
+                                </div>
+                                <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[1px] px-3 text-sm min-w-[60px] text-center">نشط</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-[#6D6D6D] text-sm">
+                                <iconify-icon icon="mdi:account-group" class="text-xl"></iconify-icon>
+                                <span>{{ $department->members_count }} عضو</span>
+                            </div>
+                            <div class="flex gap-4 items-center justify-end border-t border-gray-100 pt-3 mt-1">
+                                <a href="{{ route('admin.departments.show', $department->id) }}" class="flex items-center justify-center p-2 bg-[#F4F7F9] rounded-lg">
+                                    <iconify-icon icon="solar:eye-linear" class="text-xl text-[#021219]"></iconify-icon>
+                                </a>
+                                <button type="button" class="open-modal flex items-center justify-center p-2 bg-[#F4F7F9] rounded-lg" data-modal="modal2" data-id="{{ $department->id }}" data-name="{{ $department->name }}" data-members="{{ $department->members_count }}">
+                                    <iconify-icon icon="ic:round-edit" class="text-xl text-[#124375]"></iconify-icon>
+                                </button>
+                                <form action="{{ route('admin.departments.archive', $department->id) }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <button type="submit" class="flex items-center justify-center p-2 bg-[#FFEAE8] rounded-lg">
+                                        <iconify-icon icon="zondicons:close-solid" class="text-xl text-[#D92D20]"></iconify-icon>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-gray-500 bg-white rounded-xl border border-gray-200">لا توجد بيانات</div>
+                    @endforelse
+                </div>
                 <div class="mt-4 px-4 py-2">
                     {{ $activeDepartments->appends(['archived_page' => request('archived_page'), 'search' => request('search')])->links('pagination::tailwind') }}
                 </div>
             </div>
 
             <div class=" rounded-[14px] hidden tab-content overflow-hidden border border-[#6D6D6D]" data-tab="الأرشيف">
-                <table class="w-full border-collapse">
+                <table class="hidden md:table w-full border-collapse">
                     <thead>
                         <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                             <th class="py-4 border-l border-[#6D6D6D] font-medium text-[#021219]">الاسم / الوصف </th>
@@ -164,6 +199,38 @@
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- Mobile Cards View for Archived -->
+                <div class="md:hidden flex flex-col gap-4 mt-2 px-2">
+                    @forelse($archivedDepartments as $department)
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-[#6D6D6D]/30 flex flex-col gap-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $department->name }}</h3>
+                                    <p class="text-sm text-[#6D6D6D]">كود: {{ $department->code }}</p>
+                                </div>
+                                <span class="text-[#021219] bg-[#F2F4F7] border border-[#021219] rounded-[8px] py-[1px] px-3 text-sm min-w-[60px] text-center">موقوف</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-[#6D6D6D] text-sm">
+                                <iconify-icon icon="mdi:account-group" class="text-xl"></iconify-icon>
+                                <span>{{ $department->members_count }} عضو</span>
+                            </div>
+                            <div class="flex gap-4 items-center justify-end border-t border-gray-100 pt-3 mt-1">
+                                <a href="{{ route('admin.departments.show', $department->id) }}" class="flex items-center justify-center p-2 bg-[#F4F7F9] rounded-lg">
+                                    <iconify-icon icon="solar:eye-linear" class="text-xl text-[#021219]"></iconify-icon>
+                                </a>
+                                <form action="{{ route('admin.departments.restore', $department->id) }}" method="POST" class="m-0 p-0">
+                                    @csrf
+                                    <button type="submit" class="flex items-center justify-center p-2 bg-[#ECFDF3] rounded-lg">
+                                        <iconify-icon icon="healthicons:yes" class="text-xl text-[#019168]"></iconify-icon>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-gray-500 bg-white rounded-xl border border-gray-200">لا توجد بيانات</div>
+                    @endforelse
+                </div>
                 <div class="mt-4 px-4 py-2">
                     {{ $archivedDepartments->appends(['active_page' => request('active_page'), 'search' => request('search')])->links('pagination::tailwind') }}
                 </div>

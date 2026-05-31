@@ -48,20 +48,19 @@
     </style>
     <div class="min-h-screen flex flex-col">
         <!-- start header -->
-        <div class="flex justify-between px-12 py-5 print:hidden">
+        <div class="flex flex-col md:flex-row justify-between items-center px-4 md:px-12 py-4 md:py-5 gap-4 md:gap-0 text-center md:text-right print:hidden">
             <div>
                 <h1 class="text-[32px] font-medium text-[s#124375]">
                     المالية
                 </h1>
             </div>
-            <div class="btns flex items-center gap-3  ">
+            <div class="btns flex items-center gap-3 w-full md:w-auto">
                 <button data-modal="modal1"
-                    class="open-modal rounded-xl flex items-center justify-center py-3 px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
-                    <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إضافة إيراد أو
-                    مصروف
+                    class="open-modal w-full md:w-auto rounded-xl flex items-center justify-center py-3 px-6 md:px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
+                    <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إضافة إيراد أو مصروف
                 </button>
                 <a href="{{ route('finance.export', request()->query()) }}"
-                    class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
+                    class="rounded-xl w-full md:w-auto flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
                     <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل
                 </a>
             </div>
@@ -70,37 +69,37 @@
 
 
         <!-- start cards -->
-        <div class="py-4 grid grid-cols-3 gap-4 px-12 print:hidden">
+        <div class="py-4 grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-12 print:hidden">
             <div
-                class="tab cursor-pointer navy-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
+                class="tab cursor-pointer navy-shadow flex items-center justify-center gap-4 md:gap-7 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#124375]">
                 <div>
                     <iconify-icon icon="ph:trend-up-fill"
                         class="navy-shadow text-[40px] px-2 py-1 text-[#124375] bg-[#EEF7FF] rounded-lg "></iconify-icon>
                 </div>
                 <div class="flex flex-col items-center text-[#124375] gap-2">
-                    <p class="text-4xl font-extrabold">{{ number_format($totalRevenue, 0) }} ج.م</p>
+                    <p class="text-3xl md:text-4xl font-extrabold">{{ number_format($totalRevenue, 0) }} ج.م</p>
                     <p class="text-sm font-medium tab-name">إجمالي الإيرادات</p>
                 </div>
             </div>
             <div
-                class="tab cursor-pointer yellow-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#D4AF37]">
+                class="tab cursor-pointer yellow-shadow flex items-center justify-center gap-4 md:gap-7 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#D4AF37]">
                 <div>
                     <iconify-icon icon="tabler:clipboard-list-filled"
                         class="navy-shadow text-[40px] px-2 py-1 text-[#D4AF37] bg-[#FFFCEF] rounded-lg "></iconify-icon>
                 </div>
                 <div class="flex flex-col items-center text-[#124375] gap-2">
-                    <p class="text-4xl font-extrabold">{{ $todayCount }}</p>
+                    <p class="text-3xl md:text-4xl font-extrabold">{{ $todayCount }}</p>
                     <p class="text-sm font-medium tab-name">عدد الحركات اليوم</p>
                 </div>
             </div>
             <div
-                class="tab cursor-pointer red-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-[#D92D20]">
+                class="tab cursor-pointer red-shadow flex items-center justify-center gap-4 md:gap-7 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-[#D92D20]">
                 <div>
                     <iconify-icon icon="ph:trend-down-fill"
                         class="navy-shadow text-[40px] text-[#D92D20] bg-[#FFEAE880] rounded-lg px-2 py-1"></iconify-icon>
                 </div>
                 <div class="flex flex-col items-center text-[#124375] gap-2">
-                    <p class="text-4xl font-extrabold">{{ number_format($totalExpense, 0) }} ج.م</p>
+                    <p class="text-3xl md:text-4xl font-extrabold">{{ number_format($totalExpense, 0) }} ج.م</p>
                     <p class="text-sm font-medium tab-name">إجمالي المصروفات</p>
                 </div>
             </div>
@@ -109,17 +108,17 @@
 
         <!-- filteration buttons -->
         <form action="{{ route('finance.index') }}" method="GET"
-            class="px-12 flex items-center justify-between gap-5 print:hidden">
+            class="px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-5 print:hidden">
             <input type="hidden" name="active_tab" id="form-active-tab"
                 value="{{ request('active_tab', 'عدد الحركات اليوم') }}">
-            <div class="relative flex-1">
+            <div class="relative flex-1 w-full md:w-auto">
                 <input type="search" name="search" value="{{ request('search') }}"
                     placeholder="الاسم أو رقم العضوية أو رقم الحركة"
                     class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                 <iconify-icon icon="mynaui:search"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
             </div>
-            <div class="relative min-w-[200px]">
+            <div class="relative w-full md:min-w-[200px]">
                 @include('partials.common.calendar', [
                     'name' => 'date',
                     'id' => 'finance-datepicker',
@@ -127,7 +126,7 @@
                     'autoSubmit' => true,
                 ])
             </div>
-            <div class="relative min-w-[200px]">
+            <div class="relative w-full md:min-w-[200px]">
                 @php
                     $methodOptions = ['all' => 'الكل'] + $methodLabels;
                 @endphp
@@ -141,7 +140,7 @@
                     'autoSubmit' => true,
                 ])
             </div>
-            <div class="relative min-w-[200px]">
+            <div class="relative w-full md:min-w-[200px]">
                 @php
                     $categoryOptions = ['all' => 'الكل'] + $categoryLabels;
                 @endphp
@@ -155,9 +154,9 @@
                     'autoSubmit' => true,
                 ])
             </div>
-            <div>
+            <div class="w-full md:w-auto">
                 <button type="submit"
-                    class="bg-[#124375] text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
+                    class="bg-[#124375] w-full md:w-auto text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
                     <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                 </button>
             </div>
@@ -165,9 +164,10 @@
         <!-- end filteration buttons -->
 
         <!-- start table -->
-        <section class="px-12 py-7 print:hidden">
+        <section class="px-4 md:px-12 py-7 print:hidden">
             <!-- All Transactions Tab -->
-            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content" data-tab="عدد الحركات اليوم">
+            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content border-0 md:border p-0 md:p-0 bg-transparent md:bg-white" data-tab="عدد الحركات اليوم">
+                <div class="hidden md:block">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
@@ -222,11 +222,63 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
+                <!-- Mobile Cards -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @forelse($transactions as $transaction)
+                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full {{ $transaction->type === 'IN' ? 'bg-[#067647]' : 'bg-[#D92D20]' }}"></div>
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1 mr-3">
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
+                                    <span class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-lg font-bold text-[#124375]">{{ number_format($transaction->amount, 2) }} ج.م</p>
+                                    @if ($transaction->type === 'IN')
+                                        <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">إيراد</span>
+                                    @else
+                                        <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">مصروف</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 mt-2 mr-3">
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">التاريخ والوقت:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:tag" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">بند الحركة:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->category_label }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:cash" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">طريقة الدفع:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->method_label }}</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
+                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}" class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                    <iconify-icon icon="solar:eye-outline" class="text-lg ml-2"></iconify-icon>
+                                    التفاصيل
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D]">
+                            <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND" class="w-32 mx-auto py-4">
+                            <p class="text-[#6D6D6D] font-medium">لا توجد حركات</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
 
             <!-- Revenue Transactions Tab -->
-            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content hidden"
+            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content hidden border-0 md:border p-0 md:p-0 bg-transparent md:bg-white"
                 data-tab="إجمالي الإيرادات">
+                <div class="hidden md:block">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
@@ -274,11 +326,59 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
+                <!-- Mobile Cards -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @forelse($revenueTransactions as $transaction)
+                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-[#067647]"></div>
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1 mr-3">
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
+                                    <span class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-lg font-bold text-[#124375]">{{ number_format($transaction->amount, 2) }} ج.م</p>
+                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">إيراد</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 mt-2 mr-3">
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">التاريخ والوقت:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:tag" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">بند الحركة:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->category_label }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:cash" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">طريقة الدفع:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->method_label }}</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
+                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}" class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                    <iconify-icon icon="solar:eye-outline" class="text-lg ml-2"></iconify-icon>
+                                    التفاصيل
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D]">
+                            <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND" class="w-32 mx-auto py-4">
+                            <p class="text-[#6D6D6D] font-medium">لا توجد حركات إيراد</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
 
             <!-- Expense Transactions Tab -->
-            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content hidden"
+            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content hidden border-0 md:border p-0 md:p-0 bg-transparent md:bg-white"
                 data-tab="إجمالي المصروفات">
+                <div class="hidden md:block">
                 <table class="w-full">
                     <thead>
                         <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
@@ -326,6 +426,53 @@
                         @endforelse
                     </tbody>
                 </table>
+                </div>
+                <!-- Mobile Cards -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @forelse($expenseTransactions as $transaction)
+                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-[#D92D20]"></div>
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1 mr-3">
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
+                                    <span class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
+                                </div>
+                                <div class="text-left">
+                                    <p class="text-lg font-bold text-[#124375]">{{ number_format($transaction->amount, 2) }} ج.م</p>
+                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">مصروف</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 mt-2 mr-3">
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">التاريخ والوقت:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:tag" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">بند الحركة:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->category_label }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:cash" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">طريقة الدفع:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $transaction->method_label }}</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
+                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}" class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                    <iconify-icon icon="solar:eye-outline" class="text-lg ml-2"></iconify-icon>
+                                    التفاصيل
+                                </button>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D]">
+                            <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND" class="w-32 mx-auto py-4">
+                            <p class="text-[#6D6D6D] font-medium">لا توجد حركات مصروفات</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </section>
         <!-- end table -->
@@ -540,7 +687,7 @@
 
 @section('pagination')
     <div
-        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80 z-[100]">
+        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80 z-[100]">
         <div class="tab-content {{ request('active_tab', 'عدد الحركات اليوم') === 'عدد الحركات اليوم' ? '' : 'hidden' }}"
             data-tab="عدد الحركات اليوم">
             {{ $transactions->links() }}

@@ -10,7 +10,7 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/admin/reports.css') }}">
-    <div class="py-7 px-12">
+    <div class="py-4 md:py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-[20px] text-[#124375]  font-semibold">
                 مركز التقارير والإحصائيات
@@ -22,8 +22,8 @@
     </div>
 
     <!-- start tabs -->
-    <div class="px-12">
-        <div class="tabs grid grid-cols-6  bg-[#F4F7F9] navy-shadow rounded-[16px] px-4 py-5 ">
+    <div class="px-4 md:px-12">
+        <div class="tabs grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] px-4 py-5 text-center">
             <button class="active-tab text-[16px]">
                 كافة التقارير
             </button>
@@ -47,8 +47,8 @@
     <!-- end tabs -->
 
     <!-- start cards -->
-    <section class="px-12 py-10">
-        <div data-tab="كافة التقارير" class="tab-content grid grid-cols-3 gap-20 px-4">
+    <section class="px-4 md:px-12 py-10">
+        <div data-tab="كافة التقارير" class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -219,7 +219,7 @@
             </div>
         </div>
 
-        <div data-tab="المالية والخزينة" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="المالية والخزينة" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -277,7 +277,7 @@
             </div>
         </div>
 
-        <div data-tab="الاشتراكات والعضوية" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="الاشتراكات والعضوية" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -336,7 +336,7 @@
             </div>
         </div>
 
-        <div data-tab="القروض والسلف" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="القروض والسلف" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -394,7 +394,7 @@
             </div>
         </div>
 
-        <div data-tab="المزايا والمطالبات" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="المزايا والمطالبات" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">
@@ -452,7 +452,7 @@
             </div>
         </div>
 
-        <div data-tab="إحصائيات إدارية" class="hidden tab-content grid grid-cols-3 gap-20 px-4">
+        <div data-tab="إحصائيات إدارية" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-7 px-9">
                 <div class="flex justify-between ">

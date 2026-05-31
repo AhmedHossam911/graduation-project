@@ -10,7 +10,7 @@
 
         <!-- start main -->
         <main class="flex-1">
-            <div class="py-7 px-7 space-y-9">
+            <div class="py-7 px-4 md:px-7 space-y-9">
                 <!-- start header main -->
                 <div class="flex flex-col gap-2 bg-[#F4F7F9] surface-shadow rounded-[16px] py-4 px-4">
                     <h2 class="text-[28px] text-[#124375] font-semibold">مرحباً بك في صندوق الزمالة</h2>
@@ -20,8 +20,8 @@
                 <!-- end header main -->
 
                 <!-- start cards -->
-                <div class=" grid grid-cols-3 gap-5">
-                    <div class="surface-shadow flex   gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
+                <div class=" grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <div class="surface-shadow flex items-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
                         <div>
                             <iconify-icon icon="{{ $statusIcon }}"
                                 class=" text-4xl {{ $statusColor }} rounded-lg px-3 py-3"></iconify-icon>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-7">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-7">
                     <a href="{{ route('member.membership.create') }}"
                         class="flex flex-col gap-2 py-5 text-[#16A34A] items-center bg-[#F4F7F9] surface-shadow rounded-[16px] border-s-8 border-[#16A34A]">
                         <div>

@@ -277,7 +277,8 @@
             </div>
         @elseif ($memberClaims->isNotEmpty() && request('claim_type') === null)
             <!-- requests table -->
-            <div class="requests-table rounded-[14px] overflow-x-auto border border-[#D1D5DB]">
+            <div class="requests-table rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
+                <div class="hidden md:block overflow-x-auto">
                 <table class="w-full md:min-w-max md:whitespace-nowrap">
                     <thead class="hidden md:table-header-group">
                         <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
@@ -325,6 +326,42 @@
                         @endforeach
                     </tbody>
                 </table>
+                </div>
+
+                <!-- Mobile Cards -->
+                <div class="md:hidden flex flex-col gap-4">
+                    @foreach ($memberClaims as $claim)
+                        <div class="bg-white rounded-[14px] border border-[#D1D5DB] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-sm text-[#6D6D6D]">رقم المطالبة: {{ $claim->id }}</span>
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $claims[$claim->type] ?? $claim->type }}</h3>
+                                </div>
+                                <span class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100 text-gray-800 border-gray-300' }} border rounded-[8px] py-[2px] px-3 text-xs text-center font-medium">
+                                    {{ $claimStatusLabels[$claim->status] ?? $claim->status }}
+                                </span>
+                            </div>
+                            
+                            <div class="flex gap-2 items-center text-sm">
+                                <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
+                                <span class="text-[#6D6D6D]">تاريخ التقديم:</span>
+                                <span class="text-[#021219] font-semibold">{{ $claim->created_at->format('Y-m-d') }}</span>
+                            </div>
+
+                            <div class="flex justify-center mt-2 pt-3 border-t border-gray-100">
+                                @if ($claim->status === 'approved')
+                                    <a href="?tab=مطالبات&view_claim={{ $claim->id }}"
+                                        class="w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">عرض التفاصيل</a>
+                                @elseif($claim->status === 'pending')
+                                    @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
+                                        <a href="{{ route('claims.show', $claim->id) }}"
+                                            class="w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">اعتماد</a>
+                                    @endif
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         @endif
     </section>

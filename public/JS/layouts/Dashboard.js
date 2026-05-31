@@ -11,8 +11,25 @@ if (notiBtn && notiBox) {
 
 if (menuBtn && sideBar) {
     menuBtn.addEventListener("click", () => {
-        sideBar.classList.toggle("active");
-        sideBar.classList.toggle("side-bar");
+        if (window.innerWidth <= 768) {
+            sideBar.classList.toggle("mobile-open");
+            const overlay = document.getElementById("sidebar-overlay");
+            if (overlay) {
+                overlay.classList.toggle("hidden");
+            }
+        } else {
+            sideBar.classList.toggle("active");
+            sideBar.classList.toggle("side-bar");
+        }
+    });
+}
+
+// Overlay click to close sidebar on mobile
+const sidebarOverlay = document.getElementById("sidebar-overlay");
+if (sidebarOverlay && sideBar) {
+    sidebarOverlay.addEventListener("click", () => {
+        sideBar.classList.remove("mobile-open");
+        sidebarOverlay.classList.add("hidden");
     });
 }
 

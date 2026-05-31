@@ -10,19 +10,19 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/claims.css') }}">
     <!-- start header -->
-    <div class="flex justify-between px-12 py-5 print:hidden">
+    <div class="flex flex-col md:flex-row justify-between items-center px-4 md:px-12 py-4 md:py-5 gap-4 md:gap-0 text-center md:text-right print:hidden">
         <div>
             <h1 class="text-[32px] font-medium text-[#124375]">
                 المطالبات
             </h1>
         </div>
-        <div class="btns flex items-center gap-3  ">
+        <div class="btns flex items-center gap-3 w-full md:w-auto">
             <button
-                class="open-modal rounded-xl flex items-center justify-center py-3 px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="open-modal w-full md:w-auto rounded-xl flex items-center justify-center py-3 px-6 md:px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إنشاء مطالبة
             </button>
             <a href="{{ route('claims.export', request()->query()) }}"
-                class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
+                class="rounded-xl w-full md:w-auto flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل
             </a>
         </div>
@@ -30,9 +30,9 @@
     <!-- end header -->
 
     <!-- start cards -->
-    <div class="py-4 grid grid-cols-3 gap-4 px-12 print:hidden">
+    <div class="py-4 grid grid-cols-1 md:grid-cols-3 gap-4 px-4 md:px-12 print:hidden">
         <div
-            class="navy-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
+            class="navy-shadow flex items-center justify-center gap-4 md:gap-7 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#124375]">
             <div>
                 <iconify-icon icon="ph:trend-up-fill"
                     class="navy-shadow text-[40px] px-2 py-1 text-[#124375] bg-[#EEF7FF] rounded-lg "></iconify-icon>
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div
-            class="yellow-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#D4AF37]">
+            class="yellow-shadow flex items-center justify-center gap-4 md:gap-7 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#D4AF37]">
             <div>
                 <iconify-icon icon="tabler:clipboard-list-filled"
                     class="navy-shadow text-[40px] px-2 py-1 text-[#D4AF37] bg-[#FFFCEF] rounded-lg "></iconify-icon>
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div
-            class="red-shadow flex items-center justify-center gap-7 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-[#D92D20]">
+            class="red-shadow flex items-center justify-center gap-4 md:gap-7 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-[#D92D20]">
             <div>
                 <iconify-icon icon="ph:trend-down-fill"
                     class="navy-shadow text-[40px] text-[#D92D20] bg-[#FFEAE880] rounded-lg px-2 py-1"></iconify-icon>
@@ -69,15 +69,15 @@
 
     <!-- filteration buttons -->
     <form action="{{ route('claims.index') }}" method="GET"
-        class="px-12 flex items-center justify-between gap-5 print:hidden">
-        <div class="relative flex-1">
+        class="px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-5 print:hidden">
+        <div class="relative flex-1 w-full md:w-auto">
             <input type="search" name="search" value="{{ request('search') }}"
                 placeholder="الاسم أو رقم العضوية أو رقم المطالبة"
                 class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             <iconify-icon icon="mynaui:search"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
         </div>
-        <div class="relative min-w-[240px]">
+        <div class="relative w-full md:min-w-[240px]">
             @include('partials.common.calendar', [
                 'name' => 'date',
                 'id' => 'subscriptions-datepicker',
@@ -85,7 +85,7 @@
                 'autoSubmit' => false,
             ])
         </div>
-        <div class="relative min-w-[200px]">
+        <div class="relative w-full md:min-w-[200px]">
             @php
                 $statusOptions = [
                     'all' => 'الكل',
@@ -104,7 +104,7 @@
                 'autoSubmit' => true,
             ])
         </div>
-        <div class="relative min-w-[200px]">
+        <div class="relative w-full md:min-w-[200px]">
             @php
                 $typeOptions = ['all' => 'الكل'] + \App\Models\Services\Claim::CLAIM_TYPES;
             @endphp
@@ -118,9 +118,9 @@
                 'autoSubmit' => true,
             ])
         </div>
-        <div>
+        <div class="w-full md:w-auto">
             <button type="submit"
-                class="bg-[#124375] text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
+                class="bg-[#124375] w-full md:w-auto text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
             </button>
         </div>
@@ -128,8 +128,9 @@
     <!-- end filteration buttons -->
 
     <!-- start table -->
-    <section class="px-12 py-4 print:hidden">
-        <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">
+    <section class="px-4 md:px-12 py-4 print:hidden">
+        <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white">
+            <div class="hidden md:block">
             <table class="w-full">
                 <thead>
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
@@ -196,9 +197,72 @@
                         <tr>
                             <td colspan="6" class="py-4 text-center text-[#6D6D6D] font-medium">لا توجد مطالبات</td>
                         </tr>
-                    @endforelse
                 </tbody>
             </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden flex flex-col gap-4">
+                @forelse($claims as $claim)
+                    <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                        <div class="flex justify-between items-start">
+                            <div class="flex flex-col">
+                                <h3 class="text-[#021219] font-bold text-lg">{{ $claim->membership->member->user->name ?? 'N/A' }}</h3>
+                                <span class="text-sm text-[#6D6D6D]">TRX-{{ $claim->id }}</span>
+                            </div>
+                            <div>
+                                @if ($claim->status === 'approved')
+                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs font-medium">بانتظار التسوية</span>
+                                @elseif($claim->status === 'paid')
+                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">تم الصرف</span>
+                                @elseif($claim->status === 'pending')
+                                    <span class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">بانتظار الأعتماد</span>
+                                @else
+                                    <span class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">{{ $claim->status }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-2 mt-2">
+                            <div class="flex gap-2 items-center text-sm">
+                                <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
+                                <span class="text-[#6D6D6D]">تاريخ التقديم:</span>
+                                <span class="text-[#021219] font-semibold">{{ $claim->created_at->translatedFormat('d F Y') }}</span>
+                            </div>
+                            <div class="flex gap-2 items-center text-sm">
+                                <iconify-icon icon="mdi:file-document-outline" class="text-[#6D6D6D]"></iconify-icon>
+                                <span class="text-[#6D6D6D]">نوع المطالبة:</span>
+                                <span class="text-[#021219] font-semibold">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end mt-2 pt-3 border-t border-gray-100">
+                            @if ($claim->status === 'approved')
+                                <a href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}"
+                                    class="flex w-full justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2.5 rounded-[12px] border border-[#124375] text-[#124375]">
+                                    <iconify-icon icon="majesticons:calculator" class="text-xl"></iconify-icon>
+                                    تسوية
+                                </a>
+                            @elseif($claim->status === 'pending')
+                                <a href="{{ route('claims.show', $claim->id) }}"
+                                    class="flex w-full justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2.5 rounded-[12px] border border-[#124375] text-[#124375]">
+                                    <iconify-icon icon="solar:eye-outline" class="text-xl"></iconify-icon>
+                                    أعتماد
+                                </a>
+                            @elseif($claim->status === 'paid')
+                                <button type="button"
+                                    onclick="document.getElementById('modal-receipt-{{ $claim->id }}').classList.remove('hidden'); document.querySelector('.overlay').classList.remove('hidden');"
+                                    class="flex w-full justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2.5 rounded-[12px] border border-[#124375] text-[#124375]">
+                                    <iconify-icon icon="solar:eye-outline" class="text-xl"></iconify-icon>
+                                    عرض
+                                </button>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D] text-[#6D6D6D] font-medium">لا توجد مطالبات</div>
+                @endforelse
+            </div>
         </div>
     </section>
     <!-- end table -->
@@ -385,7 +449,7 @@
 @endsection
 
 @section('pagination')
-    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80">
         {{ $claims->links() }}
     </div>
 @endsection

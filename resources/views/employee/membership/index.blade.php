@@ -8,16 +8,16 @@
 @section('title', 'قائمة الاشتراكات')
 
 @section('content')
-    <div class="flex justify-between items-center mb-2">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-2 gap-4 md:gap-0 print:hidden">
         <h2 class="text-[24px] font-bold text-[#124375]">الاشتراكات</h2>
-        <div class="flex gap-5">
+        <div class="flex flex-col md:flex-row w-full md:w-auto gap-3 md:gap-5">
             <button
-                class="open-modal inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[334px] h-[50px] justify-center">
+                class="open-modal inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-full md:w-[334px] h-[50px] justify-center">
                 <iconify-icon icon="material-symbols:add-notes" width="24" height="24"></iconify-icon>
                 تسجيل سداد اشتراك
             </button>
             <a href="{{ route('subscriptions.export', request()->query()) }}"
-                class="inline-flex items-center surface-shadow gap-2 bg-[#F4F7F9] text-[#124375] py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-[150px] h-[50px] justify-center">
+                class="inline-flex items-center surface-shadow gap-2 bg-[#F4F7F9] text-[#124375] py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-full md:w-[150px] h-[50px] justify-center">
                 <iconify-icon icon="mdi:file-excel" width="24" height="24"></iconify-icon>
                 تنزيل
             </a>
@@ -25,9 +25,9 @@
     </div>
 
     <!-- start cards -->
-    <div class="py-4 grid grid-cols-3 gap-4 mb-2">
+    <div class="py-4 grid grid-cols-1 md:grid-cols-3 gap-4 mb-2 print:hidden">
         <div
-            class="shadow-[0_0_5px_1px_rgba(18,67,117,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#124375]">
+            class="shadow-[0_0_5px_1px_rgba(18,67,117,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#124375]">
             <div>
                 <iconify-icon icon="fa7-solid:money-bill-wave" width="48" height="48"
                     class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg"></iconify-icon>
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div
-            class="shadow-[0_0_5px_1px_rgba(212,175,55,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4 border-s-8 border-[#D4AF37]">
+            class="shadow-[0_0_5px_1px_rgba(212,175,55,0.5)] shadow-md flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#D4AF37]">
             <div>
                 <iconify-icon icon="material-symbols:calendar-check" width="48" height="48"
                     class="surface-shadow text-4xl text-[#D4AF37] bg-[#FFFCEF] rounded-lg"></iconify-icon>
@@ -62,8 +62,8 @@
     </div>
     <!-- end cards -->
 
-    <form action="{{ route('subscriptions.index') }}" method="GET">
-        <div class="flex flex-wrap gap-4 mb-6">
+    <form action="{{ route('subscriptions.index') }}" method="GET" class="print:hidden">
+        <div class="flex flex-col md:flex-row flex-wrap gap-4 mb-6">
             <!-- start search -->
             <div class="flex-1 items-center gap-5">
                 <input type="search" name="search" value="{{ request('search') }}"
@@ -72,7 +72,7 @@
             </div>
             <!-- end search -->
 
-            <div class="relative min-w-[200px]">
+            <div class="relative w-full md:min-w-[200px]">
                 @include('partials.common.calendar', [
                     'name' => 'date',
                     'id' => 'subscriptions-datepicker',
@@ -82,7 +82,7 @@
             </div>
 
 
-            <div class="relative min-w-[200px]">
+            <div class="relative w-full md:min-w-[200px]">
                 @php
                     $statusOptions = [
                         'all' => 'الكل',
@@ -105,7 +105,7 @@
                 ])
             </div>
 
-            <button class="bg-[#124375] text-white rounded-xl px-7 surface-shadow">
+            <button class="bg-[#124375] text-white rounded-xl px-7 py-2 w-full md:w-auto surface-shadow flex items-center justify-center">
                 <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl"></iconify-icon>
             </button>
         </div>
@@ -113,8 +113,9 @@
 
 
     <!-- start table -->
-    <section>
-        <div class="rounded-2xl overflow-hidden surface-shadow">
+    <section class="print:hidden">
+        <div class="rounded-2xl overflow-hidden surface-shadow border-0 md:border p-0 md:p-0 bg-transparent md:bg-white">
+            <div class="hidden md:block">
             <table class="w-full text-center">
                 <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                     <th class="py-3 border-l border-[#6D6D6D]">رقم العضوية</th>
@@ -213,12 +214,97 @@
                     </tr>
                 @endif
             </table>
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden flex flex-col gap-4">
+                @if ($subscriptions->count() > 0)
+                    @foreach ($subscriptions as $subscription)
+                        @php
+                            $isPast = \Carbon\Carbon::parse($subscription->due_date)->isPast();
+                            $monthsLate = $isPast
+                                ? \Carbon\Carbon::parse($subscription->due_date)->diffInMonths(now())
+                                : 0;
+                            $noticeSent = $subscription->notice_sent_at !== null;
+                            $memStatus = $subscription->membership->status ?? '';
+                            
+                            $statusHtml = '';
+                            $statusBorder = '';
+                            
+                            if ($memStatus === 'suspended') {
+                                $statusHtml = '<iconify-icon icon="mdi:account-cancel" width="16" height="16"></iconify-icon><span>تم فصل العضوية</span>';
+                                $statusBorder = 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]';
+                            } elseif ($subscription->status === 'paid') {
+                                $statusHtml = '<iconify-icon icon="mdi:check-circle" width="16" height="16"></iconify-icon><span>مسدد</span>';
+                                $statusBorder = 'bg-[#ECFDF3] text-[#067647] border-[#067647]';
+                            } elseif ($isPast) {
+                                if ($monthsLate > 6 && !$noticeSent) {
+                                    $statusHtml = '<iconify-icon icon="mdi:information" width="16" height="16"></iconify-icon><span>متأخر ( يستوجب إخطار )</span>';
+                                    $statusBorder = 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]';
+                                } elseif ($monthsLate > 6 && $noticeSent) {
+                                    $statusHtml = '<iconify-icon icon="mdi:alert" width="16" height="16"></iconify-icon><span>متأخر ( تم إرسال التنبيه )</span>';
+                                    $statusBorder = 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]';
+                                } else {
+                                    $statusHtml = '<iconify-icon icon="mdi:information" width="16" height="16"></iconify-icon><span>متأخر ( تم إرسال إخطار )</span>';
+                                    $statusBorder = 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]';
+                                }
+                            } else {
+                                $statusHtml = '<span>مستحق</span>';
+                                $statusBorder = 'bg-[#F2F4F7] text-[#6D6D6D] border-[#6D6D6D]';
+                            }
+                        @endphp
+                        
+                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1">
+                                    <h3 class="text-[#124375] font-bold text-lg hover:underline">
+                                        <a href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}">
+                                            {{ $subscription->membership->member->user->name ?? 'حدث خطأ' }}
+                                        </a>
+                                    </h3>
+                                    <span class="text-sm text-[#6D6D6D]">رقم العضوية: {{ $subscription->membership->membership_number ?? '---' }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <div class="bg-[#F4F7F9] p-2 rounded-lg border border-[#1243751A] flex flex-col items-center justify-center">
+                                    <span class="text-[#6D6D6D] text-xs">الشهر</span>
+                                    <span class="text-[#124375] font-bold text-sm">{{ $subscription->due_date->isoFormat('MMMM YYYY') }}</span>
+                                </div>
+                                <div class="bg-[#F4F7F9] p-2 rounded-lg border border-[#1243751A] flex flex-col items-center justify-center">
+                                    <span class="text-[#6D6D6D] text-xs">المبلغ</span>
+                                    <span class="text-[#067647] font-bold">{{ number_format($subscription->amount, 2) }} ج.م</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-1">
+                                <div class="border {{ $statusBorder }} rounded-[8px] flex items-center justify-center gap-1.5 px-2 py-1 text-xs font-bold w-full">
+                                    {!! $statusHtml !!}
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-center mt-2 pt-3 border-t border-gray-100">
+                                <a href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}"
+                                    class="w-full flex justify-center items-center gap-2 border border-[#124375] bg-white py-2 rounded-[8px] text-[#124375] text-sm hover:bg-[#F4F7F9]">
+                                    <iconify-icon icon="ic:baseline-remove-red-eye" class="text-lg"></iconify-icon>
+                                    عرض التفاصيل
+                                </a>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
+                    <div class="text-center py-8 bg-white rounded-[14px] border border-[#6D6D6D]">
+                        <img class="w-[30%] md:w-[15%] m-auto" src="{{ asset('IMGs/No-results.png') }}" alt="لا توجد بيانات">
+                        <p class="text-[#6D6D6D] font-medium mt-4">لا توجد بيانات</p>
+                    </div>
+                @endif
+            </div>
         </div>
     </section>
 
 @endsection
 @section('pagination')
-    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-6 px-6 backdrop-blur-md bg-white/80">
+    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80 z-[100]">
         {{ $subscriptions->links() }}
     </div>
 
@@ -226,12 +312,12 @@
 
     <!-- تسجيل سداد اشتراك -->
     <div
-        class="modal hidden w-full max-w-2xl mx-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
+        class="modal hidden w-full max-w-2xl mx-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10 w-[95%] md:w-full">
         <button
             class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
         </button>
-        <div class="modal-body space-y-7 px-12">
+        <div class="modal-body space-y-7 px-4 md:px-12 max-h-[80vh] overflow-y-auto">
             <div class="modal-title text-center">
                 <h1 class="text-xl font-semibold text-[#124375]">
                     تسجيل سداد إشتراك
