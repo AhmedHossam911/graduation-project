@@ -11,7 +11,7 @@
 
     <!-- start Header -->
     <div class="flex justify-between items-center py-5 px-4 sm:px-7 gap-4">
-        <div class="logo surface-shadow hidden sm:block">
+        <div class="logo surface-shadow max-md:hidden">
             <img src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" class="w-16">
         </div>
         <div class="title text-xl font-semibold text-[#124375]">

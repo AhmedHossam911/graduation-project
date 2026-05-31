@@ -394,7 +394,13 @@ class MemberService
         if (!empty($validated['department_id'])) {
             return $validated['department_id'];
         }
-        return Department::firstOrCreate(['name' => 'Pending Registration'])->id;
+        
+        $department = Department::where('name', $validated['employer_name'])->first();
+        if ($department) {
+            return $department->id;
+        }
+
+        return Department::firstOrCreate(['name' => $validated['employer_name'] ?? 'Pending Registration'])->id;
     }
 
     private function dateFromParts(Request $request, string $prefix): ?string

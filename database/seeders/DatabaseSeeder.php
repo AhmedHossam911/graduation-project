@@ -15,15 +15,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Establish the core roles required for role-based access control (RBAC).
-        $adminRole = Role::firstOrCreate(['name' => 'Admin']);
-        Role::firstOrCreate(['name' => 'Auditor']);
-        Role::firstOrCreate(['name' => 'Member']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'employee']);
+        Role::firstOrCreate(['name' => 'member']);
 
         // Create the primary Super Admin account (retaining existing known credentials for ease of use).
         $adminUser = User::firstOrCreate(
             ['email' => 'a511r811r174@gmail.com'],
             [
-                'name' => 'أحمد محمد',
+                'name' => 'احمد حسام',
                 'national_id' => '12345678912345',
                 'role_id' => $adminRole->id,
                 'password' => Hash::make('Medo@511'),
@@ -60,16 +60,30 @@ class DatabaseSeeder extends Seeder
 
         // Map out the specific faculties/departments for Helwan University (HU).
         $faculties = [
-            'كلية الهندسة بالمطرية',
-            'كلية الهندسة بحلوان',
+            'كلية التمريض',
             'كلية التجارة وإدارة الأعمال',
             'كلية الحاسبات والذكاء الاصطناعي',
-            'كلية العلوم',
-            'كلية الطب',
+            'كلية التكنولوجيا والتعليم',
+            'كلية الهندسة بالمطرية',
             'كلية الصيدلة',
-            'كلية الآداب',
+            'كلية علوم الرياضة بنين',
+            'كلية الطب',
+            'المعهد القومي للملكية الفكرية',
+            'كلية الهندسة بحلوان',
+            'كلية التربية الفنية',
             'كلية الحقوق',
-            'كلية الفنون التطبيقية'
+            'كلية الآداب',
+            'كلية الفنون الجميلة',
+            'كلية الفنون التطبيقية',
+            'كلية العلوم',
+            'كلية الاقتصاد المنزلي',
+            'كلية الخدمة الاجتماعية',
+            'كلية التربية',
+            'كلية علوم الرياضة بنات',
+            'المعهد الفني للتمريض',
+            'كلية التربية الموسيقية',
+            'كلية علوم التغذية',
+            'كلية السياحة و الفنادق'
         ];
 
         $departments = [];
