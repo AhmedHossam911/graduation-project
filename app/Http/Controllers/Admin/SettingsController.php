@@ -85,7 +85,7 @@ class SettingsController extends Controller
             'claim_basic_percentage' => 'required|numeric|min:0',
             'claim_transfer_resignation_percentage' => 'required|numeric|min:0|max:100',
             'claim_funeral_expenses' => 'required|numeric|min:0',
-            'claim_min_years_subscribed' => 'required|integer|min:0|max:50',
+            // 'claim_min_years_subscribed' => 'required|integer|min:0|max:50',
         ];
 
         $validated = $request->validate($rules);

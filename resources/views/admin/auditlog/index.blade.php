@@ -111,7 +111,7 @@
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
             </button>
         </div>
-        <div class="modal-body px-8 flex-1 flex flex-col overflow-hidden">
+        <div class="modal-body px-4 md:px-8 flex-1 flex flex-col overflow-hidden">
             <div class="space-y-3">
                 <div class="space-y-1 shrink-0">
                     <h1 class="text-[28px] font-semibold text-[#021219] ">

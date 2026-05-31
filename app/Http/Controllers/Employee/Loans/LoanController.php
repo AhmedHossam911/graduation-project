@@ -165,6 +165,20 @@ class LoanController extends Controller
             }
         }
 
+        $minYearsSubscribed = floatval(SystemSetting::get('loan_min_years_subscribed', 0));
+        if ($minYearsSubscribed > 0) {
+            $firstPaidSubscription = $member->membershipInfo->subscriptions->where('status', 'paid')->sortBy('created_at')->first();
+            if (!$firstPaidSubscription) {
+                return response()->json(['success' => false, 'message' => 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.']);
+            }
+            // Use due_date or created_at. due_date or the transaction date is better. Let's use created_at of the subscription or its payment date.
+            // But since the user specified "الوقت في طلب القرض" and "دفع اول اشتراك", we can just use the created_at or due_date of the first paid subscription.
+            $yearsSubscribed = $firstPaidSubscription->created_at->diffInYears(now());
+            if ($yearsSubscribed < $minYearsSubscribed) {
+                return response()->json(['success' => false, 'message' => "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')})."]);
+            }
+        }
+
         $maxAmount = SystemSetting::get('loan_max_amount', 20000);
         $maxMonths = SystemSetting::get('loan_repayment_months', 36);
 
@@ -227,6 +241,21 @@ class LoanController extends Controller
             if ($monthsRemaining < $validated['months']) {
                 return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
                     ->with('error', 'المدة المتبقية لخدمة العضو أقل من فترة القرض المطلوبة.');
+            }
+        }
+
+        $minYearsSubscribed = floatval(SystemSetting::get('loan_min_years_subscribed', 0));
+        if ($minYearsSubscribed > 0) {
+            $firstPaidSubscription = $member->membershipInfo->subscriptions->where('status', 'paid')->sortBy('created_at')->first();
+            if (!$firstPaidSubscription) {
+                return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
+                    ->with('error', 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.');
+            }
+            
+            $yearsSubscribed = $firstPaidSubscription->created_at->diffInYears(now());
+            if ($yearsSubscribed < $minYearsSubscribed) {
+                return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
+                    ->with('error', "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')}).");
             }
         }
 

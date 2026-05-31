@@ -67,6 +67,21 @@ class LoanController extends Controller
             }
         }
 
+        $minYearsSubscribed = floatval(\App\Models\System\SystemSetting::get('loan_min_years_subscribed', 0));
+        if ($minYearsSubscribed > 0) {
+            $firstPaidSubscription = $member->membershipInfo->subscriptions->where('status', 'paid')->sortBy('created_at')->first();
+            if (!$firstPaidSubscription) {
+                return redirect()->route('member.loans.index')
+                    ->with('error', 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.');
+            }
+            
+            $yearsSubscribed = $firstPaidSubscription->created_at->diffInYears(now());
+            if ($yearsSubscribed < $minYearsSubscribed) {
+                return redirect()->route('member.loans.index')
+                    ->with('error', "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')}).");
+            }
+        }
+
         $maxAmount = \App\Models\System\SystemSetting::get('loan_max_amount', 20000);
         $maxMonths = \App\Models\System\SystemSetting::get('loan_repayment_months', 36);
 

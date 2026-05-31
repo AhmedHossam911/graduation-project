@@ -1,5 +1,5 @@
 @extends('layouts.app')
-{{-- 
+{{--
     Finance Index View:
     Central dashboard for managing incoming (revenues) and outgoing (expenses) financial transactions.
     Provides tabs to filter between all transactions, revenues only, and expenses only, with manual entry capabilities.
@@ -11,53 +11,20 @@
 
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/finance.css') }}">
-    <style>
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            div[id^="modal-detail-"]:not(.hidden) {
-                visibility: visible !important;
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                transform: none !important;
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 20px !important;
-                box-shadow: none !important;
-                background: white !important;
-            }
-
-            div[id^="modal-detail-"]:not(.hidden) * {
-                visibility: visible !important;
-            }
-
-            div[id^="modal-detail-"]:not(.hidden) .modal-close,
-            div[id^="modal-detail-"]:not(.hidden) .btns {
-                display: none !important;
-            }
-
-            /* Ensure text colors are dark for print */
-            .text-\[\#124375\],
-            .text-\[\#021219\] {
-                color: #000 !important;
-            }
-        }
-    </style>
     <div class="min-h-screen flex flex-col">
         <!-- start header -->
-        <div class="flex flex-col md:flex-row justify-between items-center px-4 md:px-12 py-4 md:py-5 gap-4 md:gap-0 text-center md:text-right print:hidden">
-            <div>
-                <h1 class="text-[32px] font-medium text-[s#124375]">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-12 py-4 md:py-5 gap-4 md:gap-0 text-right print:hidden">
+            <div class="w-full md:w-auto">
+                <h1 class="text-[32px] font-medium text-[#124375]">
                     المالية
                 </h1>
             </div>
-            <div class="btns flex items-center gap-3 w-full md:w-auto">
+            <div class="btns flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
                 <button data-modal="modal1"
                     class="open-modal w-full md:w-auto rounded-xl flex items-center justify-center py-3 px-6 md:px-20 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
-                    <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إضافة إيراد أو مصروف
+                    <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إضافة إيراد أو
+                    مصروف
                 </button>
                 <a href="{{ route('finance.export', request()->query()) }}"
                     class="rounded-xl w-full md:w-auto flex items-center justify-center py-3 gap-2 px-5 text-[#124375] bg-[#F4F7F9] navy-shadow">
@@ -108,17 +75,17 @@
 
         <!-- filteration buttons -->
         <form action="{{ route('finance.index') }}" method="GET"
-            class="px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-5 print:hidden">
+            class="px-4 md:px-12 flex flex-wrap items-center gap-4 print:hidden">
             <input type="hidden" name="active_tab" id="form-active-tab"
                 value="{{ request('active_tab', 'عدد الحركات اليوم') }}">
-            <div class="relative flex-1 w-full md:w-auto">
+            <div class="relative flex-grow min-w-[280px] w-full md:w-auto">
                 <input type="search" name="search" value="{{ request('search') }}"
                     placeholder="الاسم أو رقم العضوية أو رقم الحركة"
                     class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
                 <iconify-icon icon="mynaui:search"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
             </div>
-            <div class="relative w-full md:min-w-[200px]">
+            <div class="relative w-full md:mx-4 md:w-[200px] shrink-0">
                 @include('partials.common.calendar', [
                     'name' => 'date',
                     'id' => 'finance-datepicker',
@@ -126,7 +93,7 @@
                     'autoSubmit' => true,
                 ])
             </div>
-            <div class="relative w-full md:min-w-[200px]">
+            <div class="relative w-full md:w-[200px] shrink-0">
                 @php
                     $methodOptions = ['all' => 'الكل'] + $methodLabels;
                 @endphp
@@ -140,7 +107,7 @@
                     'autoSubmit' => true,
                 ])
             </div>
-            <div class="relative w-full md:min-w-[200px]">
+            <div class="relative w-full md:w-[200px] shrink-0">
                 @php
                     $categoryOptions = ['all' => 'الكل'] + $categoryLabels;
                 @endphp
@@ -154,10 +121,10 @@
                     'autoSubmit' => true,
                 ])
             </div>
-            <div class="w-full md:w-auto">
+            <div class="w-full md:w-auto shrink-0">
                 <button type="submit"
-                    class="bg-[#124375] w-full md:w-auto text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
-                    <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
+                    class="bg-[#124375] w-full md:w-auto text-white rounded-xl px-6 py-2.5 flex items-center justify-center hover:bg-[#0e3560] transition-colors surface-shadow">
+                    <iconify-icon icon="bitcoin-icons:search-outline" class="text-3xl"></iconify-icon>
                 </button>
             </div>
         </form>
@@ -166,79 +133,90 @@
         <!-- start table -->
         <section class="px-4 md:px-12 py-7 print:hidden">
             <!-- All Transactions Tab -->
-            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content border-0 md:border p-0 md:p-0 bg-transparent md:bg-white" data-tab="عدد الحركات اليوم">
+            <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content border-0 md:border p-0 md:p-0 bg-transparent md:bg-white"
+                data-tab="عدد الحركات اليوم">
                 <div class="hidden md:block">
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الحركة</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">التاريخ والوقت</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">بند الحركة</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">طريقة الدفع</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
-                            <th class="py-3 font-medium text-[#021219]">إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($transactions as $transaction)
-                            <tr class="text-center border-b border-[#6D6D6D]">
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة بعضو' }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}
-                                </td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->category_label }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ number_format($transaction->amount, 2) }} ج .م</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}
-                                </td>
-                                <td class="py-3 border-l border-[#6D6D6D] ">
-                                    @if ($transaction->type === 'IN')
-                                        <span
-                                            class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
-                                    @else
-                                        <span
-                                            class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
-                                    @endif
-                                </td>
-                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                    <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer"
-                                        data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
-                                </td>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الحركة</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">التاريخ والوقت</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">بند الحركة</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">طريقة الدفع</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
+                                <th class="py-3 font-medium text-[#021219]">إجراءات</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="8" class="py-4 text-center">
-                                    <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
-                                        class="w-48 mx-auto py-6">
-                                </td>
+                        </thead>
+                        <tbody>
+                            @forelse($transactions as $transaction)
+                                <tr class="text-center border-b border-[#6D6D6D]">
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة بعضو' }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->category_label }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ number_format($transaction->amount, 2) }} ج .م</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->method_label }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] ">
+                                        @if ($transaction->type === 'IN')
+                                            <span
+                                                class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
+                                        @else
+                                            <span
+                                                class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                        <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer"
+                                            data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="py-4 text-center">
+                                        <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
+                                            class="w-48 mx-auto py-6">
+                                    </td>
 
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
                 <!-- Mobile Cards -->
                 <div class="md:hidden flex flex-col gap-4">
                     @forelse($transactions as $transaction)
-                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-2 h-full {{ $transaction->type === 'IN' ? 'bg-[#067647]' : 'bg-[#D92D20]' }}"></div>
+                        <div
+                            class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div
+                                class="absolute top-0 right-0 w-2 h-full {{ $transaction->type === 'IN' ? 'bg-[#067647]' : 'bg-[#D92D20]' }}">
+                            </div>
                             <div class="flex justify-between items-start">
                                 <div class="flex flex-col gap-1 mr-3">
-                                    <h3 class="text-[#021219] font-bold text-lg">{{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
-                                    <span class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
+                                    <h3 class="text-[#021219] font-bold text-lg">
+                                        {{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
+                                    <span
+                                        class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-lg font-bold text-[#124375]">{{ number_format($transaction->amount, 2) }} ج.م</p>
+                                    <p class="text-lg font-bold text-[#124375]">
+                                        {{ number_format($transaction->amount, 2) }} ج.م</p>
                                     @if ($transaction->type === 'IN')
-                                        <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">إيراد</span>
+                                        <span
+                                            class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">إيراد</span>
                                     @else
-                                        <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">مصروف</span>
+                                        <span
+                                            class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">مصروف</span>
                                     @endif
                                 </div>
                             </div>
@@ -246,7 +224,8 @@
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
                                     <span class="text-[#6D6D6D]">التاريخ والوقت:</span>
-                                    <span class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
+                                    <span
+                                        class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
                                 </div>
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:tag" class="text-[#6D6D6D]"></iconify-icon>
@@ -260,7 +239,8 @@
                                 </div>
                             </div>
                             <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
-                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}" class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}"
+                                    class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
                                     <iconify-icon icon="solar:eye-outline" class="text-lg ml-2"></iconify-icon>
                                     التفاصيل
                                 </button>
@@ -279,74 +259,82 @@
             <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content hidden border-0 md:border p-0 md:p-0 bg-transparent md:bg-white"
                 data-tab="إجمالي الإيرادات">
                 <div class="hidden md:block">
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الحركة</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">التاريخ والوقت</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">بند الحركة</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">طريقة الدفع</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
-                            <th class="py-3 font-medium text-[#021219]">إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($revenueTransactions as $transaction)
-                            <tr class="text-center border-b border-[#6D6D6D]">
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->membership?->member?->user?->name ?? '-' }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->category_label }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ number_format($transaction->amount, 2) }} ج .م</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}
-                                </td>
-                                <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
-                                </td>
-                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                    <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer"
-                                        data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
-                                </td>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الحركة</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">التاريخ والوقت</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">بند الحركة</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">طريقة الدفع</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
+                                <th class="py-3 font-medium text-[#021219]">إجراءات</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="8" class="py-4 text-center">
-                                    <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
-                                        class="w-48 mx-auto py-6">
+                        </thead>
+                        <tbody>
+                            @forelse($revenueTransactions as $transaction)
+                                <tr class="text-center border-b border-[#6D6D6D]">
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->membership?->member?->user?->name ?? '-' }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->category_label }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ number_format($transaction->amount, 2) }} ج .م</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->method_label }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] "><span
+                                            class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">إيراد</span>
+                                    </td>
+                                    <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                        <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer"
+                                            data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="py-4 text-center">
+                                        <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
+                                            class="w-48 mx-auto py-6">
 
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
                 <!-- Mobile Cards -->
                 <div class="md:hidden flex flex-col gap-4">
                     @forelse($revenueTransactions as $transaction)
-                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                        <div
+                            class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-2 h-full bg-[#067647]"></div>
                             <div class="flex justify-between items-start">
                                 <div class="flex flex-col gap-1 mr-3">
-                                    <h3 class="text-[#021219] font-bold text-lg">{{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
-                                    <span class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
+                                    <h3 class="text-[#021219] font-bold text-lg">
+                                        {{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
+                                    <span
+                                        class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-lg font-bold text-[#124375]">{{ number_format($transaction->amount, 2) }} ج.م</p>
-                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">إيراد</span>
+                                    <p class="text-lg font-bold text-[#124375]">
+                                        {{ number_format($transaction->amount, 2) }} ج.م</p>
+                                    <span
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">إيراد</span>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2 mt-2 mr-3">
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
                                     <span class="text-[#6D6D6D]">التاريخ والوقت:</span>
-                                    <span class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
+                                    <span
+                                        class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
                                 </div>
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:tag" class="text-[#6D6D6D]"></iconify-icon>
@@ -360,7 +348,8 @@
                                 </div>
                             </div>
                             <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
-                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}" class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}"
+                                    class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
                                     <iconify-icon icon="solar:eye-outline" class="text-lg ml-2"></iconify-icon>
                                     التفاصيل
                                 </button>
@@ -379,74 +368,82 @@
             <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] tab-content hidden border-0 md:border p-0 md:p-0 bg-transparent md:bg-white"
                 data-tab="إجمالي المصروفات">
                 <div class="hidden md:block">
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الحركة</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">التاريخ والوقت</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">بند الحركة</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">طريقة الدفع</th>
-                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
-                            <th class="py-3 font-medium text-[#021219]">إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($expenseTransactions as $transaction)
-                            <tr class="text-center border-b border-[#6D6D6D]">
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->membership?->member?->user?->name ?? '-' }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $transaction->category_label }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ number_format($transaction->amount, 2) }} ج .م</td>
-                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $transaction->method_label }}
-                                </td>
-                                <td class="py-3 border-l border-[#6D6D6D] "><span
-                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
-                                </td>
-                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                    <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer"
-                                        data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
-                                </td>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الحركة</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">التاريخ والوقت</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">بند الحركة</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">طريقة الدفع</th>
+                                <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
+                                <th class="py-3 font-medium text-[#021219]">إجراءات</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="8" class="py-4 text-center">
-                                    <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
-                                        class="w-48 mx-auto py-6">
+                        </thead>
+                        <tbody>
+                            @forelse($expenseTransactions as $transaction)
+                                <tr class="text-center border-b border-[#6D6D6D]">
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->membership?->member?->user?->name ?? '-' }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->category_label }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ number_format($transaction->amount, 2) }} ج .م</td>
+                                    <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                        {{ $transaction->method_label }}
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D] "><span
+                                            class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">مصروف</span>
+                                    </td>
+                                    <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                        <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer"
+                                            data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="py-4 text-center">
+                                        <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND"
+                                            class="w-48 mx-auto py-6">
 
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
                 <!-- Mobile Cards -->
                 <div class="md:hidden flex flex-col gap-4">
                     @forelse($expenseTransactions as $transaction)
-                        <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                        <div
+                            class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
                             <div class="absolute top-0 right-0 w-2 h-full bg-[#D92D20]"></div>
                             <div class="flex justify-between items-start">
                                 <div class="flex flex-col gap-1 mr-3">
-                                    <h3 class="text-[#021219] font-bold text-lg">{{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
-                                    <span class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
+                                    <h3 class="text-[#021219] font-bold text-lg">
+                                        {{ $transaction->membership?->member?->user?->name ?? 'معاملة غير مربوطة' }}</h3>
+                                    <span
+                                        class="text-xs text-[#6D6D6D]">{{ $transaction->transaction_number ?? 'حركة-' . $transaction->id }}</span>
                                 </div>
                                 <div class="text-left">
-                                    <p class="text-lg font-bold text-[#124375]">{{ number_format($transaction->amount, 2) }} ج.م</p>
-                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">مصروف</span>
+                                    <p class="text-lg font-bold text-[#124375]">
+                                        {{ number_format($transaction->amount, 2) }} ج.م</p>
+                                    <span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs text-center mt-1">مصروف</span>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-2 mt-2 mr-3">
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
                                     <span class="text-[#6D6D6D]">التاريخ والوقت:</span>
-                                    <span class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
+                                    <span
+                                        class="text-[#021219] font-semibold">{{ $transaction->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</span>
                                 </div>
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:tag" class="text-[#6D6D6D]"></iconify-icon>
@@ -460,7 +457,8 @@
                                 </div>
                             </div>
                             <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
-                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}" class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                <button type="button" data-modal="modal-detail-{{ $transaction->id }}"
+                                    class="open-modal flex items-center justify-center bg-[#124375] text-white px-4 py-2 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
                                     <iconify-icon icon="solar:eye-outline" class="text-lg ml-2"></iconify-icon>
                                     التفاصيل
                                 </button>
@@ -632,7 +630,8 @@
                         <div class="space-y-5">
                             <div class="flex gap-3">
                                 <p class="text-[#124375] text-[16px] font-semibold">اسم العضو : <span
-                                        class="text-[#021219]">{{ $t->membership?->member?->user?->name ?? '-' }}</span></p>
+                                        class="text-[#021219]">{{ $t->membership?->member?->user?->name ?? '-' }}</span>
+                                </p>
                                 <p class="text-[#124375] text-[16px] font-semibold">رقم العضوية : <span
                                         class="text-[#021219]">{{ $t->membership?->membership_number ?? '-' }}</span></p>
                                 <p class="text-[#124375] text-[16px] font-semibold">المبلغ الإجمالي : <span
@@ -702,4 +701,3 @@
         </div>
     </div>
 @endsection
-

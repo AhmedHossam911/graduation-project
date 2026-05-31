@@ -1,6 +1,6 @@
 <!-- start SideBar -->
 <aside
-    class="w-fit SideBar px-4 py-5 bg-[#124375]  flex flex-col justify-between min-h-screen border-l border-[#124375]">
+    class="w-fit SideBar px-4 py-5 bg-[#124375]  flex flex-col justify-between min-h-screen border-l border-[#124375] overflow-y-auto custom-scrollbar pb-6">
     <div class="sidebar-pages flex flex-col  ">
         <a href="{{ route('member.dashboard') }}">
             <div class="flex gap-5 items-center border-b border-[#A8A8A8] pb-5">
@@ -39,7 +39,14 @@
             </a>
         </div>
     </div>
-    <div>
+    <div class="mt-8 flex flex-col gap-3">
+        <a href="{{ route('profile.index') }}"
+            class="md:hidden {{ request()->routeIs('profile.*') ? 'active bg-[#F4F7F933] side-bar-shadow' : '' }} cursor-pointer hover:bg-[#F4F7F933] hover:side-bar-shadow transition py-2 page  rounded-xl px-2 text-lg font-medium flex items-center gap-2  text-[#F4F7F9]">
+            <div>
+                <iconify-icon icon="boxicons:user-filled" class="text-3xl mt-1"></iconify-icon>
+            </div>
+            <p>الملف الشخصي</p>
+        </a>
         <form method="POST" action="{{ route('log-out') }}">
             @csrf
             <button type="submit"

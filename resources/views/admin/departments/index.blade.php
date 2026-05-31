@@ -14,22 +14,22 @@
 
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center py-4 md:py-7 px-4 md:px-12 gap-4 md:gap-0">
             <div class="flex flex-col gap-3">
-                <div class="flex gap-4 items-center">
+                <div class="flex flex-col md:flex-row gap-2 md:gap-4 items-start md:items-center">
                     <h1 class="text-xl text-[#124375] font-semibold">
                         إدارة كليات وقطاعات الجامعة
                     </h1>
-                    <div class="flex items-center text-[#019168] bg-[#F0FFF6] gap-2 px-1">
+                    <div class="flex items-center text-[#019168] bg-[#F0FFF6] gap-2 px-2 py-1 rounded-[6px]">
                         <p>إجمالي الأعضاء المسجلين :</p>
-                        <p class="mt-1">{{ number_format($totalMembers) }}</p>
+                        <p class="mt-1 font-bold">{{ number_format($totalMembers) }}</p>
                     </div>
                 </div>
                 <p class="text-[#6D6D6D] text-[16px] font-normal">
                     إدارة قائمة الكليات وتعديل بياناتها، ومتابعة الأعضاء المسجلين في كل قطاع.
                 </p>
             </div>
-            <div>
+            <div class="w-full md:w-auto">
                 <button
-                    class="open-modal cursor-pointer hover:bg-[#0e3560] transition-colors text-[16px] navy-shadow flex items-center justify-center gap-4 bg-[#124375] text-[#F4F7F9] py-2.5 px-20 rounded-[12px]"
+                    class="open-modal cursor-pointer hover:bg-[#0e3560] transition-colors text-[16px] navy-shadow flex items-center justify-center gap-4 bg-[#124375] text-[#F4F7F9] py-2.5 w-full md:w-auto px-6 md:px-20 rounded-[12px]"
                     data-modal="modal1">
                     <iconify-icon icon="ic:round-plus" class="text-2xl mt-1"></iconify-icon>
                     إضافة عنصر جديد
@@ -39,7 +39,7 @@
 
         <div class="px-4 md:px-12">
             <form action="{{ route('admin.departments.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-10 items-center navy-shadow rounded-[16px] py-5 px-3">
-                <div class="flex gap-2 col-span-3">
+                <div class="flex gap-2 col-span-1 md:col-span-3">
                     <div class="w-full relative">
                         <input name="search" value="{{ request('search') }}"
                             class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow w-full outline-none navy-shadow rounded-[10px] py-2 pr-8"
@@ -47,29 +47,29 @@
                         <iconify-icon icon="ri:search-line"
                             class="text-2xl text-[#124375] absolute top-1/2 -translate-y-1/2 right-1 "></iconify-icon>
                     </div>
-                    <button type="submit" class="bg-[#124375] rounded-[12px] px-8 navy-shadow hover:bg-[#0e3560] transition-colors">
+                    <button type="submit" class="bg-[#124375] rounded-[12px] px-6 md:px-8 shrink-0 navy-shadow hover:bg-[#0e3560] transition-colors">
                         <iconify-icon icon="ri:search-line"
                             class="text-2xl text-[#F4F7F9] flex items-center"></iconify-icon>
                     </button>
                 </div>
-                <div class="bg-[#EAF5FF] text-center py-2 px-3 rounded-[10px] col-span-1 tab-content"
+                <div class="bg-[#EAF5FF] text-center py-2 px-3 rounded-[10px] col-span-1 md:col-span-1 tab-content"
                     data-tab="الكليات الحالية">
-                    <p class="text-[#124375]">إجمالي الجهات :<span>{{ $totalActive }}</span></p>
+                    <p class="text-[#124375] text-sm md:text-base">إجمالي الجهات : <span class="font-bold">{{ $totalActive }}</span></p>
                 </div>
-                <div class="bg-[#FFEAE8] hidden text-center py-2 px-3 rounded-[10px] col-span-1 tab-content"
+                <div class="bg-[#FFEAE8] hidden text-center py-2 px-3 rounded-[10px] col-span-1 md:col-span-1 tab-content"
                     data-tab="الأرشيف">
-                    <p class="text-[#D92D20]">إجمالي الجهات :<span>{{ $totalArchived }}</span></p>
+                    <p class="text-[#D92D20] text-sm md:text-base">إجمالي الجهات : <span class="font-bold">{{ $totalArchived }}</span></p>
                 </div>
-                <div class="flex items-center bg-[#F4F7F9] navy-shadow md:col-span-2 py-2 px-3 gap-3 rounded-[8px]">
+                <div class="flex flex-col sm:flex-row items-center bg-[#F4F7F9] navy-shadow col-span-1 md:col-span-2 py-2 px-3 gap-3 rounded-[8px]">
                     <button type="button"
                         class="tab bg-[#124375] flex items-center navy-shadow gap-2 text-[#EEF7FF] w-full justify-center rounded-[8px] py-2 hover:bg-[#0e3560] transition-colors">
                         <iconify-icon icon="healthicons:yes" class="text-xl flex items-center"></iconify-icon>
-                        الكليات الحالية
+                        <span class="text-sm md:text-base whitespace-nowrap">الكليات الحالية</span>
                     </button>
                     <button type="button"
                         class="tab text-[#124375] bg-[#EEF7FF] flex items-center gap-2 border border-[#124375] w-full justify-center rounded-[8px] py-2">
                         <iconify-icon icon="fluent:archive-16-filled" class="text-xl  flex items-center"></iconify-icon>
-                        الأرشيف
+                        <span class="text-sm md:text-base whitespace-nowrap">الأرشيف</span>
                     </button>
                 </div>
             </form>

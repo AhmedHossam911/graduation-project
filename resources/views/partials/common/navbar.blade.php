@@ -1,4 +1,4 @@
-{{-- 
+{{--
     Global Navbar Partial:
     Top navigation bar containing the sidebar toggle, brand logo, notifications dropdown, and profile link.
 --}}
@@ -14,20 +14,22 @@
                         <div class="logo shrink-0">
                             <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" class="w-10 md:w-[54px] h-auto" />
                         </div>
-                        <h1 class="text-sm md:text-xl font-semibold hidden xs:block sm:block truncate">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-xl font-semibold hidden md:block truncate">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-xl font-semibold block md:hidden truncate">صندوق الزمالة</h1>
                     </a>
                 @else
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                         <div class="logo shrink-0">
                             <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" class="w-10 md:w-[54px] h-auto" />
                         </div>
-                        <h1 class="text-sm md:text-xl font-semibold hidden xs:block sm:block truncate">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-xl font-semibold hidden md:block truncate">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-sm font-semibold block md:hidden truncate">صندوق الزمالة</h1>
                     </a>
                 @endif
             </div>
-            <div class="flex items-center gap-4 text-[#124375] text-4xl z-50">
+            <div class="flex items-center gap-4 text-[#124375] z-50">
                 <div class="relative">
-                    <a class="cursor-pointer notification-btn relative flex items-center">
+                    <a class="cursor-pointer notification-btn relative flex items-center text-3xl md:text-4xl">
                         <iconify-icon icon="ion:notifcations"></iconify-icon>
                         @php
                             $unreadCount = auth()->user()->notifications()->whereNull('read_at')->count();
@@ -71,7 +73,7 @@
                             الإشعارات</a>
                     </div>
                 </div>
-                <a href="{{ route('profile.index') }}" class="cursor-pointer">
+                <a href="{{ route('profile.index') }}" class="cursor-pointer hidden md:block text-4xl">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>

@@ -3,27 +3,27 @@
 @section('title', 'المطالبات المعلقة وتحت التسوية')
 
 @section('content')
-    <div class="flex justify-between px-12 py-5 print:hidden">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-12 py-5 gap-4 md:gap-0 print:hidden">
         <div>
-            <h1 class="text-[32px] font-medium text-[#124375]">
+            <h1 class="text-[24px] md:text-[32px] font-medium text-[#124375]">
                 المطالبات المعلقة وتحت التسوية
             </h1>
-            <p class="text-[#6D6D6D] text-[16px] font-normal mt-2">طلبات الأعضاء قيد المراجعة التي لم يتم صرفها.</p>
+            <p class="text-[#6D6D6D] text-[14px] md:text-[16px] font-normal mt-2">طلبات الأعضاء قيد المراجعة التي لم يتم صرفها.</p>
         </div>
-        <div class="btns flex items-center gap-3">
+        <div class="btns flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <a href="{{ route('admin.reports.index') }}"
-                class="rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 العودة للتقارير
             </a>
             <a href="{{ route('claims.export', ['status' => 'pending', ...request()->query()]) }}"
-                class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل (Excel)
             </a>
         </div>
     </div>
 
     <!-- filteration buttons -->
-    <form action="{{ route('admin.reports.pending_claims') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
+    <form action="{{ route('admin.reports.pending_claims') }}" method="GET" class="px-4 md:px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
         <div class="relative flex-1 min-w-[200px]">
             @include('partials.common.calendar', [
                 'name' => 'date_from',
@@ -52,9 +52,9 @@
         </div>
     </form>
 
-    <section class="px-12 py-4 print:hidden">
-        <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">
-            <table class="w-full">
+    <section class="px-4 md:px-12 py-4 print:hidden">
+        <div class="rounded-[14px] overflow-hidden border-0 md:border border-[#6D6D6D]">
+            <table class="hidden md:table w-full">
                 <thead>
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم المطالبة</th>
@@ -88,6 +88,35 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <!-- Mobile Cards View -->
+            <div class="md:hidden flex flex-col gap-4">
+                @forelse($claims as $claim)
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-[#6D6D6D]/30 flex flex-col gap-3">
+                        <div class="flex justify-between items-start border-b border-gray-100 pb-2">
+                            <div>
+                                <h3 class="text-[#021219] font-bold text-lg">{{ $claim->membership->member->user->name }}</h3>
+                                <p class="text-sm text-[#6D6D6D]">رقم المطالبة: TRX-{{ $claim->id }}</p>
+                            </div>
+                            <div>
+                                @if($claim->status === 'approved')
+                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center text-sm">بانتظار التسوية</span>
+                                @elseif($claim->status === 'pending')
+                                    <span class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center text-sm">بانتظار الأعتماد</span>
+                                @else
+                                    <span class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-center text-sm">{{ $claim->status }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 text-sm text-[#021219]">
+                            <p><span class="text-[#6D6D6D] ml-1">النوع:</span> {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</p>
+                            <p><span class="text-[#6D6D6D] ml-1">تاريخ التقديم:</span> {{ $claim->created_at->format('Y-m-d') }}</p>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-4 text-gray-500 bg-white rounded-xl border border-gray-200">لا توجد مطالبات معلقة</div>
+                @endforelse
+            </div>
         </div>
     </section>
 @endsection

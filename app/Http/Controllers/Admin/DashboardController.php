@@ -164,23 +164,27 @@ class DashboardController extends Controller
 
         // If the query is numeric, search for specific loan records by their ID.
         if (is_numeric($q)) {
-            $loans = Loan::where('id', $q)->limit(3)->get();
+            $loans = Loan::with('membership.member.user')->where('id', $q)->limit(3)->get();
             foreach ($loans as $loan) {
+                $memberName = $loan->membership->member->user->name ?? 'غير معروف';
+                $memberId = $loan->membership->member->id ?? null;
                 $results[] = [
                     'type' => 'قرض',
-                    'title' => 'قرض رقم #' . $loan->id,
-                    'url' => route('loans.show', $loan->id),
+                    'title' => 'قرض يخص العضو: ' . $memberName,
+                    'url' => $memberId ? route('members.show', ['member' => $memberId, 'tab' => 'loans']) : route('loans.show', $loan->id),
                     'icon' => 'mdi:cash-multiple'
                 ];
             }
 
             // Also search for specific claim records by their ID if the query is numeric.
-            $claims = Claim::where('id', $q)->limit(3)->get();
+            $claims = Claim::with('membership.member.user')->where('id', $q)->limit(3)->get();
             foreach ($claims as $claim) {
+                $memberName = $claim->membership->member->user->name ?? 'غير معروف';
+                $memberId = $claim->membership->member->id ?? null;
                 $results[] = [
                     'type' => 'مطالبة',
-                    'title' => 'مطالبة رقم #' . $claim->id,
-                    'url' => route('claims.show', $claim->id),
+                    'title' => 'مطالبة تخص العضو: ' . $memberName,
+                    'url' => $memberId ? route('members.show', ['member' => $memberId, 'tab' => 'claims']) : route('claims.show', $claim->id),
                     'icon' => 'mdi:file-document-outline'
                 ];
             }

@@ -5,7 +5,7 @@
 --}}
 
         <!-- start SideBar -->
-        <aside class="SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375]">
+        <aside class="SideBar bg-[#EEF7FF] active flex flex-col justify-between min-h-screen border-l border-[#124375] overflow-y-auto custom-scrollbar pb-6">
             <div class="sidebar-pages flex flex-col  gap-5">
                 <a href="{{ route('dashboard') }}">
                         <div
@@ -60,7 +60,14 @@
                     </a>
                 @endpermission
             </div>
-            <div>
+            <div class="mt-8 flex flex-col gap-3">
+                <a href="{{ route('profile.index') }}" class="md:hidden">
+                    <div
+                        class="page rounded-xl text-lg font-medium px-4 py-3 flex items-center gap-3 {{ request()->routeIs('profile.*') ? 'bg-[#124375] text-white shadow-lg shadow-[#124375]/40' : 'surface-shadow text-[#124375] bg-[#F4F7F9] hover:bg-[#e2edf8] transition-all' }}">
+                        <iconify-icon icon="boxicons:user-filled" class="text-3xl"></iconify-icon>
+                        <p>الملف الشخصي</p>
+                    </div>
+                </a>
                 <div
                     class="page surface-shadow rounded-xl text-lg font-medium px-4 py-3 flex items-center gap-3 text-[#124375] bg-[#F4F7F9] hover:bg-[#e2edf8] transition-all ">
                     <form method="POST" action="{{ route('log-out') }}" class="flex items-center gap-2 w-full">

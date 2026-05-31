@@ -3,27 +3,27 @@
 @section('title', 'بيان الاستقطاعات والاشتراكات الشهرية')
 
 @section('content')
-    <div class="flex justify-between px-12 py-5 print:hidden">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-12 py-5 gap-4 md:gap-0 print:hidden">
         <div>
-            <h1 class="text-[32px] font-medium text-[#124375]">
+            <h1 class="text-[24px] md:text-[32px] font-medium text-[#124375]">
                 بيان الاستقطاعات والاشتراكات الشهرية
             </h1>
-            <p class="text-[#6D6D6D] text-[16px] font-normal mt-2">كشف إجمالي وتفصيلي بالاشتراكات المستقطعة من رواتب الأعضاء.</p>
+            <p class="text-[#6D6D6D] text-[14px] md:text-[16px] font-normal mt-2">كشف إجمالي وتفصيلي بالاشتراكات المستقطعة من رواتب الأعضاء.</p>
         </div>
-        <div class="btns flex items-center gap-3">
+        <div class="btns flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <a href="{{ route('admin.reports.index') }}"
-                class="rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 العودة للتقارير
             </a>
             <a href="{{ route('subscriptions.export', request()->query()) }}"
-                class="rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل (Excel)
             </a>
         </div>
     </div>
 
     <!-- filteration buttons -->
-    <form action="{{ route('admin.reports.subscriptions') }}" method="GET" class="px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
+    <form action="{{ route('admin.reports.subscriptions') }}" method="GET" class="px-4 md:px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
         <div class="relative flex-1 min-w-[200px]">
             @include('partials.common.calendar', [
                 'name' => 'date_from',
@@ -70,9 +70,9 @@
         </div>
     </form>
 
-    <section class="px-12 py-4 print:hidden">
-        <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D]">
-            <table class="w-full">
+    <section class="px-4 md:px-12 py-4 print:hidden">
+        <div class="rounded-[14px] overflow-hidden border-0 md:border border-[#6D6D6D]">
+            <table class="hidden md:table w-full">
                 <thead>
                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
@@ -106,6 +106,36 @@
                     @endforelse
                 </tbody>
             </table>
+
+            <!-- Mobile Cards View -->
+            <div class="md:hidden flex flex-col gap-4">
+                @forelse($subscriptions as $sub)
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-[#6D6D6D]/30 flex flex-col gap-3">
+                        <div class="flex justify-between items-start border-b border-gray-100 pb-2">
+                            <div>
+                                <h3 class="text-[#021219] font-bold text-lg">{{ $sub->membership->member->user->name }}</h3>
+                                <p class="text-sm text-[#6D6D6D]">رقم العضوية: {{ $sub->membership->membership_number }}</p>
+                            </div>
+                            <span class="text-[#124375] font-bold">{{ number_format($sub->amount, 2) }} ج.م</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm text-[#021219]">
+                            <div class="flex flex-col gap-1">
+                                <p><span class="text-[#6D6D6D] ml-1">الكلية:</span> {{ $sub->membership->member->department->name ?? '-' }}</p>
+                                <p><span class="text-[#6D6D6D] ml-1">الاستحقاق:</span> {{ $sub->due_date }}</p>
+                            </div>
+                            <div>
+                                @if($sub->status === 'paid')
+                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center text-sm min-w-[80px]">مدفوع</span>
+                                @else
+                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] px-3 rounded-[8px] py-[2px] inline-block text-center text-sm min-w-[80px]">غير مدفوع</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center py-4 text-gray-500 bg-white rounded-xl border border-gray-200">لا توجد بيانات</div>
+                @endforelse
+            </div>
         </div>
     </section>
 @endsection

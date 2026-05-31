@@ -74,25 +74,46 @@
 
     <form id="dashboardForm" action="{{ route('admin.dashboard') }}" method="GET"
         class="px-4 md:px-12 flex flex-col md:flex-row items-center justify-between gap-5 py-3">
-        <div class="relative flex-1">
+        <div class="relative flex-1 w-full">
             <input type="search" id="globalSearchInput" autocomplete="off"
+                data-search-url="{{ route('admin.search') }}"
                 placeholder="الاسم أو رقم العضوية أو رقم الحركة أو رقم القرض أو رقم المطالبة أو رقم الإيصال"
                 class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
             <iconify-icon icon="mynaui:search"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
 
-            <!-- Search Results Dropdown -->
-            <div id="searchResultsContainer"
-                class="hidden absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-lg border border-gray-100 z-50 max-h-96 overflow-y-auto">
-                <ul id="searchResultsList" class="py-2">
-                    <!-- Results will be injected here -->
-                </ul>
-                <div id="searchLoading" class="hidden py-4 text-center text-gray-500">جاري البحث...</div>
+            <!-- Search Results Modal -->
+            <div id="searchModalContainer" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4">
+                <!-- Overlay inside modal just for click-to-close if needed, or we use the global overlay -->
+                <div id="searchResultsModal" class="w-full max-w-4xl max-h-[90vh] bg-[#F4F7F9] rounded-2xl navy-shadow flex flex-col relative z-[71]">
+                    <div class="flex justify-between items-center p-4 border-b border-gray-200">
+                        <h2 class="text-xl font-bold text-[#124375] flex items-center gap-2">
+                            <iconify-icon icon="mynaui:search"></iconify-icon>
+                            نتائج البحث
+                        </h2>
+                        <button type="button" class="modal-close text-[#124375] text-2xl navy-shadow rounded p-1 hover:bg-gray-200 transition">
+                            <iconify-icon icon="weui:close-filled"></iconify-icon>
+                        </button>
+                    </div>
+                    <div class="overflow-y-auto p-4 flex-1">
+                        <div id="searchLoading" class="hidden py-10 text-center text-[#124375]">
+                            <iconify-icon icon="line-md:loading-loop" class="text-4xl"></iconify-icon>
+                            <p class="mt-2 font-medium">جاري البحث...</p>
+                        </div>
+                        <div id="noSearchResults" class="hidden py-10 text-center text-gray-500">
+                            <img src="{{ asset('IMGs/No-results.png') }}" alt="NOT FOUND" class="w-32 mx-auto mb-4">
+                            <p>لا توجد نتائج مطابقة للبحث</p>
+                        </div>
+                        <ul id="searchResultsList" class="flex flex-col gap-3">
+                            <!-- Results will be injected here via JS -->
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
 
         <input type="hidden" name="year" id="yearInput" value="{{ $year }}">
-        <div class="relative min-w-[150px]">
+        <div class="relative min-w-[150px] w-full md:w-auto">
             <button type="button"
                 class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-2 rounded-xl text-base flex gap-3 justify-center items-center">التاريخ
                 :<span class="text-[#021219]">{{ $year }}</span><span class="flex items-center"><iconify-icon
@@ -106,10 +127,10 @@
                 @endforeach
             </div>
         </div>
-        <div>
+        <div class="w-full md:w-auto">
             <button type="submit"
-                class="bg-[#124375] text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
-                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
+                class="w-full bg-[#124375] text-white rounded-xl px-6 py-2 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-3xl "></iconify-icon>
             </button>
         </div>
     </form>
@@ -170,14 +191,7 @@
                                 <td class="py-3 px-4 border border-gray-200">{{ number_format($transaction->amount) }} ج.م
                                 </td>
                                 <td class="py-3 px-4 border border-gray-200">
-                                    @if (Route::has('finance.show'))
-                                        <a href="{{ route('finance.show', $transaction->id) }}"
-                                            class="text-[#124375] hover:text-[#0e3560]">
-                                            <iconify-icon icon="mdi:eye" class="text-xl"></iconify-icon>
-                                        </a>
-                                    @else
-                                        <iconify-icon icon="mdi:eye" class="text-xl opacity-50"></iconify-icon>
-                                    @endif
+                                    <iconify-icon icon="solar:eye-outline" class="open-modal text-xl cursor-pointer hover:text-[#0e3560]" data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
                                 </td>
                             </tr>
                         @empty
@@ -206,11 +220,9 @@
                             <div class="flex justify-between items-center mt-1">
                                 <span class="font-bold text-[#124375] text-lg">{{ number_format($transaction->amount) }} ج.م</span>
                                 @if (Route::has('finance.show'))
-                                    <a href="{{ route('finance.show', $transaction->id) }}" class="text-[#124375] hover:text-[#0e3560] p-2 bg-white rounded-lg shadow-sm border">
-                                        <iconify-icon icon="mdi:eye" class="text-xl"></iconify-icon>
-                                    </a>
+                                    <iconify-icon icon="solar:eye-outline" class="open-modal text-2xl cursor-pointer text-[#124375] hover:text-[#0e3560] p-2 bg-white rounded-lg shadow-sm border" data-modal="modal-detail-{{ $transaction->id }}"></iconify-icon>
                                 @else
-                                    <iconify-icon icon="mdi:eye" class="text-xl opacity-50"></iconify-icon>
+                                    <iconify-icon icon="solar:eye-outline" class="text-2xl opacity-50 p-2 bg-white rounded-lg shadow-sm border"></iconify-icon>
                                 @endif
                             </div>
                         </div>
@@ -252,6 +264,88 @@
             }
         </style>
     </div>
+
+    <!-- Overlay and Modals -->
+    <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60] print:hidden"></div>
+
+    @foreach ($latestDisbursements as $t)
+        <!-- Detail Modal for TRX {{ $t->id }} -->
+        <div id="modal-detail-{{ $t->id }}"
+            class="hidden w-[95%] md:w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button type="button"
+                class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-4 md:px-12 py-4">
+                <div class="space-y-7">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div class="space-y-2">
+                            <h1 class="text-[20px] text-[#124375] font-semibold">تفاصيل الحركة</h1>
+                            <div class="flex gap-2 text-[#6D6D6D] text-sm md:text-[16px] font-medium flex-wrap">
+                                <p>رقم الحركة : <span>{{ $t->transaction_number ?? 'حركة-' . $t->id }}</span></p>
+                                <span>/</span>
+                                <p>{{ $t->created_at->locale('ar')->translatedFormat('d F Y - h:i A') }}</p>
+                            </div>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 px-4 py-1 rounded-[10px] {{ $t->type === 'IN' ? 'bg-[#ECFDF3] text-[#067647]' : 'bg-[#FFEAE8] text-[#D92D20]' }}">
+                            <iconify-icon
+                                icon="{{ $t->type === 'IN' ? 'ph:arrow-down-left-bold' : 'ph:arrow-up-right-bold' }}"
+                                class="text-3xl mt-1"></iconify-icon>
+                            <p class="text-[16px] font-medium">{{ $t->type_label }}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-5">
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <p class="text-[#124375] text-[16px] font-semibold w-full md:w-1/3">اسم العضو : <span
+                                    class="text-[#021219]">{{ $t->membership?->member?->user?->name ?? '-' }}</span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold w-full md:w-1/3">رقم العضوية : <span
+                                    class="text-[#021219]">{{ $t->membership?->membership_number ?? '-' }}</span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold w-full md:w-1/3">المبلغ الإجمالي : <span
+                                    class="text-[#021219]">{{ number_format($t->amount, 2) }}</span></p>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-3">
+                            <p class="text-[#124375] text-[16px] font-semibold w-full md:w-1/3">بند الحركة : <span
+                                    class="text-[#021219]">{{ $t->category_label }}</span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold w-full md:w-1/3">طريقة الدفع : <span
+                                    class="text-[#021219]">{{ $t->method_label }}</span></p>
+                            <p class="text-[#124375] text-[16px] font-semibold w-full md:w-1/3">بواسطة : <span
+                                    class="text-[#021219]">{{ $t->creator?->name ?? '-' }}</span></p>
+                        </div>
+                        <div class="pt-2">
+                            <div class="relative w-full">
+                                <label
+                                    class="absolute bg-[#F4F7F9] text-[#124375] text-[16px] font-medium top-[-15px] right-4 px-1">البيان</label>
+                                <textarea readonly
+                                    class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition w-full rounded-[12px] outline-none border border-[#124375] bg-[#F4F7F9] px-2 py-3 resize-none">{{ $t->description ?? '-' }}</textarea>
+                            </div>
+                        </div>
+
+                        @if ($t->attachment_path)
+                            <div class="w-full">
+                                <div
+                                    class="border border-[#124375] rounded-[12px] py-4 text-[#124375] flex items-center justify-center gap-1">
+                                    <iconify-icon icon="solar:paperclip-outline" class="text-2xl mt-1"></iconify-icon>
+                                    <a href="{{ asset('storage/' . $t->attachment_path) }}" target="_blank"
+                                        class="text-[#124375] font-medium underline mt-1 block">عرض المرفق</a>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="btns flex gap-4 mt-8 no-print print:hidden">
+                    <div class="w-full">
+                        <button type="button"
+                            onclick="window.open('{{ route('print.transaction', $t->id) }}', '_blank')"
+                            class=" rounded-[14px] w-full py-3 bg-[#124375] navy-shadow text-[#F4F7F9] text-base font-medium flex items-center justify-center gap-2">
+                            <iconify-icon icon="fluent:save-16-filled" class="text-2xl mt-1"></iconify-icon>
+                            طباعة الإيصال
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

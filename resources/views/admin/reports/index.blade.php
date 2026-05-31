@@ -1,5 +1,5 @@
 @extends('layouts.app')
-{{-- 
+{{--
     Reports View:
     The central hub for generating and viewing all financial, administrative, and statistical reports.
 --}}
@@ -23,23 +23,23 @@
 
     <!-- start tabs -->
     <div class="px-4 md:px-12">
-        <div class="tabs grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] px-4 py-5 text-center">
-            <button class="active-tab text-[16px]">
+        <div class="tabs flex flex-nowrap md:grid md:grid-cols-3 lg:grid-cols-6 overflow-x-auto no-scrollbar gap-3 lg:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] px-4 py-5 text-center">
+            <button class="active-tab text-[16px] whitespace-nowrap px-4 md:px-2">
                 كافة التقارير
             </button>
-            <button class="tab  text-[16px] ">
+            <button class="tab  text-[16px] whitespace-nowrap px-4 md:px-2">
                 المالية والخزينة
             </button>
-            <button class="tab text-[16px] ">
+            <button class="tab text-[16px] whitespace-nowrap px-4 md:px-2">
                 الاشتراكات والعضوية
             </button>
-            <button class="tab  text-[16px] ">
+            <button class="tab  text-[16px] whitespace-nowrap px-4 md:px-2">
                 القروض والسلف
             </button>
-            <button class="tab text-[16px] ">
+            <button class="tab text-[16px] whitespace-nowrap px-4 md:px-2">
                 المزايا والمطالبات
             </button>
-            <button class="tab  text-[16px] ">
+            <button class="tab  text-[16px] whitespace-nowrap px-4 md:px-2">
                 إحصائيات إدارية
             </button>
         </div>
@@ -50,7 +50,7 @@
     <section class="px-4 md:px-12 py-10">
         <div data-tab="كافة التقارير" class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
-                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#019168] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="famicons:wallet" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -78,7 +78,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#019168] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="ri:pie-chart-fill" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -106,7 +106,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#124375] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="material-symbols:list-alt-check-rounded"
@@ -135,7 +135,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#124375] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="mdi:clock-alert" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -163,7 +163,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#D4AF37] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="fluent:money-16-filled" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -191,7 +191,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#D4AF37] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="ion:cash" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -221,7 +221,7 @@
 
         <div data-tab="المالية والخزينة" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
-                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#019168] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="famicons:wallet" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -249,7 +249,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#019168] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="ri:pie-chart-fill" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -279,7 +279,7 @@
 
         <div data-tab="الاشتراكات والعضوية" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
-                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#124375] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="material-symbols:list-alt-check-rounded"
@@ -308,7 +308,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#124375] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="mdi:clock-alert" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -338,7 +338,7 @@
 
         <div data-tab="القروض والسلف" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
-                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#D4AF37] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="ion:cash" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -366,7 +366,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#D4AF37] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="fluent:money-16-filled" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -396,7 +396,7 @@
 
         <div data-tab="المزايا والمطالبات" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
-                class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#E11D48] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="iconamoon:invoice-fill" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -424,7 +424,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#E11D48] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="uil:calender" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -454,7 +454,7 @@
 
         <div data-tab="إحصائيات إدارية" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
-                class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#5925DC] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="bi:buildings-fill" class="text-3xl text-[#F0FFF6]"></iconify-icon>
@@ -482,7 +482,7 @@
             </div>
 
             <div
-                class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-7 px-9">
+                class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
                     <div class="bg-[#5925DC] rounded-[12px] py-3 px-3 flex items-center">
                         <iconify-icon icon="mdi:file-clock" class="text-3xl text-[#F0FFF6]"></iconify-icon>

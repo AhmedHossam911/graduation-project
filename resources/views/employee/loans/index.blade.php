@@ -1,5 +1,5 @@
 @extends('layouts.app')
-{{-- 
+{{--
     Loans Index View (Employee):
     Overview of all loans across the system, categorized by status (Active, Pending, Overdue).
     Allows creating new loan requests and registering manual installment payments.
@@ -11,13 +11,13 @@
     @include('partials.common.flash')
     <link rel="stylesheet" href="{{ asset('css/employee/loans.css') }}">
     <!-- start header -->
-    <div class="flex flex-col md:flex-row justify-between items-center px-4 py-4 md:py-5 gap-4 md:gap-0 text-center md:text-right print:hidden">
-        <div>
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 py-4 md:py-5 gap-4 md:gap-0 print:hidden">
+        <div class="w-full text-right md:w-auto">
             <h1 class="text-[32px] font-medium text-[#124375]">
                 القروض
             </h1>
         </div>
-        <div class="btns flex items-center gap-3 w-full md:w-auto">
+        <div class="btns flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
             <button data-target="createLoanModal"
                 class="open-modal w-full md:w-auto rounded-xl flex items-center justify-center py-3 px-6 md:px-16 gap-2 text-[#F4F7F9] bg-[#124375] navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ic:round-plus" class="flex items-center text-2xl"></iconify-icon> إنشاء طلب قرض جديد
@@ -69,24 +69,24 @@
     <!-- end cards -->
 
     <!-- filteration buttons -->
-    <form action="{{ route('loans.index') }}" method="GET" class="px-4 flex flex-col md:flex-row items-center justify-between gap-5 print:hidden">
-        <div class="relative flex-1 w-full md:w-auto">
+    <form action="{{ route('loans.index') }}" method="GET" class="px-4 flex flex-wrap items-center gap-4 print:hidden">
+        <div class="relative flex-grow min-w-[280px] w-full md:w-auto">
             <input type="search" name="search" value="{{ request('search') }}"
                 placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي أو رقم القرض"
                 class="pr-10 pl-4 py-2.5 w-full outline-none navy-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow"></input>
             <iconify-icon icon="mynaui:search"
                 class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
         </div>
-        <div class="relative w-full md:min-w-[240px]">
+        <div class="relative w-full md:w-[240px] shrink-0">
             @include('partials.common.calendar', [
                 'name' => 'date',
-                'id' => 'subscriptions-datepicker',
+                'id' => 'loans-datepicker',
                 'value' => request('date'),
                 'autoSubmit' => true,
             ])
         </div>
 
-        <div class="relative w-full md:min-w-[200px]">
+        <div class="relative w-full md:w-[200px] shrink-0">
             @php
 
                 $statusMapping = [
@@ -115,11 +115,10 @@
             ])
         </div>
 
-
-        <div class="w-full md:w-auto">
+        <div class="w-full md:w-auto shrink-0">
             <button type="submit"
-                class="bg-[#124375] w-full md:w-auto text-white rounded-xl px-6 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
-                <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
+                class="bg-[#124375] w-full md:w-auto text-white rounded-xl px-6 py-2.5 flex items-center justify-center hover:bg-[#0e3560] transition-colors surface-shadow">
+                <iconify-icon icon="bitcoin-icons:search-outline" class="text-3xl"></iconify-icon>
             </button>
         </div>
     </form>
@@ -218,10 +217,10 @@
                     @php
                         $paidAmount = $loan->installments->where('status', 'paid')->sum('amount');
                         $remaining = $loan->total_amount - $paidAmount;
-                        
+
                         $statusColor = 'bg-[#EFEFEF] text-[#6D6D6D] border-[#6D6D6D]';
                         $statusLabel = $loan->status;
-                        
+
                         if ($loan->status === 'overdue') {
                             $statusColor = 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]';
                             $statusLabel = 'متأخر';
@@ -253,7 +252,7 @@
                                 {{ $statusLabel }}
                             </span>
                         </div>
-                        
+
                         <div class="grid grid-cols-2 gap-2 mt-2">
                             <div class="bg-[#F4F7F9] p-2 rounded-lg border border-[#1243751A] flex flex-col items-center justify-center">
                                 <span class="text-[#6D6D6D] text-xs">قيمة القرض</span>
@@ -269,7 +268,7 @@
                             <span class="text-[#6D6D6D]">المبلغ المسدد:</span>
                             <span class="text-[#067647] font-semibold">{{ number_format($paidAmount) }} ج.م</span>
                         </div>
-                        
+
                         <div class="flex gap-2 justify-center mt-2 pt-3 border-t border-gray-100">
                             <a href="{{ route('members.show', ['member' => $loan->membership->member_id, 'tab' => 'loans']) }}"
                                 class="flex-1 flex justify-center items-center gap-2 border border-[#124375] bg-white py-2 rounded-[8px] text-[#124375] text-sm hover:bg-[#F4F7F9]">
@@ -482,7 +481,7 @@
 @endsection
 
 @section('pagination')
-    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80 z-[100]">
+    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80 ">
         {{ $loans->links() }}
     </div>
 @endsection

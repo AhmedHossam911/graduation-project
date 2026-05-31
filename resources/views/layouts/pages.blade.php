@@ -19,33 +19,33 @@
 
 <body class="bg-[#F4F7F9] text-slate-800 min-h-screen flex flex-col antialiased">
     <!-- start header -->
-    <header class="bg-[#EEF7FF] border border-[#124375] px-7 py-3">
-        <nav class="flex items-center justify-between  ">
-            <div class="flex items-center gap-3 text-[#124375]">
+    <header class="bg-[#EEF7FF] border-b border-[#124375] px-4 md:px-7 py-3">
+        <nav class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-3 md:gap-5 text-[#124375]">
 
                 <a href="{{ back()->getTargetUrl() }}"
-                    class="text-lg w-[76px] h-[42px] bg-[#124375] text-[#EEF7FF] text-center rounded-lg flex items-center justify-center shadow-md cursor-pointer px-12 py-6">
-                    <iconify-icon icon="ooui:previous-rtl" class="text-lg"></iconify-icon>
-                    <span class="text-lg mr-2">رجوع</span>
+                    class="bg-[#124375] text-[#EEF7FF] rounded-lg flex items-center justify-center shadow-md cursor-pointer px-4 md:px-6 py-2 transition-colors hover:bg-opacity-90 shrink-0">
+                    <iconify-icon icon="ooui:previous-rtl" class="text-base md:text-lg"></iconify-icon>
+                    <span class="text-sm md:text-lg mr-1 md:mr-2">رجوع</span>
                 </a>
 
                 @if (auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                        <div class="logo">
-                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 md:gap-3">
+                        <div class="logo shrink-0">
+                            <img class="w-10 md:w-[54px]" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
                         </div>
-                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-sm md:text-xl font-semibold">صندوق الزمالة</h1>
                     </a>
                 @else
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
-                        <div class="logo">
-                            <img style="width: 54px" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-2 md:gap-3">
+                        <div class="logo shrink-0">
+                            <img class="w-10 md:w-[54px]" src="{{ asset('IMGs/Hu Logo 1.png') }}" alt="logo" />
                         </div>
-                        <h1 class="text-xl font-semibold">صندوق الزمالة - جامعة العاصمة</h1>
+                        <h1 class="text-sm md:text-xl font-semibold">صندوق الزمالة</h1>
                     </a>
                 @endif
             </div>
-            <div class="flex items-center gap-4 text-[#124375] text-4xl z-50">
+            <div class="flex items-center gap-3 md:gap-4 text-[#124375] text-3xl md:text-4xl z-50 shrink-0">
                 <div class="relative">
                     <a class="cursor-pointer notification-btn">
                         <iconify-icon icon="ion:notifcations"></iconify-icon>
@@ -83,7 +83,7 @@
                             الإشعارات</a>
                     </div>
                 </div>
-                <a href="{{ route('profile.index') }}" class="cursor-pointer">
+                <a href="{{ route('profile.index') }}" class="cursor-pointer hidden">
                     <iconify-icon icon="boxicons:user-filled"></iconify-icon>
                 </a>
             </div>

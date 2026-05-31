@@ -363,7 +363,7 @@
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:percent" class="text-primary text-[20px]"></iconify-icon>
-                                    <span>نسبة الميزة في حالة النقل / الاستقالة (%)</span>
+                                    <span>نسبة الميزة في النقل / الاستقالة (%)</span>
                                 </label>
                                 <div class="relative">
                                     <input type="number" name="claim_transfer_resignation_percentage"
@@ -392,7 +392,7 @@
                             </div>
 
                             <!-- MIN YEARS -->
-                            <div class="relative">
+                            {{-- <div class="relative">
                                 <label
                                     class="absolute -top-5 right-5 bg-[#F7F9FC] px-3 py-0.5 text-[#124375] text-[16px] font-bold z-10 flex items-center gap-2">
                                     <iconify-icon icon="mdi:history" class="text-primary text-[20px]"></iconify-icon>
@@ -404,7 +404,7 @@
                                         class="w-full rounded-md py-2 bg-[#F7F9FC] border-2 text-[18px] text-[#021219] text-center {{ $errors->has('claim_min_years_subscribed') ? 'border-[#D92D20]' : 'border-[#1e5a97]' }} bg-white px-6 text-[18px] font-bold outline-none"
                                         required>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
