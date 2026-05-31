@@ -313,6 +313,15 @@ class SubscriptionController extends Controller
                     }
                 }
             }
+
+            $user = $subscription->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تم تسجيل سداد اشتراك',
+                    'message' => 'تم تسجيل سداد اشتراكك (' . $subscription->name . ') بنجاح.',
+                ]);
+            }
         });
 
         return back()->with('success', 'تم تسجيل سداد الاشتراك بنجاح.');
@@ -323,10 +332,24 @@ class SubscriptionController extends Controller
      */
     public function notify(Request $request, Subscription $subscription)
     {
-        // TODO: Implement the business logic to verify conditions before sending the formal notice to the member.
-        // ... backend logic here ...
+        if ($subscription->status === 'unpaid' && \Carbon\Carbon::parse($subscription->due_date)->addMonths(6)->isPast() && is_null($subscription->notice_sent_at)) {
+            $subscription->update([
+                'notice_sent_at' => now()
+            ]);
 
-        return back()->with('success', 'تم إرسال الإخطار بنجاح.');
+            $user = $subscription->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'إخطار رسمي بتأخر السداد',
+                    'message' => 'نحيطكم علماً بضرورة سداد الاشتراك المستحق لتجنب إيقاف العضوية.',
+                ]);
+            }
+
+            return back()->with('success', 'تم إرسال الإخطار المسجل وتحديث الحالة.');
+        }
+
+        return back()->with('error', 'لا يمكن إرسال الإخطار لهذا الاشتراك. قد لا يكون متأخراً أكثر من 6 أشهر أو تم إرسال إخطار مسبقاً.');
     }
 
     public function viewReceipt(Subscription $subscription)

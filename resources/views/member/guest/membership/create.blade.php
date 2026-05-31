@@ -81,7 +81,8 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('phone_digits') text-[#D92D20] @elseif($errors->has('phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     التليفون <span class="text-[#D92D20]">*</span></label>
-                                <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3" dir="ltr">
+                                <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3"
+                                    dir="ltr">
                                     @php
                                         $phoneStr = old('phone', $user->member->phone ?? '');
                                         $phoneDigits = str_split(str_pad($phoneStr, 11, ' ', STR_PAD_LEFT));
@@ -104,11 +105,12 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('landline_digits') text-[#D92D20] @elseif($errors->has('landline_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     هاتف المنزل</label>
-                                <div class="grid grid-cols-[repeat(8,minmax(0,max-content))] gap-1 md:gap-2 justify-end py-3 px-2 md:px-3" dir="ltr">
+                                <div class="grid grid-cols-[repeat(8,minmax(0,max-content))] gap-1 md:gap-2 justify-end py-3 px-2 md:px-3"
+                                    dir="ltr">
                                     @for ($i = 0; $i < 8; $i++)
                                         <input type="tel" name="landline_digits[]"
-                                            value="{{ old('landline_digits.' . $i) }}"
-                                            placeholder="{{ $i + 1 }}" maxlength="1"
+                                            value="{{ old('landline_digits.' . $i) }}" placeholder="{{ $i + 1 }}"
+                                            maxlength="1"
                                             class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-14 max-w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
@@ -127,7 +129,8 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('national_id_digits') text-[#D92D20] @elseif($errors->has('national_id_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الرقم
                                     القومي <span class="text-[#D92D20]">*</span></label>
-                                <div class="grid grid-cols-[repeat(14,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3" dir="ltr">
+                                <div class="grid grid-cols-[repeat(14,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3"
+                                    dir="ltr">
                                     @php
                                         $nidStr = old('national_id', $user->member->user->national_id ?? '');
                                         $nidDigits = str_split(str_pad($nidStr, 14, ' ', STR_PAD_LEFT));
@@ -204,7 +207,7 @@
                                     'placeholder' => 'أختر',
                                     'required' => true,
                                     'floatingLabel' => true,
-                                    'showConfirm' => true,
+                                    'showConfirm' => false,
                                 ])
                             </div>
                         </div>
@@ -348,7 +351,8 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('spouse_phone_digits') text-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب</label>
-                                <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-2 justify-end py-3 px-2 md:px-3" dir="ltr">
+                                <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-2 justify-end py-3 px-2 md:px-3"
+                                    dir="ltr">
                                     @for ($i = 0; $i < 11; $i++)
                                         <input type="tel" name="spouse_phone_digits[]"
                                             value="{{ old('spouse_phone_digits.' . $i) }}"
@@ -591,4 +595,3 @@
         <script src="{{ asset('js/member/MembershipForm.js') }}?v={{ time() }}"></script>
 
     @endsection
- 

@@ -203,19 +203,26 @@ class LoanController extends Controller
             'total_amount'     => ['required', 'numeric'],
             'months'           => ['required', 'integer'],
             'declaration_file' => ['required', 'file', 'mimes:pdf,png,jpg,jpeg', 'max:5120'],
+        ], [
+            'total_amount.required' => 'يرجى تحديد قيمة القرض.',
+            'total_amount.numeric' => 'قيمة القرض يجب أن تكون رقماً.',
+            'months.required' => 'يرجى تحديد مدة السداد.',
+            'months.integer' => 'مدة السداد يجب أن تكون رقماً صحيحاً.',
+            'declaration_file.required' => 'يرجى إرفاق ملف الإقرار.',
+            'declaration_file.file' => 'الملف المرفق غير صالح.',
+            'declaration_file.mimes' => 'يجب أن يكون ملف الإقرار بصيغة PDF, PNG, JPG, أو JPEG.',
+            'declaration_file.max' => 'حجم ملف الإقرار يجب ألا يتجاوز 5 ميجابايت.',
         ]);
 
         $member = Member::with(['membershipInfo.loans', 'membershipInfo.subscriptions'])->findOrFail($validated['member_id']);
 
         if (!$member->membershipInfo) {
-            return redirect()->route('loans.index')
-                ->with('error', 'لا يوجد عضوية مسجلة لهذا العضو.');
+            return back()->withInput()->with('error', 'لا يوجد عضوية مسجلة لهذا العضو.');
         }
 
         $forbiddenStatuses = ['pending_registration', 'pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
         if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
-            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                ->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
+            return back()->withInput()->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
         }
 
         // Enforce business rule: A member is only allowed to have one active or pending loan at a time.
@@ -224,23 +231,20 @@ class LoanController extends Controller
             ->exists();
 
         if ($hasActiveLoan) {
-            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                ->with('error', 'يوجد قرض نشط بالفعل لهذا العضو. لا يمكن إنشاء قرض جديد.');
+            return back()->withInput()->with('error', 'يوجد قرض نشط بالفعل لهذا العضو. لا يمكن إنشاء قرض جديد.');
         }
 
         // Enforce business rule: The total amount of paid subscriptions must be greater than or equal to the requested loan amount.
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
-            return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                ->with('error', "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م).");
+            return back()->withInput()->with('error', "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م).");
         }
 
         if ($member->employmentInfo && $member->employmentInfo->retirement_date) {
             $retirementDate = Carbon::parse($member->employmentInfo->retirement_date);
             $monthsRemaining = now()->startOfDay()->diffInMonths($retirementDate, false);
             if ($monthsRemaining < $validated['months']) {
-                return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                    ->with('error', 'المدة المتبقية لخدمة العضو أقل من فترة القرض المطلوبة.');
+                return back()->withInput()->with('error', 'المدة المتبقية لخدمة العضو أقل من فترة القرض المطلوبة.');
             }
         }
 
@@ -248,14 +252,12 @@ class LoanController extends Controller
         if ($minYearsSubscribed > 0) {
             $firstPaidSubscription = $member->membershipInfo->subscriptions->where('status', 'paid')->sortBy('created_at')->first();
             if (!$firstPaidSubscription) {
-                return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                    ->with('error', 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.');
+                return back()->withInput()->with('error', 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.');
             }
             
             $yearsSubscribed = $firstPaidSubscription->created_at->diffInYears(now());
             if ($yearsSubscribed < $minYearsSubscribed) {
-                return redirect()->route('members.show', ['member' => $member->id, 'tab' => 'قروض'])
-                    ->with('error', "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')}).");
+                return back()->withInput()->with('error', "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')}).");
             }
         }
 
@@ -288,6 +290,28 @@ class LoanController extends Controller
 
             // Audit log
             $this->logAudit('create', 'loans', $loan->id, null, $loan->toArray());
+
+            $user = $member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تم تسجيل طلب القرض بنجاح',
+                    'message' => 'لقد تم تقديم طلب القرض الخاص بك وهو الآن قيد المراجعة.',
+                ]);
+            }
+
+            $admins = \App\Models\Auth\User::whereHas('role', function($q) {
+                $q->where('name', 'Admin');
+            })->orWhereJsonContains('custom_permissions', 'إدارة القروض')->get();
+            foreach ($admins as $admin) {
+                if ($admin->id !== auth()->id()) {
+                    \App\Models\Auth\Notification::create([
+                        'user_id' => $admin->id,
+                        'title'   => 'تسجيل طلب قرض جديد',
+                        'message' => 'تم تسجيل طلب قرض جديد للعضو ' . ($user ? $user->name : 'غير معروف') . ' وبانتظار الاعتماد.',
+                    ]);
+                }
+            }
 
             return $loan;
         });

@@ -27,19 +27,24 @@ class LoanController extends Controller
         $validated = $request->validate([
             'total_amount'     => ['required', 'numeric'],
             'months'           => ['required', 'integer'],
+        ], [
+            'total_amount.required' => 'يرجى تحديد قيمة القرض.',
+            'total_amount.numeric' => 'قيمة القرض يجب أن تكون رقماً.',
+            'months.required' => 'يرجى تحديد مدة السداد.',
+            'months.integer' => 'مدة السداد يجب أن تكون رقماً صحيحاً.',
         ]);
 
         $user = Auth::user();
         $member = $user->member;
 
         if (!$member || !$member->membershipInfo) {
-            return redirect()->route('member.loans.index')
+            return back()->withInput()
                 ->with('error', 'لا يوجد عضوية مسجلة.');
         }
 
         $forbiddenStatuses = ['pending_registration', 'pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
         if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
-            return redirect()->route('member.loans.index')
+            return back()->withInput()
                 ->with('error', 'وفقاً لحالة العضوية الحالية، لا يمكن إنشاء القرض.');
         }
 
@@ -48,13 +53,13 @@ class LoanController extends Controller
             ->exists();
 
         if ($hasActiveLoan) {
-            return redirect()->route('member.loans.index')
+            return back()->withInput()
                 ->with('error', 'يوجد قرض نشط أو قيد الانتظار بالفعل.');
         }
 
         $totalPaidSubscriptions = $member->membershipInfo->subscriptions->where('status', 'paid')->sum('amount');
         if ($totalPaidSubscriptions < $validated['total_amount']) {
-            return redirect()->route('member.loans.index')
+            return back()->withInput()
                 ->with('error', "إجمالي الاشتراكات المدفوعة ({$totalPaidSubscriptions} ج.م) لا يغطي قيمة القرض المطلوبة ({$validated['total_amount']} ج.م).");
         }
 
@@ -62,7 +67,7 @@ class LoanController extends Controller
             $retirementDate = \Carbon\Carbon::parse($member->employmentInfo->retirement_date);
             $monthsRemaining = now()->startOfDay()->diffInMonths($retirementDate, false);
             if ($monthsRemaining < $validated['months']) {
-                return redirect()->route('member.loans.index')
+                return back()->withInput()
                     ->with('error', 'المدة المتبقية لخدمتك أقل من فترة القرض المطلوبة.');
             }
         }
@@ -71,13 +76,13 @@ class LoanController extends Controller
         if ($minYearsSubscribed > 0) {
             $firstPaidSubscription = $member->membershipInfo->subscriptions->where('status', 'paid')->sortBy('created_at')->first();
             if (!$firstPaidSubscription) {
-                return redirect()->route('member.loans.index')
+                return back()->withInput()
                     ->with('error', 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.');
             }
             
             $yearsSubscribed = $firstPaidSubscription->created_at->diffInYears(now());
             if ($yearsSubscribed < $minYearsSubscribed) {
-                return redirect()->route('member.loans.index')
+                return back()->withInput()
                     ->with('error', "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')}).");
             }
         }
@@ -86,12 +91,12 @@ class LoanController extends Controller
         $maxMonths = \App\Models\System\SystemSetting::get('loan_repayment_months', 36);
 
         if ($validated['total_amount'] > $maxAmount) {
-            return redirect()->route('member.loans.index')
+            return back()->withInput()
                 ->with('error', 'قيمة القرض تتجاوز الحد الأقصى المسموح به.');
         }
 
         if ($validated['months'] > $maxMonths) {
-            return redirect()->route('member.loans.index')
+            return back()->withInput()
                 ->with('error', 'مدة القرض تتجاوز الحد الأقصى المسموح به.');
         }
 

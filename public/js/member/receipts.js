@@ -2,12 +2,19 @@
 const openModalBtns = document.querySelectorAll(".open-modal")
 const overlay = document.querySelector(".overlay")
 // end modals variables
-const copyBtn = document.querySelector(".copy-btn")
-const instaPayValue = document.querySelector(".insta-pay-value").textContent
-
-copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(instaPayValue)
-})
+// handle copy buttons
+const copyBtns = document.querySelectorAll(".copy-btn");
+copyBtns.forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        const container = e.target.closest('.flex');
+        if (container) {
+            const valueEl = container.querySelector(".insta-pay-value");
+            if (valueEl) {
+                navigator.clipboard.writeText(valueEl.textContent);
+            }
+        }
+    });
+});
 
 // modals logic
 openModalBtns.forEach((btn) => {

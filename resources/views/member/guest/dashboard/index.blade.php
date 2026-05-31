@@ -12,19 +12,7 @@
         <main class="flex-1">
             <div class="py-7 px-4 md:px-7 space-y-9">
                 <!-- start alerts -->
-                @if (session('success'))
-                    <div class="flex items-center gap-3 bg-[#F0FFF6] text-[#019168] border border-[#019168] rounded-xl px-5 py-4 surface-shadow">
-                        <iconify-icon icon="material-symbols:check-circle" class="text-3xl"></iconify-icon>
-                        <p class="font-bold text-[16px]">{{ session('success') }}</p>
-                    </div>
-                @endif
-
-                @if (session('error'))
-                    <div class="flex items-center gap-3 bg-[#FFE4E6] text-[#D92D20] border border-[#D92D20] rounded-xl px-5 py-4 surface-shadow">
-                        <iconify-icon icon="material-symbols:error" class="text-3xl"></iconify-icon>
-                        <p class="font-bold text-[16px]">{{ session('error') }}</p>
-                    </div>
-                @endif
+                @include('partials.common.flash')
                 <!-- end alerts -->
 
                 <!-- start header main -->

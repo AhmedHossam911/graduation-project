@@ -99,9 +99,10 @@ class CheckOverdueSubscriptions extends Command
                 }
 
                 // Notify the administration team about the automated suspension so they can take further manual action if needed.
-                $employees = \App\Models\Auth\User::whereHas('roles', function($q) {
-                    $q->whereIn('name', ['General Admin', 'Membership Employee']);
-                })->get();
+                $employees = \App\Models\Auth\User::whereHas('role', function($q) {
+                    $q->where('name', 'Admin');
+                })->orWhereJsonContains('custom_permissions', 'إدارة الأعضاء')
+                  ->orWhereJsonContains('custom_permissions', 'إدارة الاشتراكات')->get();
 
                 foreach ($employees as $emp) {
                     \App\Models\Auth\Notification::create([

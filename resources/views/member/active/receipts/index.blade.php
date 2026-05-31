@@ -8,13 +8,74 @@
 
     <div class="py-7 px-4 md:px-12">
         <div class="flex flex-col gap-3">
-            <h1 class="text-xl text-[#124375]  font-semibold">
+            <h1 class="text-xl text-[#124375] font-semibold">
                 الإيصالات
             </h1>
             <p class="text-[#6D6D6D] text-[16px] font-normal">
                 سجل بجميع الإيصالات وحالة الدفع الخاصة بك
             </p>
         </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="px-4 md:px-12 mb-7">
+        <form method="GET" action="{{ route('member.receipts.index') }}" class="bg-[#F4F7F9] surface-shadow rounded-[16px] p-5 flex flex-col md:flex-row gap-5 items-center mt-4">
+            <div class="w-full md:w-1/4">
+                @include('partials.common.dropdown', [
+                    'name' => 'type',
+                    'label' => 'نوع الإيصال',
+                    'options' => [
+                        '' => 'الكل',
+                        'اشتراك شهرية' => 'اشتراك شهري',
+                        'قسط قرض' => 'قسط قرض',
+                    ],
+                    'selected' => request('type'),
+                ])
+            </div>
+
+            <div class="w-full md:w-1/4">
+                @include('partials.common.dropdown', [
+                    'name' => 'status',
+                    'label' => 'حالة الدفع',
+                    'options' => [
+                        '' => 'الكل',
+                        'paid' => 'مدفوع',
+                        'pending' => 'مستحق',
+                    ],
+                    'selected' => request('status'),
+                ])
+            </div>
+
+            <div class="w-full md:w-1/4">
+                @include('partials.common.calendar', [
+                    'name' => 'date_from',
+                    'id' => 'date_from',
+                    'label' => 'من تاريخ',
+                    'value' => request('date_from'),
+                ])
+            </div>
+
+            <div class="w-full md:w-1/4">
+                @include('partials.common.calendar', [
+                    'name' => 'date_to',
+                    'id' => 'date_to',
+                    'label' => 'إلى تاريخ',
+                    'value' => request('date_to'),
+                ])
+            </div>
+
+            <div class="flex gap-2 w-full md:w-auto">
+                <button type="submit" class="bg-[#124375] hover:bg-[#0e3560] text-white px-6 py-2 rounded-[8px] font-medium transition-colors w-full md:w-auto flex justify-center items-center gap-2">
+                    <iconify-icon icon="mingcute:filter-line" class="text-xl"></iconify-icon>
+                    تصفية
+                </button>
+                @if(request()->hasAny(['type', 'status', 'date_from', 'date_to']))
+                    <a href="{{ route('member.receipts.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-[8px] font-medium transition-colors flex justify-center items-center">
+                        إلغاء
+                    </a>
+                @endif
+            </div>
+        </form>
     </div>
 
 
@@ -113,7 +174,7 @@
                             <iconify-icon icon="ion:document" class="text-xl mt-1 text-[#124375]"></iconify-icon>
                             <p class="text-[#6D6D6D] text-[14px] font-medium">رقم العضوية</p>
                         </div>
-                        <p class="text-[#021219] font-medium text-[16px]">{{ $user->member?->membership_no ?? '-' }}</p>
+                        <p class="text-[#021219] font-medium text-[16px]">{{ $user->member->membershipInfo->membership_number ?? '-' }}</p>
                     </div>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
@@ -174,14 +235,6 @@
                     </div>
                 </div>
                 @endif
-            </div>
-            <div class="btns flex gap-4 shrink-0 px-9 mt-7">
-                <div class="w-full">
-                    <button
-                        class=" rounded-[14px] w-full py-3  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] surface-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
-                                icon="material-symbols:download-rounded"
-                                class="flex items-center text-2xl"></iconify-icon></span>تحميل PDF</button>
-                </div>
             </div>
         </div>
     @endforeach

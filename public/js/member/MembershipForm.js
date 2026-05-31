@@ -33,13 +33,13 @@ function handleInputs(Inputs) {
     if (!Inputs || Inputs.length === 0) return;
     Inputs.forEach((input, index) => {
         input.addEventListener("input", (e) => {
-            if (e.target.value.length === 1 && Inputs[index - 1]) {
-                Inputs[index - 1].focus();
+            if (e.target.value.length === 1 && Inputs[index + 1]) {
+                Inputs[index + 1].focus();
             }
         });
         input.addEventListener("keydown", (e) => {
-            if (e.key === "Backspace" && e.target.value.length === 0 && Inputs[index + 1]) {
-                Inputs[index + 1].focus();
+            if (e.key === "Backspace" && e.target.value.length === 0 && Inputs[index - 1]) {
+                Inputs[index - 1].focus();
             }
         });
     });

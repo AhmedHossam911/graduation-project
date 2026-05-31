@@ -44,6 +44,24 @@ class ReceiptController extends Controller
                 ]);
             }
             
+            // Apply Filters
+            if ($request->filled('type')) {
+                $allReceipts = $allReceipts->where('type', $request->type);
+            }
+            if ($request->filled('status')) {
+                $allReceipts = $allReceipts->where('status', $request->status);
+            }
+            if ($request->filled('date_from')) {
+                $allReceipts = $allReceipts->filter(function ($receipt) use ($request) {
+                    return $receipt->date >= $request->date_from;
+                });
+            }
+            if ($request->filled('date_to')) {
+                $allReceipts = $allReceipts->filter(function ($receipt) use ($request) {
+                    return $receipt->date <= $request->date_to;
+                });
+            }
+            
             $allReceipts = $allReceipts->sortByDesc('date')->values();
             
             // Manual pagination

@@ -352,6 +352,16 @@ class MemberController extends Controller
             'ip_address' => $request->ip()
         ]);
 
-        return back()->with('success', 'تم إرسال الإخطار المسجل وتحديث الحالة.');
+        // Create an in-app notification for the member
+        $user = $member->user ?? null;
+        if ($user) {
+            \App\Models\Auth\Notification::create([
+                'user_id' => $user->id,
+                'title'   => 'إخطار رسمي بتأخر السداد',
+                'message' => 'نحيطكم علماً بضرورة سداد الاشتراكات المتأخرة لتجنب إيقاف العضوية وفقاً للوائح الصندوق.',
+            ]);
+        }
+
+        return back()->with('success', 'تم إرسال الإخطار المسجل وتحديث الحالة بإرسال إشعار للعضو.');
     }
 }

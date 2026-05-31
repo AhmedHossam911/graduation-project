@@ -54,17 +54,44 @@ class MembershipController extends Controller
 
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
-            'birth_day'              => ['required', 'integer', 'between:1,31'],
+            'birth_day'              => [
+                'required', 'integer', 'between:1,31',
+                function ($attribute, $value, $fail) use ($request) {
+                    $month = $request->input('birth_month');
+                    $year = $request->input('birth_year');
+                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
+                        $fail('تاريخ الميلاد المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                    }
+                }
+            ],
             'birth_month'            => ['required', 'integer', 'between:1,12'],
             'birth_year'             => ['required', 'integer', 'between:1900,2100'],
             'address'                => ['required', 'string', 'max:1000'],
             'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
 
             'financial_category'     => ['required', 'string', 'max:255'],
-            'hire_day'               => ['required', 'integer', 'between:1,31'],
+            'hire_day'               => [
+                'required', 'integer', 'between:1,31',
+                function ($attribute, $value, $fail) use ($request) {
+                    $month = $request->input('hire_month');
+                    $year = $request->input('hire_year');
+                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
+                        $fail('تاريخ استلام العمل المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                    }
+                }
+            ],
             'hire_month'             => ['required', 'integer', 'between:1,12'],
             'hire_year'              => ['required', 'integer', 'between:1900,2100'],
-            'retirement_day'         => ['required', 'integer', 'between:1,31'],
+            'retirement_day'         => [
+                'required', 'integer', 'between:1,31',
+                function ($attribute, $value, $fail) use ($request) {
+                    $month = $request->input('retirement_month');
+                    $year = $request->input('retirement_year');
+                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
+                        $fail('تاريخ الإحالة للمعاش المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                    }
+                }
+            ],
             'retirement_month'       => ['required', 'integer', 'between:1,12'],
             'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
             'salary'                 => ['required', 'numeric', 'min:0'],
@@ -101,11 +128,12 @@ class MembershipController extends Controller
         ]);
 
         try {
-            $this->memberService->registerMembership($member, $validated, $request);
+            $result = $this->memberService->registerMembership($member, $validated, $request);
+            $totalFee = number_format($result['totalFee'], 2);
 
             return redirect()
                 ->route('member.dashboard')
-                ->with('success', 'تم تقديم طلب الاشتراك بنجاح. يرجى الانتظار لحين المراجعة والموافقة.');
+                ->with('success', "تم تقديم طلب الاشتراك بنجاح. يرجى سداد رسوم الانضمام وقدرها ({$totalFee} جنيه).");
 
         } catch (Exception $e) {
             return redirect()->back()->withInput()->withErrors([

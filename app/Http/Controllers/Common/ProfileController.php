@@ -35,6 +35,14 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
+        ], [
+            'name.required' => 'حقل الاسم مطلوب.',
+            'name.string' => 'يجب أن يكون الاسم نصاً.',
+            'name.max' => 'يجب ألا يتجاوز الاسم 255 حرفاً.',
+            'email.required' => 'حقل البريد الإلكتروني مطلوب.',
+            'email.email' => 'يجب إدخال بريد إلكتروني صحيح.',
+            'email.max' => 'يجب ألا يتجاوز البريد الإلكتروني 255 حرفاً.',
+            'email.unique' => 'البريد الإلكتروني مسجل مسبقاً.',
         ]);
 
         $user->update($validated);

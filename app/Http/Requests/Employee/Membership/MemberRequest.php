@@ -32,7 +32,16 @@ class MemberRequest extends FormRequest
             'phone_digits.*'         => ['nullable', 'digits:1'],
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
-            'birth_day'              => ['required', 'integer', 'between:1,31'],
+            'birth_day'              => [
+                'required', 'integer', 'between:1,31',
+                function ($attribute, $value, $fail) {
+                    $month = $this->input('birth_month');
+                    $year = $this->input('birth_year');
+                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
+                        $fail('تاريخ الميلاد المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                    }
+                }
+            ],
             'birth_month'            => ['required', 'integer', 'between:1,12'],
             'birth_year'             => ['required', 'integer', 'between:1900,2100'],
             'address'                => ['nullable', 'string', 'max:1000'],
@@ -40,10 +49,28 @@ class MemberRequest extends FormRequest
             'employer_name'          => ['required', 'string', 'max:255'],
             'job_title'              => ['required', 'string', 'max:255'],
             'financial_category'     => ['required', 'string', 'max:255'],
-            'hire_day'               => ['required', 'integer', 'between:1,31'],
+            'hire_day'               => [
+                'required', 'integer', 'between:1,31',
+                function ($attribute, $value, $fail) {
+                    $month = $this->input('hire_month');
+                    $year = $this->input('hire_year');
+                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
+                        $fail('تاريخ استلام العمل المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                    }
+                }
+            ],
             'hire_month'             => ['required', 'integer', 'between:1,12'],
             'hire_year'              => ['required', 'integer', 'between:1900,2100'],
-            'retirement_day'         => ['required', 'integer', 'between:1,31'],
+            'retirement_day'         => [
+                'required', 'integer', 'between:1,31',
+                function ($attribute, $value, $fail) {
+                    $month = $this->input('retirement_month');
+                    $year = $this->input('retirement_year');
+                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
+                        $fail('تاريخ الإحالة للمعاش المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                    }
+                }
+            ],
             'retirement_month'       => ['required', 'integer', 'between:1,12'],
             'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
             'salary'                 => ['required', 'numeric', 'min:0'],

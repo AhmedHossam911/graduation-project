@@ -23,6 +23,17 @@ class ProfileController extends Controller
             'name'  => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'phone' => ['required', 'string', 'max:20'],
+        ], [
+            'name.required' => 'حقل الاسم مطلوب.',
+            'name.string' => 'يجب أن يكون الاسم نصاً.',
+            'name.max' => 'يجب ألا يتجاوز الاسم 255 حرفاً.',
+            'email.required' => 'حقل البريد الإلكتروني مطلوب.',
+            'email.email' => 'يجب إدخال بريد إلكتروني صحيح.',
+            'email.max' => 'يجب ألا يتجاوز البريد الإلكتروني 255 حرفاً.',
+            'email.unique' => 'البريد الإلكتروني مسجل مسبقاً.',
+            'phone.required' => 'حقل رقم التليفون مطلوب.',
+            'phone.string' => 'يجب أن يكون رقم التليفون نصاً.',
+            'phone.max' => 'يجب ألا يتجاوز رقم التليفون 20 حرفاً.',
         ]);
 
         $user->update([

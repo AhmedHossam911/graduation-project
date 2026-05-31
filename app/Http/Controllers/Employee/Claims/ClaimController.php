@@ -156,6 +156,28 @@ class ClaimController extends Controller
             // Log the creation of this new claim for auditing purposes.
             $this->logAudit('create', 'claims', $claim->id, null, $claim->toArray());
 
+            $user = $member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'تم تسجيل المطالبة بنجاح',
+                    'message' => 'لقد تم تقديم المطالبة الخاصة بك وهي الآن قيد المراجعة.',
+                ]);
+            }
+
+            $admins = \App\Models\Auth\User::whereHas('role', function($q) {
+                $q->where('name', 'Admin');
+            })->orWhereJsonContains('custom_permissions', 'إدارة المطالبات')->get();
+            foreach ($admins as $admin) {
+                if ($admin->id !== auth()->id()) {
+                    \App\Models\Auth\Notification::create([
+                        'user_id' => $admin->id,
+                        'title'   => 'تسجيل مطالبة جديدة',
+                        'message' => 'تم تسجيل مطالبة جديدة للعضو ' . ($user ? $user->name : 'غير معروف') . ' وبانتظار الاعتماد.',
+                    ]);
+                }
+            }
+
             return $claim;
         });
 
