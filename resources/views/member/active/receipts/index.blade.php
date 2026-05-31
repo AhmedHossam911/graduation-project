@@ -186,5 +186,5 @@
         </div>
     @endforeach
 
-    <script src="{{ asset('JS/member/receipts.js') }}"></script>
+    <script src="{{ asset('js/member/receipts.js') }}"></script>
 @endsection

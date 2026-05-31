@@ -81,16 +81,16 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('phone_digits') text-[#D92D20] @elseif($errors->has('phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     التليفون <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex flex-wrap gap-1 md:gap-3 justify-end py-3 px-2 md:px-3">
+                                <div class="flex flex-nowrap gap-1 sm:gap-2 justify-center py-3 px-1 md:px-3" dir="ltr">
                                     @php
                                         $phoneStr = old('phone', $user->member->phone ?? '');
                                         $phoneDigits = str_split(str_pad($phoneStr, 11, ' ', STR_PAD_LEFT));
                                     @endphp
-                                    @for ($i = 10; $i >= 0; $i--)
+                                    @for ($i = 0; $i <= 10; $i++)
                                         <input type="tel" name="phone_digits[]"
-                                            value="{{ old('phone_digits.' . (10 - $i), trim($phoneDigits[10 - $i] ?? '')) }}"
-                                            placeholder="{{ $i }}" maxlength="1" disabled
-                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                            value="{{ old('phone_digits.' . $i, trim($phoneDigits[$i] ?? '')) }}"
+                                            placeholder="0" maxlength="1" disabled
+                                            class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[3rem] min-w-[1rem] py-1 input-shadow bg-[#E8EDF2] text-center text-sm md:text-base cursor-not-allowed">
                                     @endfor
                                 </div>
                                 @if ($errors->has('phone_digits') || $errors->has('phone_digits.*'))
@@ -104,12 +104,12 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('landline_digits') text-[#D92D20] @elseif($errors->has('landline_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     هاتف المنزل</label>
-                                <div class="flex flex-wrap gap-1 md:gap-2 justify-end py-3 px-2 md:px-3">
-                                    @for ($i = 7; $i >= 0; $i--)
+                                <div class="flex flex-nowrap gap-1 md:gap-2 justify-center py-3 px-2 md:px-3" dir="ltr">
+                                    @for ($i = 0; $i <= 7; $i++)
                                         <input type="tel" name="landline_digits[]"
-                                            value="{{ old('landline_digits.' . (7 - $i)) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
-                                            class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-14 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            value="{{ old('landline_digits.' . $i) }}"
+                                            placeholder="0" maxlength="1"
+                                            class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[3rem] min-w-[1.25rem] py-1 input-shadow bg-[#F4F7F9] text-center text-sm md:text-base">
                                     @endfor
                                 </div>
                                 @if ($errors->has('landline_digits') || $errors->has('landline_digits.*'))
@@ -127,16 +127,16 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('national_id_digits') text-[#D92D20] @elseif($errors->has('national_id_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الرقم
                                     القومي <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex flex-wrap gap-1 md:gap-3 justify-end py-3 px-2 md:px-3">
+                                <div class="flex flex-nowrap gap-0.5 sm:gap-1 justify-center py-3 px-1 md:px-3" dir="ltr">
                                     @php
                                         $nidStr = old('national_id', $user->member->user->national_id ?? '');
                                         $nidDigits = str_split(str_pad($nidStr, 14, ' ', STR_PAD_LEFT));
                                     @endphp
-                                    @for ($i = 13; $i >= 0; $i--)
+                                    @for ($i = 0; $i <= 13; $i++)
                                         <input type="text" name="national_id_digits[]"
-                                            value="{{ old('national_id_digits.' . (13 - $i), trim($nidDigits[13 - $i] ?? '')) }}"
-                                            placeholder="{{ $i + 1 }}" maxlength="1" disabled
-                                            class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-9 md:w-16 text-xs md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                            value="{{ old('national_id_digits.' . $i, trim($nidDigits[$i] ?? '')) }}"
+                                            placeholder="0" maxlength="1" disabled
+                                            class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[2.5rem] min-w-[10px] sm:min-w-[1rem] py-1 input-shadow bg-[#E8EDF2] text-center text-xs md:text-sm cursor-not-allowed px-0">
                                     @endfor
                                 </div>
                                 @error('national_id_digits')
@@ -157,10 +157,10 @@
                                 <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     <input type="text" id="birth_day" name="birth_day" value="{{ old('birth_day') }}"
                                         placeholder="اليوم" maxlength="2"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[100px] text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" id="birth_month" name="birth_month"
                                         value="{{ old('birth_month') }}" placeholder="الشهر" maxlength="2"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[100px] text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" id="birth_year" name="birth_year" value="{{ old('birth_year') }}"
                                         placeholder="السنة" maxlength="4"
                                         class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
@@ -280,10 +280,10 @@
                                 <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     <input type="text" name="hire_day" value="{{ old('hire_day') }}"
                                         placeholder="اليوم" maxlength="2"
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[100px] text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="hire_month" value="{{ old('hire_month') }}"
                                         placeholder="الشهر" maxlength="2"
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[100px] text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     <input type="text" name="hire_year" value="{{ old('hire_year') }}"
                                         placeholder="السنة" maxlength="4"
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
@@ -302,11 +302,11 @@
                                 <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
                                     <input type="text" id="retirement_day" name="retirement_day"
                                         value="{{ old('retirement_day') }}" placeholder="اليوم" maxlength="2" readonly
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[100px] text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     <input type="text" id="retirement_month" name="retirement_month"
                                         value="{{ old('retirement_month') }}" placeholder="الشهر" maxlength="2"
                                         readonly
-                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                        class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[100px] text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                     <input type="text" id="retirement_year" name="retirement_year"
                                         value="{{ old('retirement_year') }}" placeholder="السنة" maxlength="4" readonly
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
@@ -348,12 +348,12 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('spouse_phone_digits') text-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب</label>
-                                <div class="flex flex-wrap gap-1 md:gap-2 justify-end py-3 px-2 md:px-3">
-                                    @for ($i = 10; $i >= 0; $i--)
+                                <div class="flex flex-nowrap gap-1 md:gap-2 justify-center py-3 px-1 md:px-3" dir="ltr">
+                                    @for ($i = 0; $i <= 10; $i++)
                                         <input type="tel" name="spouse_phone_digits[]"
-                                            value="{{ old('spouse_phone_digits.' . (10 - $i)) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
-                                            class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-24 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                            value="{{ old('spouse_phone_digits.' . $i) }}"
+                                            placeholder="0" maxlength="1"
+                                            class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md flex-1 max-w-[3rem] min-w-[1rem] py-1 input-shadow bg-[#F4F7F9] text-center text-sm md:text-base">
                                     @endfor
                                 </div>
                                 @if ($errors->has('spouse_phone_digits') || $errors->has('spouse_phone_digits.*'))
@@ -588,6 +588,6 @@
                 }
             }
         </script>
-        <script src="{{ asset('JS/member/MembershipForm.js') }}?v={{ time() }}"></script>
+        <script src="{{ asset('js/member/MembershipForm.js') }}?v={{ time() }}"></script>
 
     @endsection

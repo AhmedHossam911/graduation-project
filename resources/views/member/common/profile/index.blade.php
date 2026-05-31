@@ -145,5 +145,5 @@
         </form>
     </section>
 
-    <script src="{{ asset('JS/member/memberProfile.js') }}"></script>
+    <script src="{{ asset('js/member/memberProfile.js') }}"></script>
 @endsection

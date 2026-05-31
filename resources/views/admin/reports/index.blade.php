@@ -511,6 +511,6 @@
         </div>
     </section>
 
-    <script src="{{ asset('JS/admin/reports.js') }}"></script>
+    <script src="{{ asset('js/admin/reports.js') }}"></script>
 @endsection
 

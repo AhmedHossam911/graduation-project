@@ -681,7 +681,7 @@
         @endforeach
     </div>
 
-    <script src="{{ asset('JS/employee/finance.js') }}"></script>
+    <script src="{{ asset('js/employee/finance.js') }}"></script>
 @endsection
 
 @section('pagination')

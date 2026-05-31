@@ -41,7 +41,7 @@
             </div>
         </main>
     </div>
-    <script src="{{ asset('JS/layouts/Dashboard.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/layouts/Dashboard.js') }}?v={{ time() }}"></script>
     @stack('scripts')
 </body>
 

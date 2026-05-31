@@ -49,5 +49,5 @@
         </div>
     </section>
 
-    <script src="{{ asset('JS/member/memberNotification.js') }}"></script>
+    <script src="{{ asset('js/member/memberNotification.js') }}"></script>
 @endsection

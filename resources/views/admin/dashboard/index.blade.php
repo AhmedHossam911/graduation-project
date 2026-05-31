@@ -506,5 +506,5 @@
         </script>
     @endpush
 
-    <script src="{{ asset('JS/admin/dashboard.js') }}"></script>
+    <script src="{{ asset('js/admin/dashboard.js') }}"></script>
 @endsection

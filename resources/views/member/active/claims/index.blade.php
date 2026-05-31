@@ -729,6 +729,6 @@
         </form>
     </section>
 
-    <script src="{{ asset('JS/member/memberClaims.js') }}"></script>
+    <script src="{{ asset('js/member/memberClaims.js') }}"></script>
 
 @endsection

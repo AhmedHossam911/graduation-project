@@ -240,6 +240,6 @@
         </main>
     </div>
 
-    <script src="{{ asset('JS/member/memberhome.js') }}"></script>
+    <script src="{{ asset('js/member/memberhome.js') }}"></script>
 
 @endsection

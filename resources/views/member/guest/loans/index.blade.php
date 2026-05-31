@@ -34,6 +34,6 @@
         </div>
     </div>
 
-    <script src="{{ asset('JS/member/memberLoan.js') }}"></script>
+    <script src="{{ asset('js/member/memberLoan.js') }}"></script>
 
 @endsection

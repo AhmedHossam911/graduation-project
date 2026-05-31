@@ -445,6 +445,6 @@
             }
         };
     </script>
-    <script src="{{ asset('JS/employee/dashboard.js') }}?v={{ time() }}"></script>
+    <script src="{{ asset('js/employee/dashboard.js') }}?v={{ time() }}"></script>
 @endsection
 

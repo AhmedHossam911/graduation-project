@@ -212,7 +212,10 @@ class AuthController extends Controller
                 'is_restricted' => true
             ]);
 
-            $department = Department::firstOrCreate(['name' => 'Pending Registration']);
+            $department = Department::where('name', $request->workplace)->first();
+            if (!$department) {
+                $department = Department::firstOrCreate(['name' => $request->workplace]);
+            }
 
             $member = Member::create([
                 'user_id' => $user->id,

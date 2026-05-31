@@ -93,5 +93,5 @@
         </main>
     </div>
 
-    <script src="{{ asset('JS/member/guestHome.js') }}"></script>
+    <script src="{{ asset('js/member/guestHome.js') }}"></script>
 @endsection

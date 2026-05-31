@@ -446,7 +446,7 @@
     @endforeach
 
     <!-- MODALS -->
-    <script src="{{ asset('JS/employee/claims.js') }}"></script>
+    <script src="{{ asset('js/employee/claims.js') }}"></script>
 @endsection
 
 @section('pagination')
