@@ -1,4 +1,4 @@
-{{-- 
+{{--
     Custom Dropdown Component Partial:
     A styled custom select/dropdown input component used throughout the application forms.
 --}}
@@ -15,7 +15,7 @@
     $autoSubmitClear = $autoSubmitClear ?? false;
     $autoSubmit = $autoSubmit ?? $autoSubmitClear;
     $showConfirm = $showConfirm ?? false;
-    $borderColorClass = $errors->has($name) ? 'border-[#D92D20]' : ($borderColorClass ?? 'border-[#124375]');
+    $borderColorClass = $errors->has($name) ? 'border-[#D92D20]' : $borderColorClass ?? 'border-[#124375]';
 
     $selectedLabel = $placeholder;
     if ($selected && isset($options[$selected])) {
@@ -39,7 +39,8 @@
     @endif
 
     @if ($floatingLabel)
-        <label class="absolute top-[-15px] right-5 {{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} text-base font-medium bg-[#F4F7F9] px-1 z-10">
+        <label
+            class="absolute top-[-15px] right-5 {{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} text-base font-medium bg-[#F4F7F9] px-1 z-10">
             {{ $label }} @if ($required)
                 <span class="text-[#D92D20]">*</span>
             @endif
@@ -51,7 +52,9 @@
     @else
         <div class="flex-1 flex items-center px-12 overflow-hidden">
             @if ($label)
-                <span class="{{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} font-medium text-base ml-1 shrink-0">{{ $label }} : </span>
+                <span
+                    class="{{ $errors->has($name) ? 'text-[#D92D20]' : 'text-[#124375]' }} font-medium text-base ml-1 shrink-0">{{ $label }}
+                    : </span>
             @endif
             <span
                 class="custom-dropdown-text cursor-pointer block flex-1 truncate {{ $selected ? 'text-[#124375] font-bold text-base' : 'text-[#6D6D6D] text-sm font-medium' }}">
@@ -67,11 +70,11 @@
 
     <!-- Dropdown -->
     <div
-        class="custom-dropdown-menu hidden absolute top-[calc(100%+8px)] right-0 min-w-full w-max bg-[#F4F7F9] py-4 px-4 rounded-2xl surface-shadow z-50">
-        <div class="flex flex-col gap-3">
+        class="custom-dropdown-menu hidden absolute top-[calc(100%+8px)] right-0 min-w-full w-max bg-[#F4F7F9] py-4 rounded-2xl surface-shadow z-50 ">
+        <div class="flex flex-col gap-3 h-[250px] overflow-y-auto px-4">
             @foreach ($options as $value => $optionLabel)
                 <label
-                    class="flex items-center justify-between gap-6 bg-white rounded-xl border border-gray-300 px-5 py-4 cursor-pointer">
+                    class="flex items-center justify-between gap-6 bg-white rounded-xl border border-gray-300 px-5 py-4 cursor-pointer whitespace-nowrap">
                     <span class="text-xl font-semibold text-[#124375]">{{ $optionLabel }}</span>
                     <input type="radio" name="{{ $name }}" class="peer hidden" value="{{ $value }}"
                         {{ $selected == $value ? 'checked' : '' }}>

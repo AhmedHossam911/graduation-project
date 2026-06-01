@@ -391,7 +391,7 @@
                                 الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
                                     class="text-xl "></iconify-icon></span></button>
                         <div id="sub-months-dropdown"
-                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3">
+                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 h-auto max-h-60 overflow-y-auto w-full">
                             <!-- Will be populated dynamically via JS -->
                         </div>
                     </div>
