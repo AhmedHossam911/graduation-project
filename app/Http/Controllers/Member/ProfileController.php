@@ -55,6 +55,11 @@ class ProfileController extends Controller
         $request->validate([
             'current_password' => ['required', 'string'],
             'new_password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'current_password.required' => 'حقل كلمة المرور الحالية مطلوب.',
+            'new_password.required' => 'حقل كلمة المرور الجديدة مطلوب.',
+            'new_password.min' => 'يجب أن تتكون كلمة المرور الجديدة من 8 أحرف على الأقل.',
+            'new_password.confirmed' => 'تأكيد كلمة المرور الجديدة غير متطابق.',
         ]);
 
         $user = Auth::user();

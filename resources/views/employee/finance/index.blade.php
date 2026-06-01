@@ -603,7 +603,7 @@
         @foreach ($allTrans as $t)
             <!-- Detail Modal for TRX {{ $t->id }} -->
             <div id="modal-detail-{{ $t->id }}"
-                class="hidden w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+                class="hidden w-full max-w-3xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
                 <button type="button"
                     class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                     <iconify-icon icon="weui:close-filled"></iconify-icon>

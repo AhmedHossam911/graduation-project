@@ -1,7 +1,7 @@
 @extends('layouts.pages')
-{{-- 
+{{--
     Member Profile Index View:
-    Dedicated page for viewing user account details and updating authentication credentials 
+    Dedicated page for viewing user account details and updating authentication credentials
     (like changing password) with associated security checks.
 --}}
 @section('title', 'الملف الشخصي')
@@ -31,13 +31,6 @@
                     </div>
                     <div class="relative w-full">
                         <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
-                            الرقم الوظيفي
-                        </label>
-                        <input type="number" placeholder="123456" value="{{ auth()->user()->id }}" disabled
-                            class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
-                    </div>
-                    <div class="relative w-full">
-                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
                             البريد الإلكتروني
                         </label>
                         <input type="email" placeholder="ahmedkhalil@gmail.com" value="{{ auth()->user()->email }}"
@@ -45,20 +38,25 @@
                             class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
                     </div>
                     <div class="relative w-full">
-                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
-                            المسمي الوظيفي
+                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9] px-1">
+                            الدور بالنظام
                         </label>
-                        <input type="text" placeholder="موظف إدخال بيانات"
-                            value="{{ auth()->user()->member?->employmentInfo?->job_title ?? 'غير محدد' }}" disabled
-                            class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
+                        <div class="py-2 w-full border border-[#124375] bg-[#E8EDF2] rounded-xl text-center text-[#6D6D6D] font-medium cursor-not-allowed">
+                            {{ match(strtolower(auth()->user()->role->name ?? '')) {
+                                'admin' => 'أدمن النظام',
+                                'employee' => 'موظف',
+                                'member' => 'عضو بالصندوق',
+                                default => 'غير محدد'
+                            } }}
+                        </div>
                     </div>
                     <div class="relative w-full">
-                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9]">
+                        <label class="text-base font-medium text-[#124375] absolute top-[-15px] right-3 bg-[#F4F7F9] px-1">
                             حالة الحساب
                         </label>
-                        <input type="text" placeholder="نشط" value="{{ auth()->user()->is_suspend ? 'محظور' : 'نشط' }}"
-                            disabled
-                            class="outline-none focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition py-2 w-full border border-[#124375] bg-[#F4F7F9] rounded-xl text-center ">
+                        <div class="py-2 w-full border border-[#124375] bg-[#E8EDF2] rounded-xl text-center text-[#6D6D6D] font-medium cursor-not-allowed">
+                            {{ auth()->user()->is_restricted ? 'محظور' : 'نشط' }}
+                        </div>
                     </div>
                 </div>
                 <p class="text-base font-medium text-[#D4AF37] underline px-2 forget-pass cursor-pointer">تغيير كلمة المرور
@@ -71,7 +69,7 @@
                 <p class="text-base text-[#124375] px-2 font-medium">أخر تسجيل دخول :</p>
                 <div class="text-base font-medium flex items-center gap-7 px-2">
                     <p>يوم : {{ auth()->user()->last_login->timezone('Africa/Cairo')->isoFormat('dddd D MMMM YYYY') }}</p>
-                    <p>الساعة : {{ auth()->user()->last_login->isoFormat('h:mm A') }}</p>
+                    <p>الساعة : {{ auth()->user()->last_login->timezone('Africa/Cairo')->isoFormat('h:mm A') }}</p>
                 </div>
 
 

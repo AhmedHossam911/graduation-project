@@ -1,5 +1,5 @@
 @extends('layouts.app')
-{{-- 
+{{--
     Dashboard View:
     Displays the primary system analytics for Admins, including:
     - Active members count
@@ -252,15 +252,15 @@
                 width: 4px;
             }
             .custom-scrollbar::-webkit-scrollbar-track {
-                background: #f1f1f1; 
+                background: #f1f1f1;
                 border-radius: 10px;
             }
             .custom-scrollbar::-webkit-scrollbar-thumb {
-                background: #c1c1c1; 
+                background: #c1c1c1;
                 border-radius: 10px;
             }
             .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                background: #a8a8a8; 
+                background: #a8a8a8;
             }
         </style>
     </div>
@@ -271,7 +271,7 @@
     @foreach ($latestDisbursements as $t)
         <!-- Detail Modal for TRX {{ $t->id }} -->
         <div id="modal-detail-{{ $t->id }}"
-            class="hidden w-[95%] md:w-full max-w-3xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            class="hidden w-[95%] md:w-full max-w-3xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
             <button type="button"
                 class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -471,7 +471,7 @@
                             const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
 
                             legendHTML += `
-                                <div class="flex items-center justify-between text-sm hover:bg-[#EEF7FF] p-2 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-[#124375]/20 group" 
+                                <div class="flex items-center justify-between text-sm hover:bg-[#EEF7FF] p-2 rounded-lg transition-colors cursor-pointer border border-transparent hover:border-[#124375]/20 group"
                                      onclick="toggleChartSector(this, ${index})">
                                     <div class="flex items-center gap-2.5 w-2/3">
                                         <span class="w-3 h-3 rounded-full shadow-sm flex-shrink-0" style="background-color: ${color}"></span>
@@ -489,7 +489,7 @@
                         window.toggleChartSector = function(element, index) {
                             const meta = facultyChart.getDatasetMeta(0);
                             const isHidden = meta.data[index].hidden;
-                            
+
                             if (isHidden) {
                                 meta.data[index].hidden = false;
                                 element.style.opacity = '1';

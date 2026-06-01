@@ -22,6 +22,9 @@
                         </div>
                         <input type="text" name="name" value="{{ old('name') }}" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="الأسم كامل" required>
                     </div>
+                    @error('name')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-5 text-right">
@@ -31,6 +34,9 @@
                         </div>
                         <input type="email" name="email" value="{{ old('email') }}" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="البريد الإلكتروني" required>
                     </div>
+                    @error('email')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-5 text-right">
@@ -40,6 +46,9 @@
                         </div>
                         <input type="text" name="national_id" value="{{ old('national_id') }}" minlength="14" maxlength="14" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="الرقم القومي" required>
                     </div>
+                    @error('national_id')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-5 text-right">
@@ -49,6 +58,9 @@
                         </div>
                         <input type="text" name="phone" value="{{ old('phone') }}" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="رقم التليفون" required>
                     </div>
+                    @error('phone')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
 
@@ -68,6 +80,9 @@
                             <i class="fa-solid fa-chevron-down text-sm"></i>
                         </div>
                     </div>
+                    @error('workplace')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-5 text-right">
@@ -77,6 +92,9 @@
                         </div>
                         <input type="text" name="job_title" value="{{ old('job_title') }}" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="الوظيفة" required>
                     </div>
+                    @error('job_title')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-5 text-right">
@@ -89,6 +107,9 @@
                             <i class="fa-regular fa-eye"></i>
                         </div>
                     </div>
+                    @error('password')
+                        <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-5 text-right">

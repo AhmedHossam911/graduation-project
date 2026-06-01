@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('department_id')->constrained('departments')->restrictOnDelete();
             $table->date('birth_date')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone')->unique()->nullable();
             $table->string('landline')->nullable();
             $table->string('address')->nullable();
             $table->string('marital_status')->nullable();

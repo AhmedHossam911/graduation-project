@@ -27,6 +27,26 @@
                     class="flex open-modal justify-center items-center red-shadow bg-[#F4F7F9] text-[#D92D20] rounded-xl gap-2 px-4 sm:px-20 py-3 border border-[#D92D20] w-full">
                     <iconify-icon icon="carbon:close-filled" class="mt-1 text-xl"></iconify-icon> إيقاف العضوية
                 </button>
+                <div class="relative w-full">
+                    <button type="button" class="dropDownBtn flex items-center justify-between navy-shadow bg-[#F4F7F9] text-[#124375] rounded-xl gap-2 w-full px-4 py-3 border border-[#124375]">
+                        <span class="flex items-center gap-2">
+                            <iconify-icon icon="mdi:list-status" class="mt-1 text-xl"></iconify-icon> تعديل حالة العضوية
+                        </span>
+                        <iconify-icon icon="fe:arrow-down" class="text-xl"></iconify-icon>
+                    </button>
+                    <div class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-2 flex flex-col gap-2 px-3 py-3 rounded-xl navy-shadow w-full">
+                        <form action="{{ route('memberships.changeStatus', $membership->id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="status" value="loaned">
+                            <button type="submit" class="w-full text-center navy-shadow py-2 rounded-xl text-base text-[#124375] hover:bg-[#EEF7FF]">معار</button>
+                        </form>
+                        <form action="{{ route('memberships.changeStatus', $membership->id) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="status" value="unpaid_leave">
+                            <button type="submit" class="w-full text-center navy-shadow py-2 rounded-xl text-base text-[#124375] hover:bg-[#EEF7FF]">إجازة بدون مرتب</button>
+                        </form>
+                    </div>
+                </div>
             @endif
         </div>
     </div>

@@ -7,7 +7,8 @@
 
     <link rel="stylesheet" href="{{ asset('css/member/memberProfile.css') }}">
     <section class="px-4 md:px-12 py-7">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] py-5 px-4">
+        <div
+            class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] py-5 px-4">
             <div class="flex items-center gap-2">
                 <iconify-icon icon="bxs:user"
                     class="text-3xl text-[#124375] bg-[#EAF5FF] rounded-[12px] py-2 px-3"></iconify-icon>
@@ -23,8 +24,9 @@
         </div>
     </section>
 
-    <section class="px-4 md:px-12 relative py-3">
-        <form action="{{ route('member.profile.update') }}" method="POST" class="bg-[#F4F7F9] navy-shadow rounded-2xl space-y-20">
+    <section class="px-4 md:px-12 relative py-3 space-y-8">
+        <form action="{{ route('member.profile.update') }}" method="POST"
+            class="bg-[#F4F7F9] navy-shadow rounded-2xl space-y-20">
             @csrf
             <div class="relative">
                 <div class="bg-gradient-to-t from-[#124375] to-[#2A6B9E] h-[150px] rounded-tl-2xl rounded-tr-2xl"></div>
@@ -89,12 +91,14 @@
                             class="input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
                             value="{{ old('phone', $user->member->phone ?? '') }}" placeholder="رقم التليفون">
                     </div>
+
                 </div>
 
                 <div class="space-y-4">
                     <h2 class="text-[#124375] text-[18px] font-medium">بيانات العضوية</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <div class="navy-shadow flex flex-col md:flex-row items-center justify-center md:justify-start gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 text-center md:text-right">
+                        <div
+                            class="navy-shadow flex flex-col md:flex-row items-center justify-center md:justify-start gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 text-center md:text-right">
                             <div>
                                 <iconify-icon icon="iconamoon:shield-yes-fill"
                                     class=" text-4xl text-[#019168]"></iconify-icon>
@@ -122,7 +126,8 @@
                                 </p>
                             </div>
                         </div>
-                        <div class="navy-shadow flex flex-col md:flex-row items-center justify-center md:justify-start gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 text-center md:text-right">
+                        <div
+                            class="navy-shadow flex flex-col md:flex-row items-center justify-center md:justify-start gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 text-center md:text-right">
                             <div>
                                 <iconify-icon icon="uil:calender" class=" text-4xl text-[#124375]"></iconify-icon>
                             </div>
@@ -142,6 +147,65 @@
                         حفظ التعديلات
                     </button>
                 </div>
+            </div>
+        </form>
+
+        <form action="{{ route('member.profile.change-password') }}" method="POST"
+            class="bg-[#F4F7F9] navy-shadow rounded-2xl p-5 space-y-7">
+            @csrf
+            <h2 class="text-[#124375] text-[20px] font-semibold flex items-center gap-2">
+                <iconify-icon icon="ic:round-lock" class="text-2xl"></iconify-icon>
+                تغيير كلمة المرور
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-x-7 gap-y-10">
+                <div class="relative w-full mt-4 md:mt-0">
+                    <label
+                        class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] flex items-center gap-1 ">
+                        <iconify-icon icon="ic:round-lock" class="text-2xl text-[#124375]"></iconify-icon>
+                        <span class="text-[#021219]">
+                            كلمة المرور الحالية
+                        </span>
+                    </label>
+                    <input type="password" disabled name="current_password" required
+                        class="input input-field focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
+                        placeholder="كلمة المرور الحالية">
+                    <iconify-icon icon="solar:eye-outline" class="show-btn cursor-pointer absolute left-4 top-[50%] translate-y-[-50%] text-[#A8A8A8] text-xl"></iconify-icon>
+                </div>
+                <div class="relative w-full mt-4 md:mt-0">
+                    <label
+                        class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] flex items-center gap-1 ">
+                        <iconify-icon icon="ic:round-lock" class="text-2xl text-[#124375]"></iconify-icon>
+                        <span class="text-[#021219]">
+                            كلمة المرور الجديدة
+                        </span>
+                    </label>
+                    <input type="password" disabled name="new_password" required
+                        class="input input-field focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
+                        placeholder="كلمة المرور الجديدة">
+                    <iconify-icon icon="solar:eye-outline" class="show-btn cursor-pointer absolute left-4 top-[50%] translate-y-[-50%] text-[#A8A8A8] text-xl"></iconify-icon>
+                </div>
+                <div class="relative w-full mt-4 md:mt-0">
+                    <label
+                        class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9] flex items-center gap-1 ">
+                        <iconify-icon icon="ic:round-lock" class="text-2xl text-[#124375]"></iconify-icon>
+                        <span class="text-[#021219]">
+                            تأكيد كلمة المرور
+                        </span>
+                    </label>
+                    <input type="password" disabled name="new_password_confirmation" required
+                        class="input input-field focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2"
+                        placeholder="تأكيد كلمة المرور">
+                    <iconify-icon icon="solar:eye-outline" class="show-btn cursor-pointer absolute left-4 top-[50%] translate-y-[-50%] text-[#A8A8A8] text-xl"></iconify-icon>
+                </div>
+            </div>
+
+            <div class="flex justify-center md:justify-end w-full mt-4">
+                <button type="submit"
+                    class="hover:bg-[#0e3560] transition-colors flex justify-center items-center gap-3 bg-[#124375] text-[#F4F7F9] py-3 px-14 rounded-[12px] navy-shadow w-full md:w-auto">
+                    <iconify-icon icon="fluent:save-16-filled" class="text-2xl"></iconify-icon>
+                    تغيير كلمة المرور
+                </button>
             </div>
         </form>
     </section>

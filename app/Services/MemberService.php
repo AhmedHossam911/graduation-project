@@ -422,8 +422,13 @@ class MemberService
             return null;
         }
 
-        $digits = array_filter($request->input($field, []), 'strlen');
-        return !empty($digits) ? implode('', $digits) : null;
+        $digits = $request->input($field, []);
+        if (is_array($digits)) {
+            ksort($digits);
+            $digits = array_filter($digits, 'strlen');
+            return !empty($digits) ? implode('', $digits) : null;
+        }
+        return null;
     }
 
     private function nullIfPlaceholder(?string $value): ?string

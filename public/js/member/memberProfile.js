@@ -1,6 +1,8 @@
 const editBtn = document.querySelector('.edit-btn');
 const saveBtn = document.querySelector('.save-btn');
 const inputs = document.querySelectorAll('.input');
+const showBtn = document.querySelectorAll(".show-btn")
+const input = document.querySelectorAll(".input-field")
 
 let isEditMode = false;
 editBtn.addEventListener('click', () => {
@@ -20,4 +22,10 @@ editBtn.addEventListener('click', () => {
         editBtn.innerHTML = '<iconify-icon icon="ic:round-edit" class="text-2xl"></iconify-icon> تعديل البيانات';
     }
 });
+
+showBtn.forEach((btn , index) => {
+    btn.addEventListener("click" , () => {
+        input[index].type === "password" ? input[index].type = "text" : input[index].type = "password"
+    })
+})
 

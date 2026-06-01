@@ -13,7 +13,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/admin/permissions.css') }}">
 
-    <div class="flex flex-col md:flex-row justify-between items-center py-4 md:py-7 px-4 md:px-12 gap-4 md:gap-0 text-center md:text-right">
+    <div class="flex justify-between items-center py-7 px-12">
         <div class="flex flex-col gap-3">
             <h1 class="text-xl text-[#124375] font-semibold">
                 إدارة النظام والصلاحيات
@@ -23,17 +23,16 @@
             </p>
         </div>
         <div>
-            <a href="{{ route('admin.permissions.create') }}"
-                class="cursor-pointer hover:bg-[#0e3560] w-full md:w-auto transition-colors text-[16px] navy-shadow flex items-center justify-center gap-4 bg-[#124375] text-[#F4F7F9] py-2.5 px-6 md:px-14 rounded-[12px]">
+            <a href="{{ route('admin.permissions.create') }}" class="cursor-pointer hover:bg-[#0e3560] transition-colors text-[16px] navy-shadow flex items-center justify-center gap-4 bg-[#124375] text-[#F4F7F9] py-2.5 px-14 rounded-[12px]">
                 <iconify-icon icon="ic:round-plus" class="text-2xl mt-1"></iconify-icon>
                 إضافة و تفويض مستخدم
             </a>
         </div>
     </div>
 
-    <div class="px-4 md:px-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10 items-center navy-shadow rounded-[16px] py-5 px-3">
-            <div class="flex gap-2 col-span-1 md:col-span-2 w-full">
+    <div class="px-12">
+        <div class="grid grid-cols-3 gap-10 items-center navy-shadow rounded-[16px] py-5 px-3">
+            <div class="flex gap-2 col-span-2 w-full">
                 <form action="{{ route('admin.permissions.index') }}" method="GET" class="w-full flex gap-2 m-0 p-0">
                     <div class="w-full relative">
                         <input name="search" value="{{ request('search') }}"
@@ -49,7 +48,7 @@
                     </button>
                 </form>
             </div>
-            <div class="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 text-center text-sm md:text-base">
+            <div class="flex justify-between">
                 <div class="bg-[#EAF5FF] py-2 px-3 rounded-[10px]">
                     <p class="text-[#124375]">إجمالي الحسابات :<span>{{ $activeUsers->total() }}</span></p>
                 </div>
@@ -63,40 +62,32 @@
         </div>
     </div>
 
-    <div class="tabs mx-4 md:mx-12 pt-7 flex flex-nowrap overflow-x-auto no-scrollbar gap-4 md:gap-8 border-b border-[#A8A8A8]">
-        <div class="tab-item active px-4 md:px-7 flex-shrink-0 whitespace-nowrap flex gap-2 items-center pb-3 relative hover:text-[#019168] transition-colors cursor-pointer green-active"
-            data-active="green-active">
+    <div class="tabs mx-12 pt-7 flex gap-8 border-b border-[#A8A8A8]">
+        <div class="tab-item active px-7 flex gap-2 items-center pb-3 relative hover:text-[#019168] transition-colors cursor-pointer green-active" data-active="green-active">
             <iconify-icon icon="mdi:account-group" class="text-3xl  flex items-center"></iconify-icon>
-            <button class="text-[16px] font-medium pointer-events-none">الحسابات النشطة
-                <span>({{ $activeUsers->total() }})</span></button>
+            <button class="text-[16px] font-medium pointer-events-none">الحسابات النشطة <span>({{ $activeUsers->total() }})</span></button>
             <span class="absolute bg-[#019168] bottom-[-1px] left-0 h-[2px] w-full"></span>
         </div>
-        <div class="tab-item px-4 md:px-7 flex-shrink-0 whitespace-nowrap flex gap-2 items-center  pb-3 relative hover:text-[#021219] transition-colors cursor-pointer"
-            data-active="black-active">
+        <div class="tab-item px-7 flex gap-2 items-center  pb-3 relative hover:text-[#021219] transition-colors cursor-pointer" data-active="black-active">
             <iconify-icon icon="ri:user-minus-fill" class="text-3xl  flex items-center"></iconify-icon>
-            <button class="text-[16px] font-medium pointer-events-none">الحسابات الموقوفة
-                <span>({{ $suspendedUsers->total() }})</span></button>
+            <button class="text-[16px] font-medium pointer-events-none">الحسابات الموقوفة <span>({{ $suspendedUsers->total() }})</span></button>
             <span class="absolute bg-[#021219] bottom-[-1px] left-0 h-[2px] w-full hidden"></span>
         </div>
-        <div class="tab-item px-4 md:px-7 flex-shrink-0 whitespace-nowrap flex gap-2 items-center  pb-3 relative hover:text-[#F79009] transition-colors cursor-pointer "
-            data-active="orange-active">
+        <div class="tab-item px-7 flex gap-2 items-center  pb-3 relative hover:text-[#F79009] transition-colors cursor-pointer " data-active="orange-active">
             <iconify-icon icon="octicon:shield-16" class="text-3xl  flex items-center"></iconify-icon>
-            <button class="text-[16px] font-medium pointer-events-none">طلبات الانضمام المعلقة
-                <span>({{ $pendingRequests->total() }})</span></button>
+            <button class="text-[16px] font-medium pointer-events-none">طلبات الانضمام المعلقة <span>({{ $pendingRequests->total() }})</span></button>
             <span class="absolute bg-[#F79009] bottom-[-1px] left-0 h-[2px] w-full hidden"></span>
         </div>
-        <div class="tab-item px-4 md:px-7 flex-shrink-0 whitespace-nowrap flex gap-2  items-center pb-3 relative hover:text-[#D92D20] transition-colors cursor-pointer "
-            data-active="red-active">
+        <div class="tab-item px-7 flex gap-2  items-center pb-3 relative hover:text-[#D92D20] transition-colors cursor-pointer " data-active="red-active">
             <iconify-icon icon="mingcute:user-x-fill" class="text-3xl  flex items-center "></iconify-icon>
-            <button class="text-[16px] font-medium pointer-events-none">الطلبات المرفوضة
-                <span>({{ $rejectedRequests->total() }})</span></button>
+            <button class="text-[16px] font-medium pointer-events-none">الطلبات المرفوضة <span>({{ $rejectedRequests->total() }})</span></button>
             <span class="absolute bg-[#D92D20] bottom-[-1px] left-0 h-[2px] w-full hidden"></span>
         </div>
     </div>
 
     <!-- start table -->
-    <section class="px-4 md:px-12 py-8">
-        <div class=" rounded-[14px] tab-content overflow-hidden border border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white" data-tab="الحسابات النشطة">
+    <section class="px-12 py-8">
+        <div class=" rounded-[14px] tab-content overflow-hidden border border-[#6D6D6D]" data-tab="الحسابات النشطة">
             <div class="hidden md:block">
             <table class="w-full border-collapse">
                 <thead>
@@ -219,8 +210,7 @@
             @endif
         </div>
 
-        <div class=" rounded-[14px] hidden tab-content overflow-hidden border border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white"
-            data-tab="الحسابات الموقوفة">
+        <div class=" rounded-[14px] hidden tab-content overflow-hidden border border-[#6D6D6D]" data-tab="الحسابات الموقوفة">
             <div class="hidden md:block">
             <table class="w-full border-collapse">
                 <thead>
@@ -352,7 +342,7 @@
                     تحتاج إلي مراجعة و تحديد الصلاحيات
                 </p>
             </div>
-            <div class="rounded-b-[14px] overflow-hidden border-x border-b border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white mt-4 md:mt-0">
+            <div class="rounded-b-[14px] overflow-hidden border-x border-b border-[#6D6D6D]">
                 <div class="hidden md:block">
                 <table class="w-full">
                     <thead>
@@ -448,7 +438,7 @@
                     طلبات انضمام تم رفضها
                 </p>
             </div>
-            <div class="rounded-b-[14px] overflow-hidden border-x border-b border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white mt-4 md:mt-0">
+            <div class="rounded-b-[14px] overflow-hidden border-x border-b border-[#6D6D6D]">
                 <div class="hidden md:block">
                 <table class="w-full">
                     <thead>

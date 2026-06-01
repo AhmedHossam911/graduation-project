@@ -183,7 +183,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'national_id' => 'required|string|size:14|unique:users,national_id',
             'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed',
-            'phone' => 'required|string|max:20',
+            'phone' => 'required|string|max:20|unique:members,phone',
             'workplace' => 'required|string|max:255',
             'job_title' => 'required|string|max:255',
         ], [
@@ -200,6 +200,7 @@ class AuthController extends Controller
             'password.regex' => 'كلمة المرور يجب أن تحتوي على حرف كبير ورمز خاص.',
             'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
             'phone.required' => 'يرجى إدخال رقم التليفون.',
+            'phone.unique' => 'رقم التليفون مسجل مسبقاً.',
             'workplace.required' => 'يرجى إدخال جهة العمل.',
             'job_title.required' => 'يرجى إدخال الوظيفة.',
         ]);

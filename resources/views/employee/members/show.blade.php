@@ -191,7 +191,7 @@
                             <span class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl"></iconify-icon></span></button>
                         <div
-                            class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow max-w-fit">
+                            class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow max-w-fit max-h-60 overflow-y-auto w-full">
                             <a href="{{ url('/members/' . $member->id . '?claim_type=retirement&tab=مطالبات') }}"
                                 class="button cursor-pointer text-center navy-shadow py-2 px-1 rounded-xl text-base ">بلوغ
                                 سن

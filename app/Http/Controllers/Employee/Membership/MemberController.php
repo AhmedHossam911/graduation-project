@@ -45,7 +45,7 @@ class MemberController extends Controller
     {
         $departments = Department::all();
 
-        $query = Member::with(['user', 'department', 'employmentInfo', 'membershipInfo']);
+        $query = Member::with(['user', 'department', 'employmentInfo', 'membershipInfo'])->has('membershipInfo');
 
         $this->applyMemberFilters($query, $request);
 

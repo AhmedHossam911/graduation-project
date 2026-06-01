@@ -48,7 +48,7 @@
                                 </td>
                                 <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
                                     <span class="md:hidden font-bold text-[#124375]">تاريخ السداد:</span>
-                                    <span>{{ $subscription->paid_at ? \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') : '-' }}</span>
+                                    <span>{{ $subscription->transaction ? \Carbon\Carbon::parse($subscription->transaction->created_at)->format('Y-m-d') : '-' }}</span>
                                 </td>
                                 <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
                                     <span class="md:hidden font-bold text-[#124375]">طريقة الدفع:</span>
@@ -145,11 +145,11 @@
                                     <span class="text-[#6D6D6D]">تاريخ الإستحقاق:</span>
                                     <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($subscription->due_date)->format('Y-m-d') }}</span>
                                 </div>
-                                @if($subscription->paid_at)
+                                @if($subscription->transaction)
                                 <div class="flex gap-2 items-center text-sm">
                                     <iconify-icon icon="mdi:calendar-check" class="text-[#6D6D6D]"></iconify-icon>
                                     <span class="text-[#6D6D6D]">تاريخ السداد:</span>
-                                    <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($subscription->paid_at)->format('Y-m-d') }}</span>
+                                    <span class="text-[#021219] font-medium">{{ \Carbon\Carbon::parse($subscription->transaction->created_at)->format('Y-m-d') }}</span>
                                 </div>
                                 @endif
                                 @if($subscription->transaction)

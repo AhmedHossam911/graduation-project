@@ -141,6 +141,7 @@ class MemberRequest extends FormRequest
         $validator->after(function ($validator) {
             $nationalIdDigits = $this->input('national_id_digits');
             if (is_array($nationalIdDigits) && count($nationalIdDigits) === 14) {
+                ksort($nationalIdDigits);
                 $nationalId = implode('', $nationalIdDigits);
                 $memberParam = $this->route('member') ?? $this->route('id');
                 $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
@@ -177,6 +178,7 @@ class MemberRequest extends FormRequest
 
             $phoneDigits = $this->input('phone_digits');
             if (is_array($phoneDigits) && count($phoneDigits) === 11) {
+                ksort($phoneDigits);
                 $phone = implode('', $phoneDigits);
                 $query = Member::where('phone', $phone);
                 $memberParam = $this->route('member') ?? $this->route('id');
@@ -198,6 +200,10 @@ class MemberRequest extends FormRequest
      */
     public function getNationalId(): string
     {
-        return implode('', $this->input('national_id_digits', []));
+        $digits = $this->input('national_id_digits', []);
+        if (is_array($digits)) {
+            ksort($digits);
+        }
+        return implode('', $digits);
     }
 }

@@ -94,10 +94,10 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('phone_digits') text-[#D92D20] @elseif($errors->has('phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     التليفون <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
-                                    @for ($i = 10; $i >= 0; $i--)
-                                        <input type="tel" name="phone_digits[]"
-                                            value="{{ old('phone_digits.' . (10 - $i)) }}" placeholder="{{ $i }}"
+                                <div class="flex gap-3 justify-end py-3 px-3" dir="ltr">
+                                    @for ($i = 0; $i < 11; $i++)
+                                        <input type="tel" name="phone_digits[{{ $i }}]"
+                                            value="{{ old('phone_digits.' . $i) }}" placeholder="{{ $i + 1 }}"
                                             maxlength="1"
                                             class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
@@ -114,11 +114,11 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('landline_digits') text-[#D92D20] @elseif($errors->has('landline_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     هاتف المنزل</label>
-                                <div class="flex gap-2 justify-end py-3 px-3">
-                                    @for ($i = 7; $i >= 0; $i--)
-                                        <input type="tel" name="landline_digits[]"
-                                            value="{{ old('landline_digits.' . (7 - $i)) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
+                                <div class="flex gap-2 justify-end py-3 px-3" dir="ltr">
+                                    @for ($i = 0; $i < 8; $i++)
+                                        <input type="tel" name="landline_digits[{{ $i }}]"
+                                            value="{{ old('landline_digits.' . $i) }}"
+                                            placeholder="{{ $i + 1 }}" maxlength="1"
                                             class="landline-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-14 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
@@ -137,10 +137,10 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('national_id_digits') text-[#D92D20] @elseif($errors->has('national_id_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الرقم
                                     القومي <span class="text-[#D92D20]">*</span></label>
-                                <div class="flex gap-3 justify-end py-3 px-3">
-                                    @for ($i = 13; $i >= 0; $i--)
-                                        <input type="text" name="national_id_digits[]"
-                                            value="{{ old('national_id_digits.' . (13 - $i), isset($member) && $member->user ? substr($member->user->national_id, 13 - $i, 1) : '') }}"
+                                <div class="flex gap-3 justify-end py-3 px-3" dir="ltr">
+                                    @for ($i = 0; $i < 14; $i++)
+                                        <input type="text" name="national_id_digits[{{ $i }}]"
+                                            value="{{ old('national_id_digits.' . $i, isset($member) && $member->user ? substr($member->user->national_id, $i, 1) : '') }}"
                                             placeholder="{{ $i + 1 }}" maxlength="1"
                                             class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
@@ -362,11 +362,11 @@
                                 <label
                                     class="absolute top-[-15px] right-5 @error('spouse_phone_digits') text-[#D92D20] @elseif($errors->has('spouse_phone_digits.*')) text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">رقم
                                     تليفون الزوج أو الزوجة أو أحد الأبناء أو أحد الأقارب</label>
-                                <div class="flex gap-2 justify-end py-3 px-3">
-                                    @for ($i = 10; $i >= 0; $i--)
-                                        <input type="tel" name="spouse_phone_digits[]"
-                                            value="{{ old('spouse_phone_digits.' . (10 - $i)) }}"
-                                            placeholder="{{ $i }}" maxlength="1"
+                                <div class="flex gap-2 justify-end py-3 px-3" dir="ltr">
+                                    @for ($i = 0; $i < 11; $i++)
+                                        <input type="tel" name="spouse_phone_digits[{{ $i }}]"
+                                            value="{{ old('spouse_phone_digits.' . $i) }}"
+                                            placeholder="{{ $i + 1 }}" maxlength="1"
                                             class="number-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-24 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
                                     @endfor
                                 </div>
