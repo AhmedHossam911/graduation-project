@@ -104,8 +104,9 @@
                                 </div>
                                 @if ($errors->has('phone_digits') || $errors->has('phone_digits.*'))
                                     <span
-                                        class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">يجب
-                                        إدخال 11 رقم.</span>
+                                        class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">
+                                        {{ $errors->first('phone_digits') ?: 'يجب إدخال 11 رقم.' }}
+                                    </span>
                                 @endif
                             </div>
                             <div
@@ -209,7 +210,7 @@
                                     'placeholder' => 'أختر',
                                     'required' => true,
                                     'floatingLabel' => true,
-                                    'showConfirm' => true,
+                                    'showConfirm' => false,
                                 ])
                             </div>
                         </div>
@@ -242,7 +243,7 @@
                                     'placeholder' => 'أختر',
                                     'required' => true,
                                     'floatingLabel' => true,
-                                    'showConfirm' => true,
+                                    'showConfirm' => false,
                                 ])
                             </div>
                             <div class="w-full relative">

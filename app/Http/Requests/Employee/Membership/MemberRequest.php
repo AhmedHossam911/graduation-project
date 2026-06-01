@@ -129,6 +129,7 @@ class MemberRequest extends FormRequest
             'documents.*.max'          => 'حجم الملف كبير جداً، الحد الأقصى 5 ميجابايت.',
             'national_id_digits.required' => 'من فضلك أدخل الرقم القومي كاملاً.',
             'national_id_digits.size'     => 'الرقم القومي يجب أن يتكون من 14 رقم بالضبط.',
+            'email.unique'             => 'البريد الإلكتروني مسجل من قبل.',
         ];
     }
 
@@ -154,6 +155,39 @@ class MemberRequest extends FormRequest
 
                 if ($query->exists()) {
                     $validator->errors()->add('national_id_digits', 'الرقم القومي مسجل من قبل.');
+                }
+            }
+
+            $email = $this->input('email');
+            if ($email) {
+                $query = User::where('email', $email);
+                $memberParam = $this->route('member') ?? $this->route('id');
+                $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
+                
+                if ($memberId) {
+                    $member = Member::find($memberId);
+                    if ($member && $member->user_id) {
+                        $query->where('id', '!=', $member->user_id);
+                    }
+                }
+                if ($query->exists()) {
+                    $validator->errors()->add('email', 'البريد الإلكتروني مسجل من قبل.');
+                }
+            }
+
+            $phoneDigits = $this->input('phone_digits');
+            if (is_array($phoneDigits) && count($phoneDigits) === 11) {
+                $phone = implode('', $phoneDigits);
+                $query = Member::where('phone', $phone);
+                $memberParam = $this->route('member') ?? $this->route('id');
+                $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
+                
+                if ($memberId) {
+                    $query->where('id', '!=', $memberId);
+                }
+                
+                if ($query->exists()) {
+                    $validator->errors()->add('phone_digits', 'رقم الهاتف مسجل من قبل عضو آخر.');
                 }
             }
         });

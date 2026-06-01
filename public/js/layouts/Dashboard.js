@@ -3,11 +3,14 @@ const sideBar = document.querySelector(".SideBar");
 const notiBtn = document.querySelector(".notification-btn");
 const notiBox = document.querySelector(".notifications-box");
 
-if (notiBtn && notiBox) {
-    notiBtn.addEventListener("click", () => {
-        notiBox.classList.toggle("hidden");
-    });
-}
+notiBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    notiBox.classList.toggle("hidden");
+});
+
+document.addEventListener("click", () => {
+    notiBox.classList.add("hidden");
+});
 
 if (menuBtn && sideBar) {
     menuBtn.addEventListener("click", () => {
@@ -68,7 +71,7 @@ document.querySelectorAll('.custom-dropdown-container').forEach(container => {
         if (e.target.closest('.custom-dropdown-menu')) return;
         // Prevent toggling if clicked the clear button
         if (e.target.closest('.custom-dropdown-clear')) return;
-        
+
         toggleMenu(e);
     });
 

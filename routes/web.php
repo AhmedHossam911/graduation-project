@@ -51,7 +51,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/verify-registration-otp', [AuthController::class, 'verifyRegistrationOtp'])->name('register.verify.post');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\CheckIsRestricted::class])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('log-out');
 
     // ─── Administration Panel ──────────────────────────────────────────

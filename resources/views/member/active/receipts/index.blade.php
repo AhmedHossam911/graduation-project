@@ -19,7 +19,8 @@
 
     <!-- Filters Section -->
     <div class="px-4 md:px-12 mb-7">
-        <form method="GET" action="{{ route('member.receipts.index') }}" class="bg-[#F4F7F9] surface-shadow rounded-[16px] p-5 flex flex-col md:flex-row gap-5 items-center mt-4">
+        <form method="GET" action="{{ route('member.receipts.index') }}"
+            class="bg-[#F4F7F9] surface-shadow rounded-[16px] p-5 flex flex-col md:flex-row gap-5 items-center mt-4">
             <div class="w-full md:w-1/4">
                 @include('partials.common.dropdown', [
                     'name' => 'type',
@@ -30,6 +31,7 @@
                         'قسط قرض' => 'قسط قرض',
                     ],
                     'selected' => request('type'),
+                    'autoSubmit' => true,
                 ])
             </div>
 
@@ -43,6 +45,7 @@
                         'pending' => 'مستحق',
                     ],
                     'selected' => request('status'),
+                    'autoSubmit' => true,
                 ])
             </div>
 
@@ -52,6 +55,7 @@
                     'id' => 'date_from',
                     'label' => 'من تاريخ',
                     'value' => request('date_from'),
+                    'autoSubmit' => true,
                 ])
             </div>
 
@@ -61,20 +65,23 @@
                     'id' => 'date_to',
                     'label' => 'إلى تاريخ',
                     'value' => request('date_to'),
+                    'autoSubmit' => true,
                 ])
             </div>
 
-            <div class="flex gap-2 w-full md:w-auto">
-                <button type="submit" class="bg-[#124375] hover:bg-[#0e3560] text-white px-6 py-2 rounded-[8px] font-medium transition-colors w-full md:w-auto flex justify-center items-center gap-2">
+            {{-- <div class="flex gap-2 w-full md:w-auto">
+                <button type="submit"
+                    class="bg-[#124375] hover:bg-[#0e3560] text-white px-6 py-2 rounded-[8px] font-medium transition-colors w-full md:w-auto flex justify-center items-center gap-2">
                     <iconify-icon icon="mingcute:filter-line" class="text-xl"></iconify-icon>
                     تصفية
                 </button>
-                @if(request()->hasAny(['type', 'status', 'date_from', 'date_to']))
-                    <a href="{{ route('member.receipts.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-[8px] font-medium transition-colors flex justify-center items-center">
+                @if (request()->hasAny(['type', 'status', 'date_from', 'date_to']))
+                    <a href="{{ route('member.receipts.index') }}"
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-[8px] font-medium transition-colors flex justify-center items-center">
                         إلغاء
                     </a>
                 @endif
-            </div>
+            </div> --}}
         </form>
     </div>
 
@@ -83,7 +90,9 @@
         @forelse($paginatedReceipts as $index => $receipt)
             @php
                 $isPaid = $receipt->status === 'paid';
-                $statusColor = $isPaid ? 'border-[#019168] text-[#019168] bg-[#F0FFF6]' : 'border-[#F79009] text-[#F79009] bg-[#FFF7ED]';
+                $statusColor = $isPaid
+                    ? 'border-[#019168] text-[#019168] bg-[#F0FFF6]'
+                    : 'border-[#F79009] text-[#F79009] bg-[#FFF7ED]';
                 $statusIcon = $isPaid ? 'healthicons:yes' : 'material-symbols:info-rounded';
                 $statusLabel = $isPaid ? 'مدفوع' : 'مستحق';
             @endphp
@@ -91,8 +100,7 @@
                 <div class="flex justify-between">
                     <iconify-icon icon="{{ $receipt->icon }}"
                         class="text-3xl text-[#124375] bg-[#EAF5FF] rounded-[12px] py-3 px-4"></iconify-icon>
-                    <span
-                        class="flex items-center gap-2 border {{ $statusColor }} rounded-[8px] h-fit px-4">
+                    <span class="flex items-center gap-2 border {{ $statusColor }} rounded-[8px] h-fit px-4">
                         <iconify-icon icon="{{ $statusIcon }}" class="text-xl"></iconify-icon>
                         {{ $statusLabel }}
                     </span>
@@ -133,10 +141,12 @@
 
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
 
-    @foreach($paginatedReceipts as $index => $receipt)
+    @foreach ($paginatedReceipts as $index => $receipt)
         @php
             $isPaid = $receipt->status === 'paid';
-            $statusBadgeClass = $isPaid ? 'text-[#019168] border-[#019168] bg-[#F0FFF6]' : 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]';
+            $statusBadgeClass = $isPaid
+                ? 'text-[#019168] border-[#019168] bg-[#F0FFF6]'
+                : 'text-[#F79009] border-[#F79009] bg-[#FFF7ED]';
             $statusBadgeIcon = $isPaid ? 'healthicons:yes' : 'material-symbols:info-rounded';
             $statusBadgeLabel = $isPaid ? 'تم الدفع' : 'مستحق ( غير مدفوع )';
         @endphp
@@ -174,7 +184,8 @@
                             <iconify-icon icon="ion:document" class="text-xl mt-1 text-[#124375]"></iconify-icon>
                             <p class="text-[#6D6D6D] text-[14px] font-medium">رقم العضوية</p>
                         </div>
-                        <p class="text-[#021219] font-medium text-[16px]">{{ $user->member->membershipInfo->membership_number ?? '-' }}</p>
+                        <p class="text-[#021219] font-medium text-[16px]">
+                            {{ $user->member->membershipInfo->membership_number ?? '-' }}</p>
                     </div>
                     <div class="flex flex-col gap-2">
                         <div class="flex items-center gap-2">
@@ -200,40 +211,45 @@
                     <p class="text-[20px] text-[#124375] font-semibold">{{ $receipt->amount }} ج.م</p>
                 </div>
 
-                @if(!$isPaid)
-                <div class="space-y-4 surface-shadow rounded-[16px] py-4 px-2">
-                    <div class="flex gap-4 items-center border-b-2 border-[#A8A8A8] pb-2">
-                        <iconify-icon icon="basil:card-outline" class="text-2xl text-[#124375] flex items-center"></iconify-icon>
-                        <p class="text-[#021219] text-[16px] font-medium">بيانات الدفع والتحويل البنكي أو (InstaPay)</p>
-                    </div>
-                    <div class="space-y-4 border-b-2 border-[#A8A8A8] pb-2">
-                        <div class="flex justify-between items-center">
-                            <p class="text-[14px] font-medium text-[#6D6D6D]">البنك :</p>
-                            <p class="text-[16px] font-semibold text-[#021219]">بنك مصر</p>
+                @if (!$isPaid)
+                    <div class="space-y-4 surface-shadow rounded-[16px] py-4 px-2">
+                        <div class="flex gap-4 items-center border-b-2 border-[#A8A8A8] pb-2">
+                            <iconify-icon icon="basil:card-outline"
+                                class="text-2xl text-[#124375] flex items-center"></iconify-icon>
+                            <p class="text-[#021219] text-[16px] font-medium">بيانات الدفع والتحويل البنكي أو (InstaPay)</p>
+                        </div>
+                        <div class="space-y-4 border-b-2 border-[#A8A8A8] pb-2">
+                            <div class="flex justify-between items-center">
+                                <p class="text-[14px] font-medium text-[#6D6D6D]">البنك :</p>
+                                <p class="text-[16px] font-semibold text-[#021219]">بنك مصر</p>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <p class="text-[14px] font-medium text-[#6D6D6D]">أسم الحساب :</p>
+                                <p class="text-[16px] font-semibold text-[#021219]">صندوق الزمالة للعاملين بجامعة العاصمة
+                                </p>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <p class="text-[14px] font-medium text-[#6D6D6D]">رقم الحساب :</p>
+                                <p class="text-[16px] font-semibold text-[#124375]">10002938475638</p>
+                            </div>
                         </div>
                         <div class="flex justify-between items-center">
-                            <p class="text-[14px] font-medium text-[#6D6D6D]">أسم الحساب :</p>
-                            <p class="text-[16px] font-semibold text-[#021219]">صندوق الزمالة للعاملين بجامعة العاصمة</p>
+                            <p class="text-[14px] font-medium text-[#6D6D6D]">عنوان InstaPay :</p>
+                            <div class="flex items-center gap-2 mt-2 sm:mt-0">
+                                <iconify-icon icon="tabler:copy-filled"
+                                    class="cursor-pointer copy-btn text-2xl text-[#94A3B8] flex items-center"></iconify-icon>
+                                <p class="text-[16px] font-semibold text-[#155DFC] insta-pay-value">cu_fund@nbe</p>
+                            </div>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <p class="text-[14px] font-medium text-[#6D6D6D]">رقم الحساب :</p>
-                            <p class="text-[16px] font-semibold text-[#124375]">10002938475638</p>
+                        <div class="flex gap-2 bg-[#FFF7ED] rounded-[16px] py-2 px-2 orange-shadow">
+                            <iconify-icon icon="material-symbols:info-rounded"
+                                class="text-2xl text-[#F79009]"></iconify-icon>
+                            <p class="text-[14px] text-[#973C00] font-medium leading-loose ">
+                                هام جداً: يرجى كتابة "الاسم" و "رقم العضوية" في حقل الملاحظات (Notes) أثناء التحويل لضمان
+                                تسجيل السداد في حسابك، والاحتفاظ بصورة التحويل.
+                            </p>
                         </div>
                     </div>
-                    <div class="flex justify-between items-center">
-                        <p class="text-[14px] font-medium text-[#6D6D6D]">عنوان InstaPay :</p>
-                        <div class="flex items-center gap-2 mt-2 sm:mt-0">
-                            <iconify-icon icon="tabler:copy-filled" class="cursor-pointer copy-btn text-2xl text-[#94A3B8] flex items-center"></iconify-icon>
-                            <p class="text-[16px] font-semibold text-[#155DFC] insta-pay-value">cu_fund@nbe</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-2 bg-[#FFF7ED] rounded-[16px] py-2 px-2 orange-shadow">
-                        <iconify-icon icon="material-symbols:info-rounded" class="text-2xl text-[#F79009]"></iconify-icon>
-                        <p class="text-[14px] text-[#973C00] font-medium leading-loose ">
-                            هام جداً: يرجى كتابة "الاسم" و "رقم العضوية" في حقل الملاحظات (Notes) أثناء التحويل لضمان تسجيل السداد في حسابك، والاحتفاظ بصورة التحويل.
-                        </p>
-                    </div>
-                </div>
                 @endif
             </div>
         </div>

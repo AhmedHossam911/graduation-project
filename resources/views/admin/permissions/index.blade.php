@@ -145,7 +145,7 @@
                                 </a>
                                 <form action="{{ route('admin.permissions.suspend', $user->id) }}" method="POST"
                                     class="inline m-0 p-0"
-                                    onsubmit="return confirm('هل أنت متأكد من إيقاف حساب هذا المستخدم؟');">
+                                    data-confirm-message="هل أنت متأكد من إيقاف حساب هذا المستخدم؟">
                                     @csrf
                                     <button type="submit"
                                         class="border-none bg-transparent m-0 p-0 flex items-center justify-center">
@@ -199,7 +199,7 @@
                             <a href="{{ route('admin.permissions.edit', $user->id) }}" class="flex items-center">
                                 <iconify-icon icon="ic:round-edit" class="text-2xl text-[#124375] cursor-pointer "></iconify-icon>
                             </a>
-                            <form action="{{ route('admin.permissions.suspend', $user->id) }}" method="POST" class="inline m-0 p-0" onsubmit="return confirm('هل أنت متأكد من إيقاف حساب هذا المستخدم؟');">
+                            <form action="{{ route('admin.permissions.suspend', $user->id) }}" method="POST" class="inline m-0 p-0" data-confirm-message="هل أنت متأكد من إيقاف حساب هذا المستخدم؟">
                                 @csrf
                                 <button type="submit" class="border-none bg-transparent m-0 p-0 flex items-center justify-center">
                                     <iconify-icon icon="zondicons:close-solid" class="text-xl text-[#D92D20] cursor-pointer "></iconify-icon>
@@ -270,7 +270,7 @@
                                 </a>
                                 <form action="{{ route('admin.permissions.reactivate', $user->id) }}" method="POST"
                                     class="inline m-0 p-0"
-                                    onsubmit="return confirm('هل أنت متأكد من إعادة تفعيل هذا المستخدم؟');">
+                                    data-confirm-message="هل أنت متأكد من إعادة تفعيل هذا المستخدم؟">
                                     @csrf
                                     <button type="submit"
                                         class="border-none bg-transparent m-0 p-0 flex items-center justify-center">
@@ -324,7 +324,7 @@
                             <a href="{{ route('admin.permissions.edit', $user->id) }}" class="flex items-center">
                                 <iconify-icon icon="ic:round-edit" class="text-2xl text-[#124375] cursor-pointer "></iconify-icon>
                             </a>
-                            <form action="{{ route('admin.permissions.reactivate', $user->id) }}" method="POST" class="inline m-0 p-0" onsubmit="return confirm('هل أنت متأكد من إعادة تفعيل هذا المستخدم؟');">
+                            <form action="{{ route('admin.permissions.reactivate', $user->id) }}" method="POST" class="inline m-0 p-0" data-confirm-message="هل أنت متأكد من إعادة تفعيل هذا المستخدم؟">
                                 @csrf
                                 <button type="submit" class="border-none bg-transparent m-0 p-0 flex items-center justify-center">
                                     <iconify-icon icon="healthicons:yes" class="text-xl text-[#019168] cursor-pointer "></iconify-icon>
@@ -380,7 +380,7 @@
                                     </a>
                                     <form action="{{ route('admin.permissions.reject', $user->id) }}" method="POST"
                                         class="inline m-0 p-0"
-                                        onsubmit="return confirm('هل أنت متأكد من رفض هذا الطلب؟');">
+                                        data-confirm-message="هل أنت متأكد من رفض هذا الطلب؟">
                                         @csrf
                                         <button type="submit"
                                             class="flex items-center gap-3 bg-[#FFEAE880] border border-[#FDA29B] red-shadow py-2 px-4 text-[#D92D20] rounded-[12px]">
@@ -419,7 +419,7 @@
                                     <iconify-icon icon="material-symbols:check-circle-rounded" class="text-lg"></iconify-icon>
                                     أعتماد
                                 </a>
-                                <form action="{{ route('admin.permissions.reject', $user->id) }}" method="POST" class="flex-1 m-0 p-0" onsubmit="return confirm('هل أنت متأكد من رفض هذا الطلب؟');">
+                                <form action="{{ route('admin.permissions.reject', $user->id) }}" method="POST" class="flex-1 m-0 p-0" data-confirm-message="هل أنت متأكد من رفض هذا الطلب؟">
                                     @csrf
                                     <button type="submit" class="w-full flex justify-center items-center gap-2 bg-[#FFEAE880] border border-[#FDA29B] red-shadow py-2 px-2 text-[#D92D20] rounded-[8px] text-sm">
                                         <iconify-icon icon="material-symbols:cancel-rounded" class="text-lg"></iconify-icon>
@@ -470,7 +470,7 @@
                                 <td class="py-3 flex gap-5 justify-center text-[#124375]">
                                     <form action="{{ route('admin.permissions.restore', $user->id) }}" method="POST"
                                         class="inline m-0 p-0"
-                                        onsubmit="return confirm('هل أنت متأكد من إستعادة هذا الطلب؟');">
+                                        data-confirm-message="هل أنت متأكد من إستعادة هذا الطلب؟">
                                         @csrf
                                         <button type="submit"
                                             class="flex border border-[#124375] items-center gap-3 bg-white navy-shadow py-2 px-4 rounded-[12px]">
@@ -481,7 +481,7 @@
                                     </form>
                                     <form action="{{ route('admin.permissions.destroy', $user->id) }}" method="POST"
                                         class="inline m-0 p-0"
-                                        onsubmit="return confirm('هل أنت متأكد من الحذف النهائي؟');">
+                                        data-confirm-message="هل أنت متأكد من الحذف النهائي؟">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
@@ -517,14 +517,14 @@
                                 </div>
                             </div>
                             <div class="flex flex-col gap-3 justify-center mt-2 pt-3 border-t border-gray-100">
-                                <form action="{{ route('admin.permissions.restore', $user->id) }}" method="POST" class="w-full m-0 p-0" onsubmit="return confirm('هل أنت متأكد من إستعادة هذا الطلب؟');">
+                                <form action="{{ route('admin.permissions.restore', $user->id) }}" method="POST" class="w-full m-0 p-0" data-confirm-message="هل أنت متأكد من إستعادة هذا الطلب؟">
                                     @csrf
                                     <button type="submit" class="w-full flex justify-center border border-[#124375] items-center gap-3 bg-white navy-shadow py-2 px-4 rounded-[8px] text-[#124375] text-sm">
                                         <iconify-icon icon="pajamas:redo" class="text-lg"></iconify-icon>
                                         إستعادة للمراجعة
                                     </button>
                                 </form>
-                                <form action="{{ route('admin.permissions.destroy', $user->id) }}" method="POST" class="w-full m-0 p-0" onsubmit="return confirm('هل أنت متأكد من الحذف النهائي؟');">
+                                <form action="{{ route('admin.permissions.destroy', $user->id) }}" method="POST" class="w-full m-0 p-0" data-confirm-message="هل أنت متأكد من الحذف النهائي؟">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="w-full flex justify-center items-center gap-3 bg-[#FFEAE880] border border-[#FDA29B] red-shadow py-2 px-4 text-[#D92D20] rounded-[8px] text-sm">
@@ -580,5 +580,33 @@
         });
     </script>
 
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const forms = document.querySelectorAll('form[data-confirm-message]');
+                forms.forEach(form => {
+                    form.addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const message = this.getAttribute('data-confirm-message');
+                        Swal.fire({
+                            title: 'تأكيد الإجراء',
+                            text: message,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#124375',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'نعم، متأكد!',
+                            cancelButtonText: 'إلغاء'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.submit();
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    @endpush
 @endsection
 

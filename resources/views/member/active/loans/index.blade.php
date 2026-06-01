@@ -7,23 +7,28 @@
     <link rel="stylesheet" href="{{ asset('css/member/memberLoan.css') }}">
 
     @if ($membership->status !== 'active')
-        <div class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-4 md:mx-auto mt-7 flex flex-col gap-7 justify-center items-center text-center">
-            <div>
-                <iconify-icon icon="material-symbols:info-rounded"
-                    class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
-            </div>
-            <div>
-                <p class="text-[#124375] text-[20px] font-semibold">عذرا، لايمكنك طلب قرض</p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px] font-medium">وفقاً لحالة عضويتك الحالية، لا يمكنك التقديم على طلب الحصول على قرض.</p>
-            </div>
-            <div>
-                <a href="{{ route('member.dashboard') }}"
-                    class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
-                    العودة للرئيسية
-                    <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
-                </a>
+        <div class="min-h-screen flex flex-col justify-center">
+            <div
+                class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-4 md:mx-auto mt-7 flex flex-col gap-7 justify-center items-center text-center">
+                <div>
+                    <iconify-icon icon="material-symbols:info-rounded"
+                        class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
+                </div>
+                <div>
+                    <p class="text-[#124375] text-[20px] font-semibold">عذرا، لايمكنك طلب قرض</p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px] font-medium">وفقاً لحالة عضويتك الحالية، لا يمكنك التقديم على طلب
+                        الحصول
+                        على قرض.</p>
+                </div>
+                <div>
+                    <a href="{{ route('member.dashboard') }}"
+                        class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
+                        العودة للرئيسية
+                        <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
+                    </a>
+                </div>
             </div>
         </div>
     @elseif (!$activeLoan)
@@ -37,7 +42,8 @@
                         طلب الحصول على قرض
                     </h1>
                     <p class="text-[#6D6D6D] text-[16px] font-normal">
-                        الحد الأقصى للقرض 20,000 جنيه، يسدد على مدة أقصاها 36 شهراً، ويضاف معدل فائدة بواقع 8% سنوياً على
+                        الحد الأقصى للقرض 20,000 جنيه، يسدد على مدة أقصاها 36 شهراً، ويضاف معدل فائدة بواقع 8% سنوياً
+                        على
                         قيمة القرض.
                     </p>
                 </div>
@@ -64,19 +70,23 @@
                     <div class="flex flex-col sm:flex-row justify-between px-2 sm:px-7 gap-4">
                         <div class="flex flex-col gap-3 ">
                             <p class="text-[16px] text-[#175CD3] font-medium">المبلغ المطلوب</p>
-                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_amount">0</span> ج.م</p>
+                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_amount">0</span> ج.م
+                            </p>
                         </div>
                         <div class="flex flex-col gap-3 ">
                             <p class="text-[16px] text-[#175CD3] font-medium">الفائدة الإجمالية (8%)</p>
-                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_interest">0</span> ج.م</p>
+                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_interest">0</span> ج.م
+                            </p>
                         </div>
                         <div class="flex flex-col gap-3 ">
                             <p class="text-[16px] text-[#175CD3] font-medium">إجمالي المديونية</p>
-                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_total">0</span> ج.م</p>
+                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_total">0</span> ج.م
+                            </p>
                         </div>
                         <div class="flex flex-col gap-3 ">
                             <p class="text-[16px] text-[#175CD3] font-medium">القسط الشهري</p>
-                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_installment">0</span> ج.م
+                            <p class="text-[#124375] text-[20px] font-semibold"><span id="summary_installment">0</span>
+                                ج.م
                             </p>
                         </div>
                     </div>
@@ -152,26 +162,29 @@
         </form>
     @else
         {{-- لو العضو عنده قرض ده اللي يظهر --}}
-        <div
-            class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-4 md:mx-auto mt-7 flex flex-col gap-7 justify-center items-center text-center">
-            <div>
-                <iconify-icon icon="material-symbols:info-rounded"
-                    class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
-            </div>
-            <div>
-                <p class="text-[#124375] text-[20px] font-semibold">عذرا، لايمكنك طلب قرض جديد</p>
-            </div>
-            <div>
-                <p class="text-[#6D6D6D] text-[14px] font-medium">لا يجوز للعضو الحصول علي أكثر من قرض واحد في نفس الوقت.
-                    يجد
-                    الانتهاء من سدادالقرض الحالي بالكامل قبل التقدم بطلب للحصول علي قرض جديد</p>
-            </div>
-            <div>
-                <a href="{{ route('member.dashboard') }}"
-                    class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
-                    متابعة حالة القرض الحالي
-                    <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
-                </a>
+        <div class="min-h-screen flex items-center justify-center">
+            <div
+                class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-4 md:mx-auto mt-7 flex flex-col gap-7 justify-center items-center text-center">
+                <div>
+                    <iconify-icon icon="material-symbols:info-rounded"
+                        class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
+                </div>
+                <div>
+                    <p class="text-[#124375] text-[20px] font-semibold">عذرا، لايمكنك طلب قرض جديد</p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px] font-medium">لا يجوز للعضو الحصول علي أكثر من قرض واحد في نفس
+                        الوقت.
+                        يجد
+                        الانتهاء من سدادالقرض الحالي بالكامل قبل التقدم بطلب للحصول علي قرض جديد</p>
+                </div>
+                <div>
+                    <a href="{{ route('member.dashboard') }}"
+                        class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
+                        متابعة حالة القرض الحالي
+                        <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
+                    </a>
+                </div>
             </div>
         </div>
     @endif

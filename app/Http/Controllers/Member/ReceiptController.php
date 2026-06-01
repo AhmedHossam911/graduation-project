@@ -16,8 +16,21 @@ class ReceiptController extends Controller
         $activeStatuses = ['active', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];
         
         if ($membership && in_array($membership->status, $activeStatuses)) {
-            $subscriptions = $membership->subscriptions()->latest()->get();
-            $installments = $membership->loans()->with('installments')->get()->pluck('installments')->flatten();
+            $allSubscriptions = $membership->subscriptions()->orderBy('due_date')->get();
+            $paidSubscriptions = $allSubscriptions->where('status', 'paid');
+            $firstUnpaidSubscription = $allSubscriptions->where('status', 'unpaid')->first();
+            $subscriptions = collect($paidSubscriptions);
+            if ($firstUnpaidSubscription) {
+                $subscriptions->push($firstUnpaidSubscription);
+            }
+
+            $allInstallments = $membership->loans()->with('installments')->get()->pluck('installments')->flatten()->sortBy('due_date');
+            $paidInstallments = $allInstallments->where('status', 'paid');
+            $firstUnpaidInstallment = $allInstallments->where('status', 'unpaid')->first();
+            $installments = collect($paidInstallments);
+            if ($firstUnpaidInstallment) {
+                $installments->push($firstUnpaidInstallment);
+            }
             
             $allReceipts = collect();
             foreach ($subscriptions as $sub) {

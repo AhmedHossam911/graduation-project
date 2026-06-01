@@ -1,6 +1,6 @@
 <!-- start SideBar -->
 <aside
-    class="w-fit SideBar px-4 py-5 bg-[#124375]  flex flex-col justify-between min-h-screen border-l border-[#124375] overflow-y-auto custom-scrollbar pb-6">
+    class="w-fit SideBar px-4 py-5 bg-[#124375]  flex flex-col justify-between min-h-screen border-l border-[#124375] overflow-y-auto  pb-6">
     <div class="sidebar-pages flex flex-col  ">
         <a href="{{ route('member.dashboard') }}">
             <div class="flex gap-5 items-center border-b border-[#A8A8A8] pb-5">
