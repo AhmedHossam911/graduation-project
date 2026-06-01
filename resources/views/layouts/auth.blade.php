@@ -55,9 +55,6 @@
                     top: 0,
                     behavior: 'smooth'
                 })
-                document.body.style.overflow = 'hidden'
-            } else {
-                document.body.style.overflow = 'auto'
             }
         })
         observer.observe(overlay, {

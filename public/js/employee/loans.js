@@ -4,8 +4,8 @@ function initLoansModule() {
 
     const overlay = document.querySelector(".overlay");
     const openModalBtns = document.querySelectorAll(".open-modal");
-    const closeModalBtns = document.querySelectorAll(".modal-close");
-    
+    // const closeModalBtns = document.querySelectorAll(".modal-close");
+
     // Member Search Elements
     const memberSearchBtn = document.getElementById('memberSearchBtn');
     const memberSearchInput = document.getElementById('memberSearchInput');
@@ -17,12 +17,12 @@ function initLoansModule() {
             const targetId = btn.getAttribute('data-target');
             console.log('Opening modal:', targetId);
             if (!targetId) return;
-            
+
             const targetModal = document.getElementById(targetId);
             if (targetModal) {
                 targetModal.classList.remove("hidden");
                 if (overlay) overlay.classList.remove("hidden");
-                
+
                 if (targetId === 'paymentModal') {
                     const loanId = btn.getAttribute('data-loan-id');
                     fetchLoanDataForPayment(loanId);
@@ -31,13 +31,17 @@ function initLoansModule() {
         });
     });
 
-    closeModalBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-            const parentModal = btn.closest('.modal');
-            if (parentModal) parentModal.classList.add("hidden");
-            if (overlay) overlay.classList.add("hidden");
-        });
+    document.querySelectorAll(".close-btn, .modal-close").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const parentModal = btn.closest("[id^='createLoanModal']");
+        if (parentModal) {
+            parentModal.classList.add("hidden");
+            overlay.classList.add("hidden");
+        }
     });
+});
+
 
     if (overlay) {
         overlay.addEventListener('click', () => {
@@ -123,7 +127,7 @@ function initLoansModule() {
             loanAmountMenu.classList.toggle('hidden');
             if (loanMonthsMenu) loanMonthsMenu.classList.add('hidden');
         });
-        
+
         loanAmountMenu.querySelectorAll('button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const val = btn.getAttribute('data-value');
@@ -141,7 +145,7 @@ function initLoansModule() {
             loanMonthsMenu.classList.toggle('hidden');
             if (loanAmountMenu) loanAmountMenu.classList.add('hidden');
         });
-        
+
         loanMonthsMenu.querySelectorAll('button').forEach(btn => {
             btn.addEventListener('click', () => {
                 const val = btn.getAttribute('data-value');
@@ -185,7 +189,7 @@ function initLoansModule() {
                 menu.classList.add('hidden');
             }
         });
-        
+
         if (memberSearchResults && !memberSearchResults.contains(event.target) && event.target !== memberSearchInput && event.target !== memberSearchBtn) {
             memberSearchResults.classList.add('hidden');
         }
@@ -199,7 +203,7 @@ function initLoansModule() {
             const amount = document.getElementById('selectedLoanAmount').value;
             const months = document.getElementById('selectedLoanMonths').value;
             const submitBtn = document.getElementById('createLoanSubmitBtn');
-            
+
             if (memberId && amount && months) {
                 // Change button state
                 const originalBtnText = submitBtn.innerHTML;
@@ -207,7 +211,7 @@ function initLoansModule() {
                 submitBtn.classList.add('btn-disabled');
 
                 const validateUrl = `${window.APP_URL}/loans/validate-request`;
-                
+
                 fetch(validateUrl, {
                     method: 'POST',
                     headers: {
@@ -248,7 +252,7 @@ function checkCreateLoanSubmitBtn() {
     const amount = document.getElementById('selectedLoanAmount').value;
     const months = document.getElementById('selectedLoanMonths').value;
     const btn = document.getElementById('createLoanSubmitBtn');
-    
+
     if (memberId && amount && months) {
         btn.classList.remove('btn-disabled');
     } else {
@@ -279,10 +283,10 @@ function fetchLoanDataForPayment(loanId) {
             if (nameSpan) nameSpan.textContent = data.member_name;
             if (numSpan) numSpan.textContent = data.membership_number;
             if (idSpan) idSpan.textContent = data.national_id;
-            
+
             const form = document.getElementById('paymentForm');
             if (form) form.action = `${window.APP_URL}/loans/${loanId}/payment`;
-            
+
             if (dropdown) {
                 dropdown.innerHTML = '';
                 if (data.unpaid_installments.length === 0) {
@@ -310,10 +314,10 @@ function fetchLoanDataForPayment(loanId) {
                     });
                 });
             }
-            
+
             document.getElementById('paymentTotalAmount').textContent = '0';
             document.getElementById('paymentHiddenInputs').innerHTML = '';
-            
+
             const paymentBtn = document.querySelector('.dropDownBtn:has(+ #paymentInstallmentsDropdown)');
             if (paymentBtn) {
                 const spans = paymentBtn.querySelectorAll('span');
@@ -332,7 +336,7 @@ function calculatePaymentTotal() {
     let total = 0;
     const hiddenInputsContainer = document.getElementById('paymentHiddenInputs');
     if (hiddenInputsContainer) hiddenInputsContainer.innerHTML = '';
-    
+
     checkboxes.forEach(cb => {
         total += parseFloat(cb.getAttribute('data-amount'));
         const input = document.createElement('input');
@@ -341,10 +345,10 @@ function calculatePaymentTotal() {
         input.value = cb.value;
         if (hiddenInputsContainer) hiddenInputsContainer.appendChild(input);
     });
-    
+
     const amountSpan = document.getElementById('paymentTotalAmount');
     if (amountSpan) amountSpan.textContent = total.toLocaleString();
-    
+
     const submitBtn = document.querySelector('#paymentForm .submit-btn');
     if (submitBtn) {
         if (checkboxes.length > 0) submitBtn.classList.remove('btn-disabled');
@@ -358,7 +362,7 @@ function updatePaymentBtnText() {
     const paymentMenu = document.getElementById('paymentInstallmentsDropdown');
     const checked = paymentMenu.querySelectorAll('input[type="checkbox"]:checked');
     const spans = paymentBtn.querySelectorAll('span');
-    
+
     if (spans.length > 1) {
         if (checked.length > 0) {
             const selectedValues = Array.from(checked).map(cb => cb.parentElement.querySelector('span:last-child').textContent.split(' (')[0]);

@@ -479,7 +479,7 @@
 
         <!-- Create Modal -->
         <div id="modal1"
-            class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            class="hidden w-full max-w-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
             <button type="button"
                 class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -686,7 +686,7 @@
 
 @section('pagination')
     <div
-        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80 z-[100]">
+        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80">
         <div class="tab-content {{ request('active_tab', 'عدد الحركات اليوم') === 'عدد الحركات اليوم' ? '' : 'hidden' }}"
             data-tab="عدد الحركات اليوم">
             {{ $transactions->links() }}

@@ -223,7 +223,7 @@
                                 @endif
                             </div>
                         </div>
-                        
+
                         <div class="flex flex-col gap-2 mt-2">
                             <div class="flex gap-2 items-center text-sm">
                                 <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
@@ -236,7 +236,7 @@
                                 <span class="text-[#021219] font-semibold">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</span>
                             </div>
                         </div>
-                        
+
                         <div class="flex justify-end mt-2 pt-3 border-t border-gray-100">
                             @if ($claim->status === 'approved')
                                 <a href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}"
@@ -445,7 +445,7 @@
         @endif
     @endforeach
 
-    <!-- MODALS -->
+    <!-- MODALS --> 
     <script src="{{ asset('js/employee/claims.js') }}"></script>
 @endsection
 
@@ -490,7 +490,7 @@
                                         searchInput.value = '';
                                         selectedMemberId = member.id;
                                         resultsContainer.classList.add('hidden');
-                                        
+
                                         // Hide search, show details
                                         document.getElementById('search-member-wrapper').classList.add('hidden');
                                         document.getElementById('selected-member-name').textContent = member.full_name;

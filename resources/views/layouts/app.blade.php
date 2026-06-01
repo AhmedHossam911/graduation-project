@@ -22,7 +22,7 @@
     @stack('styles')
 </head>
 
-<body class="bg-[#F4F7F9] text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-[#F4F7F9]">
     @include('partials.common.flash')
 
     {{-- Navbar --}}
@@ -44,7 +44,7 @@
 
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden print:overflow-visible print:h-auto">
             {{-- Page Content --}}
-            <main class="flex-1 p-6 overflow-y-auto relative print:overflow-visible print:h-auto print:p-0">
+            <main class="flex-1 py-5 px-3">
                 @yield('content')
             </main>
 
@@ -67,9 +67,6 @@
                     top: 0,
                     behavior: 'smooth'
                 })
-                document.body.style.overflow = 'hidden'
-            } else {
-                document.body.style.overflow = 'auto'
             }
         })
         observer.observe(overlay, {

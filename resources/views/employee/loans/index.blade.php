@@ -381,7 +381,7 @@
                         الأختيار</button>
                 </form>
                 <button
-                    class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
+                    class="close-btn border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
     </div>

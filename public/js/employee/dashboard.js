@@ -1,7 +1,5 @@
 // modals variables
-const modal = document.querySelectorAll(".modal")
-const modalClose = document.querySelectorAll(".modal-close")
-const openModal = document.querySelectorAll(".open-modal")
+const openModalBtns = document.querySelectorAll(".open-modal")
 const overlay = document.querySelector(".overlay")
 // end modals variables
 
@@ -16,18 +14,35 @@ const dropDown = document.querySelectorAll(".dropDown")
 
 
 // modals logic
-openModal.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-        modal[index].classList.remove("hidden")
-        overlay.classList.remove("hidden")
-    })
-})
-modalClose.forEach((btn, index) => {
-    btn.addEventListener("click", () => {
-        modal[index].classList.add("hidden")
-        overlay.classList.add("hidden")
-    })
-})
+openModalBtns.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const modalId = btn.getAttribute("data-modal");
+        const targetModal = document.getElementById(modalId);
+        if (targetModal) {
+            targetModal.classList.remove("hidden");
+            overlay.classList.remove("hidden");
+        }
+    });
+});
+
+document.querySelectorAll(".close-btn, .modal-close").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const parentModal = btn.closest("[id^='modal']");
+        if (parentModal) {
+            parentModal.classList.add("hidden");
+            overlay.classList.add("hidden");
+        }
+    });
+});
+
+overlay.addEventListener("click", () => {
+    document.querySelectorAll("[id^='modal']").forEach((modal) => {
+        modal.classList.add("hidden");
+    });
+    overlay.classList.add("hidden");
+});
 // end modals logic
 
 // file inputs logic
@@ -35,11 +50,11 @@ inputsFile.forEach((input) => {
     input.addEventListener('change' , (e) => {
         const label = input.closest('label')
         const p = label.querySelector('p')
-        const icon = label.querySelector('iconify-icon') 
+        const icon = label.querySelector('iconify-icon')
         if(input.files.length > 0) {
             p.textContent = 'تم إرفاق المستند'
             icon.setAttribute('icon' , 'material-symbols:cloud-done-rounded')
-        } 
+        }
     })
 })
 // end file inputs logic
@@ -77,7 +92,7 @@ dropDownBtn.forEach((btn, index) => {
         });
     }
 });
- 
+
 dropDown.forEach((menu, index) => {
     const hasCheckboxes = menu.querySelector('input[type="checkbox"]') !== null;
     if (!hasCheckboxes) {
@@ -125,7 +140,7 @@ document.addEventListener("click", () => {
 
     async function searchMemberData(queryOrId, type, isId = false) {
         if (!queryOrId || (typeof queryOrId === 'string' && !queryOrId.trim())) return;
-        
+
         try {
             let param = isId ? `member_id=${encodeURIComponent(queryOrId)}` : `q=${encodeURIComponent(queryOrId)}`;
             const url = window.appRoutes ? window.appRoutes.searchMember + '?' + param : `/dashboard/search-member?${param}`;
@@ -136,7 +151,7 @@ document.addEventListener("click", () => {
                 }
             });
             const data = await res.json();
-            
+
             if (!data.success) {
                 showFlash('تنبيه', data.message, 'error');
                 return;
@@ -153,11 +168,11 @@ document.addEventListener("click", () => {
                 const subs = data.subscriptions;
                 const container = document.getElementById('sub-months-dropdown');
                 container.innerHTML = '';
-                
+
                 if (subs && subs.length > 0) {
                     document.getElementById('sub-due-date').textContent = subs[0].month_year;
                     document.getElementById('sub-amount').textContent = subs[0].amount + ' ج.م';
-                    
+
                     subs.forEach(sub => {
                         container.innerHTML += `
                             <label class="flex items-center gap-2 cursor-pointer surface-shadow py-1 px-4 rounded-[8px]">
@@ -168,7 +183,7 @@ document.addEventListener("click", () => {
                                 <span>${sub.month_year}</span>
                             </label>`;
                     });
-                    
+
                     // Add change listener to calculate selected amount
                     container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
                         cb.addEventListener('change', () => {
@@ -189,14 +204,14 @@ document.addEventListener("click", () => {
                     document.getElementById('sub-amount').textContent = '-';
                     container.innerHTML = '<p class="text-sm text-center text-gray-500 py-2">لا يوجد اشتراكات مستحقة</p>';
                 }
-                
+
                 // Re-bind click events for new dropdown items
                 container.addEventListener("click", (e) => e.stopPropagation());
 
             } else if (type === 'installment') {
                 document.getElementById('inst-member-info').classList.remove('hidden');
                 document.getElementById('inst-member-name').textContent = member.full_name;
-                
+
                 const instMemberIdEl = document.getElementById('inst-member-id');
                 if(instMemberIdEl) instMemberIdEl.value = member.id;
 
@@ -204,10 +219,10 @@ document.addEventListener("click", () => {
                     document.getElementById('inst-loan-number').textContent = data.loan.id;
                     document.getElementById('inst-loan-remaining').textContent = data.loan.remaining_amount + ' ج.م';
                     document.getElementById('inst-loan-id').value = data.loan.id;
-                    
+
                     const container = document.getElementById('inst-months-dropdown');
                     container.innerHTML = '';
-                    
+
                     if (data.loan.installments && data.loan.installments.length > 0) {
                         data.loan.installments.forEach(inst => {
                             container.innerHTML += `
@@ -219,7 +234,7 @@ document.addEventListener("click", () => {
                                     <span>${inst.month_year}</span>
                                 </label>`;
                         });
-                        
+
                         // Add change listener to calculate selected amount
                         container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
                             cb.addEventListener('change', () => {
@@ -247,7 +262,7 @@ document.addEventListener("click", () => {
                 document.getElementById('claim-member-id').value = member.id;
             } else if (type === 'global') {
                 const tbody = document.getElementById('search-results-tbody');
-                
+
                 let loanNum = '-';
                 if (data.loan && data.loan.id) {
                     loanNum = data.loan.id;
@@ -268,7 +283,7 @@ document.addEventListener("click", () => {
                         </tr>
                     `;
                 }
-                
+
                 const cardsContainer = document.getElementById('search-results-cards');
                 if (cardsContainer) {
                     cardsContainer.innerHTML = `
@@ -326,14 +341,14 @@ document.addEventListener("click", () => {
             }
 
             try {
-                const searchListUrl = (window.appRoutes && window.appRoutes.searchMembersList) 
-                            ? window.appRoutes.searchMembersList 
+                const searchListUrl = (window.appRoutes && window.appRoutes.searchMembersList)
+                            ? window.appRoutes.searchMembersList
                             : '/loans/search-members';
                 const url = searchListUrl + '?q=' + encodeURIComponent(query);
-                            
+
                 const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
                 const data = await res.json();
-                
+
                 resultsContainer.innerHTML = '';
                 if (data.length === 0) {
                     resultsContainer.innerHTML = '<div class="p-3 text-center text-gray-500">لا يوجد نتائج</div>';
@@ -381,7 +396,7 @@ document.addEventListener("click", () => {
             });
         }
     }
-    
+
     // Setup payment methods
     setupPaymentMethodDropdown('sub');
 
@@ -414,7 +429,7 @@ document.addEventListener("click", () => {
             if(input) searchMemberData(input.value, 'claim', false);
         });
     }
-    
+
     // Set Claim Type hidden input when clicked
     document.querySelectorAll('#claim-type').forEach(el => {
         const claimTypesContainer = el.closest('.modal-body').querySelector('.dropDown');
@@ -431,7 +446,7 @@ document.addEventListener("click", () => {
     const globalInput = document.getElementById('global-search-input');
     const globalBtn = document.getElementById('global-search-btn');
     const closeGlobalBtn = document.getElementById('close-global-search');
-    
+
     if (closeGlobalBtn) {
         closeGlobalBtn.addEventListener('click', () => {
             const container = document.getElementById('global-search-results');
@@ -442,7 +457,7 @@ document.addEventListener("click", () => {
     if (globalInput && globalBtn) {
         globalInput.addEventListener('input', debounce(() => searchMemberData(globalInput.value, 'global', false), 500));
         globalBtn.addEventListener('click', () => searchMemberData(globalInput.value, 'global', false));
-        
+
         // Also allow pressing Enter
         globalInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -460,7 +475,7 @@ document.addEventListener("click", () => {
             const subsCheckboxes = document.getElementById('sub-months-dropdown').querySelectorAll('input[type="checkbox"]:checked');
             const receiptNum = document.getElementById('sub-receipt-number').value;
             const receiptImg = document.getElementById('sub-receipt-image').files[0];
-            
+
             if (!memberId || subsCheckboxes.length === 0 || !receiptNum || !receiptImg) {
                 showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار شهر الدفع وإدخال رقم الإيصال وإرفاق صورته.', 'error');
                 return;
@@ -472,7 +487,7 @@ document.addEventListener("click", () => {
             // Pay the first selected subscription for now
             // To support multiple, backend would need to loop. But the UI lets them select multiple, so we will send the first one as standard, or we should loop in JS and send requests sequentially if backend doesn't support array.
             // Wait, we can just send multiple requests to the pay endpoint.
-            
+
             let hasError = false;
             for (let cb of subsCheckboxes) {
                 const subId = cb.value;
@@ -483,7 +498,7 @@ document.addEventListener("click", () => {
                 if (subPaymentMethod) formData.append('payment_method', subPaymentMethod.value);
                 formData.append('_token', csrfToken);
                 formData.append('source', 'dashboard');
-                
+
                 try {
                     const postUrl = window.appRoutes ? window.appRoutes.paySubscription(subId) : `/subscriptions/${subId}/pay`;
                     const res = await fetch(postUrl, {
@@ -495,7 +510,7 @@ document.addEventListener("click", () => {
                     hasError = true;
                 }
             }
-            
+
             if (!hasError) {
                 const redirectUrl = window.appRoutes ? window.appRoutes.memberProfile(memberId) + '?tab=subscriptions' : `/members/${memberId}?tab=subscriptions`;
                 window.location.href = redirectUrl;
@@ -515,7 +530,7 @@ document.addEventListener("click", () => {
             const instCheckboxes = document.getElementById('inst-months-dropdown').querySelectorAll('input[type="checkbox"]:checked');
             const receiptNum = document.getElementById('inst-receipt-number').value;
             const receiptImg = document.getElementById('inst-receipt-image').files[0];
-            
+
             if (!loanId || instCheckboxes.length === 0 || !receiptNum || !receiptImg) {
                 showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار القسط وإدخال رقم الإيصال وإرفاق صورته.', 'error');
                 return;
@@ -533,7 +548,7 @@ document.addEventListener("click", () => {
                 formData.append('receipt_image', receiptImg);
                 formData.append('_token', csrfToken);
                 formData.append('source', 'dashboard');
-                
+
                 try {
                     const postUrl = window.appRoutes ? window.appRoutes.payInstallment(cb.value) : `/loans/installments/${cb.value}/pay`;
                     const res = await fetch(postUrl, {
@@ -574,7 +589,7 @@ document.addEventListener("click", () => {
         claimSubmit.addEventListener('click', async () => {
             const memberId = document.getElementById('claim-member-id').value;
             const type = document.getElementById('claim-type').value;
-            
+
             if (!memberId || !type) {
                 showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار نوع المطالبة.', 'error');
                 return;

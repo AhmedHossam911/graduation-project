@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="{{ asset('css/employee/dashboard.css') }}">
 
     <div class="flex ">
-
         <!-- start main -->
         <main class="flex-1 py-5 px-3">
             <!-- start header main -->
@@ -46,9 +45,11 @@
                             <table class="w-full text-center">
                                 <thead>
                                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية
+                                        </th>
                                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي
+                                        </th>
                                         <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم القرض</th>
                                         <th class="py-3 font-medium text-[#021219]">إجراءات</th>
                                     </tr>
@@ -69,7 +70,7 @@
             <!-- start cards -->
             <div class="py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div
-                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-s-[#124375] hover:border-4 hover:border-[#124375] transition border-4 border-transparent">
                     <div>
                         <iconify-icon icon="mdi:account-group"
                             class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
@@ -80,7 +81,7 @@
                     </div>
                 </div>
                 <div
-                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-[#D4AF37] hover:border-4 hover:border-[#D4AF37] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 md:px-7 py-4 border-s-8 border-s-[#D4AF37] hover:border-4 hover:border-[#D4AF37] transition border-4 border-transparent">
                     <div>
                         <iconify-icon icon="mdi:account-file"
                             class="surface-shadow text-4xl text-[#D4AF37] bg-[#FFFCEF] rounded-lg px-2 py-1"></iconify-icon>
@@ -91,7 +92,7 @@
                     </div>
                 </div>
                 <div
-                    class="surface-shadow flex items-center justify-center gap-4 bg-[#124375] rounded-xl px-4 py-4 border-s-8 border-[#EEF7FF] hover:border-4 hover:border-[#EEF7FF] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#124375] rounded-xl px-4 py-4 border-s-8 border-s-[#EEF7FF] hover:border-4 hover:border-[#EEF7FF] transition border-4 border-transparent">
                     <div>
                         <iconify-icon icon="material-symbols:assignment-late"
                             class="surface-shadow text-4xl text-[#124375] bg-[#EEF7FF] rounded-lg px-2 py-1"></iconify-icon>
@@ -102,7 +103,7 @@
                     </div>
                 </div>
                 <div
-                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-[#D92D20] hover:border-4 hover:border-[#D92D20] transition-colors">
+                    class="surface-shadow flex items-center justify-center gap-4 bg-[#F4F7F9] rounded-xl px-4 py-4 border-s-8 border-s-[#D92D20] hover:border-4 hover:border-[#D92D20] transition border-4 border-transparent">
                     <div>
                         <iconify-icon icon="mdi:account-convert"
                             class="surface-shadow text-4xl text-[#D92D20] bg-[#FFEAE880] rounded-lg px-2 py-1"></iconify-icon>
@@ -181,30 +182,30 @@
                 <div class="col-span-1 h-full">
                     <div class="grid grid-cols-2 gap-4 h-full">
                         <a href="{{ route('members.create') }}"
-                            class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
+                            class="surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124 75] hover:border-4 hover:border-[#124375] transition border-4 border-transparent">
                             <div class="my-auto text-center">
                                 <iconify-icon icon="mdi:account-multiple-plus"
                                     class="text-5xl text-[#124375]"></iconify-icon>
                                 <h3 class="text-base font-medium text-[#124375]">تسجيل عضو جديد</h3>
                             </div>
                         </a>
-                        <div
-                            class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
+                        <div data-modal="modal1"
+                            class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375  hover:border-4 hover:border-[#124375] transition border-4 border-transparent">
                             <div class="my-auto text-center">
                                 <iconify-icon icon="material-symbols:list-alt-check-rounded"
                                     class="text-5xl text-[#124375]"></iconify-icon>
                                 <h3 class="text-base font-medium text-[#124375]">تسجيل سداد إشتراك</h3>
                             </div>
                         </div>
-                        <div
-                            class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
+                        <div data-modal="modal2"
+                            class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375  hover:border-4 hover:border-[#124375] transition border-4 border-transparent">
                             <div class="my-auto text-center">
                                 <iconify-icon icon="ion:cash" class="text-5xl text-[#124375]"></iconify-icon>
                                 <h3 class="text-base font-medium text-[#124375]">تسجيل سداد قسط</h3>
                             </div>
                         </div>
-                        <div
-                            class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375] hover:border-4 hover:border-[#124375] transition-colors">
+                        <div data-modal="modal3"
+                            class="open-modal cursor-pointer surface-shadow flex flex-col items-center bg-[#F4F7F9] rounded-xl px-4 py-7 border-s-8 border-[#124375  hover:border-4 hover:border-[#124375] transition border-4 border-transparent">
                             <div class="my-auto text-center">
                                 <iconify-icon icon="mdi:account-file" class="text-5xl text-[#124375]"></iconify-icon>
                                 <h3 class="text-base font-medium text-[#124375]">إنشاء مطالبة</h3>
@@ -225,21 +226,22 @@
                 </div>
                 @if ($lateInstallments->isEmpty())
                     <div class="rounded-2xl overflow-hidden text-center surface-shadow">
-                        <img src="{{ asset('IMGs/Dashboard-no-members.png') }}" alt="no alerts" style="width: 200px"
+                        <img src="{{ asset('IMGs/Dashboard-no-members.png') }}" alt="no alerts" style="width: 250px"
                             class="mx-auto py-10">
-                        <p class="text-base font-medium text-[#124375]">
-                            ممتاز! لا يوجد أعضاء متأخرين يستوجب إنذارهم حالياً.
-                        </p>
                     </div>
                 @else
-                    <div class="rounded-2xl overflow-hidden surface-shadow bg-transparent md:bg-white border-0 md:border border-[#6D6D6D]">
+                    <div
+                        class="rounded-2xl overflow-hidden surface-shadow bg-transparent md:bg-white border-0 md:border border-[#6D6D6D]">
                         <div class="hidden md:block">
                             <table class="w-full text-center">
                                 <thead>
                                     <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
-                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ المستحق</th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو
+                                        </th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية
+                                        </th>
+                                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">المبلغ
+                                            المستحق</th>
                                         <th class="py-3 font-medium text-[#021219]">مدة التأخير</th>
                                     </tr>
                                 </thead>
@@ -267,23 +269,28 @@
                         <!-- Mobile Cards -->
                         <div class="md:hidden flex flex-col gap-4">
                             @foreach ($lateInstallments as $installment)
-                                <div class="bg-white rounded-[14px] border border-[#D92D20] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                                <div
+                                    class="bg-white rounded-[14px] border border-[#D92D20] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
                                     <div class="absolute top-0 right-0 w-2 h-full bg-[#D92D20]"></div>
                                     <div class="flex flex-col gap-2 mr-3">
                                         <div class="flex justify-between items-start">
-                                            <h3 class="text-[#021219] font-bold text-lg">{{ $installment->loan->membership->member->user->name ?? 'عضو' }}</h3>
-                                            <span class="text-[#D92D20] bg-[#FFEAE880] border border-[#FDA29B] rounded-[8px] py-[1px] px-2 text-xs flex items-center gap-1">
+                                            <h3 class="text-[#021219] font-bold text-lg">
+                                                {{ $installment->loan->membership->member->user->name ?? 'عضو' }}</h3>
+                                            <span
+                                                class="text-[#D92D20] bg-[#FFEAE880] border border-[#FDA29B] rounded-[8px] py-[1px] px-2 text-xs flex items-center gap-1">
                                                 <iconify-icon icon="mdi:clock-alert-outline"></iconify-icon>
                                                 {{ \Carbon\Carbon::parse($installment->due_date)->diffForHumans() }}
                                             </span>
                                         </div>
                                         <div class="flex gap-2 items-center text-sm">
                                             <span class="text-[#6D6D6D]">رقم العضوية:</span>
-                                            <span class="text-[#124375] font-semibold">{{ $installment->loan->membership->membership_number ?? '-' }}</span>
+                                            <span
+                                                class="text-[#124375] font-semibold">{{ $installment->loan->membership->membership_number ?? '-' }}</span>
                                         </div>
                                         <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
                                             <span class="text-[#6D6D6D] text-sm">المبلغ المستحق</span>
-                                            <span class="text-[#D92D20] font-bold text-lg">{{ $installment->amount }} ج.م</span>
+                                            <span class="text-[#D92D20] font-bold text-lg">{{ $installment->amount }}
+                                                ج.م</span>
                                         </div>
                                     </div>
                                 </div>
@@ -298,9 +305,10 @@
 
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
 
+
     <!-- تسجيل سداد اشتراك -->
-    <div
-        class="modal hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
+    <div id="modal1"
+        class="modal hidden w-full max-w-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
         <button
             class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -334,7 +342,7 @@
                         </div>
                     </div>
                     <button id="sub-search-btn" type="button"
-                        class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
+                        class="bg-[#124375] text-white rounded-xl px-4 py-1 f ex items-center justify-center hover:bg-[#0e3560] transition border-4 border-transparent">
                         <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                     </button>
                 </div>
@@ -364,15 +372,20 @@
                         <input type="hidden" id="sub-payment-method" value="salary_deduction">
                         <button type="button"
                             class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
-                            الدفع<span class="text-[#D92D20]">*</span> : <span id="sub-payment-method-text" class="text-[#021219] text-[14px]"> خصم من
+                            الدفع<span class="text-[#D92D20]">*</span> : <span id="sub-payment-method-text"
+                                class="text-[#021219] text-[14px]"> خصم من
                                 المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl"></iconify-icon></span></button>
                         <div id="sub-payment-methods"
                             class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
-                            <button type="button" data-value="salary_deduction" class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من المرتب</button>
-                            <button type="button" data-value="bank_transfer" class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
-                            <button type="button" data-value="university_payment_order" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب مسبق</button>
-                            <button type="button" data-value="cash" class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">نقدي</button>
+                            <button type="button" data-value="salary_deduction"
+                                class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من المرتب</button>
+                            <button type="button" data-value="bank_transfer"
+                                class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
+                            <button type="button" data-value="university_payment_order"
+                                class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب مسبق</button>
+                            <button type="button" data-value="cash"
+                                class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">نقدي</button>
                         </div>
                     </div>
                 </div>
@@ -401,20 +414,20 @@
                 <form class="w-full">
                     <input type="hidden" id="sub-member-id">
                     <button type="button" id="sub-submit-btn"
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition border-4 border-transparent"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تسجيل
                         سداد
                         الإشتراك</button>
                 </form>
                 <button
-                    class="close-payment-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
+                    class="close-btn border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
     </div>
     <!-- تسجيل سداد اشتراك -->
     <!-- تسجيل سداد قسط -->
-    <div
-        class="modal hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
+    <div id="modal2"
+        class="modal hidden w-full max-w-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
         <button
             class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -450,7 +463,7 @@
                         </div>
                     </div>
                     <button id="inst-search-btn" type="button"
-                        class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
+                        class="bg-[#124375] text-white rounded-xl px-4 py-1 f ex items-center justify-center hover:bg-[#0e3560] transition border-4 border-transparent">
                         <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                     </button>
                 </div>
@@ -500,21 +513,21 @@
                     <input type="hidden" id="inst-member-id">
                     <input type="hidden" id="inst-loan-id">
                     <button type="button" id="inst-submit-btn"
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition border-4 border-transparent"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تسجيل
                         سداد
                         القسط</button>
                 </form>
                 <button
-                    class="close-payment-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
+                    class="close-btn border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
     </div>
     <!-- تسجيل سداد قسط -->
 
     <!-- انشاء مطالبة -->
-    <div
-        class="modal hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
+    <div id="modal3"
+        class="modal hidden w-full max-w-4xl mx-auto absolute top-0 left-1/2 -translate-x-1/2  z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10">
         <button
             class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -550,7 +563,7 @@
                         </div>
                     </div>
                     <button id="claim-search-btn" type="button"
-                        class="bg-[#124375] text-white rounded-xl px-4 py-1 flex items-center justify-center hover:bg-[#0e3560] transition-colors">
+                        class="bg-[#124375] text-white rounded-xl px-4 py-1 f ex items-center justify-center hover:bg-[#0e3560] transition border-4 border-transparent">
                         <iconify-icon icon="bitcoin-icons:search-outline" class="text-4xl "></iconify-icon>
                     </button>
                 </div>
@@ -589,12 +602,12 @@
                     <input type="hidden" id="claim-member-id">
                     <input type="hidden" id="claim-type">
                     <button type="button" id="claim-submit-btn"
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition border-4 border-transparent"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
                         الأختيار</button>
                 </form>
                 <button
-                    class="close-loan-request-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
+                    class="close-btn border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
     </div>
