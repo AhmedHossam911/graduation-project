@@ -13,8 +13,9 @@ class ReceiptController extends Controller
     {
         $user = Auth::user();
         $membership = $user->member?->membershipInfo;
+        $activeStatuses = ['active', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];
         
-        if ($membership && $membership->status === 'active') {
+        if ($membership && in_array($membership->status, $activeStatuses)) {
             $subscriptions = $membership->subscriptions()->latest()->get();
             $installments = $membership->loans()->with('installments')->get()->pluck('installments')->flatten();
             

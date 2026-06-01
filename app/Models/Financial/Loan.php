@@ -48,8 +48,8 @@ class Loan extends Model
      */
     public function getRemainingLoanBalanceAttribute()
     {
-            return $this->total_amount - $this->installments()->sum('amount');
-        }
+        return $this->total_amount - $this->installments()->where('status', 'paid')->sum('amount');
+    }
 
     public function transaction()
     {

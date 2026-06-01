@@ -123,7 +123,7 @@ class ClaimController extends Controller
 
         if ($validated['claim_type'] === 'retirement') {
             $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
-            if ($member->date_of_birth && \Carbon\Carbon::parse($member->date_of_birth)->age < $retirementAge) {
+            if ($member->birth_date && \Carbon\Carbon::parse($member->birth_date)->age < $retirementAge) {
                 return redirect()->back()->with('error', "لا يمكن إنشاء مطالبة تقاعد لأن العضو لم يبلغ سن التقاعد ($retirementAge عاماً).")->withInput();
             }
         }
@@ -258,6 +258,21 @@ class ClaimController extends Controller
             }
 
             $claim->update($updateData);
+
+            // Close the active loan and mark unpaid installments as paid since they were deducted
+            $activeLoan = $claim->membership->loans()->where('status', 'active')->first();
+            if ($activeLoan) {
+                $activeLoan->update(['status' => 'completed']);
+                $activeLoan->installments()->whereIn('status', ['unpaid', 'overdue'])->update([
+                    'status' => 'paid',
+                ]);
+            }
+
+            // Also mark deducted overdue subscriptions as paid
+            $claim->membership->subscriptions()
+                ->whereIn('status', ['unpaid', 'overdue'])
+                ->where('due_date', '<=', \Carbon\Carbon::now())
+                ->update(['status' => 'paid']);
 
             $membershipStatusMapping = [
                 'retirement'              => 'pension_eligible',

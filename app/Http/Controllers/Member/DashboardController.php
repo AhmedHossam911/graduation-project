@@ -60,7 +60,7 @@ class DashboardController extends Controller
             }
             
             // Loan Logic
-            $activeLoan = $membership->loans()->where('status', 'active')->first();
+            $activeLoan = $membership->loans()->whereIn('status', ['active', 'pending', 'approved'])->first();
             
             // Recent Requests
             $recentClaims = $membership->claims()->latest()->take(3)->get();

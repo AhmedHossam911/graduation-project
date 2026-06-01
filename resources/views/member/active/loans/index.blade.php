@@ -6,7 +6,27 @@
 
     <link rel="stylesheet" href="{{ asset('css/member/memberLoan.css') }}">
 
-    @if (!$activeLoan)
+    @if ($membership->status !== 'active')
+        <div class="rounded-[12px] bg-[#FFF7ED] max-w-xl orange-shadow py-4 px-5 mx-4 md:mx-auto mt-7 flex flex-col gap-7 justify-center items-center text-center">
+            <div>
+                <iconify-icon icon="material-symbols:info-rounded"
+                    class="text-4xl text-[#F79009] bg-[#FEF3C7] rounded-full py-4 px-4"></iconify-icon>
+            </div>
+            <div>
+                <p class="text-[#124375] text-[20px] font-semibold">عذرا، لايمكنك طلب قرض</p>
+            </div>
+            <div>
+                <p class="text-[#6D6D6D] text-[14px] font-medium">وفقاً لحالة عضويتك الحالية، لا يمكنك التقديم على طلب الحصول على قرض.</p>
+            </div>
+            <div>
+                <a href="{{ route('member.dashboard') }}"
+                    class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
+                    العودة للرئيسية
+                    <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
+                </a>
+            </div>
+        </div>
+    @elseif (!$activeLoan)
         {{-- لو معندوش قرض ده اللي يظهر --}}
         <section class="py-7 px-4 md:px-12">
             @include('partials.common.flash')
@@ -149,7 +169,7 @@
             <div>
                 <a href="{{ route('member.dashboard') }}"
                     class="cursor-pointer bg-[#124375] hover:bg-[#0e3560] transition-colors text-[#F4F7F9] flex items-center gap-4 w-full justify-center py-3 px-8 rounded-[12px] navy-shadow ">
-                    متابعة سداد القرض الحالي
+                    متابعة حالة القرض الحالي
                     <iconify-icon icon="fe:arrow-left" class="text-2xl mt-1"></iconify-icon>
                 </a>
             </div>

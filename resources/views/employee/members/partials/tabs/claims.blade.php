@@ -5,6 +5,32 @@
 --}}
 <!-- start requests section -->
 <div class="tab-content {{ $activeTabName === 'مطالبات' ? '' : 'hidden' }} print:hidden" data-tab="مطالبات">
+    @php
+        $activeClaim = $memberClaims->sortByDesc('created_at')->first();
+    @endphp
+    @if ($activeClaim)
+        <div class="mx-7 rounded-[12px] bg-[#F4F7F9] border-2 border-[#124375] py-3 px-5 my-4">
+            <div class="flex flex-col md:flex-row flex-wrap items-start md:items-center justify-between gap-4">
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">رقم المطالبة : <span class="text-[16px] text-[#021219] font-medium">{{ $activeClaim->id }}</span></p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">نوع المطالبة : <span class="text-[16px] text-[#021219] font-medium">{{ $claims[$activeClaim->type] ?? $activeClaim->type }}</span></p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">تاريخ التقديم : <span class="text-[16px] text-[#021219] font-medium">{{ $activeClaim->created_at->format('Y-m-d') }}</span></p>
+                </div>
+                <div>
+                    <p class="text-[#6D6D6D] text-[14px]">حالة المطالبة : 
+                        <span class="{{ $claimStatusClasses[$activeClaim->status] ?? 'bg-gray-100 text-gray-800 border-gray-300' }} border rounded-[8px] py-[1px] px-3 text-xs text-center font-medium">
+                            {{ $claimStatusLabels[$activeClaim->status] ?? $activeClaim->status }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    @endif
+    
     <!-- first step of request -->
     @if (request('claim_type') !== null && request('view_claim') === null)
         @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))

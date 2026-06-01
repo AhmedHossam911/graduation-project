@@ -13,7 +13,9 @@ class ClaimController extends Controller
         $user = Auth::user();
         $membership = $user->member?->membershipInfo;
         
-        if ($membership && $membership->status === 'active') {
+        $activeStatuses = ['active', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];
+        
+        if ($membership && in_array($membership->status, $activeStatuses)) {
             return view('member.active.claims.index', compact('user', 'membership'));
         }
         
@@ -54,7 +56,7 @@ class ClaimController extends Controller
 
         if ($validated['claim_type'] === 'retirement') {
             $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
-            if ($member->date_of_birth && \Carbon\Carbon::parse($member->date_of_birth)->age < $retirementAge) {
+            if ($member->birth_date && \Carbon\Carbon::parse($member->birth_date)->age < $retirementAge) {
                 return redirect()->back()->with('error', "لا يمكن تقديم مطالبة تقاعد لأنك لم تبلغ سن التقاعد ($retirementAge عاماً).")->withInput();
             }
         }

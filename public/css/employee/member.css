@@ -24,3 +24,7 @@ body{
 .tab{
     background-color: #E6F1FD80;
 }
+
+ul li{
+    list-style-type: disc;
+}

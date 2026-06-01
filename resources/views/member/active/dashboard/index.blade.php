@@ -107,46 +107,66 @@
                                 </div>
                             </div>
                             @if ($activeLoan)
+                                @php
+                                    $loanStatusLabels = [
+                                        'active' => 'قيد السداد',
+                                        'pending' => 'قيد المراجعة',
+                                        'approved' => 'مقبول',
+                                    ];
+                                    $loanStatusColors = [
+                                        'active' => 'bg-[#FFEDD5] border-[#EA580C] text-[#EA580C]',
+                                        'pending' => 'bg-[#FFF8E1] border-[#E6B800] text-[#E6B800]',
+                                        'approved' => 'bg-[#ECFDF3] border-[#067647] text-[#067647]',
+                                    ];
+                                    $currentStatusLabel = $loanStatusLabels[$activeLoan->status] ?? $activeLoan->status;
+                                    $currentStatusColor = $loanStatusColors[$activeLoan->status] ?? 'bg-[#F2F4F7] border-[#6D6D6D] text-[#6D6D6D]';
+                                @endphp
                                 <div
-                                    class="flex h-fit gap-1 items-center bg-[#FFEDD5] border border-[#EA580C] text-[#EA580C] rounded-[8px] px-4">
+                                    class="flex h-fit gap-1 items-center {{ $currentStatusColor }} border rounded-[8px] px-4">
                                     <iconify-icon icon="material-symbols:info-rounded" class=" text-lg "></iconify-icon>
-                                    <p class=" text-[14px] font-medium">قيد السداد</p>
+                                    <p class=" text-[14px] font-medium">{{ $currentStatusLabel }}</p>
                                 </div>
                             @endif
                         </div>
                         @if ($activeLoan)
-                            @php
-                                $paidAmount = $activeLoan->installments()->where('status', 'paid')->sum('amount');
-                                $remainingAmount = $activeLoan->total_amount - $paidAmount;
-                                $progress =
-                                    $activeLoan->total_amount > 0 ? ($paidAmount / $activeLoan->total_amount) * 100 : 0;
-                                $paidMonths = $activeLoan->installments()->where('status', 'paid')->count();
-                            @endphp
-                            <div class="flex flex-col md:flex-row justify-between gap-4">
-                                <div>
-                                    <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة : <span
-                                            class="text-[20px] text-[#021219]">{{ $paidAmount }} ج.م</span></p>
+                            @if ($activeLoan->status === 'active')
+                                @php
+                                    $paidAmount = $activeLoan->installments()->where('status', 'paid')->sum('amount');
+                                    $remainingAmount = $activeLoan->total_amount - $paidAmount;
+                                    $progress =
+                                        $activeLoan->total_amount > 0 ? ($paidAmount / $activeLoan->total_amount) * 100 : 0;
+                                    $paidMonths = $activeLoan->installments()->where('status', 'paid')->count();
+                                @endphp
+                                <div class="flex flex-col md:flex-row justify-between gap-4">
+                                    <div>
+                                        <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة : <span
+                                                class="text-[20px] text-[#021219]">{{ $paidAmount }} ج.م</span></p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[#6D6D6D] text-[16px] font-medium">المتبقي : <span
+                                                class="text-[20px] text-[#021219]">{{ $remainingAmount }} ج.م</span></p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="text-[#6D6D6D] text-[16px] font-medium">المتبقي : <span
-                                            class="text-[20px] text-[#021219]">{{ $remainingAmount }} ج.م</span></p>
+                                <div class="bg-[#EFEFEF] rounded-[50px] w-full h-4">
+                                    <span class="bg-[#F79009] rounded-[50px] w-[{{ $progress }}%] h-full block"></span>
                                 </div>
-                            </div>
-                            <div class="bg-[#EFEFEF] rounded-[50px] w-full h-4">
-                                <span class="bg-[#F79009] rounded-[50px] w-[{{ $progress }}%] h-full block"></span>
-                            </div>
-                            <div class="flex justify-between bg-[#FFF7ED] py-2 px-2">
-                                <div class="flex flex-col gap-3">
-                                    <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة</p>
-                                    <p class="text-[20px] text-[#021219] font-semibold">{{ $paidMonths }} من
-                                        {{ $activeLoan->months }} شهر</p>
+                                <div class="flex justify-between bg-[#FFF7ED] py-2 px-2">
+                                    <div class="flex flex-col gap-3">
+                                        <p class="text-[#6D6D6D] text-[16px] font-medium">الأقساط المسددة</p>
+                                        <p class="text-[20px] text-[#021219] font-semibold">{{ $paidMonths }} من
+                                            {{ $activeLoan->months }} شهر</p>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <p class="text-[#6D6D6D] text-[16px] font-medium">القسط القادم</p>
+                                        <p class="text-[20px] text-[#021219] font-semibold">
+                                            {{ $activeLoan->installment_amount }} ج.م</p>
+                                    </div>
                                 </div>
-                                <div class="flex flex-col gap-3">
-                                    <p class="text-[#6D6D6D] text-[16px] font-medium">القسط القادم</p>
-                                    <p class="text-[20px] text-[#021219] font-semibold">
-                                        {{ $activeLoan->installment_amount }} ج.م</p>
+                            @else
+                                <div class="flex flex-col items-center justify-center py-5">
+                                    <p class="text-[16px] font-medium text-[#6D6D6D]">قرضك حالياً في حالة ({{ $currentStatusLabel }}) بانتظار الموافقة والبدء في سداده.</p>
                                 </div>
-                            </div>
+                            @endif
                         @else
                             <div class="flex flex-col items-center justify-center py-5">
                                 <p class="text-[16px] font-medium text-[#6D6D6D]">ليس لديك قرض فعال حالياً</p>

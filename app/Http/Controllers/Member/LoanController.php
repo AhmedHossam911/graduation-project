@@ -12,10 +12,11 @@ class LoanController extends Controller
     {
         $user = Auth::user();
         $membership = $user->member?->membershipInfo;
+        $activeLoan = $membership?->loans()->whereIn('status', ['active', 'pending', 'approved'])->first();
         
-        $activeLoan = $membership?->loans()->where('status', 'active')->first();
+        $activeStatuses = ['active', 'loaned', 'pension_eligible', 'withdrawn', 'dismissed', 'unpaid_leave', 'membership_expired', 'suspended'];
         
-        if ($membership && $membership->status === 'active') {
+        if ($membership && in_array($membership->status, $activeStatuses)) {
             return view('member.active.loans.index', compact('user', 'membership', 'activeLoan'));
         }
         

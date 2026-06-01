@@ -1,5 +1,5 @@
 @extends('layouts.pages')
-{{-- 
+{{--
     Show Member Profile View (Employee):
     A comprehensive 360-degree view of a member's record.
     Includes tabs for managing their Subscriptions, Loans, and Claims dynamically.
@@ -167,7 +167,8 @@
     @include('employee.members.partials.personal-info')
     <!-- tabs -->
     <section class="px-4 md:px-7 print:hidden">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border border-[#124375] p-3 rounded-xl gap-4 md:gap-0">
+        <div
+            class="flex flex-col md:flex-row items-start md:items-center justify-between border border-[#124375] p-3 rounded-xl gap-4 md:gap-0">
             <div class="tabs flex flex-wrap gap-2 w-full md:w-auto">
                 <button
                     class="{{ $activeTabName === 'الاشتراكات' ? 'active-tab' : 'tab' }} text-[#124375] text-sm md:text-base font-medium rounded-tl-2xl rounded-tr-2xl py-2 md:py-3 px-3 md:px-4 navy-shadow flex-1 md:flex-none">الاشتراكات</button>
@@ -228,7 +229,8 @@
                             </button>
                         @endif
                         <div id="loans-action-buttons"
-                            class="tab-content flex flex-col sm:flex-row flex-wrap gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}" data-tab="قروض">
+                            class="tab-content flex flex-col sm:flex-row flex-wrap gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}"
+                            data-tab="قروض">
                             @if ($activeLoan && $activeLoan->status === 'active')
                                 <button data-modal="modal6"
                                     class="open-modal text-[16px] font-medium w-full sm:w-52 bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
@@ -298,4 +300,3 @@
     @include('employee.members.partials.modals')
     @include('employee.members.partials.scripts')
 @endsection
-

@@ -37,9 +37,9 @@ class CheckRetirementAge extends Command
 
         // Find members whose birthdate implies they just reached retirement age today.
         $members = Member::with(['membershipInfo', 'user'])
-            ->whereMonth('date_of_birth', Carbon::today()->month)
-            ->whereDay('date_of_birth', Carbon::today()->day)
-            ->whereYear('date_of_birth', '<=', $targetYear) // They are retirementAge or older
+            ->whereMonth('birth_date', Carbon::today()->month)
+            ->whereDay('birth_date', Carbon::today()->day)
+            ->whereYear('birth_date', '<=', $targetYear) // They are retirementAge or older
             ->whereHas('membershipInfo', function ($query) {
                 $query->whereNotIn('status', ['membership_expired', 'withdrawn', 'dismissed', 'suspended']);
             })
@@ -48,7 +48,7 @@ class CheckRetirementAge extends Command
         $count = 0;
         foreach ($members as $member) {
             // Check actual age
-            if (Carbon::parse($member->date_of_birth)->age >= $retirementAge) {
+            if (Carbon::parse($member->birth_date)->age >= $retirementAge) {
                 $member->membershipInfo->update([
                     'status' => 'membership_expired'
                 ]);
