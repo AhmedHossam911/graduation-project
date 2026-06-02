@@ -34,6 +34,24 @@
             timerProgressBar: icon === 'success',
         });
     };
+
+    window.confirmExport = function(event, url) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'تأكيد التحميل',
+            text: 'هل أنت متأكد؟ التقرير الذي سيتم تحميله يطبق عليه نفس الفلاتر المحددة حالياً.',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#124375',
+            cancelButtonColor: '#6D6D6D',
+            confirmButtonText: 'نعم، قم بالتحميل',
+            cancelButtonText: 'إلغاء'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    };
 </script>
 
 @php

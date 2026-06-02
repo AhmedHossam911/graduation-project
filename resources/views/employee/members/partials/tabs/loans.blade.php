@@ -24,9 +24,8 @@
                 </p>
             </div>
             <div>
-                <p class="text-[#6D6D6D] text-[14px]">إجمالي المتبقي : <span
-                        class="text-[16px] text-[#021219]">
-                        @if($activeLoan->installments->count() > 0)
+                <p class="text-[#6D6D6D] text-[14px]">إجمالي المتبقي : <span class="text-[16px] text-[#021219]">
+                        @if ($activeLoan->installments->count() > 0)
                             {{ number_format($activeLoan->installments->where('status', 'unpaid')->sum('amount'), 2) }}
                         @else
                             {{ number_format($activeLoan->total_amount, 2) }}
@@ -35,9 +34,8 @@
                 </p>
             </div>
             <div>
-                <p class="text-[#6D6D6D] text-[14px]">عدد الأقساط المتبقية : <span
-                        class="text-[16px] text-[#021219]">
-                        @if($activeLoan->installments->count() > 0)
+                <p class="text-[#6D6D6D] text-[14px]">عدد الأقساط المتبقية : <span class="text-[16px] text-[#021219]">
+                        @if ($activeLoan->installments->count() > 0)
                             {{ $activeLoan->installments->where('status', 'unpaid')->count() }} قسط
                         @else
                             {{ $activeLoan->months }} قسط (لم تبدأ)
@@ -45,9 +43,8 @@
                     </span></p>
             </div>
             <div>
-                <p class="text-[#6D6D6D] text-[14px]">تاريخ إنتهاء القرض : <span
-                        class="text-[16px] text-[#021219]">
-                        @if($activeLoan->installments->count() > 0)
+                <p class="text-[#6D6D6D] text-[14px]">تاريخ إنتهاء القرض : <span class="text-[16px] text-[#021219]">
+                        @if ($activeLoan->installments->count() > 0)
                             {{ $activeLoan->installments->last() ? \Carbon\Carbon::parse($activeLoan->installments->last()->due_date)->format('Y-m-d') : 'غير محدد' }}
                         @else
                             غير محدد
@@ -178,7 +175,7 @@
                                         </div>
                                     @else
                                         @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
-                                            @if(!isset($firstUnpaidLoanInstallmentDesktop))
+                                            @if (!isset($firstUnpaidLoanInstallmentDesktop))
                                                 @php $firstUnpaidLoanInstallmentDesktop = true; @endphp
                                                 <div>
                                                     <button data-modal="modal5"
@@ -188,7 +185,9 @@
                                                     </button>
                                                 </div>
                                             @else
-                                                <div class="text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-1 rounded text-center">يجب سداد السابق أولاً</div>
+                                                <div
+                                                    class="text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-2 max-w-fit mx-auto rounded text-center">
+                                                    يجب سداد السابق أولاً</div>
                                             @endif
                                         @endif
                                     @endif
@@ -290,7 +289,7 @@
                                 </div>
                             @else
                                 @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
-                                    @if(!isset($firstUnpaidLoanInstallmentMobile))
+                                    @if (!isset($firstUnpaidLoanInstallmentMobile))
                                         @php $firstUnpaidLoanInstallmentMobile = true; @endphp
                                         <button data-modal="modal5"
                                             onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
@@ -298,7 +297,9 @@
                                             تسجيل السداد
                                         </button>
                                     @else
-                                        <div class="w-full text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-2 rounded-[8px] text-center">يجب سداد السابق أولاً</div>
+                                        <div
+                                            class="w-full text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-2 rounded-[8px] text-center">
+                                            يجب سداد السابق أولاً</div>
                                     @endif
                                 @endif
                             @endif

@@ -23,7 +23,8 @@
 
     <!-- start tabs -->
     <div class="px-4 md:px-12">
-        <div class="tabs flex flex-nowrap md:grid md:grid-cols-3 lg:grid-cols-6 overflow-x-auto no-scrollbar gap-3 lg:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] px-4 py-5 text-center">
+        <div
+            class="tabs flex flex-nowrap md:grid md:grid-cols-3 lg:grid-cols-6 overflow-x-auto no-scrollbar gap-3 lg:gap-0 bg-[#F4F7F9] navy-shadow rounded-[16px] px-4 py-5 text-center">
             <button class="active-tab text-[16px] whitespace-nowrap px-4 md:px-2">
                 كافة التقارير
             </button>
@@ -48,7 +49,8 @@
 
     <!-- start cards -->
     <section class="px-4 md:px-12 py-10">
-        <div data-tab="كافة التقارير" class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
+        <div data-tab="كافة التقارير"
+            class="tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
@@ -217,9 +219,124 @@
                     </a>
                 </div>
             </div>
+
+            <div
+                class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
+                <div class="flex justify-between ">
+                    <div class="bg-[#E11D48] rounded-[12px] py-3 px-3 flex items-center">
+                        <iconify-icon icon="iconamoon:invoice-fill" class="text-3xl text-[#F0FFF6]"></iconify-icon>
+                    </div>
+                    <div>
+                        <div
+                            class="flex items-center gap-2 py-1 bg-[#EEF7FF] rounded-[16px] px-2 border-[0.5px] border-[#185A9D] text-[#185A9D]">
+                            <iconify-icon icon="material-symbols:info-rounded" class="text-xl"></iconify-icon>
+                            <p>تحديث تلقائي</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-[#124375] text-[20px] font-medium">بيان المزايا التأمينية والمطالبات</h3>
+                    <p class="text-[16px] text-[#6D6D6D] font-normal">كشف تفصيلي بالمطالبات المعتمدة (نهاية خدمة، معاش،
+                        وفاة) وقيمتها المنصرفة للمستفيدين.</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.reports.claims') }}"
+                        class="red-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#E11D48] bg-[#FFF0F2] hover:bg-[#E11D48] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
+                <div class="flex justify-between ">
+                    <div class="bg-[#E11D48] rounded-[12px] py-3 px-3 flex items-center">
+                        <iconify-icon icon="uil:calender" class="text-3xl text-[#F0FFF6]"></iconify-icon>
+                    </div>
+                    <div>
+                        <div
+                            class="flex items-center gap-2 py-1 bg-[#EEF7FF] rounded-[16px] px-2 border-[0.5px] border-[#185A9D] text-[#185A9D]">
+                            <iconify-icon icon="material-symbols:info-rounded" class="text-xl"></iconify-icon>
+                            <p>تحديث تلقائي</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-[#124375] text-[20px] font-medium">المطالبات المعلقة وتحت التسوية</h3>
+                    <p class="text-[16px] text-[#6D6D6D] font-normal">طلبات الأعضاء قيد المراجعة التي لم يتم صرفها لعدم
+                        استيفاء المستندات أو بانتظار الاعتماد.</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.reports.pending_claims') }}"
+                        class="red-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#E11D48] bg-[#FFF0F2] hover:bg-[#E11D48] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
+                </div>
+            </div>
+
+                        <div
+                class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
+                <div class="flex justify-between ">
+                    <div class="bg-[#5925DC] rounded-[12px] py-3 px-3 flex items-center">
+                        <iconify-icon icon="bi:buildings-fill" class="text-3xl text-[#F0FFF6]"></iconify-icon>
+                    </div>
+                    <div>
+                        <div
+                            class="flex items-center gap-2 py-1 bg-[#EEF7FF] rounded-[16px] px-2 border-[0.5px] border-[#185A9D] text-[#185A9D]">
+                            <iconify-icon icon="material-symbols:info-rounded" class="text-xl"></iconify-icon>
+                            <p>تحديث تلقائي</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-[#124375] text-[20px] font-medium">توزيع الأعضاء حسب الكليات</h3>
+                    <p class="text-[16px] text-[#6D6D6D] font-normal">تقرير إحصائي يوضح أعداد المشتركين ونسبهم المئوية
+                        موزعة على كليات وإدارات الجامعة.</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.reports.members_distribution') }}"
+                        class="purple-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#5925DC] bg-[#F4F0FF] hover:bg-[#5925DC] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
+                <div class="flex justify-between ">
+                    <div class="bg-[#5925DC] rounded-[12px] py-3 px-3 flex items-center">
+                        <iconify-icon icon="mdi:file-clock" class="text-3xl text-[#F0FFF6]"></iconify-icon>
+                    </div>
+                    <div>
+                        <div
+                            class="flex items-center gap-2 py-1 bg-[#EEF7FF] rounded-[16px] px-2 border-[0.5px] border-[#185A9D] text-[#185A9D]">
+                            <iconify-icon icon="material-symbols:info-rounded" class="text-xl"></iconify-icon>
+                            <p>تحديث تلقائي</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <h3 class="text-[#124375] text-[20px] font-medium">سجل نشاط النظام (Audit Log)</h3>
+                    <p class="text-[16px] text-[#6D6D6D] font-normal">تقرير رقابي يرصد العمليات الحساسة (تعديل لوائح، منح
+                        صلاحيات، اعتمادات مالية) التي تمت بالنظام.</p>
+                </div>
+                <div>
+                    <a href="{{ route('admin.reports.audit_logs') }}"
+                        class="purple-shadow py-3 w-full font-medium rounded-[10px] flex items-center gap-4 justify-center text-[#5925DC] bg-[#F4F0FF] hover:bg-[#5925DC] hover:text-white transition">
+                        <iconify-icon icon="mdi:eye" class="text-3xl"></iconify-icon>
+                        عرض التقرير
+                    </a>
+                </div>
+            </div>
+
+
         </div>
 
-        <div data-tab="المالية والخزينة" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
+        <div data-tab="المالية والخزينة"
+            class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] green-shadow border-s-8 border-transparent hover:border-[#019168] transition  rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
@@ -277,7 +394,8 @@
             </div>
         </div>
 
-        <div data-tab="الاشتراكات والعضوية" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
+        <div data-tab="الاشتراكات والعضوية"
+            class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] navy-shadow border-s-8 border-transparent hover:border-[#124375] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
@@ -336,7 +454,8 @@
             </div>
         </div>
 
-        <div data-tab="القروض والسلف" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
+        <div data-tab="القروض والسلف"
+            class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] yellow-shadow border-s-8 border-transparent hover:border-[#D4AF37] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
@@ -394,7 +513,8 @@
             </div>
         </div>
 
-        <div data-tab="المزايا والمطالبات" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
+        <div data-tab="المزايا والمطالبات"
+            class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] red-shadow border-s-8 border-transparent hover:border-[#E11D48] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
@@ -452,7 +572,8 @@
             </div>
         </div>
 
-        <div data-tab="إحصائيات إدارية" class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
+        <div data-tab="إحصائيات إدارية"
+            class="hidden tab-content grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-20 px-0 md:px-4">
             <div
                 class="space-y-10 bg-[#F4F7F9] purple-shadow border-s-8 border-transparent hover:border-[#5925DC] transition rounded-[16px] py-5 md:py-7 px-5 md:px-9">
                 <div class="flex justify-between ">
@@ -513,4 +634,3 @@
 
     <script src="{{ asset('js/admin/reports.js') }}"></script>
 @endsection
-

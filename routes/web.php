@@ -74,6 +74,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckIsRestricted::class])->grou
         Route::get('/admin/reports/arrears', [\App\Http\Controllers\Admin\ReportController::class, 'arrears'])->name('admin.reports.arrears');
         
         Route::get('/admin/reports/loans', [\App\Http\Controllers\Admin\ReportController::class, 'loans'])->name('admin.reports.loans');
+        Route::get('/admin/reports/loans/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportLoans'])->name('admin.reports.export_loans');
         
         Route::get('/admin/reports/installments', [\App\Http\Controllers\Admin\ReportController::class, 'installments'])->name('admin.reports.installments');
         Route::get('/admin/reports/installments/export', [\App\Http\Controllers\Admin\ReportController::class, 'exportInstallments'])->name('admin.reports.export_installments');

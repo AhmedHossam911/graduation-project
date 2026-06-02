@@ -12,10 +12,10 @@
         </div>
         <div class="btns flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <a href="{{ route('admin.reports.index') }}"
-                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#F4F7F9] text-[#124375] font-semibold navy-shadow hover:bg-[#E2E8F0] transition-colors">
                 العودة للتقارير
             </a>
-            <a href="{{ route('admin.reports.export_members_distribution') }}"
+            <a href="{{ route('admin.reports.export_members_distribution') }}" onclick="confirmExport(event, this.href)"
                 class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل (Excel)
             </a>

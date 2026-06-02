@@ -115,8 +115,11 @@ class ReportController extends Controller
     // --- 5. موقف القروض والسلف المنصرفة ---
     public function loans(Request $request)
     {
-        $query = Loan::with(['membership.member'])->where('status', 'active')->latest();
+        $query = Loan::with(['membership.member'])->latest();
 
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
         if ($request->filled('date_from')) {
             $query->whereDate('created_at', '>=', $request->date_from);
         }
@@ -126,6 +129,23 @@ class ReportController extends Controller
 
         $loans = $query->paginate(10)->withQueryString();
         return view('admin.reports.pages.loans', compact('loans'));
+    }
+
+    public function exportLoans(Request $request)
+    {
+        $query = Loan::with(['membership.member'])->latest();
+
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\LoansExport($query), 'loans.xlsx');
     }
 
     // --- 6. بيان الأقساط والتحصيل الشهري ---

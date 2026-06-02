@@ -3,19 +3,21 @@
 @section('title', 'بيان الإيرادات والمصروفات')
 
 @section('content')
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-12 py-5 gap-4 md:gap-0 print:hidden">
+    <div
+        class="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-12 py-5 gap-4 md:gap-0 print:hidden">
         <div>
             <h1 class="text-[24px] md:text-[32px] font-medium text-[#124375]">
                 بيان الإيرادات والمصروفات
             </h1>
-            <p class="text-[#6D6D6D] text-[14px] md:text-[16px] font-normal mt-2">كشف تفصيلي بحركة الإيرادات والمصروفات الإدارية والتشغيلية.</p>
+            <p class="text-[#6D6D6D] text-[14px] md:text-[16px] font-normal mt-2">كشف تفصيلي بحركة الإيرادات والمصروفات
+                الإدارية والتشغيلية.</p>
         </div>
         <div class="btns flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <a href="{{ route('admin.reports.index') }}"
-                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#F4F7F9] text-[#124375] font-semibold navy-shadow hover:bg-[#E2E8F0] transition-colors">
                 العودة للتقارير
             </a>
-            <a href="{{ route('finance.export', request()->query()) }}"
+            <a href="{{ route('finance.export', request()->query()) }}" onclick="confirmExport(event, this.href)"
                 class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 gap-2 px-5 bg-[#124375] text-white navy-shadow hover:bg-[#0e3560] transition-colors">
                 <iconify-icon icon="ri:file-excel-fill" class="flex items-center text-2xl"></iconify-icon> تنزيل (Excel)
             </a>
@@ -23,7 +25,8 @@
     </div>
 
     <!-- filteration buttons -->
-    <form action="{{ route('admin.reports.revenue_expenses') }}" method="GET" class="px-4 md:px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
+    <form action="{{ route('admin.reports.revenue_expenses') }}" method="GET"
+        class="px-4 md:px-12 flex flex-wrap w-full items-center gap-6 print:hidden">
         <div class="relative flex-1 min-w-[200px]">
             @include('partials.common.calendar', [
                 'name' => 'date_from',
@@ -93,15 +96,19 @@
                         <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $trx->id }}</td>
                             <td class="py-3 border-l border-[#6D6D6D]">
-                                @if($trx->type === 'IN')
-                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[100px]">إيراد</span>
+                                @if ($trx->type === 'IN')
+                                    <span
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[100px]">إيراد</span>
                                 @else
-                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[100px]">مصروف</span>
+                                    <span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[100px]">مصروف</span>
                                 @endif
                             </td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219] font-bold">{{ number_format($trx->amount, 2) }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219] font-bold">
+                                {{ number_format($trx->amount, 2) }}</td>
                             <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $trx->description }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">{{ $trx->created_at->format('Y-m-d') }}</td>
+                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                {{ $trx->created_at->format('Y-m-d') }}</td>
                         </tr>
                     @empty
                         <tr>
@@ -121,11 +128,14 @@
                                 <p class="text-sm text-[#6D6D6D]">{{ $trx->created_at->format('Y-m-d') }}</p>
                             </div>
                             <div class="flex flex-col items-end gap-1">
-                                <span class="text-[#124375] font-bold text-lg">{{ number_format($trx->amount, 2) }} ج.م</span>
-                                @if($trx->type === 'IN')
-                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-2 rounded-md py-0.5 text-xs text-center">إيراد</span>
+                                <span class="text-[#124375] font-bold text-lg">{{ number_format($trx->amount, 2) }}
+                                    ج.م</span>
+                                @if ($trx->type === 'IN')
+                                    <span
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-2 rounded-md py-0.5 text-xs text-center">إيراد</span>
                                 @else
-                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] px-2 rounded-md py-0.5 text-xs text-center">مصروف</span>
+                                    <span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] px-2 rounded-md py-0.5 text-xs text-center">مصروف</span>
                                 @endif
                             </div>
                         </div>
@@ -134,7 +144,8 @@
                         </div>
                     </div>
                 @empty
-                    <div class="text-center py-4 text-gray-500 bg-white rounded-xl border border-gray-200">لا توجد بيانات</div>
+                    <div class="text-center py-4 text-gray-500 bg-white rounded-xl border border-gray-200">لا توجد بيانات
+                    </div>
                 @endforelse
             </div>
         </div>
@@ -146,4 +157,3 @@
         {{ $transactions->links() }}
     </div>
 @endsection
-
