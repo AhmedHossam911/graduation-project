@@ -32,7 +32,7 @@ class ClaimController extends Controller
                 ->with('error', 'لا يوجد عضوية مسجلة.');
         }
 
-        if ($member->membershipInfo->claims()->exists()) {
+        if ($member->membershipInfo->claims()->where('status', '!=', 'rejected')->exists()) {
             return redirect()->route('member.claims.index')
                 ->with('error', 'لقد قمت بتقديم مطالبة مسبقاً ولا يمكن تقديم أكثر من طلب.');
         }

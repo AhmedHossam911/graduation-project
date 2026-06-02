@@ -134,7 +134,7 @@
                                 <td class="py-3 flex justify-center items-center gap-2">
                                     <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}">
                                         <iconify-icon
-                                            class="text-[#124375] hover:scale-110 hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                            class="text-[#124375] border-[1px] border-transparent hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] p-1 cursor-pointer"
                                             icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon>
                                     </a>
                                 </td>

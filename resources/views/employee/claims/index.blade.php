@@ -10,7 +10,8 @@
 @section('content')
     <link rel="stylesheet" href="{{ asset('css/employee/claims.css') }}">
     <!-- start header -->
-    <div class="flex flex-col md:flex-row justify-between items-center px-4 md:px-12 py-4 md:py-5 gap-4 md:gap-0 text-center md:text-right print:hidden">
+    <div
+        class="flex flex-col md:flex-row justify-between items-center px-4 md:px-12 py-4 md:py-5 gap-4 md:gap-0 text-center md:text-right print:hidden">
         <div>
             <h1 class="text-[32px] font-medium text-[#124375]">
                 المطالبات
@@ -92,6 +93,7 @@
                     'approved' => 'بانتظار التسوية',
                     'pending' => 'بانتظار الأعتماد',
                     'paid' => 'تم الصرف',
+                    'rejected' => 'ملغية',
                 ];
             @endphp
             @include('partials.common.dropdown', [
@@ -129,97 +131,117 @@
 
     <!-- start table -->
     <section class="px-4 md:px-12 py-4 print:hidden">
-        <div class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white">
+        <div
+            class=" rounded-[14px] overflow-hidden border border-[#6D6D6D] border-0 md:border p-0 md:p-0 bg-transparent md:bg-white">
             <div class="hidden md:block">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم المطالبة</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">تاريخ التقديم</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">نوع المطالبة</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
-                        <th class="py-3 font-medium text-[#021219]">إجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($claims as $claim)
-                        <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                {{ $claim->membership->member->user->name ?? 'N/A' }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                {{ $claim->created_at->translatedFormat('d F Y') }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</td>
-                            <td class="py-3 border-l border-[#6D6D6D]">
-                                @if ($claim->status === 'approved')
-                                    <span
-                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">بانتظار
-                                        التسوية</span>
-                                @elseif($claim->status === 'paid')
-                                    <span
-                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">تم
-                                        الصرف</span>
-                                @elseif($claim->status === 'pending')
-                                    <span
-                                        class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">بانتظار
-                                        الأعتماد</span>
-                                @else
-                                    <span
-                                        class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">{{ $claim->status }}</span>
-                                @endif
-                            </td>
-                            <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
-                                @if ($claim->status === 'approved')
-                                    <a href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}"
-                                        class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
-                                        <iconify-icon icon="majesticons:calculator" class="text-2xl"></iconify-icon>
-                                        تسوية
-                                    </a>
-                                @elseif($claim->status === 'pending')
-                                    <a href="{{ route('claims.show', $claim->id) }}"
-                                        class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
-                                        <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
-                                        أعتماد
-                                    </a>
-                                @elseif($claim->status === 'paid')
-                                    <button type="button"
-                                        onclick="document.getElementById('modal-receipt-{{ $claim->id }}').classList.remove('hidden'); document.querySelector('.overlay').classList.remove('hidden');"
-                                        class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
-                                        <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
-                                        عرض
-                                    </button>
-                                @endif
-                            </td>
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم المطالبة</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">تاريخ التقديم</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">نوع المطالبة</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
+                            <th class="py-3 font-medium text-[#021219]">إجراءات</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="py-4 text-center text-[#6D6D6D] font-medium">لا توجد مطالبات</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @forelse($claims as $claim)
+                            <tr class="text-center {{ $loop->even ? 'bg-[#EFEFEF]' : '' }} border-b border-[#6D6D6D]">
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">TRX-{{ $claim->id }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    <a
+                                        href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}">
+                                        {{ $claim->membership->member->user->name ?? 'غير متوفر' }}
+                                    </a>
+                                </td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ $claim->created_at->translatedFormat('d F Y') }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
+                                    {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</td>
+                                <td class="py-3 border-l border-[#6D6D6D]">
+                                    @if ($claim->status === 'approved')
+                                        <span
+                                            class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">بانتظار
+                                            التسوية</span>
+                                    @elseif($claim->status === 'paid')
+                                        <span
+                                            class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">تم
+                                            الصرف</span>
+                                    @elseif($claim->status === 'pending')
+                                        <span
+                                            class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">بانتظار
+                                            الأعتماد</span>
+                                    @elseif($claim->status === 'rejected')
+                                        <span
+                                            class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-center min-w-[145px]">ملغية</span>
+                                    @else
+                                        <span
+                                            class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-center min-w-[145px]">{{ $claim->status }}</span>
+                                    @endif
+                                </td>
+                                <td class="py-3 flex gap-4 items-center justify-center text-[#124375]">
+                                    @if ($claim->status === 'approved')
+                                        <a href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}"
+                                            class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
+                                            <iconify-icon icon="majesticons:calculator" class="text-2xl"></iconify-icon>
+                                            تسوية
+                                        </a>
+                                    @elseif($claim->status === 'pending')
+                                        <a href="{{ route('claims.show', $claim->id) }}"
+                                            class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
+                                            <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
+                                            أعتماد
+                                        </a>
+                                    @elseif($claim->status === 'paid')
+                                        <button type="button"
+                                            onclick="document.getElementById('modal-receipt-{{ $claim->id }}').classList.remove('hidden'); document.querySelector('.overlay').classList.remove('hidden');"
+                                            class="flex w-[140px] justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-2 rounded-[12px] navy-shadow">
+                                            <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
+                                            عرض
+                                        </button>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="py-4 text-center text-[#6D6D6D] font-medium">لا توجد مطالبات</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
 
             <!-- Mobile Cards -->
             <div class="md:hidden flex flex-col gap-4">
                 @forelse($claims as $claim)
-                    <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                    <div
+                        class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
                         <div class="flex justify-between items-start">
                             <div class="flex flex-col">
-                                <h3 class="text-[#021219] font-bold text-lg">{{ $claim->membership->member->user->name ?? 'N/A' }}</h3>
+                                <h3 class="text-[#021219] font-bold text-lg">
+                                    {{ $claim->membership->member->user->name ?? 'N/A' }}</h3>
                                 <span class="text-sm text-[#6D6D6D]">TRX-{{ $claim->id }}</span>
                             </div>
                             <div>
                                 @if ($claim->status === 'approved')
-                                    <span class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs font-medium">بانتظار التسوية</span>
+                                    <span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs font-medium">بانتظار
+                                        التسوية</span>
                                 @elseif($claim->status === 'paid')
-                                    <span class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">تم الصرف</span>
+                                    <span
+                                        class="text-[#067647] bg-[#ECFDF3] border border-[#067647] px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">تم
+                                        الصرف</span>
                                 @elseif($claim->status === 'pending')
-                                    <span class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">بانتظار الأعتماد</span>
+                                    <span
+                                        class="text-[#E6B800] bg-[#FFF8E1] border border-[#E6B800] px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">بانتظار
+                                        الأعتماد</span>
+                                @elseif($claim->status === 'rejected')
+                                    <span
+                                        class="text-[#D92D20] bg-[#FFEAE8] border border-[#D92D20] rounded-[8px] py-[2px] px-3 inline-block text-xs font-medium">ملغية</span>
                                 @else
-                                    <span class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">{{ $claim->status }}</span>
+                                    <span
+                                        class="text-gray-600 bg-gray-100 border border-gray-600 px-3 rounded-[8px] py-[2px] inline-block text-xs font-medium">{{ $claim->status }}</span>
                                 @endif
                             </div>
                         </div>
@@ -228,12 +250,14 @@
                             <div class="flex gap-2 items-center text-sm">
                                 <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
                                 <span class="text-[#6D6D6D]">تاريخ التقديم:</span>
-                                <span class="text-[#021219] font-semibold">{{ $claim->created_at->translatedFormat('d F Y') }}</span>
+                                <span
+                                    class="text-[#021219] font-semibold">{{ $claim->created_at->translatedFormat('d F Y') }}</span>
                             </div>
                             <div class="flex gap-2 items-center text-sm">
                                 <iconify-icon icon="mdi:file-document-outline" class="text-[#6D6D6D]"></iconify-icon>
                                 <span class="text-[#6D6D6D]">نوع المطالبة:</span>
-                                <span class="text-[#021219] font-semibold">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</span>
+                                <span
+                                    class="text-[#021219] font-semibold">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</span>
                             </div>
                         </div>
 
@@ -261,7 +285,9 @@
                         </div>
                     </div>
                 @empty
-                    <div class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D] text-[#6D6D6D] font-medium">لا توجد مطالبات</div>
+                    <div
+                        class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D] text-[#6D6D6D] font-medium">
+                        لا توجد مطالبات</div>
                 @endforelse
             </div>
         </div>
@@ -272,7 +298,7 @@
 
     <!-- MODALS -->
     <div
-        class="modal hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+        class="modal hidden w-full max-w-4xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
         <button
             class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -285,10 +311,14 @@
             </div>
             <div class="space-y-3">
                 <div id="selected-member-details" class="hidden flex gap-3 items-center">
-                    <p class="text-base font-medium text-[#124375]">الاسم : <span id="selected-member-name" class="text-[#021219] font-semibold text-base"></span></p>
-                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span id="selected-member-number" class="text-[#021219] font-semibold text-base"></span></p>
-                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span id="selected-member-national-id" class="text-[#021219] font-semibold text-base"></span></p>
-                    <button type="button" id="clear-selected-member" class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2 hover:bg-[#D92D20] transition-colors">
+                    <p class="text-base font-medium text-[#124375]">الاسم : <span id="selected-member-name"
+                            class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">رقم العضوية : <span id="selected-member-number"
+                            class="text-[#021219] font-semibold text-base"></span></p>
+                    <p class="text-base font-medium text-[#124375]">الرقم القومي : <span id="selected-member-national-id"
+                            class="text-[#021219] font-semibold text-base"></span></p>
+                    <button type="button" id="clear-selected-member"
+                        class="text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2 hover:bg-[#D92D20] transition-colors">
                         <iconify-icon icon="weui:close-filled"></iconify-icon>
                     </button>
                 </div>
@@ -331,7 +361,8 @@
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تأكيد
                         الأختيار</button>
                 </form>
-                <button type="button" onclick="this.closest('.modal').classList.add('hidden'); document.querySelector('.overlay').classList.add('hidden');"
+                <button type="button"
+                    onclick="this.closest('.modal').classList.add('hidden'); document.querySelector('.overlay').classList.add('hidden');"
                     class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
             </div>
         </div>
@@ -439,18 +470,26 @@
                                         icon="fluent:save-16-filled"
                                         class="flex items-center text-2xl"></iconify-icon></span>طباعة الإيصال</button>
                         </div>
+                        <div class="w-full">
+                            <a href="{{ route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims']) }}"
+                                class="flex w-full justify-center items-center gap-2 text-[14px] font-medium bg-[#F4F7F9] py-3 rounded-[12px] border border-[#124375] text-[#124375]">
+                                <iconify-icon icon="solar:eye-outline" class="text-2xl"></iconify-icon>
+                                عرض ملف العضو
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         @endif
     @endforeach
 
-    <!-- MODALS --> 
+    <!-- MODALS -->
     <script src="{{ asset('js/employee/claims.js') }}"></script>
 @endsection
 
 @section('pagination')
-    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80">
+    <div
+        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80">
         {{ $claims->links() }}
     </div>
 @endsection
@@ -492,12 +531,22 @@
                                         resultsContainer.classList.add('hidden');
 
                                         // Hide search, show details
-                                        document.getElementById('search-member-wrapper').classList.add('hidden');
-                                        document.getElementById('selected-member-name').textContent = member.full_name;
-                                        document.getElementById('selected-member-number').textContent = member.membership_number;
-                                        document.getElementById('selected-member-national-id').textContent = member.national_id;
-                                        document.getElementById('selected-member-details').classList.remove('hidden');
-                                        document.getElementById('selected-member-details').classList.add('flex');
+                                        document.getElementById('search-member-wrapper')
+                                            .classList.add('hidden');
+                                        document.getElementById('selected-member-name')
+                                            .textContent = member.full_name;
+                                        document.getElementById(
+                                                'selected-member-number').textContent =
+                                            member.membership_number;
+                                        document.getElementById(
+                                                'selected-member-national-id')
+                                            .textContent = member.national_id;
+                                        document.getElementById(
+                                                'selected-member-details').classList
+                                            .remove('hidden');
+                                        document.getElementById(
+                                                'selected-member-details').classList
+                                            .add('flex');
                                     });
                                     resultsContainer.appendChild(div);
                                 });
@@ -562,4 +611,3 @@
         });
     </script>
 @endpush
-

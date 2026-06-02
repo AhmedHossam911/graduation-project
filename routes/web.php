@@ -220,6 +220,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckIsRestricted::class])->grou
             Route::get('/claims', [ClaimController::class, 'index'])->name('claims.index');
             Route::get('/claims/{claim}', [ClaimController::class, 'show'])->name('claims.show');
             Route::post('/claims/{claim}/approve', [ClaimController::class, 'approve'])->name('claims.approve');
+            Route::post('/claims/{claim}/reject', [ClaimController::class, 'reject'])->name('claims.reject');
             Route::post('/claims/{claim}/finalize', [ClaimController::class, 'finalize'])->name('claims.finalize');
         });
 

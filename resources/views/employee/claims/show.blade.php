@@ -26,6 +26,13 @@
                 <iconify-icon icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon>
                 أعتماد الصرف
             </button>
+            @if ($claim->status === 'pending')
+                <button data-modal="modal-reject-claim"
+                    class="open-modal flex text-[16px] font-medium items-center w-full sm:w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2.5 rounded-[12px] bg-white">
+                    <iconify-icon icon="zondicons:close-solid" class="text-xl flex items-center"></iconify-icon>
+                      رفض المطالبة
+                </button>
+            @endif
         </div>
     </div>
     <!-- end header -->
@@ -305,5 +312,78 @@
         </div>
     </form>
     <script src="{{ asset('js/employee/payment.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const openModalBtns = document.querySelectorAll('.open-modal');
+            const overlay = document.querySelector('.overlay');
+
+            openModalBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        modal.classList.remove('hidden');
+                        if (overlay) overlay.classList.remove('hidden');
+                    }
+                });
+            });
+
+            const closeBtns = document.querySelectorAll('.close-btn, .modal-close');
+            closeBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modal = this.closest('.modal, [id^="modal-"]');
+                    if (modal) modal.classList.add('hidden');
+                    if (overlay) overlay.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+
+    <form action="{{ route('claims.reject', $claim->id) }}" method="POST">
+        @csrf
+        <div id="modal-reject-claim"
+            class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            <button type="button"
+                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                <iconify-icon icon="weui:close-filled"></iconify-icon>
+            </button>
+            <div class="modal-body space-y-7 px-12">
+                <div class="modal-title text-center">
+                    <h1 class="text-xl font-semibold text-[#124375]">
+                        تأكيد إلغاء أو رفض المطالبة
+                    </h1>
+                </div>
+                <div class="space-y-4">
+                    <div class="space-y-4">
+                        <h2 class="text-[#021219] text-base font-medium">
+                            بيانات المطالبة
+                        </h2>
+                        <div class="flex gap-3">
+                            <p class="text-base font-medium text-[#124375]">رقم المطالبة :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $claim->id }}</span>
+                            </p>
+                            <p class="text-base font-medium text-[#124375]">نوع المطالبة :<span
+                                    class="text-[#021219] font-semibold text-base">{{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</span>
+                            </p>
+                            <p class="text-base font-medium text-[#124375]">تاريخ تقديم الطلب :<span
+                                    class="text-[#021219] font-semibold text-base">{{ $claim->created_at->format('Y-m-d') }}</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns flex gap-2 ">
+                    <div class="w-full">
+                        <button type="submit"
+                            class=" rounded-[14px] w-full py-3 bg-[#D92D20] red-shadow text-[#F4F7F9] text-base font-medium">تأكيد
+                            إلغاء المطالبة</button>
+                    </div>
+                    <button type="button"
+                        class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] close-btn">إلغاء</button>
+                </div>
+            </div>
+        </div>
+    </form>
 
 @endsection

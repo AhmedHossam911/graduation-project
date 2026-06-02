@@ -71,7 +71,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[salary_letter]" id="file-salary"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[salary_letter]" id="file-salary"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -85,7 +85,7 @@
                                 class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط لإرفاق صورة الملف</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[deductions_statement]" id="file-deductions"
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[deductions_statement]" id="file-deductions"
                                     class="hidden" required>
                             </label>
                         </div>
@@ -98,7 +98,7 @@
                                 class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط لإرفاق صورة الملف</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" name="attachments[appointment_letter]" id="file-appointment"
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[appointment_letter]" id="file-appointment"
                                     class="hidden" required>
                             </label>
                         </div>
@@ -112,7 +112,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[national_id]" id="file-national"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[national_id]" id="file-national"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -127,7 +127,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[retirement_decision]" id="file-retirement"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[retirement_decision]" id="file-retirement"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -144,7 +144,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[release_form]" id="file-release"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[release_form]" id="file-release"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -156,7 +156,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[service_end_decision]" id="file-transfer"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[service_end_decision]" id="file-transfer"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -171,7 +171,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[service_end_decision]"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[service_end_decision]"
                                         id="file-death-end" class="hidden" required>
                                 </label>
                             </div>
@@ -183,7 +183,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[death_certificate]" id="file-death-cert"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[death_certificate]" id="file-death-cert"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -195,7 +195,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[heirs_ids]" id="file-heirs"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[heirs_ids]" id="file-heirs"
                                         class="hidden" required>
                                 </label>
                             </div>
@@ -207,7 +207,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" name="attachments[inheritance_notice]"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[inheritance_notice]"
                                         id="file-inheritance" class="hidden" required>
                                 </label>
                             </div>
@@ -247,7 +247,7 @@
                                         class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                         <p>اضغط لإرفاق صورة الملف</p>
                                         <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                        <input type="file" name="attachments[guardianship_decision]"
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[guardianship_decision]"
                                             id="file-guardianship" class="hidden">
                                     </label>
                                 </div>
@@ -259,7 +259,7 @@
                                         class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                         <p>اضغط لإرفاق صورة الملف</p>
                                         <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                        <input type="file" name="attachments[minors_birth_certs]"
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[minors_birth_certs]"
                                             id="file-minors-certs" class="hidden">
                                     </label>
                                 </div>
@@ -417,7 +417,7 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-2 border-2 border-dashed border-[#124375] rounded-xl hover:bg-[#F4F7F9] transition-colors">
                                     <p class="text-lg">اضغط لإرفاق صورة الإقرار الموقع</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-3xl"></iconify-icon>
-                                    <input type="file" name="signed_receipt" id="file-receipt" class="hidden"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="signed_receipt" id="file-receipt" class="hidden"
                                         required>
                                 </label>
                             </div>

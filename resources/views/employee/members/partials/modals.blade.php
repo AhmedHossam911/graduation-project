@@ -425,6 +425,52 @@
     </div>
 </form>
 
+<form action="{{ route('claims.reject', $pendingClaim->id ?? 0) }}" method="POST">
+    @csrf
+    <div id="modal-reject-claim"
+        class="hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+        <button type="button"
+            class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+            <iconify-icon icon="weui:close-filled"></iconify-icon>
+        </button>
+        <div class="modal-body space-y-7 px-12">
+            <div class="modal-title text-center">
+                <h1 class="text-xl font-semibold text-[#124375]">
+                    تأكيد إلغاء أو رفض المطالبة
+                </h1>
+            </div>
+            <div class="space-y-4">
+                <div class="space-y-4">
+                    <h2 class="text-[#021219] text-base font-medium">
+                        بيانات المطالبة
+                    </h2>
+                    <div class="flex gap-3">
+                        <p class="text-base font-medium text-[#124375]">رقم المطالبة :<span
+                                class="text-[#021219] font-semibold text-base">{{ $pendingClaim->id ?? 'غير متوفر' }}</span>
+                        </p>
+                        <p class="text-base font-medium text-[#124375]">نوع المطالبة :<span
+                                class="text-[#021219] font-semibold text-base">{{ $pendingClaim ? ($claims[$pendingClaim->type] ?? 'غير متوفر') : 'غير متوفر' }}</span>
+                        </p>
+                        <p class="text-base font-medium text-[#124375]">تاريخ تقديم الطلب :<span
+                                class="text-[#021219] font-semibold text-base">{{ $pendingClaim ? $pendingClaim->created_at->format('Y-m-d') : 'غير متوفر' }}</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="btns flex gap-2 ">
+                <div class="w-full">
+                    <button type="submit"
+                        class=" rounded-[14px] w-full py-3 bg-[#D92D20] red-shadow text-[#F4F7F9] text-base font-medium">تأكيد
+                        إلغاء المطالبة</button>
+                </div>
+                <button type="button"
+                    class="border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375] close-btn">إلغاء</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
 <form action="{{ route('loans.installments.pay', 0) }}" method="POST" enctype="multipart/form-data"
     id="payInstallmentForm">
     @csrf

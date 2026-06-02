@@ -101,7 +101,7 @@ class ClaimController extends Controller
                 ->with('error', 'لا يوجد عضوية مسجلة لهذا العضو.');
         }
 
-        if ($member->membershipInfo->claims()->exists()) {
+        if ($member->membershipInfo->claims()->where('status', '!=', 'rejected')->exists()) {
             return redirect()
                 ->route('members.show', $member->id)
                 ->with('error', 'يوجد مطالبة مسجلة مسبقاً لهذا العضو.');
@@ -332,6 +332,35 @@ class ClaimController extends Controller
     /**
      * Create an audit log entry for any action.
      */
+
+    /**
+     * Reject the specified claim.
+     */
+    public function reject(Request $request, Claim $claim)
+    {
+        $oldValues = $claim->toArray();
+
+        DB::transaction(function () use ($request, $claim, $oldValues) {
+            $claim->update([
+                'status' => 'rejected',
+            ]);
+
+            $this->logAudit('reject', 'claims', $claim->id, $oldValues, $claim->fresh()->toArray());
+
+            $user = $claim->membership->member->user ?? null;
+            if ($user) {
+                \App\Models\Auth\Notification::create([
+                    'user_id' => $user->id,
+                    'title'   => 'رفض المطالبة',
+                    'message' => 'تم إلغاء/رفض المطالبة الخاصة بك.',
+                ]);
+            }
+        });
+
+        return redirect()
+            ->route('members.show', ['member' => $claim->membership->member_id, 'tab' => 'claims'])
+            ->with('success', 'تم إلغاء أو رفض المطالبة بنجاح.');
+    }
 
     /**
      * Finalize the claim (Upload signed receipt for cheque payment).
