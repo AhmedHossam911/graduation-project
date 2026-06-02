@@ -1,8 +1,8 @@
 @extends('layouts.app')
 {{--
-    Finance Index View:
-    Central dashboard for managing incoming (revenues) and outgoing (expenses) financial transactions.
-    Provides tabs to filter between all transactions, revenues only, and expenses only, with manual entry capabilities.
+ Finance Index View:
+ Central dashboard for managing incoming (revenues) and outgoing (expenses) financial transactions.
+ Provides tabs to filter between all transactions, revenues only, and expenses only, with manual entry capabilities.
 --}}
 
 @section('title', 'المالية')
@@ -90,7 +90,8 @@
                     'name' => 'date',
                     'id' => 'finance-datepicker',
                     'value' => request('date'),
-                    'autoSubmit' => true,
+                    'autoSubmit' => false,
+                    'clearable' => true,
                 ])
             </div>
             <div class="relative w-full md:w-[200px] shrink-0">
@@ -104,7 +105,7 @@
                     'selected' => request('method', 'all'),
                     'clearable' => true,
                     'required' => false,
-                    'autoSubmit' => true,
+                    'autoSubmit' => false,
                 ])
             </div>
             <div class="relative w-full md:w-[200px] shrink-0">
@@ -118,7 +119,7 @@
                     'selected' => request('category', 'all'),
                     'clearable' => true,
                     'required' => false,
-                    'autoSubmit' => true,
+                    'autoSubmit' => false,
                 ])
             </div>
             <div class="w-full md:w-auto shrink-0">
@@ -481,7 +482,7 @@
         <div id="modal1"
             class="hidden w-full max-w-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
             <button type="button"
-                class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+                class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>
             </button>
             <form action="{{ route('finance.store') }}" method="POST" enctype="multipart/form-data"
@@ -498,12 +499,12 @@
                 <div class="space-y-4">
                     <div class="flex gap-4">
                         <button type="button" data-type="IN"
-                            class="modal-btn text-[16px] font-medium py-1 default-btn rounded-[12px]  flex items-center justify-center gap-2 w-full">
+                            class="modal-btn text-[16px] font-medium py-1 default-btn rounded-[12px] flex items-center justify-center gap-2 w-full">
                             <iconify-icon icon="iconamoon:trend-up-fill" class="text-3xl mt-1"></iconify-icon>
                             إيراد
                         </button>
                         <button type="button" data-type="OUT"
-                            class="modal-btn text-[16px] font-medium py-1  rounded-[12px] default-btn flex items-center justify-center gap-2 w-full">
+                            class="modal-btn text-[16px] font-medium py-1 rounded-[12px] default-btn flex items-center justify-center gap-2 w-full">
                             <iconify-icon icon="iconamoon:trend-down-fill" class="text-3xl mt-1"></iconify-icon>
                             مصروف
                         </button>
@@ -521,14 +522,14 @@
                                     @foreach (App\Models\Financial\Transaction::EXPENSE_CATEGORIES as $key => $label)
                                         <button type="button" data-input="create-category-input"
                                             data-value="{{ $key }}"
-                                            class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                                            class=" navy-shadow py-2 rounded-xl text-sm font-medium">{{ $label }}</button>
                                     @endforeach
                                 </div>
                                 <div class="flex flex-col gap-3 hidden dropdown-group" data-dropdown="إيراد">
                                     @foreach (App\Models\Financial\Transaction::REVENUE_CATEGORIES as $key => $label)
                                         <button type="button" data-input="create-category-input"
                                             data-value="{{ $key }}"
-                                            class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                                            class=" navy-shadow py-2 rounded-xl text-sm font-medium">{{ $label }}</button>
                                     @endforeach
                                 </div>
                             </div>
@@ -544,7 +545,7 @@
                                 @foreach (App\Models\Financial\Transaction::METHOD_LABELS as $key => $label)
                                     <button type="button" data-input="create-method-input"
                                         data-value="{{ $key }}"
-                                        class=" navy-shadow py-2  rounded-xl text-sm font-medium">{{ $label }}</button>
+                                        class=" navy-shadow py-2 rounded-xl text-sm font-medium">{{ $label }}</button>
                                 @endforeach
                             </div>
                         </div>
@@ -573,10 +574,11 @@
                     </div>
                     <div class="border border-[#124375] rounded-[12px] ">
                         <label for="file-1"
-                            class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
+                            class=" cursor-pointer py-7 text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط لإرفاق صورة الفاتورة أو الإيصال</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" name="attachment" id="file-1" class="hidden" required>
+                            <input type="file" name="attachment" id="file-1" class="hidden" required
+                                accept=".pdf, image/*">
                         </label>
                     </div>
                 </div>

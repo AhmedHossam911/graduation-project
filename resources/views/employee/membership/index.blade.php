@@ -1,8 +1,8 @@
 @extends('layouts.app')
 {{--
-    Subscriptions Index View:
-    Displays all financial subscriptions (paid, unpaid, overdue, suspended) across all members.
-    Includes filtering options and modals for manual payment registration.
+ Subscriptions Index View:
+ Displays all financial subscriptions (paid, unpaid, overdue, suspended) across all members.
+ Includes filtering options and modals for manual payment registration.
 --}}
 
 @section('title', 'قائمة الاشتراكات')
@@ -12,8 +12,8 @@
         class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-2 gap-4 md:gap-0 print:hidden">
         <h2 class="text-[24px] font-bold text-[#124375]">الاشتراكات</h2>
         <div class="flex flex-col md:flex-row w-full md:w-auto gap-3 md:gap-5">
-            <button
-                data-modal="modal1" class="open-modal inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-full md:w-[334px] h-[50px] justify-center">
+            <button data-modal="modal1"
+                class="open-modal inline-flex items-center surface-shadow gap-2 bg-[#124375] text-white py-4 rounded-xl font-semibold transition-colors duration-150 hover:bg-primary-light w-full md:w-[334px] h-[50px] justify-center">
                 <iconify-icon icon="material-symbols:add-notes" width="24" height="24"></iconify-icon>
                 تسجيل سداد اشتراك
             </button>
@@ -68,7 +68,7 @@
             <!-- start search -->
             <div class="relative flex-grow min-w-[280px] w-full md:w-auto">
                 <input type="search" name="search" value="{{ request('search') }}"
-                    placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي"
+                    placeholder="الاسم أو رقم العضوية أو الرقم القومي"
                     class="pr-10 pl-4 py-2.5 w-full outline-none surface-shadow bg-white md:bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
                 <iconify-icon icon="mynaui:search"
                     class="absolute right-3 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
@@ -81,6 +81,8 @@
                     'id' => 'subscriptions-datepicker',
                     'value' => request('date'),
                     'autoSubmit' => true,
+                    'floatingLabel' => true,
+                    'clearable' => true,
                 ])
             </div>
 
@@ -104,6 +106,7 @@
                     'clearable' => true,
                     'required' => false,
                     'autoSubmit' => true,
+                    'floatingLabel' => true,
                 ])
             </div>
 
@@ -114,7 +117,7 @@
                 </button>
             </div>
         </div>
-    </form>
+    </form>س
 
 
     <!-- start table -->
@@ -335,10 +338,10 @@
     <div class="overlay backdrop-brightness-50 inset-0 fixed hidden z-[60]"></div>
 
     <!-- تسجيل سداد اشتراك -->
-    <div
-        id="modal1" class="modal hidden w-full max-w-2xl mx-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10 w-[95%] md:w-full">
+    <div id="modal1"
+        class="modal hidden w-full max-w-2xl mx-auto fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] surface-shadow pt-2 pb-10 w-[95%] md:w-full">
         <button
-            class="modal-close text-[#124375] text-2xl  surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
+            class="modal-close text-[#124375] text-2xl surface-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
         </button>
         <div class="modal-body space-y-7 px-4 md:px-12 max-h-[80vh] overflow-y-auto">
@@ -360,8 +363,8 @@
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>
                     <div class="relative flex-1 ">
-                        <input type="search" id="sub-search-input"
-                            placeholder="الاسم  أو  رقم العضوية  أو  الرقم القومي" autocomplete="off"
+                        <input type="search" id="sub-search-input" placeholder="الاسم أو رقم العضوية أو الرقم القومي"
+                            autocomplete="off"
                             class="w-full py-2 pr-9 outline-none surface-shadow bg-[#F4F7F9] rounded-xl text-[#021219] focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow">
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
@@ -406,7 +409,7 @@
                         <div id="sub-payment-methods"
                             class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
                             <button type="button" data-value="salary_deduction"
-                                class=" surface-shadow py-2  rounded-xl text-sm font-medium">خصم من المرتب</button>
+                                class=" surface-shadow py-2 rounded-xl text-sm font-medium">خصم من المرتب</button>
                             <button type="button" data-value="bank_transfer"
                                 class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
                             <button type="button" data-value="university_payment_order"
@@ -429,10 +432,10 @@
                     </div>
                     <div class="border border-[#124375] rounded-[12px] ">
                         <label for="sub-receipt-image"
-                            class=" cursor-pointer  py-7  text-[#124375] flex items-center justify-center gap-1">
+                            class=" cursor-pointer py-7 text-[#124375] flex items-center justify-center gap-1">
                             <p>اضغط لإرفاق صورة إيصال السداد</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                            <input type="file" id="sub-receipt-image" class="hidden">
+                            <input type="file" id="sub-receipt-image" class="hidden" accept=".pdf, image/*">
                         </label>
                     </div>
                 </div>
@@ -441,7 +444,7 @@
                 <form class="w-full">
                     <input type="hidden" id="sub-member-id">
                     <button type="button" id="sub-submit-btn"
-                        class="submit-btn  rounded-[14px] w-full py-3 btn-disabled  text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
+                        class="submit-btn rounded-[14px] w-full py-3 btn-disabled text-base font-medium flex items-center justify-center gap-2 bg-[#124375] text-[#EEF7FF] navy-shadow hover:bg-[#0e3560] transition-colors"><span><iconify-icon
                                 icon="healthicons:yes" class="flex items-center text-2xl"></iconify-icon></span>تسجيل سداد
                         الإشتراك</button>
                 </form>

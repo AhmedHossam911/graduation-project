@@ -84,6 +84,7 @@
                 'id' => 'subscriptions-datepicker',
                 'value' => request('date'),
                 'autoSubmit' => false,
+                'clearable' => true,
             ])
         </div>
         <div class="relative w-full md:w-[200px] shrink-0">
@@ -103,7 +104,7 @@
                 'selected' => request('status', 'all'),
                 'clearable' => true,
                 'required' => false,
-                'autoSubmit' => true,
+                'autoSubmit' => false,
             ])
         </div>
         <div class="relative w-full md:w-[200px] shrink-0">
@@ -117,7 +118,7 @@
                 'selected' => request('type', 'all'),
                 'clearable' => true,
                 'required' => false,
-                'autoSubmit' => true,
+                'autoSubmit' => false,
             ])
         </div>
         <div class="w-full md:w-auto shrink-0">
