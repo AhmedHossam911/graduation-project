@@ -1,4 +1,4 @@
-﻿// modals variables
+// modals variables
 const openModalBtns = document.querySelectorAll(".open-modal")
 const overlay = document.querySelector(".overlay")
 // end modals variables
@@ -143,6 +143,7 @@ document.addEventListener("click", () => {
 
         try {
             let param = isId ? `member_id=${encodeURIComponent(queryOrId)}` : `q=${encodeURIComponent(queryOrId)}`;
+            param += `&type=${encodeURIComponent(type)}`;
             const url = window.appRoutes ? window.appRoutes.searchMember + '?' + param : `/dashboard/search-member?${param}`;
             const res = await fetch(url, {
                 headers: {
@@ -184,19 +185,36 @@ document.addEventListener("click", () => {
                             </label>`;
                     });
 
-                    // Add change listener to calculate selected amount
-                    container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    // Add change listener to calculate selected amount and enforce chronological order
+                    const checkboxes = Array.from(container.querySelectorAll('input[type="checkbox"]'));
+                    checkboxes.forEach((cb, index) => {
                         cb.addEventListener('change', () => {
+                            if (cb.checked) {
+                                // If checked, check all preceding checkboxes (older subscriptions)
+                                for (let i = 0; i < index; i++) {
+                                    checkboxes[i].checked = true;
+                                }
+                            } else {
+                                // If unchecked, uncheck all following checkboxes (newer subscriptions)
+                                for (let i = index + 1; i < checkboxes.length; i++) {
+                                    checkboxes[i].checked = false;
+                                }
+                            }
+
                             let total = 0;
                             const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
                             if (checkedBoxes.length > 0) {
                                 checkedBoxes.forEach(c => {
                                     total += parseFloat(c.getAttribute('data-amount'));
                                 });
-                            } else {
-                                total = 0;
                             }
                             document.getElementById('sub-amount').textContent = total + ' ج.م';
+                            
+                            // Also update the dropdown label text if possible
+                            const dropDownBtn = document.getElementById('sub-months-dropdown').previousElementSibling;
+                            if (dropDownBtn) {
+                                updateCheckboxDropdownText(document.getElementById('sub-months-dropdown'), dropDownBtn);
+                            }
                         });
                     });
                 } else {
@@ -344,7 +362,7 @@ document.addEventListener("click", () => {
                 const searchListUrl = (window.appRoutes && window.appRoutes.searchMembersList)
                             ? window.appRoutes.searchMembersList
                             : '/loans/search-members';
-                const url = searchListUrl + '?q=' + encodeURIComponent(query);
+                const url = searchListUrl + '?q=' + encodeURIComponent(query) + '&type=' + encodeURIComponent(type);
 
                 const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
                 const data = await res.json();
@@ -446,6 +464,59 @@ document.addEventListener("click", () => {
     const globalInput = document.getElementById('global-search-input');
     const globalBtn = document.getElementById('global-search-btn');
     const closeGlobalBtn = document.getElementById('close-global-search');
+
+    window.resetPaymentModal = function(type) {
+        if (type === 'subscription') {
+            document.getElementById('sub-search-input').value = '';
+            document.getElementById('sub-member-results').classList.add('hidden');
+            document.getElementById('sub-member-info').classList.add('hidden');
+            document.getElementById('sub-member-id').value = '';
+            document.getElementById('sub-receipt-number').value = '';
+            const receiptInput = document.getElementById('sub-receipt-image');
+            if (receiptInput) {
+                receiptInput.value = '';
+                const label = receiptInput.closest('label');
+                if (label) {
+                    const p = label.querySelector('p');
+                    if (p) p.textContent = 'إرفاق المستند';
+                    const icon = label.querySelector('iconify-icon');
+                    if (icon) icon.setAttribute('icon', 'material-symbols:cloud-upload-outline-rounded');
+                }
+            }
+            document.getElementById('sub-months-dropdown').innerHTML = '';
+            document.getElementById('sub-amount').textContent = '-';
+            const dropDownBtn = document.getElementById('sub-months-dropdown').previousElementSibling;
+            if (dropDownBtn) {
+                const spans = dropDownBtn.querySelectorAll("span");
+                if (spans.length > 1) spans[1].textContent = "اختر الشهر";
+            }
+        } else if (type === 'installment') {
+            document.getElementById('inst-search-input').value = '';
+            document.getElementById('inst-member-results').classList.add('hidden');
+            document.getElementById('inst-member-info').classList.add('hidden');
+            document.getElementById('inst-member-id').value = '';
+            document.getElementById('inst-loan-id').value = '';
+            document.getElementById('inst-receipt-number').value = '';
+            const receiptInput = document.getElementById('inst-receipt-image');
+            if (receiptInput) {
+                receiptInput.value = '';
+                const label = receiptInput.closest('label');
+                if (label) {
+                    const p = label.querySelector('p');
+                    if (p) p.textContent = 'إرفاق المستند';
+                    const icon = label.querySelector('iconify-icon');
+                    if (icon) icon.setAttribute('icon', 'material-symbols:cloud-upload-outline-rounded');
+                }
+            }
+            document.getElementById('inst-months-dropdown').innerHTML = '';
+            document.getElementById('inst-amount-selected').textContent = '0';
+            const dropDownBtn = document.getElementById('inst-months-dropdown').previousElementSibling;
+            if (dropDownBtn) {
+                const spans = dropDownBtn.querySelectorAll("span");
+                if (spans.length > 1) spans[1].textContent = "اختر الشهر";
+            }
+        }
+    };
 
     if (closeGlobalBtn) {
         closeGlobalBtn.addEventListener('click', () => {

@@ -452,6 +452,7 @@ class LoanController extends Controller
         $unpaidInstallments = $loan->installments()
             ->whereIn('status', ['unpaid', 'overdue'])
             ->orderBy('due_date')
+            ->take(1)
             ->get();
 
         $data = [
@@ -480,8 +481,9 @@ class LoanController extends Controller
     public function searchMembers(Request $request)
     {
         $search = $request->get('q', '');
+        $type = $request->get('type', '');
 
-        $members = Member::with(['membershipInfo', 'user'])
+        $query = Member::with(['membershipInfo', 'user'])
             ->where(function ($q) use ($search) {
                 $q->whereHas('user', function($q2) use ($search) {
                       $q2->where('name', 'LIKE', "%{$search}%")
@@ -490,9 +492,24 @@ class LoanController extends Controller
                   ->orWhereHas('membershipInfo', function ($q2) use ($search) {
                         $q2->where('membership_number', 'LIKE', "%{$search}%");
                   });
-            })
-            ->limit(10)
-            ->get();
+            });
+
+        if ($type === 'subscription') {
+            $query->whereHas('membershipInfo.subscriptions', function($q) {
+                $q->whereIn('status', ['unpaid', 'overdue']);
+            });
+        } elseif ($type === 'installment') {
+            $query->whereHas('membershipInfo.loans', function($q) {
+                $q->whereIn('status', ['active', 'pending', 'approved'])
+                  ->whereHas('installments', function($q2) {
+                      $q2->whereIn('status', ['unpaid', 'overdue']);
+                  });
+            });
+        } elseif ($type === 'claim') {
+            $query->has('membershipInfo');
+        }
+
+        $members = $query->limit(10)->get();
 
         return response()->json($members->map(function ($m) {
             return [

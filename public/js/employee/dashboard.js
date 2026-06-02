@@ -47,13 +47,13 @@ overlay.addEventListener("click", () => {
 
 // file inputs logic
 inputsFile.forEach((input) => {
-    input.addEventListener('change' , (e) => {
+    input.addEventListener('change', (e) => {
         const label = input.closest('label')
         const p = label.querySelector('p')
         const icon = label.querySelector('iconify-icon')
-        if(input.files.length > 0) {
+        if (input.files.length > 0) {
             p.textContent = 'تم إرفاق المستند'
-            icon.setAttribute('icon' , 'material-symbols:cloud-done-rounded')
+            icon.setAttribute('icon', 'material-symbols:cloud-done-rounded')
         }
     })
 })
@@ -143,6 +143,7 @@ document.addEventListener("click", () => {
 
         try {
             let param = isId ? `member_id=${encodeURIComponent(queryOrId)}` : `q=${encodeURIComponent(queryOrId)}`;
+            param += `&type=${encodeURIComponent(type)}`;
             const url = window.appRoutes ? window.appRoutes.searchMember + '?' + param : `/dashboard/search-member?${param}`;
             const res = await fetch(url, {
                 headers: {
@@ -184,19 +185,36 @@ document.addEventListener("click", () => {
                             </label>`;
                     });
 
-                    // Add change listener to calculate selected amount
-                    container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                    // Add change listener to calculate selected amount and enforce chronological order
+                    const checkboxes = Array.from(container.querySelectorAll('input[type="checkbox"]'));
+                    checkboxes.forEach((cb, index) => {
                         cb.addEventListener('change', () => {
+                            if (cb.checked) {
+                                // If checked, check all preceding checkboxes (older subscriptions)
+                                for (let i = 0; i < index; i++) {
+                                    checkboxes[i].checked = true;
+                                }
+                            } else {
+                                // If unchecked, uncheck all following checkboxes (newer subscriptions)
+                                for (let i = index + 1; i < checkboxes.length; i++) {
+                                    checkboxes[i].checked = false;
+                                }
+                            }
+
                             let total = 0;
                             const checkedBoxes = container.querySelectorAll('input[type="checkbox"]:checked');
                             if (checkedBoxes.length > 0) {
                                 checkedBoxes.forEach(c => {
                                     total += parseFloat(c.getAttribute('data-amount'));
                                 });
-                            } else {
-                                total = 0;
                             }
                             document.getElementById('sub-amount').textContent = total + ' ج.م';
+
+                            // Also update the dropdown label text if possible
+                            const dropDownBtn = document.getElementById('sub-months-dropdown').previousElementSibling;
+                            if (dropDownBtn) {
+                                updateCheckboxDropdownText(document.getElementById('sub-months-dropdown'), dropDownBtn);
+                            }
                         });
                     });
                 } else {
@@ -213,7 +231,7 @@ document.addEventListener("click", () => {
                 document.getElementById('inst-member-name').textContent = member.full_name;
 
                 const instMemberIdEl = document.getElementById('inst-member-id');
-                if(instMemberIdEl) instMemberIdEl.value = member.id;
+                if (instMemberIdEl) instMemberIdEl.value = member.id;
 
                 if (data.loan) {
                     document.getElementById('inst-loan-number').textContent = data.loan.id;
@@ -333,7 +351,7 @@ document.addEventListener("click", () => {
         const resultsContainer = document.getElementById(resultsId);
         if (!input || !resultsContainer) return;
 
-        input.addEventListener('input', debounce(async function() {
+        input.addEventListener('input', debounce(async function () {
             const query = input.value.trim();
             if (query.length < 2) {
                 resultsContainer.classList.add('hidden');
@@ -342,9 +360,9 @@ document.addEventListener("click", () => {
 
             try {
                 const searchListUrl = (window.appRoutes && window.appRoutes.searchMembersList)
-                            ? window.appRoutes.searchMembersList
-                            : '/loans/search-members';
-                const url = searchListUrl + '?q=' + encodeURIComponent(query);
+                    ? window.appRoutes.searchMembersList
+                    : '/loans/search-members';
+                const url = searchListUrl + '?q=' + encodeURIComponent(query) + '&type=' + encodeURIComponent(type);
 
                 const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
                 const data = await res.json();
@@ -386,7 +404,7 @@ document.addEventListener("click", () => {
         const container = document.getElementById(`${prefix}-payment-methods`);
         const input = document.getElementById(`${prefix}-payment-method`);
         const textSpan = document.getElementById(`${prefix}-payment-method-text`);
-        if(container && input && textSpan) {
+        if (container && input && textSpan) {
             container.querySelectorAll('button').forEach(btn => {
                 btn.addEventListener('click', () => {
                     input.value = btn.getAttribute('data-value');
@@ -406,7 +424,7 @@ document.addEventListener("click", () => {
     if (subBtn) {
         subBtn.addEventListener('click', () => {
             const input = document.getElementById('sub-search-input');
-            if(input) searchMemberData(input.value, 'subscription', false);
+            if (input) searchMemberData(input.value, 'subscription', false);
         });
     }
 
@@ -416,7 +434,7 @@ document.addEventListener("click", () => {
     if (instBtn) {
         instBtn.addEventListener('click', () => {
             const input = document.getElementById('inst-search-input');
-            if(input) searchMemberData(input.value, 'installment', false);
+            if (input) searchMemberData(input.value, 'installment', false);
         });
     }
 
@@ -426,7 +444,7 @@ document.addEventListener("click", () => {
     if (claimBtn) {
         claimBtn.addEventListener('click', () => {
             const input = document.getElementById('claim-search-input');
-            if(input) searchMemberData(input.value, 'claim', false);
+            if (input) searchMemberData(input.value, 'claim', false);
         });
     }
 
@@ -446,6 +464,59 @@ document.addEventListener("click", () => {
     const globalInput = document.getElementById('global-search-input');
     const globalBtn = document.getElementById('global-search-btn');
     const closeGlobalBtn = document.getElementById('close-global-search');
+
+    window.resetPaymentModal = function (type) {
+        if (type === 'subscription') {
+            document.getElementById('sub-search-input').value = '';
+            document.getElementById('sub-member-results').classList.add('hidden');
+            document.getElementById('sub-member-info').classList.add('hidden');
+            document.getElementById('sub-member-id').value = '';
+            document.getElementById('sub-receipt-number').value = '';
+            const receiptInput = document.getElementById('sub-receipt-image');
+            if (receiptInput) {
+                receiptInput.value = '';
+                const label = receiptInput.closest('label');
+                if (label) {
+                    const p = label.querySelector('p');
+                    if (p) p.textContent = 'إرفاق المستند';
+                    const icon = label.querySelector('iconify-icon');
+                    if (icon) icon.setAttribute('icon', 'material-symbols:cloud-upload-outline-rounded');
+                }
+            }
+            document.getElementById('sub-months-dropdown').innerHTML = '';
+            document.getElementById('sub-amount').textContent = '-';
+            const dropDownBtn = document.getElementById('sub-months-dropdown').previousElementSibling;
+            if (dropDownBtn) {
+                const spans = dropDownBtn.querySelectorAll("span");
+                if (spans.length > 1) spans[1].textContent = "اختر الشهر";
+            }
+        } else if (type === 'installment') {
+            document.getElementById('inst-search-input').value = '';
+            document.getElementById('inst-member-results').classList.add('hidden');
+            document.getElementById('inst-member-info').classList.add('hidden');
+            document.getElementById('inst-member-id').value = '';
+            document.getElementById('inst-loan-id').value = '';
+            document.getElementById('inst-receipt-number').value = '';
+            const receiptInput = document.getElementById('inst-receipt-image');
+            if (receiptInput) {
+                receiptInput.value = '';
+                const label = receiptInput.closest('label');
+                if (label) {
+                    const p = label.querySelector('p');
+                    if (p) p.textContent = 'إرفاق المستند';
+                    const icon = label.querySelector('iconify-icon');
+                    if (icon) icon.setAttribute('icon', 'material-symbols:cloud-upload-outline-rounded');
+                }
+            }
+            document.getElementById('inst-months-dropdown').innerHTML = '';
+            document.getElementById('inst-amount-selected').textContent = '0';
+            const dropDownBtn = document.getElementById('inst-months-dropdown').previousElementSibling;
+            if (dropDownBtn) {
+                const spans = dropDownBtn.querySelectorAll("span");
+                if (spans.length > 1) spans[1].textContent = "اختر الشهر";
+            }
+        }
+    };
 
     if (closeGlobalBtn) {
         closeGlobalBtn.addEventListener('click', () => {
@@ -506,7 +577,7 @@ document.addEventListener("click", () => {
                         body: formData
                     });
                     if (!res.ok) throw new Error('Network response was not ok');
-                } catch(e) {
+                } catch (e) {
                     hasError = true;
                 }
             }
@@ -556,7 +627,7 @@ document.addEventListener("click", () => {
                         body: formData
                     });
                     if (!res.ok) throw new Error('Network response was not ok');
-                } catch(e) {
+                } catch (e) {
                     hasError = true;
                 }
             }
@@ -569,7 +640,7 @@ document.addEventListener("click", () => {
                 // But wait, the searchMember returns member info and we can just add `inst-member-id`
                 const memberIdEl = document.getElementById('inst-member-id');
                 const mid = memberIdEl ? memberIdEl.value : '';
-                if(mid) {
+                if (mid) {
                     const redirectUrl = window.appRoutes ? window.appRoutes.memberProfile(mid) + '?tab=loans' : `/members/${mid}?tab=loans`;
                     window.location.href = redirectUrl;
                 } else {

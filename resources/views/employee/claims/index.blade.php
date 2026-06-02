@@ -510,7 +510,7 @@
                         return;
                     }
 
-                    fetch(`{{ route('loans.searchMembers') }}?q=${encodeURIComponent(query)}`)
+                    fetch(`{{ route('loans.searchMembers') }}?q=${encodeURIComponent(query)}&type=claim`)
                         .then(res => res.json())
                         .then(data => {
                             resultsContainer.innerHTML = '';

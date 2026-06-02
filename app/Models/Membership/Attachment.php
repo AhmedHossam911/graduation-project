@@ -52,6 +52,9 @@ class Attachment extends Model
         if (str_starts_with($type, 'claim_') && str_ends_with($type, '_approval_receipt')) {
             return 'إيصال صرف المطالبة';
         }
+        if (str_starts_with($type, 'claim_') && str_ends_with($type, '_check_receipt')) {
+            return 'صورة شيك صرف المطالبة';
+        }
         if (str_starts_with($type, 'claim_') && str_ends_with($type, '_signed_receipt')) {
             return 'الإقرار الموقع لاستلام المطالبة';
         }

@@ -85,6 +85,7 @@ class DashboardController extends Controller
     {
         $search = $request->get('q', '');
         $memberId = $request->get('member_id');
+        $type = $request->get('type'); // subscription, installment, claim, global
 
         $query = Member::with(['user', 'membershipInfo.loans' => function($q) {
             $q->whereIn('status', ['active', 'pending', 'approved']);
@@ -93,6 +94,20 @@ class DashboardController extends Controller
         }, 'membershipInfo.subscriptions' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');
         }]);
+
+        // Filter based on the requested type
+        if ($type === 'subscription') {
+            $query->whereHas('membershipInfo.subscriptions', function($q) {
+                $q->whereIn('status', ['unpaid', 'overdue']);
+            });
+        } elseif ($type === 'installment') {
+            $query->whereHas('membershipInfo.loans', function($q) {
+                $q->whereIn('status', ['active', 'pending', 'approved'])
+                  ->whereHas('installments', function($q2) {
+                      $q2->whereIn('status', ['unpaid', 'overdue']);
+                  });
+            });
+        }
 
         if ($memberId) {
             $member = $query->find($memberId);
@@ -109,6 +124,11 @@ class DashboardController extends Controller
         }
 
         if (!$member) {
+            if ($type === 'subscription') {
+                return response()->json(['success' => false, 'message' => 'لم يتم العثور على عضو لديه اشتراكات مستحقة بالبيانات المدخلة']);
+            } elseif ($type === 'installment') {
+                return response()->json(['success' => false, 'message' => 'لم يتم العثور على عضو لديه قروض مستحقة بالبيانات المدخلة']);
+            }
             return response()->json(['success' => false, 'message' => 'لم يتم العثور على العضو']);
         }
 
@@ -124,7 +144,11 @@ class DashboardController extends Controller
         $activeLoan = $membership->loans->first();
         $unpaidInstallments = collect();
         if ($activeLoan) {
-            $unpaidInstallments = $activeLoan->installments;
+            // Get only the first upcoming installment for loans
+            $firstInstallment = $activeLoan->installments->first();
+            if ($firstInstallment) {
+                $unpaidInstallments->push($firstInstallment);
+            }
         }
 
         return response()->json([

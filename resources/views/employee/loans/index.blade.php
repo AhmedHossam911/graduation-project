@@ -207,7 +207,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="py-10 text-center text-gray-500">
-                                    <img class="w-[15%] m-auto" src="{{ asset('imgs/loans.png') }}"
+                                    <img class="w-[15%] m-auto" src="{{ asset('IMGs/loans.png') }}"
                                         alt="لا توجد بيانات للقروض">
                                 </td>
                             </tr>
@@ -303,7 +303,7 @@
                     </div>
                 @empty
                     <div class="text-center py-8 bg-white rounded-[14px] border border-[#6D6D6D]">
-                        <img class="w-[30%] md:w-[15%] m-auto" src="{{ asset('imgs/loans.png') }}"
+                        <img class="w-[30%] md:w-[15%] m-auto" src="{{ asset('IMGs/loans.png') }}"
                             alt="لا توجد بيانات للقروض">
                         <p class="text-[#6D6D6D] font-medium mt-4">لا توجد بيانات للقروض</p>
                     </div>

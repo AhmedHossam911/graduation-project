@@ -117,8 +117,7 @@
                 </button>
             </div>
         </div>
-    </form>س
-
+    </form>
 
     <!-- start table -->
     <section class="print:hidden">
@@ -358,7 +357,7 @@
                             class="text-[#021219] font-semibold text-base"></span></p>
                     <iconify-icon icon="pajamas:redo"
                         class="cursor-pointer text-xl bg-[#124375] text-[#F4F7F9] rounded-[8px] py-1.5 px-2"
-                        onclick="document.getElementById('sub-member-info').classList.add('hidden')"></iconify-icon>
+                        onclick="resetPaymentModal('subscription')"></iconify-icon>
                 </div>
                 <div class="flex items-center justify-between gap-4 ">
                     <p class="text-[#124375] text-base font-medium">البحث عن العضو :</p>

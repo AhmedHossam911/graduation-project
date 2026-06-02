@@ -246,6 +246,7 @@ class ClaimController extends Controller
         $validated = $request->validate([
             'receipt_number' => ['required', 'string', 'max:255'],
             'receipt_file'   => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'check_file'     => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
             'amount'         => ['nullable', 'numeric', 'min:0'], // Allow the admin to optionally override and specify the final approved amount.
         ]);
 
@@ -274,6 +275,17 @@ class ClaimController extends Controller
                     'member_id' => $memberId,
                     'type'      => "claim_{$claim->id}_approval_receipt",
                     'file_path' => $attachmentPath,
+                ]);
+            }
+
+            if ($request->hasFile('check_file')) {
+                $memberId = $claim->membership->member_id;
+                $checkAttachmentPath = $request->file('check_file')->store("members/{$memberId}/claims/{$claim->id}", 'public');
+
+                Attachment::create([
+                    'member_id' => $memberId,
+                    'type'      => "claim_{$claim->id}_check_receipt",
+                    'file_path' => $checkAttachmentPath,
                 ]);
             }
 
