@@ -12,13 +12,6 @@
         </h1>
     </div>
 
-    {{-- Success Message --}}
-    @if (session('success'))
-        <div class="mx-7 mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-xl text-center text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <div class="tabs flex flex-col lg:flex-row justify-between px-4 md:px-7 gap-4">
         {{-- Filter Tabs --}}
         <div class="flex flex-wrap sm:flex-nowrap gap-2 md:gap-3 w-full lg:w-auto">

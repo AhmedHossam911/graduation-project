@@ -20,7 +20,7 @@
                         <div class="bg-[#193e6a] w-[50px] flex justify-center items-center text-white text-lg shrink-0">
                             <i class="fa-solid fa-user"></i>
                         </div>
-                        <input type="text" name="name" value="{{ old('name') }}" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="الأسم كامل" required>
+                        <input type="text" name="name" value="{{ old('name') }}" pattern="^[\u0600-\u06FF]+(?:\s+[\u0600-\u06FF]+){3}$" title="الاسم يجب أن يكون باللغة العربية ويتكون من 4 أسماء فقط" class="grow border-none bg-transparent px-4 text-[15px] text-[#333] outline-none w-full placeholder-[#999]" placeholder="الأسم كامل" required>
                     </div>
                     @error('name')
                         <div class="text-red-500 text-sm mt-1 px-1">{{ $message }}</div>

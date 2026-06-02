@@ -244,7 +244,7 @@
     <form method="POST" action="{{ route('claims.approve', $claim->id) }}" enctype="multipart/form-data">
         @csrf
         <div
-            class="modal hidden max-w-5xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+            class="modal hidden max-w-5xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
             <button
                 class="close-btn text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
                 <iconify-icon icon="weui:close-filled"></iconify-icon>

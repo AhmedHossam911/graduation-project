@@ -126,7 +126,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_1" name="claim_documents[doc_1]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_1"
+                                    name="claim_documents[doc_1]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -143,7 +144,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_2" name="claim_documents[doc_2]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_2"
+                                    name="claim_documents[doc_2]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -160,7 +162,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_3" name="claim_documents[doc_3]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_3"
+                                    name="claim_documents[doc_3]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -178,7 +181,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_4" name="claim_documents[doc_4]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_4"
+                                    name="claim_documents[doc_4]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -197,13 +201,16 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_5" name="claim_documents[doc_5]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_5"
+                                    name="claim_documents[doc_5]" class="hidden">
                             </label>
                         </div>
                     </div>
                 </div>
                 <label class="flex  gap-5 cursor-pointer py-7">
-                    <input type="checkbox" required class="hidden peer item" value="يناير 2026">
+                    <input type="checkbox" required class="opacity-0 absolute w-0 h-0 peer item" value="يناير 2026"
+                        oninvalid="this.setCustomValidity('يرجى الموافقة على الإقرار')"
+                        onchange="this.setCustomValidity('')">
                     <span
                         class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                         <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
@@ -253,7 +260,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_6" name="claim_documents[doc_6]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_6"
+                                    name="claim_documents[doc_6]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -270,7 +278,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_7" name="claim_documents[doc_7]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_7"
+                                    name="claim_documents[doc_7]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -287,7 +296,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_8" name="claim_documents[doc_8]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_8"
+                                    name="claim_documents[doc_8]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -304,7 +314,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_9" name="claim_documents[doc_9]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_9"
+                                    name="claim_documents[doc_9]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -322,13 +333,16 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_10" name="claim_documents[doc_10]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_10"
+                                    name="claim_documents[doc_10]" class="hidden">
                             </label>
                         </div>
                     </div>
                 </div>
                 <label class="flex  gap-5 cursor-pointer py-7">
-                    <input type="checkbox" required class="hidden peer item" value="يناير 2026">
+                    <input type="checkbox" required class="opacity-0 absolute w-0 h-0 peer item" value="يناير 2026"
+                        oninvalid="this.setCustomValidity('يرجى الموافقة على الإقرار')"
+                        onchange="this.setCustomValidity('')">
                     <span
                         class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                         <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
@@ -380,7 +394,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_11" name="claim_documents[doc_11]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_11"
+                                    name="claim_documents[doc_11]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -397,7 +412,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_12" name="claim_documents[doc_12]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_12"
+                                    name="claim_documents[doc_12]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -414,7 +430,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_13" name="claim_documents[doc_13]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_13"
+                                    name="claim_documents[doc_13]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -431,7 +448,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_14" name="claim_documents[doc_14]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_14"
+                                    name="claim_documents[doc_14]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -439,7 +457,7 @@
                         class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
-                            <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش
+                            <p class="text-[16px] font-medium text-[#021219]">صورة اخلاء طرف
                                 <span class="text-[#D92D20]">*</span>
                             </p>
                         </div>
@@ -449,13 +467,16 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_15" name="claim_documents[doc_15]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_15"
+                                    name="claim_documents[doc_10]" class="hidden">
                             </label>
                         </div>
                     </div>
                 </div>
                 <label class="flex  gap-5 cursor-pointer py-7">
-                    <input type="checkbox" required class="hidden peer item" value="يناير 2026">
+                    <input type="checkbox" required class="opacity-0 absolute w-0 h-0 peer item" value="يناير 2026"
+                        oninvalid="this.setCustomValidity('يرجى الموافقة على الإقرار')"
+                        onchange="this.setCustomValidity('')">
                     <span
                         class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                         <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
@@ -504,7 +525,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_16" name="claim_documents[doc_16]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_16"
+                                    name="claim_documents[doc_16]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -521,7 +543,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_17" name="claim_documents[doc_17]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_17"
+                                    name="claim_documents[doc_17]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -538,7 +561,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_18" name="claim_documents[doc_18]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_18"
+                                    name="claim_documents[doc_18]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -555,7 +579,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_19" name="claim_documents[doc_19]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_19"
+                                    name="claim_documents[doc_19]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -573,13 +598,16 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_20" name="claim_documents[doc_20]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_20"
+                                    name="claim_documents[doc_20]" class="hidden">
                             </label>
                         </div>
                     </div>
                 </div>
                 <label class="flex  gap-5 cursor-pointer py-7">
-                    <input type="checkbox" required class="hidden peer item" value="يناير 2026">
+                    <input type="checkbox" required class="opacity-0 absolute w-0 h-0 peer item" value="يناير 2026"
+                        oninvalid="this.setCustomValidity('يرجى الموافقة على الإقرار')"
+                        onchange="this.setCustomValidity('')">
                     <span
                         class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                         <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
@@ -627,7 +655,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_21" name="claim_documents[doc_21]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_21"
+                                    name="claim_documents[doc_21]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -644,7 +673,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_22" name="claim_documents[doc_22]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_22"
+                                    name="claim_documents[doc_22]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -661,7 +691,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_23" name="claim_documents[doc_23]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_23"
+                                    name="claim_documents[doc_23]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -678,7 +709,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_24" name="claim_documents[doc_24]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_24"
+                                    name="claim_documents[doc_24]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -686,7 +718,7 @@
                         class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
-                            <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش
+                            <p class="text-[16px] font-medium text-[#021219]">صورة اخلاء طرف
                                 <span class="text-[#D92D20]">*</span>
                             </p>
                         </div>
@@ -696,13 +728,16 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_25" name="claim_documents[doc_25]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_25"
+                                    name="claim_documents[doc_10]" class="hidden">
                             </label>
                         </div>
                     </div>
                 </div>
                 <label class="flex  gap-5 cursor-pointer py-7">
-                    <input type="checkbox" required class="hidden peer item" value="يناير 2026">
+                    <input type="checkbox" required class="opacity-0 absolute w-0 h-0 peer item" value="يناير 2026"
+                        oninvalid="this.setCustomValidity('يرجى الموافقة على الإقرار')"
+                        onchange="this.setCustomValidity('')">
                     <span
                         class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                         <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>
@@ -750,7 +785,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_26" name="claim_documents[doc_26]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_26"
+                                    name="claim_documents[doc_26]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -767,7 +803,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_27" name="claim_documents[doc_27]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_27"
+                                    name="claim_documents[doc_27]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -784,7 +821,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_28" name="claim_documents[doc_28]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_28"
+                                    name="claim_documents[doc_28]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -801,7 +839,8 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_29" name="claim_documents[doc_29]" class="hidden">
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" id="file_29"
+                                    name="claim_documents[doc_29]" class="hidden">
                             </label>
                         </div>
                     </div>
@@ -809,7 +848,7 @@
                         class="flex flex-col sm:flex-row justify-between sm:items-center bg-[#F4F7F9] border border-[#124375] navy-shadow rounded-[16px] py-3 px-4 gap-3">
                         <div class="flex items-center gap-2">
                             <iconify-icon icon="ion:document" class="text-2xl text-[#6D6D6D]"></iconify-icon>
-                            <p class="text-[16px] font-medium text-[#021219]">صورة قرار الإحالة للمعاش
+                            <p class="text-[16px] font-medium text-[#021219]">صورة اخلاء طرف
                                 <span class="text-[#D92D20]">*</span>
                             </p>
                         </div>
@@ -819,13 +858,16 @@
                                 class=" cursor-pointer text-[#124375] flex items-center justify-center gap-1">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                                 <p>إرفاق الملف</p>
-                                <input type="file" id="file_30" name="claim_documents[doc_30]" class="hidden">
+                                <input type="file" accept="image/*,.pdf" id="file_30"
+                                    name="claim_documents[doc_10]" class="hidden">
                             </label>
                         </div>
                     </div>
                 </div>
                 <label class="flex  gap-5 cursor-pointer py-7">
-                    <input type="checkbox" required class="hidden peer item" value="يناير 2026">
+                    <input type="checkbox" required class="opacity-0 absolute w-0 h-0 peer item" value="يناير 2026"
+                        oninvalid="this.setCustomValidity('يرجى الموافقة على الإقرار')"
+                        onchange="this.setCustomValidity('')">
                     <span
                         class="mt-1 custom-checkbox flex items-center justify-center h-[20px] w-[20px] rounded-sm border-[3px] border-[#124375] peer-checked:bg-[#124375] peer-checked:border-[#124375] text-transparent peer-checked:text-white transition-all duration-200">
                         <iconify-icon icon="mdi:check-bold" class="text-[14px]"></iconify-icon>

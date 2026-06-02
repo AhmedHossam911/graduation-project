@@ -534,7 +534,7 @@
                         </label>
                         <input type="hidden" name="payment_method" class="payment-method-input" required>
                         <button type="button"
-                            class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-4 rounded-xl text-base flex justify-between items-center transition-colors payment-method-btn">
+                            class="dropDownBtn border border-[#124375] bg-[#F4F7F9] text-[#124375] py-2.5 w-full px-4 rounded-xl text-base flex justify-between items-center  payment-method-btn">
                             <span class="text-[#021219]">اختر طريقة الدفع</span>
                             <span class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl"></iconify-icon></span>

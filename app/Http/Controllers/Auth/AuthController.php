@@ -179,7 +179,7 @@ class AuthController extends Controller
      */
     public function register(Request $request) {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required', 'string', 'max:255', 'regex:/^[\p{Arabic}]+(?:\s+[\p{Arabic}]+){3}$/u'],
             'email' => 'required|string|email|max:255|unique:users',
             'national_id' => 'required|string|size:14|unique:users,national_id',
             'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed',
@@ -188,6 +188,7 @@ class AuthController extends Controller
             'job_title' => 'required|string|max:255',
         ], [
             'name.required' => 'يرجى إدخال الاسم.',
+            'name.regex' => 'الاسم يجب أن يكون باللغة العربية ويتكون من 4 أسماء فقط.',
             'email.required' => 'يرجى إدخال البريد الإلكتروني.',
             'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
             'email.unique' => 'البريد الإلكتروني مسجل مسبقاً.',

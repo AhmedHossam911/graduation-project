@@ -34,7 +34,7 @@ function initLoansModule() {
     document.querySelectorAll(".close-btn, .modal-close").forEach((btn) => {
     btn.addEventListener("click", (e) => {
         e.preventDefault();
-        const parentModal = btn.closest("[id^='createLoanModal']");
+        const parentModal = btn.closest(".modal");
         if (parentModal) {
             parentModal.classList.add("hidden");
             overlay.classList.add("hidden");

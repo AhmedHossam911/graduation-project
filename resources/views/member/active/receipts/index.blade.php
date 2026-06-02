@@ -27,11 +27,12 @@
                     'label' => 'نوع الإيصال',
                     'options' => [
                         '' => 'الكل',
-                        'اشتراك شهرية' => 'اشتراك شهري',
+                        'اشتراك شهرية' => 'اشتراك سنوي',
                         'قسط قرض' => 'قسط قرض',
                     ],
                     'selected' => request('type'),
                     'autoSubmit' => true,
+                    'floatingLabel' => true,
                 ])
             </div>
 
@@ -42,10 +43,11 @@
                     'options' => [
                         '' => 'الكل',
                         'paid' => 'مدفوع',
-                        'pending' => 'مستحق',
+                        'unpaid' => 'مستحق',
                     ],
                     'selected' => request('status'),
                     'autoSubmit' => true,
+                    'floatingLabel' => true,
                 ])
             </div>
 
@@ -56,6 +58,8 @@
                     'label' => 'من تاريخ',
                     'value' => request('date_from'),
                     'autoSubmit' => true,
+                    'floatingLabel' => true,
+                    'clearable' => true,
                 ])
             </div>
 
@@ -66,22 +70,10 @@
                     'label' => 'إلى تاريخ',
                     'value' => request('date_to'),
                     'autoSubmit' => true,
+                    'floatingLabel' => true,
+                    'clearable' => true,
                 ])
             </div>
-
-            {{-- <div class="flex gap-2 w-full md:w-auto">
-                <button type="submit"
-                    class="bg-[#124375] hover:bg-[#0e3560] text-white px-6 py-2 rounded-[8px] font-medium transition-colors w-full md:w-auto flex justify-center items-center gap-2">
-                    <iconify-icon icon="mingcute:filter-line" class="text-xl"></iconify-icon>
-                    تصفية
-                </button>
-                @if (request()->hasAny(['type', 'status', 'date_from', 'date_to']))
-                    <a href="{{ route('member.receipts.index') }}"
-                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-[8px] font-medium transition-colors flex justify-center items-center">
-                        إلغاء
-                    </a>
-                @endif
-            </div> --}}
         </form>
     </div>
 
@@ -235,7 +227,7 @@
                         </div>
                         <div class="flex justify-between items-center">
                             <p class="text-[14px] font-medium text-[#6D6D6D]">عنوان InstaPay :</p>
-                            <div class="flex items-center gap-2 mt-2 sm:mt-0">
+                            <div class="flex items-center gap-2">
                                 <iconify-icon icon="tabler:copy-filled"
                                     class="cursor-pointer copy-btn text-2xl text-[#94A3B8] flex items-center"></iconify-icon>
                                 <p class="text-[16px] font-semibold text-[#155DFC] insta-pay-value">cu_fund@nbe</p>

@@ -42,9 +42,9 @@
                                 class=" text-4xl text-[#175CD3] bg-[#D2EBFF] rounded-lg px-3 py-3"></iconify-icon>
                         </div>
                         <div class="flex flex-col text-[#124375] gap-2">
-                            <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ انشاء الحساب</p>
+                            <p class="text-[16px] font-medium text-[#6D6D6D]">تاريخ الانضمام</p>
                             <p class="text-4xl font-extrabold">
-                                {{ $user->created_at ? $user->created_at->format('Y-m') : '---' }} </p>
+                                {{ $user->member?->membershipInfo?->created_at?->format('Y-m') ?? '---' }}
                         </div>
                     </div>
                     <div class="surface-shadow flex gap-4 bg-[#F4F7F9] rounded-xl px-7 py-4">
@@ -78,7 +78,8 @@
                                 <div class="flex gap-1 items-center {{ $subscriptionColor }} rounded-[8px] px-4">
                                     <iconify-icon icon="{{ $subscriptionIcon }}" class=" text-lg "></iconify-icon>
                                     <p class=" text-[14px] font-medium">{{ $subscriptionStatus }} (لعام
-                                        <span>{{ $subscriptionYear }}</span>)</p>
+                                        <span>{{ $subscriptionYear }}</span>)
+                                    </p>
                                 </div>
                             </div>
                             <div class="flex flex-col gap-5">
@@ -119,7 +120,9 @@
                                         'approved' => 'bg-[#ECFDF3] border-[#067647] text-[#067647]',
                                     ];
                                     $currentStatusLabel = $loanStatusLabels[$activeLoan->status] ?? $activeLoan->status;
-                                    $currentStatusColor = $loanStatusColors[$activeLoan->status] ?? 'bg-[#F2F4F7] border-[#6D6D6D] text-[#6D6D6D]';
+                                    $currentStatusColor =
+                                        $loanStatusColors[$activeLoan->status] ??
+                                        'bg-[#F2F4F7] border-[#6D6D6D] text-[#6D6D6D]';
                                 @endphp
                                 <div
                                     class="flex h-fit gap-1 items-center {{ $currentStatusColor }} border rounded-[8px] px-4">
@@ -134,7 +137,9 @@
                                     $paidAmount = $activeLoan->installments()->where('status', 'paid')->sum('amount');
                                     $remainingAmount = $activeLoan->total_amount - $paidAmount;
                                     $progress =
-                                        $activeLoan->total_amount > 0 ? ($paidAmount / $activeLoan->total_amount) * 100 : 0;
+                                        $activeLoan->total_amount > 0
+                                            ? ($paidAmount / $activeLoan->total_amount) * 100
+                                            : 0;
                                     $paidMonths = $activeLoan->installments()->where('status', 'paid')->count();
                                 @endphp
                                 <div class="flex flex-col md:flex-row justify-between gap-4">
@@ -164,7 +169,8 @@
                                 </div>
                             @else
                                 <div class="flex flex-col items-center justify-center py-5">
-                                    <p class="text-[16px] font-medium text-[#6D6D6D]">قرضك حالياً في حالة ({{ $currentStatusLabel }}) بانتظار الموافقة والبدء في سداده.</p>
+                                    <p class="text-[16px] font-medium text-[#6D6D6D]">قرضك حالياً في حالة
+                                        ({{ $currentStatusLabel }}) بانتظار الموافقة والبدء في سداده.</p>
                                 </div>
                             @endif
                         @else

@@ -1,5 +1,5 @@
-@extends('layouts.app')
-{{-- 
+@extends('layouts.pages')
+{{--
     Previous Loans View:
     Shows a historical list of all loans (completed, rejected, etc.) for a specific member context,
     providing transparency into their borrowing history.
@@ -78,7 +78,7 @@
                     @php
                         $firstInstallment = $loan->installments->sortBy('due_date')->first();
                         $lastInstallment = $loan->installments->sortByDesc('due_date')->first();
-                        
+
                         $statusHtml = '';
                         $statusBorder = '';
                         if ($loan->status === 'overdue') {
@@ -111,7 +111,7 @@
                                 {{ $statusHtml }}
                             </span>
                         </div>
-                        
+
                         <div class="flex flex-col gap-2 mt-2">
                             <div class="flex justify-between items-center text-sm border-b border-gray-100 pb-2">
                                 <span class="text-[#6D6D6D]">مدة السداد:</span>

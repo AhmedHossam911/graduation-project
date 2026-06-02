@@ -387,7 +387,7 @@
     </div>
 
     <div id="paymentModal"
-        class="modal hidden w-full max-w-2xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+        class="modal hidden w-full max-w-2xl mx-auto absolute top-0 left-1/2 -translate-x-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
         <button
             class="modal-close text-[#124375] text-2xl  navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -469,7 +469,7 @@
                         القسط</button>
         </form>
         <button type="button"
-            class="close-payment-modal border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
+            class="close-btn border border-[#124375] w-full rounded-[14px] py-3 navy-shadow text-base font-medium text-[#124375]">إلغاء</button>
     </div>
 
     <!-- END MODALS -->

@@ -48,6 +48,10 @@ class ClaimController extends Controller
             'has_minors'       => ['nullable', 'boolean'],
             'claim_documents'  => ['nullable', 'array'],
             'claim_documents.*'=> ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+        ], [
+            'claim_documents.*.mimes' => 'يجب أن يكون الملف المرفق بصيغة: pdf, jpg, jpeg, png, webp.',
+            'claim_documents.*.max' => 'حجم الملف يجب ألا يتجاوز 5 ميجابايت.',
+            'claim_documents.*.file' => 'الملف المرفق غير صالح.',
         ]);
 
         if ($member->membershipInfo->status === 'membership_expired' && $validated['claim_type'] !== 'retirement') {
