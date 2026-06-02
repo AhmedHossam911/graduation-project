@@ -12,17 +12,23 @@
         <div class="mx-7 rounded-[12px] bg-[#F4F7F9] border-2 border-[#124375] py-3 px-5 my-4">
             <div class="flex flex-col md:flex-row flex-wrap items-start md:items-center justify-between gap-4">
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">رقم المطالبة : <span class="text-[16px] text-[#021219] font-medium">{{ $activeClaim->id }}</span></p>
+                    <p class="text-[#6D6D6D] text-[14px]">رقم المطالبة : <span
+                            class="text-[16px] text-[#021219] font-medium">{{ $activeClaim->id }}</span></p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">نوع المطالبة : <span class="text-[16px] text-[#021219] font-medium">{{ $claims[$activeClaim->type] ?? $activeClaim->type }}</span></p>
+                    <p class="text-[#6D6D6D] text-[14px]">نوع المطالبة : <span
+                            class="text-[16px] text-[#021219] font-medium">{{ $claims[$activeClaim->type] ?? $activeClaim->type }}</span>
+                    </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">تاريخ التقديم : <span class="text-[16px] text-[#021219] font-medium">{{ $activeClaim->created_at->format('Y-m-d') }}</span></p>
+                    <p class="text-[#6D6D6D] text-[14px]">تاريخ التقديم : <span
+                            class="text-[16px] text-[#021219] font-medium">{{ $activeClaim->created_at->format('Y-m-d') }}</span>
+                    </p>
                 </div>
                 <div>
-                    <p class="text-[#6D6D6D] text-[14px]">حالة المطالبة : 
-                        <span class="{{ $claimStatusClasses[$activeClaim->status] ?? 'bg-gray-100 text-gray-800 border-gray-300' }} border rounded-[8px] py-[1px] px-3 text-xs text-center font-medium">
+                    <p class="text-[#6D6D6D] text-[14px]">حالة المطالبة :
+                        <span
+                            class="{{ $claimStatusClasses[$activeClaim->status] ?? 'bg-gray-100 text-gray-800 border-gray-300' }} border rounded-[8px] py-[1px] px-3 text-xs text-center font-medium">
                             {{ $claimStatusLabels[$activeClaim->status] ?? $activeClaim->status }}
                         </span>
                     </p>
@@ -30,7 +36,7 @@
             </div>
         </div>
     @endif
-    
+
     <!-- first step of request -->
     @if (request('claim_type') !== null && request('view_claim') === null)
         @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
@@ -71,8 +77,8 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[salary_letter]" id="file-salary"
-                                        class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[salary_letter]" id="file-salary" class="hidden" required>
                                 </label>
                             </div>
                         @endif
@@ -85,8 +91,9 @@
                                 class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط لإرفاق صورة الملف</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[deductions_statement]" id="file-deductions"
-                                    class="hidden" required>
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                    name="claim_documents[deductions_statement]" id="file-deductions" class="hidden"
+                                    required>
                             </label>
                         </div>
 
@@ -98,8 +105,9 @@
                                 class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                 <p>اضغط لإرفاق صورة الملف</p>
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[appointment_letter]" id="file-appointment"
-                                    class="hidden" required>
+                                <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                    name="claim_documents[appointment_letter]" id="file-appointment" class="hidden"
+                                    required>
                             </label>
                         </div>
 
@@ -112,13 +120,13 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[national_id]" id="file-national"
-                                        class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[national_id]" id="file-national" class="hidden" required>
                                 </label>
                             </div>
                         @endif
 
-                        @if (request('claim_type') !== 'transfer' && request('claim_type') !== 'death')
+                        @if (request('claim_type') === 'retirement')
                             <div class="relative border border-[#124375] rounded-2xl w-full">
                                 <span
                                     class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
@@ -127,15 +135,14 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[retirement_decision]" id="file-retirement"
-                                        class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[retirement_decision]" id="file-retirement" class="hidden"
+                                        required>
                                 </label>
                             </div>
                         @endif
 
-
-
-                        @if (request('claim_type') === 'transfer')
+                        @if (request('claim_type') !== 'retirement' && request('claim_type') !== 'death' && request('claim_type') !== 'early_retirement')
                             <div class="relative border border-[#124375] rounded-2xl w-full">
                                 <span
                                     class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
@@ -144,10 +151,13 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[release_form]" id="file-release"
-                                        class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[release_form]" id="file-release" class="hidden"
+                                        required>
                                 </label>
                             </div>
+                        @endif
+                        @if (request('claim_type') === 'transfer')
                             <div class="relative border border-[#124375] rounded-2xl w-full">
                                 <span
                                     class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
@@ -156,12 +166,12 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[service_end_decision]" id="file-transfer"
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[service_end_decision]" id="file-transfer"
                                         class="hidden" required>
                                 </label>
                             </div>
                         @endif
-
                         @if (request('claim_type') === 'death')
                             <div class="relative border border-[#124375] rounded-2xl w-full">
                                 <span
@@ -171,8 +181,9 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[service_end_decision]"
-                                        id="file-death-end" class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[service_end_decision]" id="file-death-end"
+                                        class="hidden" required>
                                 </label>
                             </div>
                             <div class="relative border border-[#124375] rounded-2xl w-full">
@@ -183,8 +194,9 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[death_certificate]" id="file-death-cert"
-                                        class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[death_certificate]" id="file-death-cert" class="hidden"
+                                        required>
                                 </label>
                             </div>
                             <div class="relative border border-[#124375] rounded-2xl w-full">
@@ -195,8 +207,8 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[heirs_ids]" id="file-heirs"
-                                        class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[heirs_ids]" id="file-heirs" class="hidden" required>
                                 </label>
                             </div>
                             <div class="relative border border-[#124375] rounded-2xl w-full">
@@ -207,8 +219,9 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                     <p>اضغط لإرفاق صورة الملف</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[inheritance_notice]"
-                                        id="file-inheritance" class="hidden" required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                        name="claim_documents[inheritance_notice]" id="file-inheritance"
+                                        class="hidden" required>
                                 </label>
                             </div>
                             <div class="col-span-2">
@@ -238,7 +251,8 @@
                                 </div>
                             </div>
 
-                            <div id="minors_files" class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-4 hidden">
+                            <div id="minors_files"
+                                class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-y-5 gap-x-4 hidden">
                                 <div class="relative border border-[#124375] rounded-2xl w-full">
                                     <span
                                         class="px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]">صورة
@@ -247,8 +261,9 @@
                                         class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                         <p>اضغط لإرفاق صورة الملف</p>
                                         <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[guardianship_decision]"
-                                            id="file-guardianship" class="hidden">
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                            name="claim_documents[guardianship_decision]" id="file-guardianship"
+                                            class="hidden">
                                     </label>
                                 </div>
                                 <div class="relative border border-[#124375] rounded-2xl w-full">
@@ -259,8 +274,9 @@
                                         class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-1">
                                         <p>اضغط لإرفاق صورة الملف</p>
                                         <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
-                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="attachments[minors_birth_certs]"
-                                            id="file-minors-certs" class="hidden">
+                                        <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp"
+                                            name="claim_documents[minors_birth_certificates]" id="file-minors-certs"
+                                            class="hidden">
                                     </label>
                                 </div>
                             </div>
@@ -303,81 +319,96 @@
             </div>
         @elseif ($memberClaims->isNotEmpty() && request('claim_type') === null)
             <!-- requests table -->
-            <div class="requests-table rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
+            <div
+                class="requests-table rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
                 <div class="hidden md:block overflow-x-auto">
-                <table class="w-full md:min-w-max md:whitespace-nowrap">
-                    <thead class="hidden md:table-header-group">
-                        <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
-                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم المطالبة</th>
-                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">نوع المطالبة</th>
-                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">حالة الطلب</th>
-                            <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ التقديم</th>
-                            <th class="py-4 font-medium text-[#021219]">الإجراء</th>
-                        </tr>
-                    </thead>
-                    <tbody class="block md:table-row-group">
-                        @foreach ($memberClaims as $claim)
-                            <tr class="block md:table-row bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none mb-4 md:mb-0 border md:border-none border-gray-200 text-right md:text-center {{ $loop->even ? 'md:bg-[#EFEFEF]' : '' }}">
-                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
-                                    <span class="md:hidden font-bold text-[#124375]">رقم المطالبة:</span>
-                                    <span>{{ $claim->id }}</span>
-                                </td>
-                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
-                                    <span class="md:hidden font-bold text-[#124375]">نوع المطالبة:</span>
-                                    <span>{{ $claims[$claim->type] ?? $claim->type }}</span>
-                                </td>
-                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l">
-                                    <span class="md:hidden font-bold text-[#124375]">حالة الطلب:</span>
-                                    <span class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100' }} border px-4 md:px-4 py-1.5 text-sm rounded-lg">
-                                        {{ $claimStatusLabels[$claim->status] ?? $claim->status }}
-                                    </span>
-                                </td>
-                                <td class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
-                                    <span class="md:hidden font-bold text-[#124375]">تاريخ التقديم:</span>
-                                    <span>{{ $claim->created_at->format('Y-m-d') }}</span>
-                                </td>
-                                <td class="flex justify-between items-center md:table-cell px-4 py-5 border-b-0 md:border-b md:border-[#D1D5DB]">
-                                    <span class="md:hidden font-bold text-[#124375]">الإجراء:</span>
-                                    @if ($claim->status === 'approved')
-                                        <a href="?tab=مطالبات&view_claim={{ $claim->id }}"
-                                            class="bg-[#124375] text-white py-2 md:py-3 navy-shadow px-4 md:px-8 rounded-xl font-medium inline-block text-[14px] md:text-[16px]">عرض التفاصيل</a>
-                                    @elseif($claim->status === 'pending')
-                                        @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
-                                            <a href="{{ route('claims.show', $claim->id) }}"
-                                                class="bg-[#124375] text-white py-2 md:py-3 navy-shadow px-4 md:px-8 rounded-xl font-medium inline-block text-[14px] md:text-[16px]">اعتماد</a>
-                                        @endif
-                                    @endif
-                                </td>
+                    <table class="w-full md:min-w-max md:whitespace-nowrap">
+                        <thead class="hidden md:table-header-group">
+                            <tr class="bg-[#EEF7FF] border-b border-[#D1D5DB]">
+                                <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">رقم المطالبة</th>
+                                <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">نوع المطالبة</th>
+                                <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">حالة الطلب</th>
+                                <th class="py-4 border-l border-[#D1D5DB] font-medium text-[#021219]">تاريخ التقديم
+                                </th>
+                                <th class="py-4 font-medium text-[#021219]">الإجراء</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="block md:table-row-group">
+                            @foreach ($memberClaims as $claim)
+                                <tr
+                                    class="block md:table-row bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none mb-4 md:mb-0 border md:border-none border-gray-200 text-right md:text-center {{ $loop->even ? 'md:bg-[#EFEFEF]' : '' }}">
+                                    <td
+                                        class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                        <span class="md:hidden font-bold text-[#124375]">رقم المطالبة:</span>
+                                        <span>{{ $claim->id }}</span>
+                                    </td>
+                                    <td
+                                        class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                        <span class="md:hidden font-bold text-[#124375]">نوع المطالبة:</span>
+                                        <span>{{ $claims[$claim->type] ?? $claim->type }}</span>
+                                    </td>
+                                    <td
+                                        class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l">
+                                        <span class="md:hidden font-bold text-[#124375]">حالة الطلب:</span>
+                                        <span
+                                            class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100' }} border px-4 md:px-4 py-1.5 text-sm rounded-lg">
+                                            {{ $claimStatusLabels[$claim->status] ?? $claim->status }}
+                                        </span>
+                                    </td>
+                                    <td
+                                        class="flex justify-between items-center md:table-cell px-4 py-4 border-b border-dashed md:border-solid border-gray-300 md:border-[#D1D5DB] md:border-l text-[#021219]">
+                                        <span class="md:hidden font-bold text-[#124375]">تاريخ التقديم:</span>
+                                        <span>{{ $claim->created_at->format('Y-m-d') }}</span>
+                                    </td>
+                                    <td
+                                        class="flex justify-between items-center md:table-cell px-4 py-5 border-b-0 md:border-b md:border-[#D1D5DB]">
+                                        <span class="md:hidden font-bold text-[#124375]">الإجراء:</span>
+                                        @if ($claim->status === 'approved')
+                                            <a href="?tab=مطالبات&view_claim={{ $claim->id }}"
+                                                class="bg-[#124375] text-white py-2 md:py-3 navy-shadow px-4 md:px-8 rounded-xl font-medium inline-block text-[14px] md:text-[16px]">عرض
+                                                التفاصيل</a>
+                                        @elseif($claim->status === 'pending')
+                                            @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
+                                                <a href="{{ route('claims.show', $claim->id) }}"
+                                                    class="bg-[#124375] text-white py-2 md:py-3 navy-shadow px-4 md:px-8 rounded-xl font-medium inline-block text-[14px] md:text-[16px]">اعتماد</a>
+                                            @endif
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
                 <!-- Mobile Cards -->
                 <div class="md:hidden flex flex-col gap-4">
                     @foreach ($memberClaims as $claim)
-                        <div class="bg-white rounded-[14px] border border-[#D1D5DB] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                        <div
+                            class="bg-white rounded-[14px] border border-[#D1D5DB] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
                             <div class="flex justify-between items-start">
                                 <div class="flex flex-col gap-1">
                                     <span class="text-sm text-[#6D6D6D]">رقم المطالبة: {{ $claim->id }}</span>
-                                    <h3 class="text-[#021219] font-bold text-lg">{{ $claims[$claim->type] ?? $claim->type }}</h3>
+                                    <h3 class="text-[#021219] font-bold text-lg">
+                                        {{ $claims[$claim->type] ?? $claim->type }}</h3>
                                 </div>
-                                <span class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100 text-gray-800 border-gray-300' }} border rounded-[8px] py-[2px] px-3 text-xs text-center font-medium">
+                                <span
+                                    class="{{ $claimStatusClasses[$claim->status] ?? 'bg-gray-100 text-gray-800 border-gray-300' }} border rounded-[8px] py-[2px] px-3 text-xs text-center font-medium">
                                     {{ $claimStatusLabels[$claim->status] ?? $claim->status }}
                                 </span>
                             </div>
-                            
+
                             <div class="flex gap-2 items-center text-sm">
                                 <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
                                 <span class="text-[#6D6D6D]">تاريخ التقديم:</span>
-                                <span class="text-[#021219] font-semibold">{{ $claim->created_at->format('Y-m-d') }}</span>
+                                <span
+                                    class="text-[#021219] font-semibold">{{ $claim->created_at->format('Y-m-d') }}</span>
                             </div>
 
                             <div class="flex justify-center mt-2 pt-3 border-t border-gray-100">
                                 @if ($claim->status === 'approved')
                                     <a href="?tab=مطالبات&view_claim={{ $claim->id }}"
-                                        class="w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">عرض التفاصيل</a>
+                                        class="w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">عرض
+                                        التفاصيل</a>
                                 @elseif($claim->status === 'pending')
                                     @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
                                         <a href="{{ route('claims.show', $claim->id) }}"
@@ -417,8 +448,8 @@
                                     class="cursor-pointer py-3 text-[#124375] flex items-center justify-center gap-2 border-2 border-dashed border-[#124375] rounded-xl hover:bg-[#F4F7F9] transition-colors">
                                     <p class="text-lg">اضغط لإرفاق صورة الإقرار الموقع</p>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-3xl"></iconify-icon>
-                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="signed_receipt" id="file-receipt" class="hidden"
-                                        required>
+                                    <input type="file" accept=".pdf,.jpg,.jpeg,.png,.webp" name="signed_receipt"
+                                        id="file-receipt" class="hidden" required>
                                 </label>
                             </div>
 

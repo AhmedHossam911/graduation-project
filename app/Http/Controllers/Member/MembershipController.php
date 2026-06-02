@@ -98,9 +98,9 @@ class MembershipController extends Controller
             'children_count'         => ['nullable', 'integer', 'min:0'],
             'spouse_phone_digits'    => ['nullable', 'array'],
             'spouse_phone_digits.*'  => ['nullable', 'digits:1'],
-            'spouse_name'            => ['nullable', 'string', 'max:255'],
+            'spouse_name'            => ['nullable', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
             'spouse_workplace'       => ['nullable', 'string', 'max:255'],
-            'child_name'             => ['nullable', 'string', 'max:255'],
+            'child_name'             => ['nullable', 'string', 'max:255', 'regex:/^(لا يوجد|[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,})$/u'],
             'child_workplace'        => ['nullable', 'string', 'max:255'],
             'declaration_accepted'   => ['required', 'accepted'],
             
@@ -114,6 +114,8 @@ class MembershipController extends Controller
         ], [
             'required' => 'هذا الحقل مطلوب ولا يمكن تركه فارغاً.',
             'accepted' => 'يجب الموافقة على الإقرار.',
+            'spouse_name.regex' => 'يجب إدخال الاسم رباعي باللغة العربية.',
+            'child_name.regex'  => 'يجب إدخال الاسم رباعي باللغة العربية أو "لا يوجد".',
         ]);
 
         // Inject the fixed DB values back into the validated array 

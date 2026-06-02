@@ -60,6 +60,18 @@ class Attachment extends Model
             $map = [
                 'minors_birth_certificates' => 'شهادات ميلاد القصر',
                 'guardianship_decision' => 'قرار الوصاية',
+                'salary_letter' => 'خطاب بالمرتب الأساسي',
+                'national_id' => 'بطاقة الرقم القومي',
+                'retirement_decision' => 'قرار الإحالة للمعاش',
+                'deductions_statement' => 'بيان بالمبالغ المخصومة',
+                'appointment_letter' => 'خطاب بتاريخ التعيين',
+                'release_form' => 'إخلاء طرف',
+                'transfer_decision' => 'قرار النقل',
+                'service_end_decision' => 'قرار إنهاء الخدمة',
+                'death_certificate' => 'شهادة الوفاة',
+                'heirs_ids' => 'بطاقات الرقم القومي للورثة',
+                'inheritance_notice' => 'إعلام الوراثة',
+                'signed_receipt' => 'توقيع باستلام المستحقات',
             ];
             return 'مرفق مطالبة' . (isset($map[$docType]) ? ' - ' . $map[$docType] : '');
         }
@@ -70,6 +82,14 @@ class Attachment extends Model
             'national_id_front' => 'بطاقة الرقم القومي (أمامي)',
             'national_id_back' => 'بطاقة الرقم القومي (خلفي)',
             'salary_letter' => 'مفردات مرتب',
+            'national_id_card' => 'بطاقة الرقم القومي',
+            'basic_salary_letter' => 'خطاب الأجر الأساسي',
+            'work_declaration' => 'إقرار القيام بالعمل',
+            'over_21_request' => 'طلب تجاوز فوق سن ٢١ عام',
+            'appointment_decision' => 'قرار التعيين',
+            'manual_request' => 'طلب يدوي بالتسجيل من خلال المكتب',
+            'signed_membership_form' => 'استمارة العضوية الموقعة',
+            'suspension_document' => 'مستند إيقاف العضوية',
         ];
 
         return $staticMap[$type] ?? $type;

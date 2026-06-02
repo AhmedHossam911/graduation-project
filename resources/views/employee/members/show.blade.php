@@ -189,7 +189,7 @@
                                 <button data-modal="modal-reject-claim"
                                     class="open-modal flex text-[16px] font-medium items-center w-full sm:w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px] bg-white">
                                     <iconify-icon icon="zondicons:close-solid"
-                                    class="text-xl flex items-center"></iconify-icon>
+                                        class="text-xl flex items-center"></iconify-icon>
                                     رفض المطالبة
                                 </button>
                             @endif
@@ -249,10 +249,12 @@
                             class="tab-content flex flex-col sm:flex-row flex-wrap gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}"
                             data-tab="قروض">
                             @if ($activeLoan && $activeLoan->status === 'active')
-                                <button data-modal="modal6"
-                                    class="open-modal text-[16px] font-medium w-full sm:w-52 bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
-                                    تسديد القرض بالكامل
-                                </button>
+                                @if ($activeLoan->installments->where('status', 'unpaid')->count() <= 6)
+                                    <button data-modal="modal6"
+                                        class="open-modal text-[16px] font-medium w-full sm:w-52 bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
+                                        تسديد القرض بالكامل
+                                    </button>
+                                @endif
                             @endif
                             @if ($activeLoan && $activeLoan->status === 'pending')
                                 <button type="button"

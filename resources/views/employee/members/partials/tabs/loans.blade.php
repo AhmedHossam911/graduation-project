@@ -85,7 +85,7 @@
 
 <div id="loans-content-container" data-tab="قروض"
     class="{{ $activeTabName === 'قروض' ? '' : 'hidden' }}  tab-content px-7 py-5 print:hidden">
-    @if ($activeLoan && $activeLoan->installments->count() > 0)
+    @if ($activeLoan && $activeLoan->status === 'active' && $activeLoan->installments->count() > 0)
         <div class="rounded-[14px] overflow-hidden border-0 md:border border-[#D1D5DB] bg-transparent md:bg-white p-0">
             <div class="hidden md:block overflow-x-auto">
                 <table class="w-full md:min-w-max md:whitespace-nowrap" id="installments-table">

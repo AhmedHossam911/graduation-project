@@ -74,47 +74,47 @@
                     <p class="text-[14px] text-[#021219]">
                         يمكنك تحديث البيانات الموضحة أدناه فقط. يرجى التأكد من دقة المعلومات قبل الحفظ.
                     </p>
-                    <form action="{{ route('members.store', $member->id) }}" method="POST" class="space-y-5">
+                    <form action="{{ route('members.quickUpdate', $member->id) }}" method="POST" class="space-y-5">
                         @csrf
                         <div class="flex flex-col gap-4">
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">رقم
                                     التليفون</label>
-                                <input type="text" value="{{ $member->phone ?? 'بيانات مفقودة' }}"
-                                    placeholder="01234595684"
+                                <input type="text" name="phone" value="{{ $member->phone ?? '' }}"
+                                    placeholder="01234595684" required
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             </div>
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">البريد
                                     الإلكتروني</label>
-                                <input type="text" value="{{ $member->user->email ?? 'بيانات مفقودة' }}"
-                                    placeholder="ahmed@gmail.com"
+                                <input type="email" name="email" value="{{ $member->user->email ?? '' }}"
+                                    placeholder="ahmed@gmail.com" required
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             </div>
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الحالة
                                     الوظيفية</label>
-                                <input type="text" placeholder="معيد بالجامعة"
-                                    value="{{ $member->employmentInfo->job_title ?? 'بيانات مفقودة' }}"
+                                <input type="text" name="job_title" placeholder="معيد بالجامعة"
+                                    value="{{ $member->employmentInfo->job_title ?? '' }}" required
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             </div>
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">عنوان
                                     محل الإقامة</label>
-                                <input type="text" value="{{ $member->address ?? 'بيانات مفقودة' }}"
-                                    placeholder="العنوان الحالي بالتفصيل"
+                                <input type="text" name="address" value="{{ $member->address ?? '' }}"
+                                    placeholder="العنوان الحالي بالتفصيل" required
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             </div>
                             <div class="w-full relative">
                                 <label
                                     class="absolute top-[-15px] right-5 text-[#124375] text-base font-medium bg-[#F4F7F9]">الراتب
                                     الأساسي</label>
-                                <input type="text" placeholder="514 ج.م"
-                                    value="{{ $member->employmentInfo->starting_salary ? number_format($member->employmentInfo->starting_salary, 2) . ' ج.م' : 'بيانات مفقودة' }}"
+                                <input type="text" name="starting_salary" placeholder="514"
+                                    value="{{ $member->employmentInfo->starting_salary ?? '' }}" required
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border border-[#124375] outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                             </div>
                         </div>

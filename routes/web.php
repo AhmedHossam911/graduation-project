@@ -171,6 +171,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckIsRestricted::class])->grou
             Route::get('members/{member}/print', [MemberController::class, 'print'])->name('members.print');
             Route::get('members/{member}/upload-signed', [MemberController::class, 'uploadSignedState'])->name('members.upload_signed');
             Route::post('members/{member}/signed-form', [MemberController::class, 'uploadSignedForm'])->name('members.signed-form');
+            Route::post('members/{member}/quick-update', [MemberController::class, 'quickUpdate'])->name('members.quickUpdate');
 
             Route::resource('members', MemberController::class)->except(['create', 'store', 'destroy', 'show']);
             Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');

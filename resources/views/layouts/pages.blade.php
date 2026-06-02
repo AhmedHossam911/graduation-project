@@ -23,7 +23,25 @@
         <nav class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-3 md:gap-5 text-[#124375]">
 
-                <a href="{{ back()->getTargetUrl() }}"
+                @php
+                    $currentRoute = Route::currentRouteName();
+                    $previousUrl = url()->previous();
+                    $backUrl = $previousUrl; // default fallback
+
+                    if ($currentRoute === 'profile.index') {
+                        $backUrl = auth()->user()->isAdmin() ? route('admin.dashboard') : route('dashboard');
+                    } elseif ($currentRoute === 'loans.show' && isset($loan)) {
+                        $backUrl = route('members.show', ['member' => $loan->membership->member_id, 'tab' => 'loans']);
+                    } elseif ($currentRoute === 'members.create' || $currentRoute === 'members.show') {
+                        $backUrl = route('members.index');
+                    } elseif ($currentRoute === 'members.documents' && isset($member)) {
+                        $backUrl = route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']);
+                    } elseif ($currentRoute === 'members.previous-loans' && isset($member)) {
+                        $backUrl = route('members.show', ['member' => $member->id, 'tab' => 'loans']);
+                    }
+                @endphp
+
+                <a href="{{ $backUrl }}"
                     class="bg-[#124375] text-[#EEF7FF] rounded-lg flex items-center justify-center shadow-md cursor-pointer px-4 md:px-6 py-2 transition-colors hover:bg-opacity-90 shrink-0">
                     <iconify-icon icon="ooui:previous-rtl" class="text-base md:text-lg"></iconify-icon>
                     <span class="text-sm md:text-lg mr-1 md:mr-2">رجوع</span>

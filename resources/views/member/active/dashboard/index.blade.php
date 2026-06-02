@@ -191,7 +191,7 @@
                                 $isLoan = class_basename($req) === 'Loan';
                                 $title = $isLoan
                                     ? 'طلب قرض شخصي'
-                                    : 'طلب مطالبة - ' . ($req->type ?? 'مكافأة نهاية الخدمة');
+                                    : 'طلب مطالبة - ' . (\App\Models\Services\Claim::CLAIM_TYPES[$req->type] ?? $req->type ?? 'مكافأة نهاية الخدمة');
                                 $reqId = $isLoan
                                     ? 'LOAN-' . str_pad($req->id, 3, '0', STR_PAD_LEFT)
                                     : 'CLM-' . str_pad($req->id, 3, '0', STR_PAD_LEFT);
@@ -201,6 +201,7 @@
                                     'rejected' => 'bg-[#FFE4E6] border border-[#E11D48] text-[#E11D48]',
                                     'active' => 'bg-[#EAF5FF] border border-[#175CD3] text-[#175CD3]',
                                     'completed' => 'bg-[#F0FFF6] border border-[#019168] text-[#019168]',
+                                    'paid' => 'bg-[#F0FFF6] border border-[#019168] text-[#019168]',
                                 ];
                                 $statusIcons = [
                                     'pending' => 'tabler:clock-filled',
@@ -208,13 +209,15 @@
                                     'rejected' => 'material-symbols:cancel-rounded',
                                     'active' => 'mdi:check-decagram',
                                     'completed' => 'healthicons:yes',
+                                    'paid' => 'fluent:money-hand-20-filled',
                                 ];
                                 $statusLabels = [
                                     'pending' => 'قيد المراجعة',
                                     'approved' => 'مقبول',
                                     'rejected' => 'مرفوض',
-                                    'active' => 'فعال',
+                                    'active' => 'قيد السداد',
                                     'completed' => 'مكتمل',
+                                    'paid' => 'تم الصرف',
                                 ];
                             @endphp
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">

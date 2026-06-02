@@ -47,13 +47,13 @@ class ClaimController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('id', 'LIKE', "%{$search}%")
-                  ->orWhereHas('membership', function ($q2) use ($search) {
-                      $q2->where('membership_number', 'LIKE', "%{$search}%")
-                         ->orWhereHas('member.user', function ($q3) use ($search) {
-                             $q3->where('name', 'LIKE', "%{$search}%")
-                                ->orWhere('national_id', 'LIKE', "%{$search}%");
-                         });
-                  });
+                    ->orWhereHas('membership', function ($q2) use ($search) {
+                        $q2->where('membership_number', 'LIKE', "%{$search}%")
+                            ->orWhereHas('member.user', function ($q3) use ($search) {
+                                $q3->where('name', 'LIKE', "%{$search}%")
+                                    ->orWhere('national_id', 'LIKE', "%{$search}%");
+                            });
+                    });
             });
         }
 
@@ -118,8 +118,28 @@ class ClaimController extends Controller
             'claim_type'       => ['required', 'string', 'in:' . implode(',', array_keys(Claim::CLAIM_TYPES))],
             'has_minors'       => ['nullable', 'boolean'],
             'claim_documents'  => ['nullable', 'array'],
-            'claim_documents.*'=> ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
+            'claim_documents.*' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ]);
+
+        $minYears = (int) \App\Models\System\SystemSetting::get('claim_min_years_subscribed', 10);
+        $firstPaidSubscription = $member->membershipInfo->subscriptions()->where('status', 'paid')->orderBy('due_date', 'asc')->first();
+
+        $diff = $firstPaidSubscription ? \Carbon\Carbon::parse($firstPaidSubscription->updated_at)->diff(\Carbon\Carbon::now()) : null;
+        $yearsSubscribed = $diff ? $diff->y : 0;
+        $monthsSubscribed = $diff ? $diff->m : 0;
+
+        if ($yearsSubscribed < $minYears || (!$firstPaidSubscription && $minYears > 0)) {
+            $durationParts = [];
+            if ($yearsSubscribed > 0) {
+                $durationParts[] = $yearsSubscribed . ' ' . ($yearsSubscribed <= 10 && $yearsSubscribed >= 3 ? 'سنوات' : 'سنة');
+            }
+            if ($monthsSubscribed > 0) {
+                $durationParts[] = $monthsSubscribed . ' ' . ($monthsSubscribed <= 10 && $monthsSubscribed >= 3 ? 'أشهر' : 'شهر');
+            }
+            $durationText = !empty($durationParts) ? implode(' و ', $durationParts) : '0 شهر';
+
+            return redirect()->back()->with('error', "لا يمكن إنشاء مطالبة لأن مدة الاشتراك ($durationText) أقل من الحد الأدنى المطلوب لاستحقاق الميزة ($minYears سنوات).")->withInput();
+        }
 
         if ($validated['claim_type'] === 'retirement') {
             $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
@@ -144,7 +164,7 @@ class ClaimController extends Controller
                 'type'          => $validated['claim_type'],
             ]);
             $tempClaim->setRelation('membership', $member->membershipInfo->load(['subscriptions', 'member.employmentInfo', 'loans.installments']));
-            
+
             $calculations = $this->claimCalculationService->calculate($tempClaim);
 
             $claim = Claim::create([
@@ -179,7 +199,7 @@ class ClaimController extends Controller
                 ]);
             }
 
-            $admins = \App\Models\Auth\User::whereHas('role', function($q) {
+            $admins = \App\Models\Auth\User::whereHas('role', function ($q) {
                 $q->where('name', 'Admin');
             })->orWhereJsonContains('custom_permissions', 'إدارة المطالبات')->get();
             foreach ($admins as $admin) {
@@ -209,7 +229,7 @@ class ClaimController extends Controller
         $claim->load(['membership.member.employmentInfo', 'membership.member.department', 'membership.subscriptions', 'membership.loans.installments']);
 
         $claimTypes = Claim::CLAIM_TYPES;
-        
+
         $calculations = $this->claimCalculationService->calculate($claim);
 
         return view('employee.claims.show', array_merge(
@@ -297,7 +317,7 @@ class ClaimController extends Controller
                 'reference_id'    => $claim->id,
                 'amount'          => $updateData['amount'],
                 'type'            => \App\Models\Financial\Transaction::TYPE_OUT,
-                'method'          => 'check', 
+                'method'          => 'check',
                 'category'        => 'claim_payment',
                 'description'     => 'صرف مستحقات المطالبة',
                 'receipt_no'      => $validated['receipt_number'],

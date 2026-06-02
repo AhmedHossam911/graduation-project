@@ -52,7 +52,7 @@
                                     الأسم رباعي <span class="text-[#D92D20]">*</span></label>
                                 <input type="text" name="full_name"
                                     value="{{ old('full_name', $user->member->user->name ?? ($user->name ?? '')) }}"
-                                    placeholder="مثال : أحمد محمد إسماعيل محمود" disabled
+                                    placeholder="مثال : أحمد محمد إسماعيل محمود" disabled pattern="^[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,}$" title="يجب إدخال الاسم رباعي باللغة العربية"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
                                 @error('full_name')
                                     <span
@@ -374,6 +374,7 @@
                                     الزوج أو الزوجة</label>
                                 <input type="text" name="spouse_name" value="{{ old('spouse_name') }}"
                                     placeholder="مثال : رباب عبدالعليم أحمد محمد"
+                                    pattern="^[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,}$" title="يجب إدخال الاسم رباعي باللغة العربية"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('spouse_name') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('spouse_name')
                                     <span
@@ -400,6 +401,7 @@
                                     أحد الأبناء</label>
                                 <input type="text" name="child_name" value="{{ old('child_name') }}"
                                     placeholder="مثال : لا يوجد"
+                                    pattern="^(لا يوجد|[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,})$" title="يجب إدخال الاسم رباعي باللغة العربية أو 'لا يوجد'"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('child_name') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('child_name')
                                     <span
@@ -446,7 +448,7 @@
                                 class="text-[#124375] cursor-pointer flex items-center gap-2 bg-transparent border border-[#124375] rounded-lg px-4 py-1 hover:bg-[#E8EDF2] transition">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-xl file-icon"></iconify-icon>
                                 <span class="text-sm font-medium file-name">إرفاق الملف</span>
-                                <input type="file" name="documents[basic_salary_letter]" id="file-1"
+                                <input type="file" name="documents[basic_salary_letter]" id="file-1" accept=".pdf,image/*"
                                     class="input-file hidden text-[#6D6D6D] font-medium" onchange="updateFileLabel(this)">
                             </label>
 
@@ -469,7 +471,7 @@
                                 class="text-[#124375] cursor-pointer flex items-center gap-2 bg-transparent border border-[#124375] rounded-lg px-4 py-1 hover:bg-[#E8EDF2] transition">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-xl file-icon"></iconify-icon>
                                 <span class="text-sm font-medium file-name">إرفاق الملف</span>
-                                <input type="file" name="documents[national_id_card]" id="file-2"
+                                <input type="file" name="documents[national_id_card]" id="file-2" accept=".pdf,image/*"
                                     class="input-file hidden text-[#6D6D6D] font-medium" onchange="updateFileLabel(this)">
                             </label>
 
@@ -493,7 +495,7 @@
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-xl file-icon"></iconify-icon>
                                 <span class="text-sm font-medium file-name">إرفاق الملف
                                 </span>
-                                <input type="file" name="documents[appointment_decision]" id="file-3"
+                                <input type="file" name="documents[appointment_decision]" id="file-3" accept=".pdf,image/*"
                                     class="input-file hidden text-[#6D6D6D] font-medium" onchange="updateFileLabel(this)">
                             </label>
 
@@ -516,7 +518,7 @@
                                 class="text-[#124375] cursor-pointer flex items-center gap-2 bg-transparent border border-[#124375] rounded-lg px-4 py-1 hover:bg-[#E8EDF2] transition">
                                 <iconify-icon icon="mingcute:upload-3-fill" class="text-xl file-icon"></iconify-icon>
                                 <span class="text-sm font-medium file-name">إرفاق الملف</span>
-                                <input type="file" name="documents[over_21_request]" id="file-4"
+                                <input type="file" name="documents[over_21_request]" id="file-4" accept=".pdf,image/*"
                                     class="input-file hidden text-[#6D6D6D] font-medium" onchange="updateFileLabel(this)">
                             </label>
 
@@ -539,7 +541,7 @@
                                 class="text-[#124375] cursor-pointer flex items-center gap-2 bg-transparent border border-[#124375] rounded-lg px-4 py-1 hover:bg-[#E8EDF2] transition">
                                 <iconify-icon icon="mingcute:upload-3-line" class="text-xl file-icon"></iconify-icon>
                                 <span class="text-sm font-medium file-name">إرفاق الملف</span>
-                                <input type="file" name="documents[work_declaration]" id="file-5"
+                                <input type="file" name="documents[work_declaration]" id="file-5" accept=".pdf,image/*"
                                     class="input-file hidden text-[#6D6D6D] font-medium" onchange="updateFileLabel(this)">
                             </label>
                         </div>

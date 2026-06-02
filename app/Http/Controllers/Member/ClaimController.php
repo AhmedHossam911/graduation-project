@@ -58,6 +58,26 @@ class ClaimController extends Controller
             return redirect()->back()->with('error', 'حالة العضوية منتهية، يمكنك فقط تقديم مطالبة ببلوغ سن التقاعد.')->withInput();
         }
 
+        $minYears = (int) \App\Models\System\SystemSetting::get('claim_min_years_subscribed', 10);
+        $firstPaidSubscription = $member->membershipInfo->subscriptions()->where('status', 'paid')->orderBy('due_date', 'asc')->first();
+        
+        $diff = $firstPaidSubscription ? \Carbon\Carbon::parse($firstPaidSubscription->due_date)->diff(\Carbon\Carbon::now()) : null;
+        $yearsSubscribed = $diff ? $diff->y : 0;
+        $monthsSubscribed = $diff ? $diff->m : 0;
+        
+        if ($yearsSubscribed < $minYears || (!$firstPaidSubscription && $minYears > 0)) {
+            $durationParts = [];
+            if ($yearsSubscribed > 0) {
+                $durationParts[] = $yearsSubscribed . ' ' . ($yearsSubscribed <= 10 && $yearsSubscribed >= 3 ? 'سنوات' : 'سنة');
+            }
+            if ($monthsSubscribed > 0) {
+                $durationParts[] = $monthsSubscribed . ' ' . ($monthsSubscribed <= 10 && $monthsSubscribed >= 3 ? 'أشهر' : 'شهر');
+            }
+            $durationText = !empty($durationParts) ? implode(' و ', $durationParts) : '0 شهر';
+
+            return redirect()->back()->with('error', "لا يمكن تقديم مطالبة لأن مدة الاشتراك ($durationText) أقل من الحد الأدنى المطلوب لاستحقاق الميزة ($minYears سنوات).")->withInput();
+        }
+
         if ($validated['claim_type'] === 'retirement') {
             $retirementAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
             if ($member->birth_date && \Carbon\Carbon::parse($member->birth_date)->age < $retirementAge) {

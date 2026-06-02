@@ -23,7 +23,7 @@ class MemberRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
-            'full_name'              => ['required', 'string', 'max:255'],
+            'full_name'              => ['required', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
             'email'                  => ['required', 'email', 'max:255'],
             'department_id'          => ['nullable', 'exists:departments,id'],
             'national_id_digits'     => ['required', 'array', 'size:14'],
@@ -77,9 +77,9 @@ class MemberRequest extends FormRequest
             'children_count'         => ['nullable', 'integer', 'min:0'],
             'spouse_phone_digits'    => ['nullable', 'array'],
             'spouse_phone_digits.*'  => ['nullable', 'digits:1'],
-            'spouse_name'            => ['nullable', 'string', 'max:255'],
+            'spouse_name'            => ['nullable', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
             'spouse_workplace'       => ['nullable', 'string', 'max:255'],
-            'child_name'             => ['nullable', 'string', 'max:255'],
+            'child_name'             => ['nullable', 'string', 'max:255', 'regex:/^(لا يوجد|[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,})$/u'],
             'child_workplace'        => ['nullable', 'string', 'max:255'],
         ];
 
@@ -130,6 +130,9 @@ class MemberRequest extends FormRequest
             'national_id_digits.required' => 'من فضلك أدخل الرقم القومي كاملاً.',
             'national_id_digits.size'     => 'الرقم القومي يجب أن يتكون من 14 رقم بالضبط.',
             'email.unique'             => 'البريد الإلكتروني مسجل من قبل.',
+            'full_name.regex'          => 'يجب إدخال الاسم رباعي باللغة العربية.',
+            'spouse_name.regex'        => 'يجب إدخال الاسم رباعي باللغة العربية.',
+            'child_name.regex'         => 'يجب إدخال الاسم رباعي باللغة العربية أو "لا يوجد".',
         ];
     }
 

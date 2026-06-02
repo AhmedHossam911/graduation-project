@@ -127,6 +127,51 @@ class MemberController extends Controller
             ->with('success', 'تم تحديث بيانات العضو بنجاح.');
     }
 
+    public function quickUpdate(Request $request, $id)
+    {
+        $member = Member::with(['user', 'employmentInfo'])->findOrFail($id);
+
+        $request->validate([
+            'phone' => ['required', 'string', 'max:20'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $member->user_id],
+            'job_title' => ['required', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:1000'],
+            'starting_salary' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        if ($member->user) {
+            $member->user->update([
+                'email' => $request->email,
+            ]);
+        }
+
+        $member->update([
+            'phone' => $request->phone,
+            'address' => $request->address,
+        ]);
+
+        if ($member->employmentInfo) {
+            $member->employmentInfo->update([
+                'job_title' => $request->job_title,
+                'starting_salary' => $request->starting_salary,
+            ]);
+        }
+
+        // Log the action
+        \App\Models\System\AuditLog::create([
+            'user_id'    => auth()->id(),
+            'action'     => 'quick_update',
+            'table_name' => 'members',
+            'record_id'  => $member->id,
+            'ip_address' => request()->ip()
+        ]);
+
+        return redirect()
+            ->route('members.show', $member->id)
+            ->with('success', 'تم تحديث بيانات العضو بنجاح.');
+    }
+
+
     // ─── Show & Print ────────────────────────────────────────────────
 
     public function show($id)

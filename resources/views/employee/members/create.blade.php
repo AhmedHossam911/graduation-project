@@ -65,6 +65,7 @@
                                 <input type="text" name="full_name"
                                     value="{{ old('full_name', isset($member) ? $member->user->name : '') }}"
                                     placeholder="مثال : أحمد محمد إسماعيل محمود"
+                                    pattern="^[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,}$" title="يجب إدخال الاسم رباعي باللغة العربية"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('full_name')
                                     <span
@@ -384,6 +385,7 @@
                                     الزوج أو الزوجة</label>
                                 <input type="text" name="spouse_name" value="{{ old('spouse_name') }}"
                                     placeholder="مثال : رباب عبدالعليم أحمد محمد"
+                                    pattern="^[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,}$" title="يجب إدخال الاسم رباعي باللغة العربية"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('spouse_name') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('spouse_name')
                                     <span
@@ -410,6 +412,7 @@
                                     أحد الأبناء</label>
                                 <input type="text" name="child_name" value="{{ old('child_name') }}"
                                     placeholder="مثال : لا يوجد"
+                                    pattern="^(لا يوجد|[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,})$" title="يجب إدخال الاسم رباعي باللغة العربية أو 'لا يوجد'"
                                     class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('child_name') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                 @error('child_name')
                                     <span
@@ -450,7 +453,7 @@
                                     class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border @error('documents.national_id_card') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     <span class="text-base file-name">ارفاق المستند المطلوب</span>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
-                                    <input type="file" name="documents[national_id_card]" id="file-1"
+                                    <input type="file" name="documents[national_id_card]" id="file-1" accept=".pdf,image/*"
                                         class="input-file hidden text-[#6D6D6D] font-medium ">
                                 </label>
                             </div>
@@ -462,7 +465,7 @@
                                     class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border @error('documents.over_21_request') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     <span class="text-base file-name">ارفاق المستند المطلوب</span>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
-                                    <input type="file" name="documents[over_21_request]" id="file-2"
+                                    <input type="file" name="documents[over_21_request]" id="file-2" accept=".pdf,image/*"
                                         class="input-file hidden text-[#6D6D6D] font-medium ">
                                 </label>
                             </div>
@@ -476,7 +479,7 @@
                                     class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border @error('documents.basic_salary_letter') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     <span class="text-base file-name">ارفاق المستند المطلوب</span>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
-                                    <input type="file" name="documents[basic_salary_letter]" id="file-3"
+                                    <input type="file" name="documents[basic_salary_letter]" id="file-3" accept=".pdf,image/*"
                                         class="input-file hidden text-[#6D6D6D] font-medium ">
                                 </label>
                             </div>
@@ -488,7 +491,7 @@
                                     class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border @error('documents.appointment_decision') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     <span class="text-base file-name">ارفاق المستند المطلوب</span>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
-                                    <input type="file" name="documents[appointment_decision]" id="file-4"
+                                    <input type="file" name="documents[appointment_decision]" id="file-4" accept=".pdf,image/*"
                                         class="input-file hidden text-[#6D6D6D] font-medium ">
                                 </label>
                             </div>
@@ -502,7 +505,7 @@
                                     class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border @error('documents.work_declaration') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     <span class="text-base file-name">ارفاق المستند المطلوب</span>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
-                                    <input type="file" name="documents[work_declaration]" id="file-5"
+                                    <input type="file" name="documents[work_declaration]" id="file-5" accept=".pdf,image/*"
                                         class="input-file hidden text-[#6D6D6D] font-medium ">
                                 </label>
                             </div>
@@ -514,7 +517,7 @@
                                     class="text-[#124375] cursor-pointer flex items-center justify-center gap-2 w-full border @error('documents.manual_request') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#F4F7F9]">
                                     <span class="text-base file-name">ارفاق المستند المطلوب</span>
                                     <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl file-icon"></iconify-icon>
-                                    <input type="file" name="documents[manual_request]" id="file-6"
+                                    <input type="file" name="documents[manual_request]" id="file-6" accept=".pdf,image/*"
                                         class="input-file hidden text-[#6D6D6D] font-medium">
                                 </label>
                             </div>
