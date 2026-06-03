@@ -212,6 +212,12 @@ class SubscriptionController extends Controller
         ]);
 
         $subscription->load('membership');
+
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($subscription->membership->status, $forbiddenStatuses)) {
+            return back()->with('error', 'العضوية مغلقة ولا يمكن سداد اشتراكات عليها.');
+        }
+
         $oldValues = $subscription->toArray();
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($request, $subscription, $oldValues) {

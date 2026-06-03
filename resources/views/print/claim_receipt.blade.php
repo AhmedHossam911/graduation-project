@@ -56,7 +56,7 @@
             </div>
             <div class="flex flex-col gap-2">
                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ ووقت التنفيذ</h2>
-                <p class="text-[#021219] text-[20px] font-semibold">{{ $claim->updated_at->translatedFormat('d F Y - h:i A') }}</p>
+                <p class="text-[#021219] text-[20px] font-semibold">{{ $claim->updated_at->timezone('Africa/Cairo')->translatedFormat('d F Y - h:i A') }}</p>
             </div>
         </div>
     </div>

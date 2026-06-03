@@ -24,9 +24,9 @@
     </div>
     
     <div class="grid grid-cols-2 gap-6 text-xl pt-6">
-        <p><strong>قيمة القرض المطلوبة:</strong> <span class="font-medium">{{ number_format($activeLoan->amount, 2) }} ج.م</span></p>
-        <p><strong>عدد الأشهر:</strong> <span class="font-medium">{{ $activeLoan->installments->count() }} شهر</span></p>
-        <p><strong>تاريخ الطلب:</strong> <span class="font-medium">{{ $activeLoan->created_at->format('Y-m-d') }}</span></p>
+        <p><strong>قيمة القرض المطلوبة:</strong> <span class="font-medium">{{ number_format($activeLoan->base_amount, 2) }} ج.م</span></p>
+        <p><strong>عدد الأشهر:</strong> <span class="font-medium">{{ $activeLoan->months }} شهر</span></p>
+        <p><strong>تاريخ الطلب:</strong> <span class="font-medium">{{ $activeLoan->created_at->timezone('Africa/Cairo')->format('Y-m-d') }}</span></p>
     </div>
     
     <div class="mt-16 text-xl space-y-12">

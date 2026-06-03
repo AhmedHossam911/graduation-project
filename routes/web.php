@@ -177,6 +177,7 @@ Route::middleware(['auth', \App\Http\Middleware\CheckIsRestricted::class])->grou
             Route::resource('members', MemberController::class)->except(['create', 'store', 'destroy', 'show']);
             Route::delete('members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
             Route::post('members/{member}/suspend', [MemberController::class, 'suspend'])->name('members.suspend');
+            Route::post('members/{member}/reactivate', [MemberController::class, 'reactivate'])->name('members.reactivate');
 
             Route::post('/members/{member}/notify', [MemberController::class, 'notify'])->name('members.notify');
             Route::post('/members/{member}/claim', [ClaimController::class, 'store'])->name('members.storeClaim');

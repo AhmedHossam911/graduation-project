@@ -19,8 +19,8 @@
     </h2>
 
     <div class="flex justify-between items-center mb-6 text-[#124375] font-medium border-b border-[#124375] pb-4">
-        <div><span>التاريخ :</span> <span>{{ $transaction->created_at->format('Y-m-d') }}</span></div>
-        <div><span>الوقت :</span> <span>{{ $transaction->created_at->locale('ar')->translatedFormat('h:i A') }}</span></div>
+        <div><span>التاريخ :</span> <span>{{ $transaction->created_at->timezone('Africa/Cairo')->format('Y-m-d') }}</span></div>
+        <div><span>الوقت :</span> <span>{{ $transaction->created_at->timezone('Africa/Cairo')->locale('ar')->translatedFormat('h:i A') }}</span></div>
         <div><span>المبلغ :</span> <span class="font-bold">{{ number_format($transaction->amount, 2) }}</span></div>
     </div>
 

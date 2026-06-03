@@ -53,7 +53,7 @@ class DepartmentController extends Controller
         $search = $request->input('search');
         $status = $request->input('status');
 
-        $membersQuery = $department->members()->with(['membershipInfo', 'user']);
+        $membersQuery = $department->members()->excludeSelf()->with(['membershipInfo', 'user']);
 
         if ($search) {
             $membersQuery->where(function($q) use ($search) {

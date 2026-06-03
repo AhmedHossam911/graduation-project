@@ -102,3 +102,12 @@
         });
     </script>
 @endif
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        if (sessionStorage.getItem('flash_success')) {
+            window.showFlash('تم بنجاح', sessionStorage.getItem('flash_success'), 'success');
+            sessionStorage.removeItem('flash_success');
+        }
+    });
+</script>

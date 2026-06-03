@@ -19,17 +19,16 @@
     </h3>
     <p class="font-medium text-xl leading-loose border-2 border-[#124375] p-6 rounded-xl bg-[#F4F7F9] text-[#021219]">
         أقر أنا / <span class="font-bold ">{{ $member->user->name }}</span>
-        برغبتي في الحصول على قرض من صندوق الزمالة
-        الخاص بأعضاء هيئة التدريس ومعاونيهم والعاملين بجامعة العاصمة. وأتعهد بالالتزام بكافة الشروط والأحكام،
+        برغبتي في الحصول على قرض من {{ \App\Models\System\SystemSetting::get('system_name') }}. وأتعهد بالالتزام بكافة الشروط والأحكام،
         كما أفوض الإدارة المالية بالجامعة بخصم قيمة الأقساط الشهرية من راتبي أو من أي مستحقات مالية أخرى لي،
         وذلك حتى يتم سداد كامل قيمة القرض.
     </p>
     <p class="font-medium text-lg mt-6 text-[#124375]">
-        تحريراً في: {{ date('d / m / Y') }} م
+        تحريراً في: {{ now()->timezone('Africa/Cairo')->format('d / m / Y') }} م
     </p>
     <div class="font-medium text-lg mt-8 flex justify-between text-[#124375]">
         <span>الاسم / <span class="font-bold text-[#021219]">{{ $member->user->name }}</span></span>
-        <span>الوظيفة / <span class="font-bold text-[#021219]">{{ $member->employmentInfo->position ?? '________________' }}</span></span>
+        <span>الوظيفة / <span class="font-bold text-[#021219]">{{ $member->employmentInfo->job_title ?? '________________' }}</span></span>
     </div>
     <div class="font-medium text-lg mt-6 flex justify-between text-[#124375]">
         <span>الرقم القومي / <span class="font-bold text-[#021219]">{{ $member->user->national_id }}</span></span>

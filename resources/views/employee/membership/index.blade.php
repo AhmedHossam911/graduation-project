@@ -81,7 +81,6 @@
                     'id' => 'subscriptions-datepicker',
                     'value' => request('date'),
                     'autoSubmit' => true,
-                    'floatingLabel' => true,
                     'clearable' => true,
                 ])
             </div>
@@ -106,7 +105,6 @@
                     'clearable' => true,
                     'required' => false,
                     'autoSubmit' => true,
-                    'floatingLabel' => true,
                 ])
             </div>
 
@@ -210,7 +208,7 @@
                                     <a href="{{ route('members.show', ['member' => $subscription->membership->member_id, 'tab' => 'subscriptions']) }}"
                                         class="text-[#124375] hover:underline">
                                         <iconify-icon
-                                            class="text-[#124375] hover:rounded-md hover:scale-110 transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] hover:p-1 cursor-pointer"
+                                            class="text-[#124375] border-[1px] border-transparent hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] p-1 cursor-pointer"
                                             icon="ic:baseline-remove-red-eye" width="24"
                                             height="24"></iconify-icon>
                                     </a>
@@ -368,7 +366,7 @@
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
                         <div id="sub-member-results"
-                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto border border-[#124375]">
                         </div>
                     </div>
                     <button id="sub-search-btn" type="button"
@@ -393,7 +391,7 @@
                                 الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
                                     class="text-xl "></iconify-icon></span></button>
                         <div id="sub-months-dropdown"
-                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 h-auto max-h-60 overflow-y-auto w-full">
+                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 h-auto max-h-60 overflow-y-auto w-full border border-[#124375]">
                             <!-- Will be populated dynamically via JS -->
                         </div>
                     </div>
@@ -406,7 +404,7 @@
                                 المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
                                     class="text-xl"></iconify-icon></span></button>
                         <div id="sub-payment-methods"
-                            class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full">
+                            class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full border border-[#124375]">
                             <button type="button" data-value="salary_deduction"
                                 class=" surface-shadow py-2 rounded-xl text-sm font-medium">خصم من المرتب</button>
                             <button type="button" data-value="bank_transfer"

@@ -11,10 +11,12 @@ use App\Models\Services\Claim;
 use App\Http\Requests\Employee\Membership\MemberRequest;
 use App\Services\MemberService;
 use App\Traits\DocumentManagerTrait;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use Carbon\Carbon;
 use Exception;
 
-class MemberController extends Controller
+class MemberController extends Controller implements HasMiddleware
 {
     use DocumentManagerTrait;
     /**
@@ -39,13 +41,38 @@ class MemberController extends Controller
         $this->memberService = $memberService;
     }
 
+    /**
+     * Get the middleware that should be assigned to the controller.
+     */
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(function ($request, $next) {
+                if (auth()->check() && !request()->is('member/*') && !request()->is('profile*')) {
+                    $user = auth()->user();
+                    if (!$user->isFirstAdmin()) {
+                        $memberId = $request->route('member') ?? $request->route('id');
+                        if ($memberId) {
+                            $id = $memberId instanceof Member ? $memberId->id : $memberId;
+                            $member = Member::find($id);
+                            if ($member && $member->user_id === $user->id) {
+                                abort(403, 'لا تمتلك الصلاحية لعرض أو تعديل بياناتك الخاصة.');
+                            }
+                        }
+                    }
+                }
+                return $next($request);
+            }),
+        ];
+    }
+
     // ─── Index ───────────────────────────────────────────────────────
 
     public function index(Request $request)
     {
         $departments = Department::all();
 
-        $query = Member::with(['user', 'department', 'employmentInfo', 'membershipInfo'])->has('membershipInfo');
+        $query = Member::excludeSelf()->with(['user', 'department', 'employmentInfo', 'membershipInfo'])->has('membershipInfo');
 
         $this->applyMemberFilters($query, $request);
 
@@ -136,7 +163,7 @@ class MemberController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $member->user_id],
             'job_title' => ['required', 'string', 'max:255'],
             'address' => ['nullable', 'string', 'max:1000'],
-            'starting_salary' => ['required', 'numeric', 'min:0'],
+            'starting_salary' => ['required', 'numeric', 'gt:0'],
         ]);
 
         if ($member->user) {
@@ -318,11 +345,52 @@ class MemberController extends Controller
 
         $member = Member::with('membershipInfo')->findOrFail($id);
 
-        $this->memberService->suspendMember($member, $request->reason, $request->file('suspension_file'));
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if ($member->membershipInfo && in_array($member->membershipInfo->status, $forbiddenStatuses)) {
+            return back()->with('error', 'العضوية مغلقة بالفعل.');
+        }
 
+        $this->memberService->suspendMember($member, $request->reason, $request->file('suspension_file'));
+        
         return redirect()
             ->route('members.show', $member->id)
             ->with('success', 'تم إيقاف العضوية بنجاح.');
+    }
+
+    // ─── Reactivate Membership ───────────────────────────────────────
+
+    public function reactivate(Request $request, $id)
+    {
+        $member = Member::with(['membershipInfo.claims'])->findOrFail($id);
+
+        if (!$member->membershipInfo) {
+            return back()->with('error', 'لا يوجد بيانات عضوية.');
+        }
+
+        $hasProcessedClaim = $member->membershipInfo->claims()
+            ->whereIn('status', ['approved', 'paid'])
+            ->exists();
+
+        if ($hasProcessedClaim) {
+            return back()->with('error', 'لا يمكن إعادة تنشيط العضوية لوجود مطالبة معتمدة أو مدفوعة.');
+        }
+
+        $oldStatus = $member->membershipInfo->status;
+        $member->membershipInfo->update(['status' => 'active']);
+
+        \App\Models\System\AuditLog::create([
+            'user_id'    => auth()->id(),
+            'action'     => 'reactivate',
+            'table_name' => 'memberships',
+            'record_id'  => $member->membershipInfo->id,
+            'old_values' => ['status' => $oldStatus],
+            'new_values' => ['status' => 'active'],
+            'ip_address' => $request->ip(),
+        ]);
+
+        return redirect()
+            ->route('members.show', $member->id)
+            ->with('success', 'تم إعادة تنشيط العضوية بنجاح.');
     }
 
     // ─── Destroy (Soft Delete) ───────────────────────────────────────

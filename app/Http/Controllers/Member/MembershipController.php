@@ -50,7 +50,7 @@ class MembershipController extends Controller
         // We will inject them into the validated array before saving.
 
         // Validate request
-        $validated = $request->validate([
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
 
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
@@ -60,7 +60,7 @@ class MembershipController extends Controller
                     $month = $request->input('birth_month');
                     $year = $request->input('birth_year');
                     if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الميلاد المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                        $fail('تاريخ الميلاد غير صالح.');
                     }
                 }
             ],
@@ -76,7 +76,7 @@ class MembershipController extends Controller
                     $month = $request->input('hire_month');
                     $year = $request->input('hire_year');
                     if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ استلام العمل المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                        $fail('تاريخ استلام العمل غير صالح.');
                     }
                 }
             ],
@@ -88,18 +88,18 @@ class MembershipController extends Controller
                     $month = $request->input('retirement_month');
                     $year = $request->input('retirement_year');
                     if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الإحالة للمعاش المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                        $fail('تاريخ الإحالة للمعاش غير صالح.');
                     }
                 }
             ],
             'retirement_month'       => ['required', 'integer', 'between:1,12'],
             'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
-            'salary'                 => ['required', 'numeric', 'min:0'],
+            'salary'                 => ['required', 'numeric', 'gt:0'],
             'children_count'         => ['nullable', 'integer', 'min:0'],
-            'spouse_phone_digits'    => ['nullable', 'array'],
-            'spouse_phone_digits.*'  => ['nullable', 'digits:1'],
-            'spouse_name'            => ['nullable', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
-            'spouse_workplace'       => ['nullable', 'string', 'max:255'],
+            'spouse_phone_digits'    => ['required', 'array', 'size:11'],
+            'spouse_phone_digits.*'  => ['required', 'digits:1'],
+            'spouse_name'            => ['required_if:marital_status,متزوج', 'nullable', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
+            'spouse_workplace'       => ['required_if:marital_status,متزوج', 'nullable', 'string', 'max:255'],
             'child_name'             => ['nullable', 'string', 'max:255', 'regex:/^(لا يوجد|[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,})$/u'],
             'child_workplace'        => ['nullable', 'string', 'max:255'],
             'declaration_accepted'   => ['required', 'accepted'],
@@ -112,11 +112,57 @@ class MembershipController extends Controller
             'documents.over_21_request'     => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
             'documents.appointment_decision'=> ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
         ], [
-            'required' => 'هذا الحقل مطلوب ولا يمكن تركه فارغاً.',
-            'accepted' => 'يجب الموافقة على الإقرار.',
-            'spouse_name.regex' => 'يجب إدخال الاسم رباعي باللغة العربية.',
-            'child_name.regex'  => 'يجب إدخال الاسم رباعي باللغة العربية أو "لا يوجد".',
+            'required' => 'حقل مطلوب.',
+            'accepted' => 'يجب الموافقة.',
+            'spouse_name.regex' => 'الاسم رباعي بالعربية.',
+            'child_name.regex'  => 'الاسم رباعي بالعربية أو "لا يوجد".',
+            'spouse_phone_digits.required' => 'مطلوب.',
+            'spouse_phone_digits.size'     => '11 رقم.',
+            'spouse_name.required_if'      => 'مطلوب للمتزوج.',
+            'spouse_workplace.required_if' => 'مطلوب للمتزوج.',
+            'salary.gt'                    => 'يجب أن يكون المرتب أكبر من صفر.',
         ]);
+
+        $validator->after(function ($validator) use ($request) {
+            $maritalStatus = $request->input('marital_status');
+            $childrenCount = (int) $request->input('children_count', 0);
+            
+            if ($maritalStatus === 'أعزب' && $childrenCount > 0) {
+                $validator->errors()->add('children_count', 'غير مسموح للأعزب.');
+            }
+
+            if ($childrenCount > 0) {
+                $childName = $request->input('child_name');
+                if (empty($childName) || trim($childName) === 'لا يوجد') {
+                    $validator->errors()->add('child_name', 'الاسم مطلوب.');
+                }
+                
+                $childWorkplace = $request->input('child_workplace');
+                if (empty($childWorkplace) || trim($childWorkplace) === 'لا يوجد') {
+                    $validator->errors()->add('child_workplace', 'جهة العمل مطلوبة.');
+                }
+            }
+
+            $birthMonth = $request->input('birth_month');
+            $birthYear = $request->input('birth_year');
+            $birthDay = $request->input('birth_day');
+            
+            $hireMonth = $request->input('hire_month');
+            $hireYear = $request->input('hire_year');
+            $hireDay = $request->input('hire_day');
+
+            if ($birthMonth && $birthYear && $birthDay && $hireMonth && $hireYear && $hireDay) {
+                if (checkdate((int)$birthMonth, (int)$birthDay, (int)$birthYear) && checkdate((int)$hireMonth, (int)$hireDay, (int)$hireYear)) {
+                    $birthDate = sprintf('%04d-%02d-%02d', $birthYear, $birthMonth, $birthDay);
+                    $hireDate = sprintf('%04d-%02d-%02d', $hireYear, $hireMonth, $hireDay);
+                    if (strtotime($hireDate) <= strtotime($birthDate)) {
+                        $validator->errors()->add('hire_day', 'يجب أن يكون بعد تاريخ الميلاد.');
+                    }
+                }
+            }
+        });
+
+        $validated = $validator->validate();
 
         // Inject the fixed DB values back into the validated array 
         // so the service can still update them as needed.

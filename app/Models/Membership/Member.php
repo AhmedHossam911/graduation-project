@@ -56,4 +56,42 @@ class Member extends Model
     {
         return $this->hasOne(Membership::class);
     }
+
+    /**
+     * Scope to exclude the currently authenticated user's own member profile 
+     * from lists, unless they are the first admin or browsing the member portal.
+     */
+    public function scopeExcludeSelf($query)
+    {
+        if (auth()->check()) {
+            $user = auth()->user();
+            if (!$user->isFirstAdmin() && !request()->is('member/*') && !request()->is('profile*')) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('user_id', '!=', $user->id)
+                      ->orWhereNull('user_id');
+                });
+            }
+        }
+        return $query;
+    }
+
+    /**
+     * Override resolveRouteBinding to enforce self-access restrictions
+     * when implicit route model binding is used.
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $member = parent::resolveRouteBinding($value, $field);
+
+        if ($member && auth()->check()) {
+            $user = auth()->user();
+            if (!$user->isFirstAdmin() && !request()->is('member/*') && !request()->is('profile*')) {
+                if ($member->user_id === $user->id) {
+                    abort(403, 'لا تمتلك الصلاحية لعرض أو تعديل بياناتك الخاصة.');
+                }
+            }
+        }
+
+        return $member;
+    }
 }

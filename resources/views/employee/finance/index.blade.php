@@ -516,8 +516,8 @@
                                 الحركة :<span class="text-[#021219] ">اختر</span><span
                                     class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                         class="text-xl"></iconify-icon></span></button>
-                            <div
-                                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 px-5 py-4 rounded-xl navy-shadow w-full">
+                            <div id="finance-band-dropdown"
+                                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 px-5 py-4 rounded-xl navy-shadow w-full border border-[#124375]">
                                 <div class="flex flex-col gap-3 hidden dropdown-group" data-dropdown="مصروف">
                                     @foreach (App\Models\Financial\Transaction::EXPENSE_CATEGORIES as $key => $label)
                                         <button type="button" data-input="create-category-input"
@@ -540,8 +540,8 @@
                                 الدفع :<span class="text-[#021219] ">اختر</span><span
                                     class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                         class="text-xl"></iconify-icon></span></button>
-                            <div
-                                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full">
+                            <div id="finance-payment-methods"
+                                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full border border-[#124375]">
                                 @foreach (App\Models\Financial\Transaction::METHOD_LABELS as $key => $label)
                                     <button type="button" data-input="create-method-input"
                                         data-value="{{ $key }}"

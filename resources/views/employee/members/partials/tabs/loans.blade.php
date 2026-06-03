@@ -177,13 +177,17 @@
                                         @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
                                             @if (!isset($firstUnpaidLoanInstallmentDesktop))
                                                 @php $firstUnpaidLoanInstallmentDesktop = true; @endphp
-                                                <div>
-                                                    <button data-modal="modal5"
-                                                        onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
-                                                        class="open-modal bg-[#124375] text-[14px] md:text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-1.5 md:py-2 px-3 md:px-4">
-                                                        تسجيل السداد
-                                                    </button>
-                                                </div>
+                                                @if(!$isMembershipClosed)
+                                                    <div>
+                                                        <button data-modal="modal5"
+                                                            onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
+                                                            class="open-modal bg-[#124375] text-[14px] md:text-[16px] text-[#F4F7F9] navy-shadow rounded-[10px] py-1.5 md:py-2 px-3 md:px-4">
+                                                            تسجيل السداد
+                                                        </button>
+                                                    </div>
+                                                @else
+                                                    <div class="text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-1 rounded text-center">مغلقة</div>
+                                                @endif
                                             @else
                                                 <div
                                                     class="text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-2 max-w-fit mx-auto rounded text-center">
@@ -291,11 +295,15 @@
                                 @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
                                     @if (!isset($firstUnpaidLoanInstallmentMobile))
                                         @php $firstUnpaidLoanInstallmentMobile = true; @endphp
-                                        <button data-modal="modal5"
-                                            onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
-                                            class="open-modal w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">
-                                            تسجيل السداد
-                                        </button>
+                                        @if(!$isMembershipClosed)
+                                            <button data-modal="modal5"
+                                                onclick="document.getElementById('payInstallmentForm').action='{{ route('loans.installments.pay', $installment->id) }}'"
+                                                class="open-modal w-full text-center bg-[#124375] text-white py-2 navy-shadow rounded-[8px] font-medium text-sm hover:bg-[#0e3560] transition-colors">
+                                                تسجيل السداد
+                                            </button>
+                                        @else
+                                            <div class="w-full text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-2 rounded-[8px] text-center">مغلقة</div>
+                                        @endif
                                     @else
                                         <div
                                             class="w-full text-sm text-[#D92D20] font-medium bg-[#FFEAE8] px-2 py-2 rounded-[8px] text-center">

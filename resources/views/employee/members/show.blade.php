@@ -161,10 +161,30 @@
         $fieldClass =
             'focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none w-full border border-[#124375] rounded-xl text-base text-[#6D6D6D] text-center bg-[#F4F7F9] py-2';
         $labelClass = 'px-1 absolute right-3 top-[-15px] text-base text-[#124375] font-medium bg-[#F4F7F9]';
+
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        $isMembershipClosed = in_array($membership->status, $forbiddenStatuses);
     @endphp
 
     @include('employee.members.partials.header')
     @include('employee.members.partials.personal-info')
+
+    @if ($isMembershipClosed)
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'تنبيه',
+                    text: 'هذه العضوية مغلقة أو منتهية. تم إيقاف كافة العمليات المالية والإدارية باستثناء عرض المستندات والقروض السابقة.',
+                    confirmButtonColor: '#124375',
+                    confirmButtonText: 'حسناً'
+                });
+            }
+        });
+    </script>
+    @endif
+
     <!-- tabs -->
     <section class="px-4 md:px-7 print:hidden">
         <div
@@ -181,56 +201,58 @@
                 <!-- requests only -->
                 <div class="tab-content relative w-full md:w-auto" data-tab="مطالبات">
                     @if (auth()->user() && auth()->user()->hasPermission('إدارة المطالبات'))
-                        <div class="flex flex-col sm:flex-row flex-wrap gap-3">
-                            @php
-                                $pendingClaim = $memberClaims->where('status', 'pending')->first();
-                            @endphp
-                            @if ($pendingClaim)
-                                <button data-modal="modal-reject-claim"
-                                    class="open-modal flex text-[16px] font-medium items-center w-full sm:w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px] bg-white">
-                                    <iconify-icon icon="zondicons:close-solid"
-                                        class="text-xl flex items-center"></iconify-icon>
-                                    رفض المطالبة
-                                </button>
-                            @endif
+                        @php
+                            $pendingClaim = $memberClaims->where('status', 'pending')->first();
+                        @endphp
+                        @if (!$isMembershipClosed)
+                            <div class="flex flex-col sm:flex-row flex-wrap gap-3">
+                                @if ($pendingClaim)
+                                    <button data-modal="modal-reject-claim"
+                                        class="open-modal flex text-[16px] font-medium items-center w-full sm:w-52 justify-center gap-2 border-2 border-[#D92D20] red-shadow text-[#D92D20] py-2 rounded-[12px] bg-white">
+                                        <iconify-icon icon="zondicons:close-solid"
+                                            class="text-xl flex items-center"></iconify-icon>
+                                        رفض المطالبة
+                                    </button>
+                                @endif
 
-                            <div class="relative w-full md:w-auto">
-                                <button
-                                    class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex justify-between md:justify-start gap-3 w-full md:w-auto">نوع
-                                    المطالبة : @if (isset($selectedClaimType))
-                                        <span class="text-[#021219]">{{ $claims[$selectedClaimType] ?? 'أختر' }}</span>
-                                    @else
-                                        <span class="text-[#021219]">أختر</span>
-                                    @endif
-                                    <span class="flex items-center"><iconify-icon icon="fe:arrow-down"
-                                            class="text-xl"></iconify-icon></span></button>
-                                <div
-                                    class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow max-w-fit max-h-60 overflow-y-auto w-full">
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=retirement&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2 px-1 rounded-xl text-base ">بلوغ
-                                        سن
-                                        التقاعد القانوني</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=transfer&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">نقل</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=death&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">
-                                        وفاة</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=resignation&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">
-                                        استقالة</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=early_retirement&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">معاش
-                                        مبكر</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=withdrawal&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">انسحاب</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=expulsion&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">فصل</a>
-                                    <a href="{{ url('/members/' . $member->id . '?claim_type=professional_disability&tab=مطالبات') }}"
-                                        class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">عجز
-                                        مهني</a>
+                                <div class="relative w-full md:w-auto">
+                                    <button
+                                        class="dropDownBtn bg-[#F4F7F9] text-[#124375] py-2 px-7 rounded-xl text-base navy-shadow flex justify-between md:justify-start gap-3 w-full md:w-auto">نوع
+                                        المطالبة : @if (isset($selectedClaimType))
+                                            <span class="text-[#021219]">{{ $claims[$selectedClaimType] ?? 'أختر' }}</span>
+                                        @else
+                                            <span class="text-[#021219]">أختر</span>
+                                        @endif
+                                        <span class="flex items-center"><iconify-icon icon="fe:arrow-down"
+                                                class="text-xl"></iconify-icon></span></button>
+                                    <div
+                                        class="dropDown hidden absolute z-[80] bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow max-w-fit max-h-60 overflow-y-auto w-full">
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=retirement&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2 px-1 rounded-xl text-base ">بلوغ
+                                            سن
+                                            التقاعد القانوني</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=transfer&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">نقل</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=death&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">
+                                            وفاة</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=resignation&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">
+                                            استقالة</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=early_retirement&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">معاش
+                                            مبكر</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=withdrawal&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">انسحاب</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=expulsion&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">فصل</a>
+                                        <a href="{{ url('/members/' . $member->id . '?claim_type=professional_disability&tab=مطالبات') }}"
+                                            class="button cursor-pointer text-center navy-shadow py-2  rounded-xl text-base ">عجز
+                                            مهني</a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     @endif
                 </div>
                 <!-- requests only -->
@@ -238,36 +260,40 @@
                 @if (auth()->user() && auth()->user()->hasPermission('إدارة القروض'))
                     <div class="flex gap-3">
                         @if ($activeLoan === null)
-                            <button id="request-loan-btn"
-                                class="tab-content {{ $activeTabName === 'قروض' ? '' : 'hidden' }} flex gap-3 py-3 px-4 sm:px-20 w-full sm:w-auto rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
-                                data-tab="قروض">
-                                <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
-                                طلب قرض
-                            </button>
+                            @if (!$isMembershipClosed)
+                                <button id="request-loan-btn"
+                                    class="tab-content {{ $activeTabName === 'قروض' ? '' : 'hidden' }} flex gap-3 py-3 px-4 sm:px-20 w-full sm:w-auto rounded-[12px] justify-center items-center text-[#F4F7F9] text-[16px] font-medium bg-[#124375]"
+                                    data-tab="قروض">
+                                    <iconify-icon icon="ic:baseline-plus" class="flex items-center text-2xl"></iconify-icon>
+                                    طلب قرض
+                                </button>
+                            @endif
                         @endif
                         <div id="loans-action-buttons"
                             class="tab-content flex flex-col sm:flex-row flex-wrap gap-3 {{ $activeTabName === 'قروض' ? '' : 'hidden' }}"
                             data-tab="قروض">
-                            @if ($activeLoan && $activeLoan->status === 'active')
-                                @if ($activeLoan->installments->where('status', 'unpaid')->count() <= 6)
-                                    <button data-modal="modal6"
-                                        class="open-modal text-[16px] font-medium w-full sm:w-52 bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
-                                        تسديد القرض بالكامل
+                            @if (!$isMembershipClosed)
+                                @if ($activeLoan && $activeLoan->status === 'active')
+                                    @if ($activeLoan->installments->where('status', 'unpaid')->count() <= 6)
+                                        <button data-modal="modal6"
+                                            class="open-modal text-[16px] font-medium w-full sm:w-52 bg-[#124375] navy-shadow text-[#F4F7F9] py-2 rounded-[12px]">
+                                            تسديد القرض بالكامل
+                                        </button>
+                                    @endif
+                                @endif
+                                @if ($activeLoan && $activeLoan->status === 'pending')
+                                    <button type="button"
+                                        onclick="window.open('{{ route('print.board_details', $activeLoan->id) }}', '_blank')"
+                                        class="flex w-full sm:w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
+                                        <iconify-icon icon="material-symbols:print"
+                                            class="text-xl flex items-center"></iconify-icon>
+                                        طباعة التفاصيل للمجلس
+                                    </button>
+                                    <button data-modal="modal3"
+                                        class="open-modal text-[16px] font-medium bg-[#124375] w-full sm:w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
+                                        بدء القرض
                                     </button>
                                 @endif
-                            @endif
-                            @if ($activeLoan && $activeLoan->status === 'pending')
-                                <button type="button"
-                                    onclick="window.open('{{ route('print.board_details', $activeLoan->id) }}', '_blank')"
-                                    class="flex w-full sm:w-52 text-[16px] font-medium items-center justify-center gap-2 bg-[#F4F7F9] navy-shadow py-2 rounded-[12px] text-[#124375]">
-                                    <iconify-icon icon="material-symbols:print"
-                                        class="text-xl flex items-center"></iconify-icon>
-                                    طباعة التفاصيل للمجلس
-                                </button>
-                                <button data-modal="modal3"
-                                    class="open-modal text-[16px] font-medium bg-[#124375] w-full sm:w-52 py-2 rounded-[12px] text-[#F4F7F9] navy-shadow">
-                                    بدء القرض
-                                </button>
                             @endif
                             @if ($memberLoans->count() > 0)
                                 <a href="{{ route('members.previous-loans', $member->id) }}"

@@ -356,6 +356,10 @@ class MemberService
 
     private function calculateFees(int $age, float $basicSalary): float
     {
+        if ($basicSalary <= 0) {
+            throw new Exception('لا يمكن أن يكون الراتب الأساسي صفراً أو فارغاً. يرجى إدخال قيمة صحيحة.');
+        }
+
         $retirementAge = (int) SystemSetting::get('retirement_age', 60);
         $remainingYears = max(0, $retirementAge - $age);
 
@@ -384,6 +388,10 @@ class MemberService
             if (isset($settingsData[$remainingYears])) {
                 $feeMonths = $settingsData[$remainingYears];
             }
+        }
+
+        if ($feeMonths <= 0) {
+            throw new Exception("لا يمكن إتمام التسجيل: إعدادات رسوم الانضمام غير متوفرة لهذا العمر (متبقي {$remainingYears} سنة للتقاعد). يرجى مراجعة إدارة النظام لتحديث جدول الرسوم.");
         }
 
         return $feeMonths * $basicSalary;

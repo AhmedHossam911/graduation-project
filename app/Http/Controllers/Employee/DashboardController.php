@@ -87,7 +87,7 @@ class DashboardController extends Controller
         $memberId = $request->get('member_id');
         $type = $request->get('type'); // subscription, installment, claim, global
 
-        $query = Member::with(['user', 'membershipInfo.loans' => function($q) {
+        $query = Member::excludeSelf()->with(['user', 'membershipInfo.loans' => function($q) {
             $q->whereIn('status', ['active', 'pending', 'approved']);
         }, 'membershipInfo.loans.installments' => function($q) {
             $q->whereIn('status', ['unpaid', 'overdue'])->orderBy('due_date', 'asc');

@@ -82,142 +82,155 @@
 
     <!-- start table -->
     <section class="px-4 md:px-0">
-        <div class="rounded-[14px] overflow-hidden border border-[#6D6D6D] surface-shadow border-0 md:border p-0 md:p-0 bg-transparent md:bg-white">
+        <div
+            class="rounded-[14px] overflow-hidden border border-[#6D6D6D] surface-shadow border-0 md:border p-0 md:p-0 bg-transparent md:bg-white">
             <div class="hidden md:block">
-            <table class="w-full">
-                <thead>
-                    <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الجهة</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الهاتف</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">تاريخ الانضمام</th>
-                        <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الإجراءات</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @if ($members->count() > 0)
-                    @foreach ($members as $member)
-                        @if ($member->user->role_id === 3)
-                            <tr class="text-center bg-white border-b border-[#6D6D6D] even:bg-[#EFEFEF] text-[#021219] font-medium">
-                                <td class="py-3 border-l border-[#6D6D6D]">{{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D]">{{ $member->user->name }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D]">{{ $member->user->national_id }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D]">{{ $member->department?->name ?? 'لا يوجد بيانات' }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D]">{{ $member->phone }}</td>
-                                <td class="py-3 border-l border-[#6D6D6D]">
-                                    @php
-                                        $statusCode = $member->membershipInfo->status ?? 'unknown';
-                                        $statusData = $statusMap[$statusCode] ?? [
-                                            'label' => 'غير معروف'
-                                        ];
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-[#EEF7FF] border-b border-[#6D6D6D]">
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم العضوية</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">اسم العضو</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الرقم القومي</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الجهة</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">رقم الهاتف</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الحالة</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">تاريخ الانضمام</th>
+                            <th class="py-3 border-l border-[#6D6D6D] font-medium text-[#021219]">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if ($members->count() > 0)
+                            @foreach ($members as $member)
+                                <tr
+                                    class="text-center bg-white border-b border-[#6D6D6D] even:bg-[#EFEFEF] text-[#021219] font-medium">
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        {{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">{{ $member->user->name }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">{{ $member->user->national_id }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        {{ $member->department?->name ?? 'لا يوجد بيانات' }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">{{ $member->phone }}</td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        @php
+                                            $statusCode = $member->membershipInfo->status ?? 'unknown';
+                                            $statusData = $statusMap[$statusCode] ?? [
+                                                'label' => 'غير معروف',
+                                            ];
 
-                                        $badgeClass = match ($statusCode) {
-                                            'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
-                                            'pending_registration' => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
-                                            'loaned' => 'bg-[#F9F5FF] text-[#6941C6] border-[#6941C6]',
-                                            'pension_eligible' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
-                                            'withdrawn' => 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]',
-                                            'dismissed', 'suspended' => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
-                                            'unpaid_leave' => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
-                                            'membership_expired' => 'bg-[#F2F4F7] text-[#101828] border-[#101828]',
-                                            default => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
-                                        };
-                                    @endphp
-                                    <span class="{{ $badgeClass }} flex w-[130px] mx-auto items-center justify-center border px-3 py-1 text-sm rounded-[10px] font-medium">
-                                        {{ $statusData['label'] }}
-                                    </span>
-                                </td>
-                                <td class="py-3 border-l border-[#6D6D6D]">{{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}</td>
-                                <td class="py-3 flex justify-center items-center gap-2">
-                                    <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}">
-                                        <iconify-icon
-                                            class="text-[#124375] border-[1px] border-transparent hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] p-1 cursor-pointer"
-                                            icon="ic:baseline-remove-red-eye" width="24" height="24"></iconify-icon>
-                                    </a>
+                                            $badgeClass = match ($statusCode) {
+                                                'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+                                                'pending_registration'
+                                                    => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
+                                                'loaned' => 'bg-[#F9F5FF] text-[#6941C6] border-[#6941C6]',
+                                                'pension_eligible' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
+                                                'withdrawn' => 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]',
+                                                'dismissed',
+                                                'suspended'
+                                                    => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
+                                                'unpaid_leave' => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
+                                                'membership_expired' => 'bg-[#F2F4F7] text-[#101828] border-[#101828]',
+                                                default => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
+                                            };
+                                        @endphp
+                                        <span
+                                            class="{{ $badgeClass }} flex w-[130px] mx-auto items-center justify-center border px-3 py-1 text-sm rounded-[10px] font-medium">
+                                            {{ $statusData['label'] }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 border-l border-[#6D6D6D]">
+                                        {{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}
+                                    </td>
+                                    <td class="py-3 flex justify-center items-center gap-2">
+                                        <a
+                                            href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}">
+                                            <iconify-icon
+                                                class="text-[#124375] border-[1px] border-transparent hover:rounded-md transition-all hover:duration-1000 hover:border-[1px] hover:border-[#124375] p-1 cursor-pointer"
+                                                icon="ic:baseline-remove-red-eye" width="24"
+                                                height="24"></iconify-icon>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @else
+                            <tr>
+                                <td colspan="8" class="py-4 text-center text-gray-500 text-lg">
+                                    <img class="mx-auto w-[20%]" src="{{ asset('IMGs/No-results.png') }}"
+                                        alt="لا توجد بيانات">
                                 </td>
                             </tr>
                         @endif
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="8" class="py-4 text-center text-gray-500 text-lg">
-                            <img class="mx-auto w-[20%]" src="{{ asset('IMGs/No-results.png') }}"
-                                alt="لا توجد بيانات">
-                        </td>
-                    </tr>
-                @endif
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
             </div>
 
             <!-- Mobile Cards -->
             <div class="md:hidden flex flex-col gap-4 md:gap-6 p-4">
                 @if ($members->count() > 0)
                     @foreach ($members as $member)
-                        @if ($member->user->role_id === 3)
-                            @php
-                                $statusCode = $member->membershipInfo->status ?? 'unknown';
-                                $statusData = $statusMap[$statusCode] ?? [
-                                    'label' => 'غير معروف'
-                                ];
+                        @php
+                            $statusCode = $member->membershipInfo->status ?? 'unknown';
+                            $statusData = $statusMap[$statusCode] ?? [
+                                'label' => 'غير معروف',
+                            ];
 
-                                $badgeClass = match ($statusCode) {
-                                    'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
-                                    'pending_registration' => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
-                                    'loaned' => 'bg-[#F9F5FF] text-[#6941C6] border-[#6941C6]',
-                                    'pension_eligible' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
-                                    'withdrawn' => 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]',
-                                    'dismissed', 'suspended' => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
-                                    'unpaid_leave' => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
-                                    'membership_expired' => 'bg-[#F2F4F7] text-[#101828] border-[#101828]',
-                                    default => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
-                                };
-                            @endphp
-                            <div class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-2 h-full bg-[#124375]"></div>
-                                <div class="flex justify-between items-start">
-                                    <div class="flex flex-col gap-1 mr-3">
-                                        <h3 class="text-[#021219] font-bold text-lg">{{ $member->user->name }}</h3>
-                                        <span class="text-xs text-[#6D6D6D]">رقم العضوية: {{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</span>
-                                    </div>
-                                    <span class="{{ $badgeClass }} border rounded-[8px] py-[2px] px-3 inline-block text-xs text-center font-medium">
-                                        {{ $statusData['label'] }}
-                                    </span>
+                            $badgeClass = match ($statusCode) {
+                                'active' => 'bg-[#ECFDF3] text-[#067647] border-[#067647]',
+                                'pending_registration' => 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]',
+                                'loaned' => 'bg-[#F9F5FF] text-[#6941C6] border-[#6941C6]',
+                                'pension_eligible' => 'bg-[#FFFCEF] text-[#D4AF37] border-[#D4AF37]',
+                                'withdrawn' => 'bg-[#FFF7ED] text-[#F79009] border-[#F79009]',
+                                'dismissed', 'suspended' => 'bg-[#FFEAE8] text-[#D92D20] border-[#D92D20]',
+                                'unpaid_leave' => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
+                                'membership_expired' => 'bg-[#F2F4F7] text-[#101828] border-[#101828]',
+                                default => 'bg-[#F2F4F7] text-[#475467] border-[#475467]',
+                            };
+                        @endphp
+                        <div
+                            class="bg-white rounded-[14px] border border-[#6D6D6D] p-4 flex flex-col gap-3 shadow-sm relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-2 h-full bg-[#124375]"></div>
+                            <div class="flex justify-between items-start">
+                                <div class="flex flex-col gap-1 mr-3">
+                                    <h3 class="text-[#021219] font-bold text-lg">{{ $member->user->name }}</h3>
+                                    <span class="text-xs text-[#6D6D6D]">رقم العضوية:
+                                        {{ $member->membershipInfo->membership_number ?? 'لا يوجد بيانات' }}</span>
                                 </div>
-                                <div class="flex flex-col gap-2 mt-2 mr-3">
-                                    <div class="flex gap-2 items-center text-sm">
-                                        <iconify-icon icon="mdi:id-card" class="text-[#6D6D6D]"></iconify-icon>
-                                        <span class="text-[#6D6D6D]">الرقم القومي:</span>
-                                        <span class="text-[#021219] font-semibold">{{ $member->user->national_id }}</span>
-                                    </div>
-                                    <div class="flex gap-2 items-center text-sm">
-                                        <iconify-icon icon="mdi:office-building" class="text-[#6D6D6D]"></iconify-icon>
-                                        <span class="text-[#6D6D6D]">الجهة:</span>
-                                        <span class="text-[#021219] font-semibold">{{ $member->department?->name ?? 'لا يوجد بيانات' }}</span>
-                                    </div>
-                                    <div class="flex gap-2 items-center text-sm">
-                                        <iconify-icon icon="mdi:phone" class="text-[#6D6D6D]"></iconify-icon>
-                                        <span class="text-[#6D6D6D]">رقم الهاتف:</span>
-                                        <span class="text-[#021219] font-semibold">{{ $member->phone }}</span>
-                                    </div>
-                                    <div class="flex gap-2 items-center text-sm">
-                                        <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
-                                        <span class="text-[#6D6D6D]">تاريخ الانضمام:</span>
-                                        <span class="text-[#021219] font-semibold">{{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}</span>
-                                    </div>
+                                <span
+                                    class="{{ $badgeClass }} border rounded-[8px] py-[2px] px-3 inline-block text-xs text-center font-medium">
+                                    {{ $statusData['label'] }}
+                                </span>
+                            </div>
+                            <div class="flex flex-col gap-2 mt-2 mr-3">
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:id-card" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">الرقم القومي:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $member->user->national_id }}</span>
                                 </div>
-                                <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
-                                    <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}"
-                                        class="flex w-full items-center justify-center bg-[#124375] text-white px-4 py-2.5 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
-                                        <iconify-icon icon="ic:baseline-remove-red-eye" class="text-lg ml-2"></iconify-icon>
-                                        عرض الملف
-                                    </a>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:office-building" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">الجهة:</span>
+                                    <span
+                                        class="text-[#021219] font-semibold">{{ $member->department?->name ?? 'لا يوجد بيانات' }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:phone" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">رقم الهاتف:</span>
+                                    <span class="text-[#021219] font-semibold">{{ $member->phone }}</span>
+                                </div>
+                                <div class="flex gap-2 items-center text-sm">
+                                    <iconify-icon icon="mdi:calendar" class="text-[#6D6D6D]"></iconify-icon>
+                                    <span class="text-[#6D6D6D]">تاريخ الانضمام:</span>
+                                    <span
+                                        class="text-[#021219] font-semibold">{{ $member->membershipInfo?->created_at?->isoFormat('D MMMM YYYY', 'ar') ?? 'لا يوجد بيانات' }}</span>
                                 </div>
                             </div>
-                        @endif
+                            <div class="flex justify-end mt-2 pt-2 border-t border-gray-100 mr-3">
+                                <a href="{{ route('members.show', ['member' => $member->id, 'tab' => 'subscriptions']) }}"
+                                    class="flex w-full items-center justify-center bg-[#124375] text-white px-4 py-2.5 rounded-[8px] text-sm hover:bg-[#0e3560] transition-colors">
+                                    <iconify-icon icon="ic:baseline-remove-red-eye" class="text-lg ml-2"></iconify-icon>
+                                    عرض الملف
+                                </a>
+                            </div>
+                        </div>
                     @endforeach
                 @else
                     <div class="text-center py-6 bg-white rounded-[14px] border border-[#6D6D6D]">
@@ -231,8 +244,8 @@
 
 @endsection
 @section('pagination')
-    <div class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80">
+    <div
+        class="sticky bottom-0 bg-[#F4F7F9] py-5 border-t border-[#A8A8A8] mt-8 -mx-4 md:-mx-6 px-4 md:px-6 backdrop-blur-md bg-white/80">
         {{ $members->links() }}
     </div>
 @endsection
-

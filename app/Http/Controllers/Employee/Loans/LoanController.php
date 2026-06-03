@@ -368,6 +368,11 @@ class LoanController extends Controller
 
         $loan->load('membership');
 
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($loan->membership->status, $forbiddenStatuses)) {
+            return back()->with('error', 'العضوية مغلقة ولا يمكن سداد أقساط عليها.');
+        }
+
         $oldValues = $loan->toArray();
 
         DB::transaction(function () use ($request, $validated, $loan) {
@@ -417,6 +422,12 @@ class LoanController extends Controller
         if ($loan->status !== 'pending') {
             return redirect()->route('loans.index')
                 ->with('error', 'لا يمكن اعتماد هذا القرض.');
+        }
+
+        $loan->load('membership');
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($loan->membership->status, $forbiddenStatuses)) {
+            return redirect()->route('loans.index')->with('error', 'العضوية مغلقة ولا يمكن اعتماد القرض.');
         }
 
         $oldValues = $loan->toArray();
@@ -483,7 +494,7 @@ class LoanController extends Controller
         $search = $request->get('q', '');
         $type = $request->get('type', '');
 
-        $query = Member::with(['membershipInfo', 'user'])
+        $query = Member::excludeSelf()->with(['membershipInfo', 'user'])
             ->where(function ($q) use ($search) {
                 $q->whereHas('user', function($q2) use ($search) {
                       $q2->where('name', 'LIKE', "%{$search}%")
@@ -552,6 +563,11 @@ class LoanController extends Controller
         ]);
 
         $loan->load('membership');
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($loan->membership->status, $forbiddenStatuses)) {
+            return back()->with('error', 'العضوية مغلقة ولا يمكن بدء القرض.');
+        }
+
         $oldValues = $loan->toArray();
 
         DB::transaction(function () use ($request, $loan, $oldValues) {
@@ -669,6 +685,12 @@ class LoanController extends Controller
         ]);
 
         $installment->load('loan.membership');
+
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($installment->loan->membership->status, $forbiddenStatuses)) {
+            return back()->with('error', 'العضوية مغلقة ولا يمكن سداد أقساط عليها.');
+        }
+
         $oldValues = $installment->toArray();
 
         DB::transaction(function () use ($request, $installment, $oldValues) {
@@ -741,6 +763,11 @@ class LoanController extends Controller
         ]);
 
         $loan->load('membership', 'installments');
+
+        $forbiddenStatuses = ['pension_eligible', 'withdrawn', 'dismissed', 'membership_expired', 'suspended'];
+        if (in_array($loan->membership->status, $forbiddenStatuses)) {
+            return back()->with('error', 'العضوية مغلقة ولا يمكن السداد المبكر عليها.');
+        }
 
         // Enforce business rule: Early repayment is only permitted if there are 6 or fewer remaining installments.
         $unpaidCount = $loan->installments()->where('status', '!=', 'paid')->count();

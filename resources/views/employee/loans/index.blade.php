@@ -339,7 +339,7 @@
                         <iconify-icon icon="mynaui:search"
                             class="absolute right-1 top-1/2 -translate-y-1/2 text-2xl text-[#124375]"></iconify-icon>
                         <div id="memberSearchResults"
-                            class="absolute z-50 bg-[#F4F7F9] left-0 right-0 top-full mt-1 hidden flex-col gap-1 px-2 py-2 rounded-xl navy-shadow max-h-48 overflow-y-auto">
+                            class="absolute z-50 bg-[#F4F7F9] left-0 right-0 top-full mt-1 hidden flex-col gap-1 px-2 py-2 rounded-xl navy-shadow max-h-48 overflow-y-auto border border-[#124375]">
                         </div>
                     </div>
                     <button id="memberSearchBtn" type="button"
@@ -356,7 +356,7 @@
                             class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                 class="text-xl"></iconify-icon></span></button>
                     <div id="loanAmountDropdown"
-                        class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
+                        class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow border border-[#124375]">
                         <button type="button" data-value="5000"
                             class=" navy-shadow py-2 px-5 rounded-xl text-base ">5000</button>
                         <button type="button" data-value="10000"
@@ -372,7 +372,7 @@
                             class="flex items-center"><iconify-icon icon="fe:arrow-down"
                                 class="text-xl"></iconify-icon></span></button>
                     <div id="loanMonthsDropdown"
-                        class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow ">
+                        class="dropDown w-fit hidden absolute z-50 bg-[#F4F7F9] right-1/2 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow border border-[#124375]">
                         <button type="button" data-value="12"
                             class=" navy-shadow py-2 px-5 rounded-xl text-base ">12</button>
                         <button type="button" data-value="24"
@@ -448,7 +448,7 @@
                                 الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
                                     class="text-xl "></iconify-icon></span></button>
                         <div id="paymentInstallmentsDropdown"
-                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] navy-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 max-h-48 overflow-y-auto min-w-[200px]">
+                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] navy-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 max-h-48 overflow-y-auto min-w-[200px] border border-[#124375]">
                             <!-- Checkboxes will be injected here via JS -->
                         </div>
                     </div>

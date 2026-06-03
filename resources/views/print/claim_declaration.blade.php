@@ -18,10 +18,8 @@
     <p class="font-medium text-xl leading-loose border-2 border-[#124375] p-6 rounded-xl bg-[#F4F7F9] text-[#021219]">
         أقر أنا / <span
             class="font-bold underline decoration-dotted">{{ $member->user->name }}</span>
-        بأنني قد قمت باستلام كافة مستحقاتي من صندوق الزمالة الخاص بأعضاء هيئة التدريس
-        ومعاونيهم
-        والعاملين بجامعة العاصمة،
-        وذلك اعتبارًا من تاريخ {{ date('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي
+        بأنني قد قمت باستلام كافة مستحقاتي من {{ \App\Models\System\SystemSetting::get('system_name') }}،
+        وذلك اعتبارًا من تاريخ {{ now()->timezone('Africa/Cairo')->format('Y-m-d') }}، وأقر بعدم أحقيتي في المطالبة بأي
         مستحقات
         أخرى بعد هذا التاريخ.
     </p>

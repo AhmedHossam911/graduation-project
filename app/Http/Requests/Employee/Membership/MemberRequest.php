@@ -38,13 +38,13 @@ class MemberRequest extends FormRequest
                     $month = $this->input('birth_month');
                     $year = $this->input('birth_year');
                     if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الميلاد المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                        $fail('تاريخ الميلاد غير صالح.');
                     }
                 }
             ],
             'birth_month'            => ['required', 'integer', 'between:1,12'],
             'birth_year'             => ['required', 'integer', 'between:1900,2100'],
-            'address'                => ['nullable', 'string', 'max:1000'],
+            'address'                => ['required', 'string', 'max:1000'],
             'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
             'employer_name'          => ['required', 'string', 'max:255'],
             'job_title'              => ['required', 'string', 'max:255'],
@@ -55,7 +55,7 @@ class MemberRequest extends FormRequest
                     $month = $this->input('hire_month');
                     $year = $this->input('hire_year');
                     if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ استلام العمل المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                        $fail('تاريخ استلام العمل غير صالح.');
                     }
                 }
             ],
@@ -67,18 +67,18 @@ class MemberRequest extends FormRequest
                     $month = $this->input('retirement_month');
                     $year = $this->input('retirement_year');
                     if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الإحالة للمعاش المدخل غير صحيح (يرجى التأكد من الأيام مع الشهر).');
+                        $fail('تاريخ الإحالة للمعاش غير صالح.');
                     }
                 }
             ],
             'retirement_month'       => ['required', 'integer', 'between:1,12'],
             'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
-            'salary'                 => ['required', 'numeric', 'min:0'],
+            'salary'                 => ['required', 'numeric', 'gt:0'],
             'children_count'         => ['nullable', 'integer', 'min:0'],
-            'spouse_phone_digits'    => ['nullable', 'array'],
-            'spouse_phone_digits.*'  => ['nullable', 'digits:1'],
-            'spouse_name'            => ['nullable', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
-            'spouse_workplace'       => ['nullable', 'string', 'max:255'],
+            'spouse_phone_digits'    => ['required', 'array', 'size:11'],
+            'spouse_phone_digits.*'  => ['required', 'digits:1'],
+            'spouse_name'            => ['required_if:marital_status,متزوج', 'nullable', 'string', 'max:255', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'],
+            'spouse_workplace'       => ['required_if:marital_status,متزوج', 'nullable', 'string', 'max:255'],
             'child_name'             => ['nullable', 'string', 'max:255', 'regex:/^(لا يوجد|[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,})$/u'],
             'child_workplace'        => ['nullable', 'string', 'max:255'],
         ];
@@ -112,27 +112,32 @@ class MemberRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'required'                 => 'هذا الحقل مطلوب ولا يمكن تركه فارغاً.',
-            'string'                   => 'يجب إدخال بيانات نصية صحيحة.',
-            'max'                      => 'يجب ألا يزيد عدد الأحرف عن :max حرفاً.',
-            'email'                    => 'يرجى إدخال بريد إلكتروني صحيح بصيغة صحيحة.',
-            'exists'                   => 'القيمة التي قمت باختيارها غير موجودة.',
-            'array'                    => 'يجب أن يحتوي الحقل على مجموعة من القيم.',
-            'size'                     => 'يجب أن يحتوي الحقل على :size رقم بالضبط.',
-            'digits'                   => 'يجب إدخال :digits رقم بالضبط.',
-            'integer'                  => 'يجب إدخال رقم صحيح  .',
-            'between'                  => 'يجب أن تكون القيمة بين :min و :max.',
-            'in'                       => 'القيمة المختارة غير صحيحة، يرجى اختيار قيمة من القائمة.',
-            'numeric'                  => 'يجب إدخال رقم صالح.',
-            'min'                      => 'يجب ألا تقل القيمة عن :min.',
-            'mimes'                    => 'نوع الملف غير مدعوم. الأنواع المسموحة: :values.',
-            'documents.*.max'          => 'حجم الملف كبير جداً، الحد الأقصى 5 ميجابايت.',
-            'national_id_digits.required' => 'من فضلك أدخل الرقم القومي كاملاً.',
-            'national_id_digits.size'     => 'الرقم القومي يجب أن يتكون من 14 رقم بالضبط.',
-            'email.unique'             => 'البريد الإلكتروني مسجل من قبل.',
-            'full_name.regex'          => 'يجب إدخال الاسم رباعي باللغة العربية.',
-            'spouse_name.regex'        => 'يجب إدخال الاسم رباعي باللغة العربية.',
-            'child_name.regex'         => 'يجب إدخال الاسم رباعي باللغة العربية أو "لا يوجد".',
+            'required'                 => 'حقل مطلوب.',
+            'string'                   => 'نص غير صالح.',
+            'max'                      => 'الحد الأقصى :max حرف.',
+            'email'                    => 'بريد إلكتروني غير صالح.',
+            'exists'                   => 'القيمة غير موجودة.',
+            'array'                    => 'قيمة غير صالحة.',
+            'size'                     => 'يجب إدخال :size رقم.',
+            'digits'                   => 'يجب إدخال :digits رقم.',
+            'integer'                  => 'رقم غير صالح.',
+            'between'                  => 'القيمة بين :min و :max.',
+            'in'                       => 'قيمة غير صالحة.',
+            'numeric'                  => 'رقم غير صالح.',
+            'min'                      => 'الحد الأدنى :min.',
+            'mimes'                    => 'ملف غير مدعوم (:values).',
+            'documents.*.max'          => 'الحد الأقصى للملف 5 ميجابايت.',
+            'national_id_digits.required' => 'الرقم القومي مطلوب.',
+            'national_id_digits.size'     => 'يجب إدخال 14 رقم.',
+            'email.unique'             => 'البريد مسجل مسبقاً.',
+            'full_name.regex'          => 'الاسم رباعي بالعربية.',
+            'spouse_name.regex'        => 'الاسم رباعي بالعربية.',
+            'child_name.regex'         => 'الاسم رباعي بالعربية أو "لا يوجد".',
+            'spouse_phone_digits.required' => 'مطلوب.',
+            'spouse_phone_digits.size'     => '11 رقم.',
+            'spouse_name.required_if'      => 'مطلوب للمتزوج.',
+            'spouse_workplace.required_if' => 'مطلوب للمتزوج.',
+            'salary.gt'                    => 'يجب أن يكون المرتب أكبر من صفر.',
         ];
     }
 
@@ -142,6 +147,43 @@ class MemberRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
+            $maritalStatus = $this->input('marital_status');
+            $childrenCount = (int) $this->input('children_count', 0);
+
+            if ($maritalStatus === 'أعزب' && $childrenCount > 0) {
+                $validator->errors()->add('children_count', 'غير مسموح للأعزب.');
+            }
+
+            if ($childrenCount > 0) {
+                $childName = $this->input('child_name');
+                if (empty($childName) || trim($childName) === 'لا يوجد') {
+                    $validator->errors()->add('child_name', 'الاسم مطلوب.');
+                }
+
+                $childWorkplace = $this->input('child_workplace');
+                if (empty($childWorkplace) || trim($childWorkplace) === 'لا يوجد') {
+                    $validator->errors()->add('child_workplace', 'جهة العمل مطلوبة.');
+                }
+            }
+
+            $birthMonth = $this->input('birth_month');
+            $birthYear = $this->input('birth_year');
+            $birthDay = $this->input('birth_day');
+
+            $hireMonth = $this->input('hire_month');
+            $hireYear = $this->input('hire_year');
+            $hireDay = $this->input('hire_day');
+
+            if ($birthMonth && $birthYear && $birthDay && $hireMonth && $hireYear && $hireDay) {
+                if (checkdate((int)$birthMonth, (int)$birthDay, (int)$birthYear) && checkdate((int)$hireMonth, (int)$hireDay, (int)$hireYear)) {
+                    $birthDate = sprintf('%04d-%02d-%02d', $birthYear, $birthMonth, $birthDay);
+                    $hireDate = sprintf('%04d-%02d-%02d', $hireYear, $hireMonth, $hireDay);
+                    if (strtotime($hireDate) <= strtotime($birthDate)) {
+                        $validator->errors()->add('hire_day', 'يجب أن يكون بعد تاريخ الميلاد.');
+                    }
+                }
+            }
+
             $nationalIdDigits = $this->input('national_id_digits');
             if (is_array($nationalIdDigits) && count($nationalIdDigits) === 14) {
                 ksort($nationalIdDigits);
@@ -158,7 +200,7 @@ class MemberRequest extends FormRequest
                 }
 
                 if ($query->exists()) {
-                    $validator->errors()->add('national_id_digits', 'الرقم القومي مسجل من قبل.');
+                    $validator->errors()->add('national_id_digits', 'الرقم القومي مسجل مسبقاً.');
                 }
             }
 
@@ -167,7 +209,7 @@ class MemberRequest extends FormRequest
                 $query = User::where('email', $email);
                 $memberParam = $this->route('member') ?? $this->route('id');
                 $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
-                
+
                 if ($memberId) {
                     $member = Member::find($memberId);
                     if ($member && $member->user_id) {
@@ -175,7 +217,7 @@ class MemberRequest extends FormRequest
                     }
                 }
                 if ($query->exists()) {
-                    $validator->errors()->add('email', 'البريد الإلكتروني مسجل من قبل.');
+                    $validator->errors()->add('email', 'البريد مسجل مسبقاً.');
                 }
             }
 
@@ -186,13 +228,13 @@ class MemberRequest extends FormRequest
                 $query = Member::where('phone', $phone);
                 $memberParam = $this->route('member') ?? $this->route('id');
                 $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
-                
+
                 if ($memberId) {
                     $query->where('id', '!=', $memberId);
                 }
-                
+
                 if ($query->exists()) {
-                    $validator->errors()->add('phone_digits', 'رقم الهاتف مسجل من قبل عضو آخر.');
+                    $validator->errors()->add('phone_digits', 'رقم الهاتف مسجل مسبقاً.');
                 }
             }
         });

@@ -84,4 +84,22 @@ class User extends Authenticatable
     {
         return $this->role && strtolower($this->role->name) === 'member';
     }
+
+    /**
+     * Determine if this user is the very first registered Admin in the system.
+     */
+    public function isFirstAdmin()
+    {
+        if (!$this->isAdmin()) {
+            return false;
+        }
+
+        $firstAdminId = \Illuminate\Support\Facades\Cache::remember('first_admin_id', 3600, function () {
+            return self::whereHas('role', function ($q) {
+                $q->whereRaw('LOWER(name) = ?', ['admin']);
+            })->orderBy('id', 'asc')->value('id');
+        });
+
+        return $this->id === $firstAdminId;
+    }
 }

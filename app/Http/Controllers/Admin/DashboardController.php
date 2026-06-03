@@ -144,7 +144,7 @@ class DashboardController extends Controller
         $results = [];
 
         // Search through members by their full name, national ID, or membership number.
-        $members = Member::with(['membershipInfo', 'user'])
+        $members = Member::excludeSelf()->with(['membershipInfo', 'user'])
             ->whereHas('user', function($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%")
                       ->orWhere('national_id', 'like', "%{$q}%");

@@ -583,6 +583,7 @@ document.addEventListener("click", () => {
             }
 
             if (!hasError) {
+                sessionStorage.setItem('flash_success', 'تم تسجيل سداد الإشتراك بنجاح.');
                 const redirectUrl = window.appRoutes ? window.appRoutes.memberProfile(memberId) + '?tab=subscriptions' : `/members/${memberId}?tab=subscriptions`;
                 window.location.href = redirectUrl;
             } else {
@@ -633,11 +634,7 @@ document.addEventListener("click", () => {
             }
 
             if (!hasError) {
-                // Find member id from somewhere? We can just reload the dashboard or use loan API to get member id.
-                // Wait, we don't have memberId explicitly in installment modal.
-                // Let's add it.
-                // It will be easier to just redirect to the loan page if we don't have member ID.
-                // But wait, the searchMember returns member info and we can just add `inst-member-id`
+                sessionStorage.setItem('flash_success', 'تم تسجيل سداد القسط بنجاح.');
                 const memberIdEl = document.getElementById('inst-member-id');
                 const mid = memberIdEl ? memberIdEl.value : '';
                 if (mid) {

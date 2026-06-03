@@ -156,6 +156,10 @@ class PermissionController extends Controller
 
     public function suspend(User $user)
     {
+        if ($user->isFirstAdmin()) {
+            return back()->with('error', 'لا يمكن إيقاف حساب المدير الرئيسي.');
+        }
+
         $user->is_restricted = true;
         $user->save();
         return back()->with('success', 'تم إيقاف حساب المستخدم بنجاح.');
@@ -178,6 +182,11 @@ class PermissionController extends Controller
     public function destroy($id)
     {
         $user = User::withTrashed()->findOrFail($id);
+        
+        if ($user->isFirstAdmin()) {
+            return back()->with('error', 'لا يمكن حذف حساب المدير الرئيسي.');
+        }
+
         $user->forceDelete();
         return back()->with('success', 'تم الحذف النهائي.');
     }

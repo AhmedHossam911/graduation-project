@@ -107,7 +107,7 @@ class ClaimController extends Controller
                 ->with('error', 'يوجد مطالبة مسجلة مسبقاً لهذا العضو.');
         }
 
-        $forbiddenStatuses = ['withdrawn', 'dismissed', 'suspended'];
+        $forbiddenStatuses = ['withdrawn', 'dismissed', 'suspended', 'pension_eligible', 'membership_expired'];
         if (in_array($member->membershipInfo->status, $forbiddenStatuses)) {
             return redirect()
                 ->route('members.show', $member->id)
@@ -306,9 +306,15 @@ class ClaimController extends Controller
                 ->where('due_date', '<=', \Carbon\Carbon::now())
                 ->update(['status' => 'paid']);
 
+            // Delete future unpaid subscriptions since membership is ending
+            $claim->membership->subscriptions()
+                ->where('status', 'unpaid')
+                ->where('due_date', '>', \Carbon\Carbon::now())
+                ->delete();
+
             $membershipStatusMapping = [
                 'retirement'              => 'pension_eligible',
-                'early_retirement'        => 'withdrawn',
+                'early_retirement'        => 'pension_eligible',
                 'resignation'             => 'withdrawn',
                 'withdrawal'              => 'withdrawn',
                 'expulsion'               => 'dismissed',

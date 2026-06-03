@@ -335,7 +335,7 @@
 
                         <!-- Search Results Dropdown -->
                         <div id="claim-member-results"
-                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto">
+                            class="hidden absolute z-[60] bg-[#F4F7F9] w-full mt-2 rounded-xl navy-shadow max-h-60 overflow-y-auto border border-[#124375]">
                         </div>
                     </div>
                 </div>
@@ -347,7 +347,7 @@
                         المطالبة :<span class="text-[#021219] ">اختر</span><span class="flex items-center"><iconify-icon
                                 icon="fe:arrow-down" class="text-xl"></iconify-icon></span></button>
                     <div
-                        class="dropDown hidden absolute z-50 bg-[#F4F7F9] right-3 top-full mt-3 grid grid-cols-4 gap-3 px-3 py-4 rounded-xl navy-shadow ">
+                        class="dropDown hidden absolute z-50 bg-[#F4F7F9] right-3 top-full mt-3 grid grid-cols-4 gap-3 px-3 py-4 rounded-xl navy-shadow border border-[#124375]">
                         @foreach (\App\Models\Services\Claim::CLAIM_TYPES as $key => $label)
                             <button type="button" data-type="{{ $key }}"
                                 class=" navy-shadow py-2 rounded-xl text-sm font-medium ">{{ $label }}</button>

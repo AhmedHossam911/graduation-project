@@ -249,8 +249,8 @@
                 const btn = container.querySelector('.payment-method-btn');
                 const errorMsg = container.querySelector('.payment_error_msg');
                 if (btn) {
-                    btn.classList.remove('border', 'border-[#D92D20]', 'text-[#D92D20]');
-                    btn.classList.add('border-[#124375]', 'text-[#124375]');
+                    btn.classList.remove('border-[#D92D20]', 'text-[#D92D20]');
+                    btn.classList.add('border', 'border-[#124375]', 'text-[#124375]');
                 }
                 if (errorMsg) errorMsg.classList.add('hidden');
             });
