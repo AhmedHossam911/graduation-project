@@ -23,16 +23,19 @@ use Illuminate\Support\Facades\DB;
  */
 class AuthController extends Controller
 {
-    public function showLogin() {
+    public function showLogin()
+    {
         return view('auth.login');
     }
 
-    public function showRegister() {
+    public function showRegister()
+    {
         $departments = \App\Models\System\Department::all();
         return view('auth.register', compact('departments'));
     }
 
-    public function showForgotPassword() {
+    public function showForgotPassword()
+    {
         return view('auth.forgot-password');
     }
 
@@ -40,7 +43,8 @@ class AuthController extends Controller
      * Authenticate a user via their National ID and password.
      * Enforces account verification and 2FA before establishing a session.
      */
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
             'national_id' => 'required',
             'password' => 'required'
@@ -71,7 +75,8 @@ class AuthController extends Controller
 
             try {
                 Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تفعيل الحساب'));
-            } catch(\Exception $e) { }
+            } catch (\Exception $e) {
+            }
 
             session(['register_user_id' => $user->id]);
             return redirect()->route('register.verify')->with('success', 'حسابك غير مفعل. تم إرسال رمز تفعيل جديد إلى بريدك الإلكتروني.');
@@ -95,7 +100,8 @@ class AuthController extends Controller
 
         try {
             Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تأكيد تسجيل الدخول (2FA)'));
-        } catch(\Exception $e) { }
+        } catch (\Exception $e) {
+        }
 
         session(['login_2fa_otp_sent' => true]);
         return redirect()->route('login.2fa.otp')->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.');
@@ -104,7 +110,8 @@ class AuthController extends Controller
     /**
      * Re-send a fresh 2FA OTP code if the user requests a new one.
      */
-    public function send2faOtp(Request $request) {
+    public function send2faOtp(Request $request)
+    {
         $userId = session('login_2fa_user_id');
         if (!$userId) return redirect()->route('login');
 
@@ -120,13 +127,15 @@ class AuthController extends Controller
 
         try {
             Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تأكيد تسجيل الدخول (2FA)'));
-        } catch(\Exception $e) { }
+        } catch (\Exception $e) {
+        }
 
         session(['login_2fa_otp_sent' => true]);
         return redirect()->route('login.2fa.otp')->with('success', 'تم إرسال رمز التحقق إلى بريدك الإلكتروني.');
     }
 
-    public function show2faOtpVerify() {
+    public function show2faOtpVerify()
+    {
         if (!session('login_2fa_otp_sent') || !session('login_2fa_user_id')) {
             return redirect()->route('login.2fa');
         }
@@ -137,7 +146,8 @@ class AuthController extends Controller
      * Validate the provided 2FA OTP code against the database.
      * On success, establishes the actual login session and redirects based on user role.
      */
-    public function verify2faOtp(Request $request) {
+    public function verify2faOtp(Request $request)
+    {
         $request->validate(['code' => 'required|digits:6'], [
             'code.required' => 'يرجى إدخال رمز التحقق.',
             'code.digits' => 'الرمز يجب أن يتكون من 6 أرقام.'
@@ -177,7 +187,8 @@ class AuthController extends Controller
      * Handle the registration of a new member.
      * Uses database transactions to ensure the User, Member, and Employment info are all created atomically.
      */
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
             'name' => ['required', 'string', 'max:255', 'regex:/^[\p{Arabic}]+(?:\s+[\p{Arabic}]+){3}$/u'],
             'email' => 'required|string|email|max:255|unique:users',
@@ -207,7 +218,7 @@ class AuthController extends Controller
         ]);
 
         $user = null;
-        DB::transaction(function() use ($request, &$user) {
+        DB::transaction(function () use ($request, &$user) {
             $memberRole = \App\Models\Auth\Role::where('name', 'member')->first();
             $user = User::create([
                 'name' => $request->name,
@@ -246,18 +257,21 @@ class AuthController extends Controller
 
         try {
             Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'تفعيل الحساب الجديد'));
-        } catch(\Exception $e) { }
+        } catch (\Exception $e) {
+        }
 
         session(['register_user_id' => $user->id]);
         return redirect()->route('register.verify')->with('success', 'تم إرسال رمز التفعيل إلى بريدك الإلكتروني.');
     }
 
-    public function showVerifyRegistrationOtp() {
-        if(!session('register_user_id')) return redirect()->route('register');
+    public function showVerifyRegistrationOtp()
+    {
+        if (!session('register_user_id')) return redirect()->route('register');
         return view('auth.register-otp');
     }
 
-    public function verifyRegistrationOtp(Request $request) {
+    public function verifyRegistrationOtp(Request $request)
+    {
         $request->validate(['code' => 'required|digits:6'], [
             'code.required' => 'يرجى إدخال رمز التحقق.',
             'code.digits' => 'الرمز يجب أن يتكون من 6 أرقام.'
@@ -296,7 +310,8 @@ class AuthController extends Controller
     /**
      * Trigger the Password Recovery process by generating and sending an OTP to the user's email.
      */
-    public function sendOtp(Request $request) {
+    public function sendOtp(Request $request)
+    {
         $request->validate([
             'national_id' => 'required',
             'email' => 'required|email'
@@ -323,14 +338,16 @@ class AuthController extends Controller
 
         try {
             Mail::to($user->email)->send(new \App\Mail\OtpMail($otp, 'رمز استعادة كلمة المرور'));
-        } catch(\Exception $e) { }
+        } catch (\Exception $e) {
+        }
 
         session(['reset_user_id' => $user->id]);
         return redirect()->route('password.verify');
     }
 
-    public function showVerifyOtp() {
-        if(!session('reset_user_id')) return redirect()->route('password.request');
+    public function showVerifyOtp()
+    {
+        if (!session('reset_user_id')) return redirect()->route('password.request');
         return view('auth.otp-verify');
     }
 
@@ -338,7 +355,8 @@ class AuthController extends Controller
      * Verify the OTP sent for password recovery.
      * Grants temporary authorization in the session to reset the password.
      */
-    public function verifyOtp(Request $request) {
+    public function verifyOtp(Request $request)
+    {
         $request->validate(['code' => 'required|digits:6'], [
             'code.required' => 'يرجى إدخال رمز التحقق.',
             'code.digits' => 'الرمز يجب أن يتكون من 6 أرقام.'
@@ -359,15 +377,17 @@ class AuthController extends Controller
         return redirect()->route('password.reset');
     }
 
-    public function showResetPassword() {
-        if(!session('otp_verified') || !session('reset_user_id')) return redirect()->route('password.request');
+    public function showResetPassword()
+    {
+        if (!session('otp_verified') || !session('reset_user_id')) return redirect()->route('password.request');
         return view('auth.reset-password');
     }
 
     /**
      * Complete the password recovery cycle by applying the new hashed password to the user account.
      */
-    public function resetPassword(Request $request) {
+    public function resetPassword(Request $request)
+    {
         $request->validate([
             'password' => 'required|string|min:6|max:20|regex:/[A-Z]/|regex:/[@$!%*#?&]/|confirmed'
         ], [
@@ -391,7 +411,8 @@ class AuthController extends Controller
     /**
      * Terminate the user session and redirect to the login page.
      */
-    public function logout() {
+    public function logout()
+    {
         Auth::logout();
         return redirect()->route('login');
     }

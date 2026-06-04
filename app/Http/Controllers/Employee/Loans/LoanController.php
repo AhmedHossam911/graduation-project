@@ -262,7 +262,7 @@ class LoanController extends Controller
             if (!$firstPaidSubscription) {
                 return back()->withInput()->with('error', 'لم يتم سداد أي اشتراكات حتى الآن، لا يمكن طلب قرض.');
             }
-            
+
             $yearsSubscribed = $firstPaidSubscription->created_at->diffInYears(now());
             if ($yearsSubscribed < $minYearsSubscribed) {
                 return back()->withInput()->with('error', "لم يمر {$minYearsSubscribed} سنوات على أول اشتراك مدفوع (تاريخ أول اشتراك: {$firstPaidSubscription->created_at->format('Y-m-d')}).");

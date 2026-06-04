@@ -18,15 +18,7 @@
 
 ---
 
-## 🇪🇬 ملخص المشروع (Arabic Summary)
-**نظام إدارة صندوق الزمالة** هو تطبيق ويب متكامل مصمم لرقمنة وإدارة جميع عمليات صندوق الزمالة الجامعي. يهدف النظام إلى استبدال سير العمل الورقي التقليدي بنظام رقمي آمن وقابل للتطوير يعتمد على الصلاحيات والأدوار.
-يشمل النظام:
-- إدارة العضويات والاشتراكات.
-- إدارة العمليات المالية (الاشتراكات، القروض، التعويضات).
-- لوحة تحكم إدارية كاملة مع نظام تقارير شامل.
-- محرك قواعد أعمال ديناميكي (Business Rules Engine) للتحكم في شروط القروض والاشتراكات.
 
----
 
 ## 📋 Table of Contents
 
@@ -403,7 +395,7 @@ This starts the PHP server, queue worker, log viewer (Pail), and Vite dev server
 
 ## 👨‍💻 Authors
 
-Developed as a **Graduation Project** at **Helwan University**, Faculty of Computers and Artificial Intelligence.
+Developed by **Team 24** as a **Graduation Project** at **BIS Helwan**.
 
 ---
 
@@ -414,5 +406,5 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ---
 
 <p align="center">
-  Built with ❤️ at Helwan University
+  Built with ❤️ by Team 24 at Helwan University
 </p>

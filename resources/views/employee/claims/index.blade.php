@@ -157,9 +157,11 @@
                                     </a>
                                 </td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ $claim->created_at->translatedFormat('d F Y') }}</td>
+                                    {{ $claim->created_at->translatedFormat('d F Y') }}
+                                </td>
                                 <td class="py-3 border-l border-[#6D6D6D] text-[#021219]">
-                                    {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</td>
+                                    {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}
+                                </td>
                                 <td class="py-3 border-l border-[#6D6D6D]">
                                     @if ($claim->status === 'approved')
                                         <span
@@ -221,7 +223,8 @@
                         <div class="flex justify-between items-start">
                             <div class="flex flex-col">
                                 <h3 class="text-[#021219] font-bold text-lg">
-                                    {{ $claim->membership->member->user->name ?? 'N/A' }}</h3>
+                                    {{ $claim->membership->member->user->name ?? 'N/A' }}
+                                </h3>
                                 <span class="text-sm text-[#6D6D6D]">TRX-{{ $claim->id }}</span>
                             </div>
                             <div>
@@ -394,12 +397,14 @@
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">اسم العضو</h2>
                                 <p class="text-[#124375] text-[25px] font-semibold">
-                                    {{ $claim->membership->member->user->name }}</p>
+                                    {{ $claim->membership->member->user->name }}
+                                </p>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم العضوية </h2>
                                 <p class="text-[#021219] text-[20px] font-semibold">
-                                    {{ $claim->membership->membership_number }}</p>
+                                    {{ $claim->membership->membership_number }}
+                                </p>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ نهاية الخدمة</h2>
@@ -419,17 +424,20 @@
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">سبب الاستحقاق</h2>
                                 <p class="text-[#021219] text-[20px] font-semibold">
-                                    {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}</p>
+                                    {{ \App\Models\Services\Claim::CLAIM_TYPES[$claim->type] ?? $claim->type }}
+                                </p>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">رقم الشيك </h2>
                                 <p class="text-[#021219] text-[20px] font-semibold">
-                                    {{ $claim->receipt_number ?? 'غير متوفر' }}</p>
+                                    {{ $claim->receipt_number ?? 'غير متوفر' }}
+                                </p>
                             </div>
                             <div class="flex flex-col gap-2">
                                 <h2 class="text-[14px] text-[#6D6D6D] font-medium">تاريخ ووقت التنفيذ</h2>
                                 <p class="text-[#021219] text-[20px] font-semibold">
-                                    {{ $claim->updated_at->translatedFormat('d F Y - h:i A') }}</p>
+                                    {{ $claim->updated_at->translatedFormat('d F Y - h:i A') }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -460,7 +468,8 @@
                             <p class="text-[16px] text-[#124375]">صافي المبلغ المستحق صرفه</p>
                             <p class="text-[32px] text-[#001E3D] font-medium">
                                 {{ number_format($claim->amount - $claim->membership->remaining_loan_balance + ($claim->type === 'death' ? (float) \App\Models\System\SystemSetting::get('claim_funeral_expenses', 0) : 0), 2) }}
-                                ج.م</p>
+                                ج.م
+                            </p>
                         </div>
                     </div>
                     <div class="btns flex gap-2 no-print print:hidden">

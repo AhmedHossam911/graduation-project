@@ -417,7 +417,7 @@
 
                         <div class="justify-start text-sm font-medium font-['Noto_Sans_Arabic']">
                             آخر تعديل:
-                            {{ $lastUpdate ? $lastUpdate->updated_at->timezone('Africa/Cairo')->locale('ar')->translatedFormat('j F Y \ف\ي h:i أ') : 'لا يوجد تعديلات سابقة' }}
+                            {{ $lastUpdate ? $lastUpdate->updated_at->timezone('Africa/Cairo')->locale('ar')->translatedFormat('j F Y \ف\ي h:i ') : 'لا يوجد تعديلات سابقة' }}
                             @if ($lastUpdateUser)
                                 (بواسطة: {{ $lastUpdateUser }})
                             @endif
