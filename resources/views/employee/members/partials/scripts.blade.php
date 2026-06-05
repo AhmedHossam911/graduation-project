@@ -260,9 +260,10 @@
             'form[action*="installments"], form[action*="subscriptions"], form[action*="early-repayment"]');
         paymentForms.forEach(form => {
             form.addEventListener('submit', function(e) {
+                let hasError = false;
                 const hiddenInput = this.querySelector('.payment-method-input');
                 if (hiddenInput && !hiddenInput.value) {
-                    e.preventDefault();
+                    hasError = true;
                     const container = hiddenInput.closest('.relative');
                     if (container) {
                         const btn = container.querySelector('.payment-method-btn');
@@ -275,6 +276,26 @@
                             errorMsg.classList.remove('hidden');
                         }
                     }
+                }
+                
+                const receiptInput = this.querySelector('input[type="file"][name="receipt_image"]');
+                if (receiptInput && !receiptInput.files.length) {
+                    hasError = true;
+                    const container = receiptInput.closest('.border.rounded-2xl') || receiptInput.closest('.border');
+                    if (container) {
+                        container.classList.remove('border-[#124375]');
+                        container.classList.add('border-[#D92D20]');
+                    }
+                    const labelP = receiptInput.closest('label').querySelector('p');
+                    if (labelP) {
+                        labelP.textContent = 'يجب إرفاق صورة إيصال السداد';
+                        labelP.classList.remove('text-[#6D6D6D]', 'text-[#124375]');
+                        labelP.classList.add('text-[#D92D20]');
+                    }
+                }
+
+                if (hasError) {
+                    e.preventDefault();
                 }
             });
         });

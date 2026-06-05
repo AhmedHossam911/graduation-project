@@ -146,6 +146,9 @@
                                         $receipt = \App\Models\Membership\Attachment::where('member_id', $member->id)
                                             ->where('type', "installment_{$installment->id}_receipt")
                                             ->first();
+                                        if (!$receipt && $installment->transaction && $installment->transaction->attachment_path) {
+                                            $receipt = \App\Models\Membership\Attachment::where('file_path', $installment->transaction->attachment_path)->first();
+                                        }
                                     @endphp
                                     @if ($installment->status === 'paid')
                                         <div
@@ -267,6 +270,9 @@
                                 $receipt = \App\Models\Membership\Attachment::where('member_id', $member->id)
                                     ->where('type', "installment_{$installment->id}_receipt")
                                     ->first();
+                                if (!$receipt && $installment->transaction && $installment->transaction->attachment_path) {
+                                    $receipt = \App\Models\Membership\Attachment::where('file_path', $installment->transaction->attachment_path)->first();
+                                }
                             @endphp
                             @if ($installment->status === 'paid')
                                 <div class="flex gap-4 items-center justify-center w-full">

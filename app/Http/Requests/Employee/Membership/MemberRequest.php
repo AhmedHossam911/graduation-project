@@ -32,18 +32,6 @@ class MemberRequest extends FormRequest
             'phone_digits.*'         => ['nullable', 'digits:1'],
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
-            'birth_day'              => [
-                'required', 'integer', 'between:1,31',
-                function ($attribute, $value, $fail) {
-                    $month = $this->input('birth_month');
-                    $year = $this->input('birth_year');
-                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الميلاد غير صالح.');
-                    }
-                }
-            ],
-            'birth_month'            => ['required', 'integer', 'between:1,12'],
-            'birth_year'             => ['required', 'integer', 'between:1900,2100'],
             'address'                => ['required', 'string', 'max:1000'],
             'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
             'employer_name'          => ['required', 'string', 'max:255'],
@@ -61,18 +49,7 @@ class MemberRequest extends FormRequest
             ],
             'hire_month'             => ['required', 'integer', 'between:1,12'],
             'hire_year'              => ['required', 'integer', 'between:1900,2100'],
-            'retirement_day'         => [
-                'required', 'integer', 'between:1,31',
-                function ($attribute, $value, $fail) {
-                    $month = $this->input('retirement_month');
-                    $year = $this->input('retirement_year');
-                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الإحالة للمعاش غير صالح.');
-                    }
-                }
-            ],
-            'retirement_month'       => ['required', 'integer', 'between:1,12'],
-            'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
+            'hire_year'              => ['required', 'integer', 'between:1900,2100'],
             'salary'                 => ['required', 'numeric', 'gt:0'],
             'children_count'         => ['nullable', 'integer', 'min:0'],
             'spouse_phone_digits'    => ['required', 'array', 'size:11'],
@@ -166,17 +143,36 @@ class MemberRequest extends FormRequest
                 }
             }
 
-            $birthMonth = $this->input('birth_month');
-            $birthYear = $this->input('birth_year');
-            $birthDay = $this->input('birth_day');
+            $nationalId = null;
+            $nationalIdDigits = $this->input('national_id_digits');
+            $memberParam = $this->route('member') ?? $this->route('id');
+            $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
 
-            $hireMonth = $this->input('hire_month');
-            $hireYear = $this->input('hire_year');
-            $hireDay = $this->input('hire_day');
+            if (is_array($nationalIdDigits) && count($nationalIdDigits) === 14) {
+                ksort($nationalIdDigits);
+                $nationalId = implode('', $nationalIdDigits);
+            } else if ($memberId) {
+                $member = Member::find($memberId);
+                if ($member && $member->user) {
+                    $nationalId = $member->user->national_id;
+                }
+            }
 
-            if ($birthMonth && $birthYear && $birthDay && $hireMonth && $hireYear && $hireDay) {
-                if (checkdate((int)$birthMonth, (int)$birthDay, (int)$birthYear) && checkdate((int)$hireMonth, (int)$hireDay, (int)$hireYear)) {
-                    $birthDate = sprintf('%04d-%02d-%02d', $birthYear, $birthMonth, $birthDay);
+            if ($nationalId && strlen($nationalId) >= 7) {
+                $centuryCode = substr($nationalId, 0, 1);
+                $year = substr($nationalId, 1, 2);
+                $month = substr($nationalId, 3, 2);
+                $day = substr($nationalId, 5, 2);
+                $fullYear = ($centuryCode === '2') ? '19' . $year : '20' . $year;
+                $month = $month == '00' ? '01' : $month;
+                $day = $day == '00' ? '01' : $day;
+                $birthDate = sprintf('%04d-%02d-%02d', $fullYear, $month, $day);
+
+                $hireMonth = $this->input('hire_month');
+                $hireYear = $this->input('hire_year');
+                $hireDay = $this->input('hire_day');
+
+                if ($hireMonth && $hireYear && $hireDay && checkdate((int)$hireMonth, (int)$hireDay, (int)$hireYear)) {
                     $hireDate = sprintf('%04d-%02d-%02d', $hireYear, $hireMonth, $hireDay);
                     if (strtotime($hireDate) <= strtotime($birthDate)) {
                         $validator->errors()->add('hire_day', 'يجب أن يكون بعد تاريخ الميلاد.');
@@ -184,12 +180,7 @@ class MemberRequest extends FormRequest
                 }
             }
 
-            $nationalIdDigits = $this->input('national_id_digits');
-            if (is_array($nationalIdDigits) && count($nationalIdDigits) === 14) {
-                ksort($nationalIdDigits);
-                $nationalId = implode('', $nationalIdDigits);
-                $memberParam = $this->route('member') ?? $this->route('id');
-                $memberId = $memberParam instanceof \App\Models\Membership\Member ? $memberParam->id : $memberParam;
+            if ($nationalId) {
 
                 $query = User::where('national_id', $nationalId);
                 if ($memberId) {

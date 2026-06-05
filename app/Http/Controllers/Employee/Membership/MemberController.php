@@ -92,7 +92,7 @@ class MemberController extends Controller implements HasMiddleware
         return view('employee.members.create', [
             'documentTypes' => MemberService::INITIAL_DOCUMENT_TYPES,
             'mode'          => 'create',
-            'departments'   => Department::all(),
+            'departments'   => Department::where('status', 'active')->get(),
         ]);
     }
 

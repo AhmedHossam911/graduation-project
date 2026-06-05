@@ -176,6 +176,43 @@ if (birthDay && birthMonth && birthYear && retDay && retMonth && retYear) {
     birthMonth.addEventListener('input', calculateRetirement);
     birthYear.addEventListener('input', calculateRetirement);
 
+    // Smart validation to extract DOB from National ID
+    if (idInputs && idInputs.length > 0) {
+        const extractDOBFromNID = () => {
+            let nid = '';
+            idInputs.forEach(input => {
+                const val = toEnglishDigits(input.value.trim());
+                nid += val;
+            });
+
+            if (nid.length >= 7) {
+                const centuryCode = nid.substring(0, 1);
+                const year = nid.substring(1, 3);
+                const month = nid.substring(3, 5);
+                const day = nid.substring(5, 7);
+
+                let fullYear = '';
+                if (centuryCode === '2') fullYear = '19' + year;
+                else if (centuryCode === '3') fullYear = '20' + year;
+
+                if (fullYear && month && day) {
+                    if (birthYear) birthYear.value = fullYear;
+                    if (birthMonth) birthMonth.value = month;
+                    if (birthDay) birthDay.value = day;
+
+                    calculateRetirement();
+                }
+            }
+        };
+
+        idInputs.forEach(input => {
+            input.addEventListener('input', extractDOBFromNID);
+        });
+        
+        // Also run once on load in case National ID is prepopulated
+        extractDOBFromNID();
+    }
+
     // Run on initial load in case values are prepopulated by old()
     calculateRetirement();
 }

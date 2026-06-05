@@ -70,7 +70,7 @@
             if (!is_array($userFaculties)) $userFaculties = [];
         @endphp
 
-        <div class="px-4 md:px-12 py-4">
+        <div class="px-4 md:px-12 py-4" id="faculties-section">
             <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-6 md:pt-10 pb-3 px-4 md:px-7">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
                     <div class="space-y-2">
@@ -104,7 +104,7 @@
             if (!is_array($userPermissions)) $userPermissions = [];
         @endphp
 
-        <div class="px-4 md:px-12 py-4">
+        <div class="px-4 md:px-12 py-4" id="permissions-section">
             <div class="bg-[#F4F7F9] navy-shadow rounded-[16px] pt-6 md:pt-10 pb-3 px-4 md:px-7">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0">
                     <div class="space-y-2">

@@ -360,6 +360,7 @@ class LoanController extends Controller
     public function recordPayment(Request $request, Loan $loan)
     {
         $validated = $request->validate([
+            'payment_method'    => ['required', 'in:cash,bank_transfer,salary_deduction,university_payment_order'],
             'installment_ids'   => ['required', 'array', 'min:1'],
             'installment_ids.*' => ['required', 'exists:installments,id'],
             'receipt_number'    => ['required', 'string', 'max:255'],
@@ -376,6 +377,9 @@ class LoanController extends Controller
         $oldValues = $loan->toArray();
 
         DB::transaction(function () use ($request, $validated, $loan) {
+            $installments = Installment::whereIn('id', $validated['installment_ids'])
+                ->where('loan_id', $loan->id)->get();
+
             // Mark selected installments as paid
             Installment::whereIn('id', $validated['installment_ids'])
                 ->where('loan_id', $loan->id)
@@ -385,15 +389,33 @@ class LoanController extends Controller
                 ]);
 
             // Upload receipt file if provided
+            $path = null;
             if ($request->hasFile('receipt_file')) {
                 $memberId = $loan->membership->member_id;
                 $path = $request->file('receipt_file')
                     ->store("members/{$memberId}/loans/{$loan->id}", 'public');
+            }
 
-                Attachment::create([
-                    'member_id' => $memberId,
-                    'type'      => "loan_{$loan->id}_payment_receipt",
-                    'file_path' => $path,
+            foreach ($installments as $installment) {
+                if ($path) {
+                    Attachment::create([
+                        'member_id' => $loan->membership->member_id,
+                        'type'      => "installment_{$installment->id}_receipt",
+                        'file_path' => $path,
+                    ]);
+                }
+
+                \App\Models\Financial\Transaction::create([
+                    'membership_id' => $loan->membership_id,
+                    'reference_type' => Installment::class,
+                    'reference_id' => $installment->id,
+                    'amount' => $installment->amount,
+                    'type' => 'IN',
+                    'method' => $validated['payment_method'],
+                    'category' => 'loan_installment',
+                    'receipt_no' => $validated['receipt_number'],
+                    'attachment_path' => $path,
+                    'created_by' => auth()->id(),
                 ]);
             }
 
@@ -407,6 +429,7 @@ class LoanController extends Controller
             $this->logAudit('payment', 'loans', $loan->id, null, [
                 'installment_ids' => $validated['installment_ids'],
                 'receipt_number'  => $validated['receipt_number'],
+                'payment_method'  => $validated['payment_method'],
             ]);
         });
 
@@ -681,7 +704,7 @@ class LoanController extends Controller
         $request->validate([
             'payment_method' => 'required|in:cash,bank_transfer,salary_deduction,university_payment_order',
             'receipt_number' => 'required|string|max:255',
-            'receipt_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
+            'receipt_image' => 'required|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
         ]);
 
         $installment->load('loan.membership');
@@ -759,7 +782,7 @@ class LoanController extends Controller
         $request->validate([
             'payment_method' => 'required|in:cash,bank_transfer,salary_deduction,university_payment_order',
             'receipt_number' => 'required|string|max:255',
-            'receipt_image' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
+            'receipt_image' => 'required|file|mimes:pdf,jpg,jpeg,png,webp|max:5120',
         ]);
 
         $loan->load('membership', 'installments');

@@ -533,7 +533,7 @@
                             <p>اضغط لإرفاق صورة إيصال السداد</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                             <input type="file" id="file-23" name="receipt_image" class="hidden"
-                                accept=".pdf, image/*">
+                                required accept=".pdf, image/*">
                         </label>
                     </div>
                 </div>
@@ -615,7 +615,7 @@
                             <p>اضغط لإرفاق صورة إيصال السداد</p>
                             <iconify-icon icon="mingcute:upload-3-fill" class="text-2xl"></iconify-icon>
                             <input type="file" id="file-24" name="receipt_image" class="hidden"
-                                accept=".pdf, image/*">
+                                required accept=".pdf, image/*">
                         </label>
                     </div>
                 </div>

@@ -417,6 +417,7 @@ document.addEventListener("click", () => {
 
     // Setup payment methods
     setupPaymentMethodDropdown('sub');
+    setupPaymentMethodDropdown('inst');
 
     // Modal 1: Subscription
     setupDropdownSearch('sub-search-input', 'sub-member-results', 'subscription');
@@ -602,9 +603,11 @@ document.addEventListener("click", () => {
             const instCheckboxes = document.getElementById('inst-months-dropdown').querySelectorAll('input[type="checkbox"]:checked');
             const receiptNum = document.getElementById('inst-receipt-number').value;
             const receiptImg = document.getElementById('inst-receipt-image').files[0];
+            const paymentMethodInput = document.getElementById('inst-payment-method');
+            const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'salary_deduction';
 
-            if (!loanId || instCheckboxes.length === 0 || !receiptNum || !receiptImg) {
-                showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار القسط وإدخال رقم الإيصال وإرفاق صورته.', 'error');
+            if (!loanId || instCheckboxes.length === 0 || !receiptNum || !receiptImg || !paymentMethod) {
+                showFlash('تنبيه', 'يرجى التأكد من البحث عن العضو واختيار القسط وإدخال رقم الإيصال وإرفاق صورته واختيار طريقة الدفع.', 'error');
                 return;
             }
 
@@ -618,6 +621,7 @@ document.addEventListener("click", () => {
                 formData.append('amount', cb.getAttribute('data-amount'));
                 formData.append('receipt_number', receiptNum);
                 formData.append('receipt_image', receiptImg);
+                formData.append('payment_method', paymentMethod);
                 formData.append('_token', csrfToken);
                 formData.append('source', 'dashboard');
 

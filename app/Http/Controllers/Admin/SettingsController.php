@@ -10,29 +10,7 @@ use App\Models\System\AuditLog;
 
 class SettingsController extends Controller
 {
-    /**
-     * Default settings values.
-     */
-    protected $defaults = [
-        'system_name' => 'صندوق التأمين الخاص لأعضاء هيئة التدريس والعاملين بجامعة العاصمة',
-        'retirement_age' => '60',
-        'default_currency' => 'جنيه مصري (EGP)',
-        'subscription_percentage' => '10',
-        'employer_contribution_percentage' => '10',
-        'membership_join_fee' => '[{"years":"42 سنة فأكثر","fee_months":"14.68"},{"years":"41 سنة","fee_months":"16.87"},{"years":"40 سنة","fee_months":"19.18"},{"years":"39 سنة","fee_months":"21.59"}]',
-        'membership_min_age' => '21',
-        'membership_max_age' => '59',
-        'dismissal_notice_months' => '3',
-        'loan_percentage' => '75',
-        'loan_interest_rate' => '8',
-        'loan_max_amount' => '20000',
-        'loan_repayment_months' => '36',
-        'loan_min_years_subscribed' => '5',
-        'claim_basic_percentage' => '145',
-        'claim_transfer_resignation_percentage' => '80',
-        'claim_funeral_expenses' => '3448',
-        'claim_min_years_subscribed' => '10',
-    ];
+    // Defaults are now managed in SystemSetting::$defaults
 
     /**
      * Display the settings page.
@@ -44,7 +22,7 @@ class SettingsController extends Controller
             return SystemSetting::pluck('value', 'key')->toArray();
         });
 
-        $settings = array_merge($this->defaults, $dbSettings);
+        $settings = array_merge(SystemSetting::$defaults, $dbSettings);
 
         // Retrieve the most recent update made to the system settings to display in the audit trail.
         $lastUpdate = SystemSetting::orderBy('updated_at', 'desc')->first();
@@ -120,7 +98,7 @@ class SettingsController extends Controller
      */
     public function reset(Request $request)
     {
-        foreach ($this->defaults as $key => $value) {
+        foreach (SystemSetting::$defaults as $key => $value) {
             SystemSetting::updateOrCreate(
                 ['key' => $key],
                 ['value' => $value]
@@ -134,7 +112,7 @@ class SettingsController extends Controller
                 'user_id' => auth()->id(),
                 'action' => 'استعادة قيم اللائحة الأساسية للإعدادات',
                 'table_name' => 'system_settings',
-                'new_values' => $this->defaults,
+                'new_values' => SystemSetting::$defaults,
                 'ip_address' => $request->ip()
             ]);
         } catch (\Exception $e) {

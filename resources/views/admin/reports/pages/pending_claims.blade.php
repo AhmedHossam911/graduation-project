@@ -12,7 +12,8 @@
         </div>
         <div class="btns flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             <a href="{{ route('admin.reports.index') }}"
-                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#F4F7F9] text-[#124375] font-semibold navy-shadow hover:bg-[#E2E8F0] transition-colors">
+                class="w-full sm:w-auto rounded-xl flex items-center justify-center py-3 px-5 bg-[#F4F7F9] text-[#124875] font-semibold border-2
+                border-[#124375] navy-shadow hover:bg-[#E2E8F0] transition-colors">
                 العودة للتقارير
             </a>
             <a href="{{ route('claims.export', ['status' => 'pending', ...request()->query()]) }}" onclick="confirmExport(event, this.href)"

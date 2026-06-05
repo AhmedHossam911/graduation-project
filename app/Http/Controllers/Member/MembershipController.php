@@ -27,7 +27,7 @@ class MembershipController extends Controller
             return redirect()->route('member.dashboard')->with('error', 'لديك طلب عضوية مقدم بالفعل.');
         }
         
-        $departments = Department::all();
+        $departments = Department::where('status', 'active')->get();
 
         return view('member.guest.membership.create', compact('user', 'departments'));
     }
@@ -45,27 +45,17 @@ class MembershipController extends Controller
             return redirect()->route('member.dashboard')->with('error', 'لديك طلب عضوية مقدم بالفعل.');
         }
 
-        // The signup inputs (full_name, email, national_id, phone, employer_name, job_title) 
-        // are disabled in the view, so they are not pulled from the request.
-        // We will inject them into the validated array before saving.
+        // DB values
+        $dbName = $user->name;
+        $dbEmail = $user->email;
+        $dbPhone = $member->phone ?? null;
+        $dbNid = $user->national_id ?? null;
+        $dbEmployer = $member->employmentInfo->workplace ?? null;
+        $dbJobTitle = $member->employmentInfo->job_title ?? null;
 
-        // Validate request
-        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
-
+        $rules = [
             'landline_digits'        => ['nullable', 'array'],
             'landline_digits.*'      => ['nullable', 'digits:1'],
-            'birth_day'              => [
-                'required', 'integer', 'between:1,31',
-                function ($attribute, $value, $fail) use ($request) {
-                    $month = $request->input('birth_month');
-                    $year = $request->input('birth_year');
-                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الميلاد غير صالح.');
-                    }
-                }
-            ],
-            'birth_month'            => ['required', 'integer', 'between:1,12'],
-            'birth_year'             => ['required', 'integer', 'between:1900,2100'],
             'address'                => ['required', 'string', 'max:1000'],
             'marital_status'         => ['required', 'string', 'in:متزوج,مطلق,أعزب,أرمل'],
 
@@ -82,18 +72,7 @@ class MembershipController extends Controller
             ],
             'hire_month'             => ['required', 'integer', 'between:1,12'],
             'hire_year'              => ['required', 'integer', 'between:1900,2100'],
-            'retirement_day'         => [
-                'required', 'integer', 'between:1,31',
-                function ($attribute, $value, $fail) use ($request) {
-                    $month = $request->input('retirement_month');
-                    $year = $request->input('retirement_year');
-                    if ($month && $year && !checkdate((int)$month, (int)$value, (int)$year)) {
-                        $fail('تاريخ الإحالة للمعاش غير صالح.');
-                    }
-                }
-            ],
-            'retirement_month'       => ['required', 'integer', 'between:1,12'],
-            'retirement_year'        => ['required', 'integer', 'between:1900,2100'],
+            'hire_year'              => ['required', 'integer', 'between:1900,2100'],
             'salary'                 => ['required', 'numeric', 'gt:0'],
             'children_count'         => ['nullable', 'integer', 'min:0'],
             'spouse_phone_digits'    => ['required', 'array', 'size:11'],
@@ -111,9 +90,33 @@ class MembershipController extends Controller
             'documents.work_declaration'    => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
             'documents.over_21_request'     => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
             'documents.appointment_decision'=> ['required', 'file', 'mimes:pdf,jpg,jpeg,png,webp', 'max:5120'],
-        ], [
+        ];
+
+        if (empty($dbName)) {
+            $rules['full_name'] = ['required', 'string', 'regex:/^[\x{0600}-\x{06FF}\s]+(?:\s+[\x{0600}-\x{06FF}\s]+){3,}$/u'];
+        }
+        if (empty($dbEmail)) {
+            $rules['email'] = ['required', 'email', 'unique:users,email'];
+        }
+        if (empty($dbPhone)) {
+            $rules['phone_digits'] = ['required', 'array', 'size:11'];
+            $rules['phone_digits.*'] = ['required', 'digits:1'];
+        }
+        if (empty($dbNid)) {
+            $rules['national_id_digits'] = ['required', 'array', 'size:14'];
+            $rules['national_id_digits.*'] = ['required', 'digits:1'];
+        }
+        if (empty($dbEmployer)) {
+            $rules['employer_name'] = ['required', 'string', 'max:255'];
+        }
+        if (empty($dbJobTitle)) {
+            $rules['job_title'] = ['required', 'string', 'max:255'];
+        }
+
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules, [
             'required' => 'حقل مطلوب.',
             'accepted' => 'يجب الموافقة.',
+            'full_name.regex' => 'يجب إدخال الاسم رباعي باللغة العربية.',
             'spouse_name.regex' => 'الاسم رباعي بالعربية.',
             'child_name.regex'  => 'الاسم رباعي بالعربية أو "لا يوجد".',
             'spouse_phone_digits.required' => 'مطلوب.',
@@ -121,6 +124,7 @@ class MembershipController extends Controller
             'spouse_name.required_if'      => 'مطلوب للمتزوج.',
             'spouse_workplace.required_if' => 'مطلوب للمتزوج.',
             'salary.gt'                    => 'يجب أن يكون المرتب أكبر من صفر.',
+            'email.unique'                 => 'هذا البريد الإلكتروني مسجل مسبقاً.',
         ]);
 
         $validator->after(function ($validator) use ($request) {
@@ -143,17 +147,32 @@ class MembershipController extends Controller
                 }
             }
 
-            $birthMonth = $request->input('birth_month');
-            $birthYear = $request->input('birth_year');
-            $birthDay = $request->input('birth_day');
-            
-            $hireMonth = $request->input('hire_month');
-            $hireYear = $request->input('hire_year');
-            $hireDay = $request->input('hire_day');
+            $nationalId = null;
+            if (!empty($dbNid)) {
+                $nationalId = $dbNid;
+            } else {
+                $nationalIdDigits = $request->input('national_id_digits');
+                if (is_array($nationalIdDigits) && count($nationalIdDigits) === 14) {
+                    ksort($nationalIdDigits);
+                    $nationalId = implode('', $nationalIdDigits);
+                }
+            }
 
-            if ($birthMonth && $birthYear && $birthDay && $hireMonth && $hireYear && $hireDay) {
-                if (checkdate((int)$birthMonth, (int)$birthDay, (int)$birthYear) && checkdate((int)$hireMonth, (int)$hireDay, (int)$hireYear)) {
-                    $birthDate = sprintf('%04d-%02d-%02d', $birthYear, $birthMonth, $birthDay);
+            if ($nationalId && strlen($nationalId) >= 7) {
+                $centuryCode = substr($nationalId, 0, 1);
+                $year = substr($nationalId, 1, 2);
+                $month = substr($nationalId, 3, 2);
+                $day = substr($nationalId, 5, 2);
+                $fullYear = ($centuryCode === '2') ? '19' . $year : '20' . $year;
+                $month = $month == '00' ? '01' : $month;
+                $day = $day == '00' ? '01' : $day;
+                $birthDate = sprintf('%04d-%02d-%02d', $fullYear, $month, $day);
+
+                $hireMonth = $request->input('hire_month');
+                $hireYear = $request->input('hire_year');
+                $hireDay = $request->input('hire_day');
+
+                if ($hireMonth && $hireYear && $hireDay && checkdate((int)$hireMonth, (int)$hireDay, (int)$hireYear)) {
                     $hireDate = sprintf('%04d-%02d-%02d', $hireYear, $hireMonth, $hireDay);
                     if (strtotime($hireDate) <= strtotime($birthDate)) {
                         $validator->errors()->add('hire_day', 'يجب أن يكون بعد تاريخ الميلاد.');
@@ -164,16 +183,24 @@ class MembershipController extends Controller
 
         $validated = $validator->validate();
 
-        // Inject the fixed DB values back into the validated array 
-        // so the service can still update them as needed.
-        $validated['full_name']     = $user->name;
-        $validated['employer_name'] = $member->employmentInfo->workplace ?? '';
-        $validated['job_title']     = $member->employmentInfo->job_title ?? '';
+        // Inject the values back into the validated array 
+        // If they exist in DB, force DB value. Otherwise, take from request.
+        $validated['full_name']     = $dbName ?: $request->input('full_name');
+        $validated['employer_name'] = $dbEmployer ?: $request->input('employer_name');
+        $validated['job_title']     = $dbJobTitle ?: $request->input('job_title');
         
-        // phone digits are used by digitsToString in the service, so we temporarily inject them back into the request.
-        $request->merge([
-            'phone_digits' => str_split($member->phone ?? '')
-        ]);
+        if (empty($dbEmail)) {
+            $validated['email'] = $request->input('email');
+        }
+
+        // phone digits and national id digits are used by digitsToString in the service, 
+        // so we merge DB values back into the request if they existed to prevent overrides.
+        if (!empty($dbPhone)) {
+            $request->merge(['phone_digits' => str_split($dbPhone)]);
+        }
+        if (!empty($dbNid)) {
+            $request->merge(['national_id_digits' => str_split($dbNid)]);
+        }
 
         try {
             $result = $this->memberService->registerMembership($member, $validated, $request);
@@ -183,10 +210,8 @@ class MembershipController extends Controller
                 ->route('member.dashboard')
                 ->with('success', "تم تقديم طلب الاشتراك بنجاح. يرجى سداد رسوم الانضمام وقدرها ({$totalFee} جنيه).");
 
-        } catch (Exception $e) {
-            return redirect()->back()->withInput()->withErrors([
-                'birth_year' => $e->getMessage(),
-            ]);
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['national_id_digits' => $e->getMessage()]);
         }
     }
 }

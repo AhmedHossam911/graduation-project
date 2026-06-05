@@ -318,7 +318,7 @@
 
     <!-- MODALS -->
     <div id="createLoanModal"
-        class="modal hidden w-full max-w-4xl mx-auto absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
+        class="modal hidden w-full max-w-4xl mx-auto absolute top-0 left-1/2 -translate-x-1/2  z-[70] rounded-2xl bg-[#F4F7F9] navy-shadow pt-2 pb-10">
         <button
             class="modal-close text-[#124375] text-2xl navy-shadow rounded mx-4 mt-2 flex items-center justify-center py-1 px-1">
             <iconify-icon icon="weui:close-filled"></iconify-icon>
@@ -440,16 +440,38 @@
                             </p>
                         </div>
                     </div>
-                    <div class="relative w-fit">
-                        <button type="button"
-                            class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">سداد
-                            عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span
-                                class="text-[#021219] text-[14px]">اختر
-                                الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
-                                    class="text-xl "></iconify-icon></span></button>
-                        <div id="paymentInstallmentsDropdown"
-                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] navy-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 max-h-48 overflow-y-auto min-w-[200px] border border-[#124375]">
-                            <!-- Checkboxes will be injected here via JS -->
+                    <div class="flex gap-4 justify-betwwen">
+                        <div class="relative w-fit">
+                            <button type="button"
+                                class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">سداد
+                                عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span
+                                    class="text-[#021219] text-[14px]">اختر
+                                    الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
+                                        class="text-xl "></iconify-icon></span></button>
+                            <div id="paymentInstallmentsDropdown"
+                                class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] navy-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 max-h-48 overflow-y-auto min-w-[200px] border border-[#124375]">
+                                <!-- Checkboxes will be injected here via JS -->
+                            </div>
+                        </div>
+                        <div class="relative w-fit">
+                            <input type="hidden" name="payment_method" id="payment-method-input" value="salary_deduction">
+                            <button type="button"
+                                class="dropDownBtn navy-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
+                                الدفع<span class="text-[#D92D20]">*</span> : <span id="payment-method-text"
+                                    class="text-[#021219] text-[14px]"> خصم من
+                                    المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
+                                        class="text-xl"></iconify-icon></span></button>
+                            <div id="payment-methods-dropdown"
+                                class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl navy-shadow w-full border border-[#124375]">
+                                <button type="button" data-value="salary_deduction"
+                                    class=" navy-shadow py-2 rounded-xl text-sm font-medium">خصم من المرتب</button>
+                                <button type="button" data-value="bank_transfer"
+                                    class=" navy-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
+                                <button type="button" data-value="university_payment_order"
+                                    class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب مسبق</button>
+                                <button type="button" data-value="cash"
+                                    class=" navy-shadow py-2 px-5 rounded-xl text-sm font-medium">نقدي</button>
+                            </div>
                         </div>
                     </div>
                     <div class="flex flex-col gap-6">

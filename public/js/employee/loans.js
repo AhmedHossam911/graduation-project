@@ -168,6 +168,27 @@ function initLoansModule() {
         });
     }
 
+    const paymentMethodBtn = document.querySelector('.dropDownBtn:has(+ #payment-methods-dropdown)');
+    const paymentMethodMenu = document.getElementById('payment-methods-dropdown');
+    const paymentMethodInput = document.getElementById('payment-method-input');
+    const paymentMethodText = document.getElementById('payment-method-text');
+
+    if (paymentMethodBtn && paymentMethodMenu) {
+        paymentMethodBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            paymentMethodMenu.classList.toggle('hidden');
+        });
+
+        paymentMethodMenu.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const val = btn.getAttribute('data-value');
+                paymentMethodText.textContent = btn.textContent;
+                paymentMethodInput.value = val;
+                paymentMethodMenu.classList.add('hidden');
+            });
+        });
+    }
+
     // File Inputs
     document.querySelectorAll('input[type="file"]').forEach((input) => {
         input.addEventListener('change', () => {
@@ -190,7 +211,7 @@ function initLoansModule() {
             }
         });
 
-        if (memberSearchResults && !memberSearchResults.contains(event.target) && event.target !== memberSearchInput && event.target !== memberSearchBtn) {
+        if (memberSearchResults && !memberSearchResults.contains(event.target) && event.target !== memberSearchInput && !memberSearchBtn.contains(event.target)) {
             memberSearchResults.classList.add('hidden');
         }
     });

@@ -156,6 +156,15 @@ inputsFile.forEach((input) => {
         if(input.files.length > 0) {
             p.textContent = 'تم إرفاق المستند'
             icon.setAttribute('icon' , 'material-symbols:cloud-done-rounded')
+            
+            // Revert error colors if they were applied
+            const container = input.closest('.border');
+            if (container && container.classList.contains('border-[#D92D20]')) {
+                container.classList.remove('border-[#D92D20]');
+                container.classList.add('border-[#124375]');
+                p.classList.remove('text-[#D92D20]');
+                p.classList.add('text-[#124375]'); // Assuming the text was #124375 or #6D6D6D
+            }
         } 
     })
 })

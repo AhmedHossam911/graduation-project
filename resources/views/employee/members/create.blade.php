@@ -154,15 +154,15 @@
                                     class="absolute top-[-15px] right-5 @if ($errors->has('birth_day') || $errors->has('birth_month') || $errors->has('birth_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
                                     الميلاد <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
-                                    <input type="text" id="birth_day" name="birth_day" value="{{ old('birth_day') }}"
-                                        placeholder="اليوم" maxlength="2"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" id="birth_month" name="birth_month"
-                                        value="{{ old('birth_month') }}" placeholder="الشهر" maxlength="2"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
-                                    <input type="text" id="birth_year" name="birth_year"
-                                        value="{{ old('birth_year') }}" placeholder="السنة" maxlength="4"
-                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+                                    <input type="text" id="birth_day" value="{{ old('birth_day') }}"
+                                        placeholder="اليوم" maxlength="2" disabled
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                    <input type="text" id="birth_month"
+                                        value="{{ old('birth_month') }}" placeholder="الشهر" maxlength="2" disabled
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+                                    <input type="text" id="birth_year"
+                                        value="{{ old('birth_year') }}" placeholder="السنة" maxlength="4" disabled
+                                        class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                 </div>
                                 @if ($errors->has('birth_year'))
                                     <p class="text-[#D92D20] text-sm font-medium px-2 mt-1 text-right">
@@ -305,15 +305,15 @@
                                     class="absolute top-[-15px] right-5 @if ($errors->has('retirement_day') || $errors->has('retirement_month') || $errors->has('retirement_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
                                     الإحالة إلي المعاش <span class="text-[#D92D20]">*</span></label>
                                 <div class="flex gap-3 justify-end py-3 px-3">
-                                    <input type="text" id="retirement_day" name="retirement_day"
-                                        value="{{ old('retirement_day') }}" placeholder="اليوم" maxlength="2" readonly
+                                    <input type="text" id="retirement_day"
+                                        value="{{ old('retirement_day') }}" placeholder="اليوم" maxlength="2" disabled
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
-                                    <input type="text" id="retirement_month" name="retirement_month"
+                                    <input type="text" id="retirement_month"
                                         value="{{ old('retirement_month') }}" placeholder="الشهر" maxlength="2"
-                                        readonly
+                                        disabled
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-28 min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
-                                    <input type="text" id="retirement_year" name="retirement_year"
-                                        value="{{ old('retirement_year') }}" placeholder="السنة" maxlength="4" readonly
+                                    <input type="text" id="retirement_year"
+                                        value="{{ old('retirement_year') }}" placeholder="السنة" maxlength="4" disabled
                                         class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
                                 </div>
                                 @if ($errors->has('retirement_day') || $errors->has('retirement_month') || $errors->has('retirement_year'))

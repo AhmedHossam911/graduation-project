@@ -101,8 +101,49 @@ class DummyDataSeeder extends Seeder
                 'approved_by' => $status === 'active' ? 1 : null,
             ]);
 
-            // 6. Subscriptions (Simulate 1 to 3 subscriptions)
-            $subCount = $faker->numberBetween(1, 3);
+            // Calculate realistic Joining Fee (رسم انضمام)
+            $retirementAge = 60; // Usually 60
+            $ageAtJoin = $joinDate->diffInYears($birthDate);
+            $remainingYears = max(0, $retirementAge - $ageAtJoin);
+            $feesSettings = json_decode(\App\Models\System\SystemSetting::get('membership_join_fee', '[]'), true);
+            $feeMonths = 0;
+            if (is_array($feesSettings)) {
+                $maxSettingYear = 0;
+                $settingsData = [];
+                foreach ($feesSettings as $setting) {
+                    $settingYearsStr = preg_replace('/[^0-9]/', '', $setting['years'] ?? '');
+                    if (is_numeric($settingYearsStr)) {
+                        $sy = (int) $settingYearsStr;
+                        $settingsData[$sy] = (float) ($setting['fee_months'] ?? 0);
+                        if ($sy > $maxSettingYear) $maxSettingYear = $sy;
+                    }
+                }
+                if ($remainingYears > $maxSettingYear && $maxSettingYear > 0) {
+                    $remainingYears = $maxSettingYear;
+                }
+                if (isset($settingsData[$remainingYears])) {
+                    $feeMonths = $settingsData[$remainingYears];
+                }
+            }
+            
+            // Assume salary (must match what was saved in EmploymentInfo)
+            $salary = \App\Models\Membership\EmploymentInfo::where('member_id', $member->id)->value('starting_salary') ?? $faker->numberBetween(300, 1500);
+            $joinFeeAmount = $salary * $feeMonths;
+            if ($joinFeeAmount <= 0) {
+                $joinFeeAmount = 500; // Fallback
+            }
+
+            // Always create the Join Fee subscription
+            Subscription::create([
+                'membership_id' => $membership->id,
+                'name' => 'رسم انضمام',
+                'amount' => $joinFeeAmount,
+                'due_date' => $joinDate->format('Y-m-d'),
+                'status' => $status === 'active' ? ($faker->boolean(90) ? 'paid' : 'unpaid') : 'unpaid',
+            ]);
+
+            // 6. Other Subscriptions (Simulate 1 to 2 subscriptions)
+            $subCount = $faker->numberBetween(0, 2);
             for ($j = 0; $j < $subCount; $j++) {
                 $subStatus = $faker->randomElement(['paid', 'unpaid', 'overdue']);
                 if ($status === 'active') {
@@ -111,7 +152,7 @@ class DummyDataSeeder extends Seeder
 
                 Subscription::create([
                     'membership_id' => $membership->id,
-                    'name' => 'اشتراك ' . $faker->randomElement(['شهري', 'سنوي', 'رسم انضمام']),
+                    'name' => 'اشتراك ' . $faker->randomElement(['شهري', 'سنوي']),
                     'amount' => $faker->randomElement([150, 300, 500, 1000]),
                     'due_date' => Carbon::now()->subMonths($faker->numberBetween(0, 12))->format('Y-m-d'),
                     'status' => $subStatus,

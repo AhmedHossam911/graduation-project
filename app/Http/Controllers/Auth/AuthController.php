@@ -30,7 +30,7 @@ class AuthController extends Controller
 
     public function showRegister()
     {
-        $departments = \App\Models\System\Department::all();
+        $departments = \App\Models\System\Department::where('status', 'active')->get();
         return view('auth.register', compact('departments'));
     }
 

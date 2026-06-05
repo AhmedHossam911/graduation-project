@@ -465,15 +465,37 @@
                                 id="inst-amount-selected" class="text-[#021219] font-semibold text-base">0</span></p>
                     </div>
                 </div>
-                <div class="relative w-fit">
-                    <button type="button"
-                        class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">سداد
-                        عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]">اختر
-                            الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
-                                class="text-xl "></iconify-icon></span></button>
-                    <div id="inst-months-dropdown"
-                        class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 max-h-60 overflow-y-auto w-full border border-[#124375]">
-                        <!-- Populated by JS -->
+                <div class="flex gap-4 justify-betwwen">
+                    <div class="relative w-fit">
+                        <button type="button"
+                            class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">سداد
+                            عن شهر / شهور<span class="text-[#D92D20]">*</span> : <span class="text-[#021219] text-[14px]">اختر
+                                الشهر</span> <span class="flex items-center mt-1"><iconify-icon icon="lucide:calendar"
+                                    class="text-xl "></iconify-icon></span></button>
+                        <div id="inst-months-dropdown"
+                            class="dropDown hidden absolute rounded-[10px] bg-[#F4F7F9] surface-shadow z-50 px-5 py-4 space-y-2 left-0 top-full mt-3 max-h-60 overflow-y-auto w-full border border-[#124375]">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <div class="relative w-fit">
+                        <input type="hidden" id="inst-payment-method" value="salary_deduction">
+                        <button type="button"
+                            class="dropDownBtn surface-shadow bg-[#F4F7F9] text-[#124375] py-2.5 w-fit px-2 rounded-xl text-base gap-2 font-medium flex items-center">طريقة
+                            الدفع<span class="text-[#D92D20]">*</span> : <span id="inst-payment-method-text"
+                                class="text-[#021219] text-[14px]"> خصم من
+                                المرتب</span><span class="flex items-center mt-1"><iconify-icon icon="fe:arrow-down"
+                                    class="text-xl"></iconify-icon></span></button>
+                        <div id="inst-payment-methods"
+                            class="dropDown hidden absolute z-50 bg-[#F4F7F9] left-0 top-full mt-3 flex flex-col gap-3 px-5 py-4 rounded-xl surface-shadow w-full border border-[#124375]">
+                            <button type="button" data-value="salary_deduction"
+                                class=" surface-shadow py-2 rounded-xl text-sm font-medium">خصم من المرتب</button>
+                            <button type="button" data-value="bank_transfer"
+                                class=" surface-shadow py-2 px-1 rounded-xl text-sm font-medium">تحويل بنكي</button>
+                            <button type="button" data-value="university_payment_order"
+                                class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">دفع بجواب مسبق</button>
+                            <button type="button" data-value="cash"
+                                class=" surface-shadow py-2 px-5 rounded-xl text-sm font-medium">نقدي</button>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col gap-6">

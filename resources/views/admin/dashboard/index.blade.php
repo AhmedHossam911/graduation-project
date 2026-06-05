@@ -326,8 +326,9 @@
                                 <div
                                     class="border border-[#124375] rounded-[12px] py-4 text-[#124375] flex items-center justify-center gap-1">
                                     <iconify-icon icon="solar:paperclip-outline" class="text-2xl mt-1"></iconify-icon>
-                                    <a href="{{ asset('storage/' . $t->attachment_path) }}" target="_blank"
-                                        class="text-[#124375] font-medium underline mt-1 block">عرض المرفق</a>
+                                    <a href="{{ url('secure-file/' . $t->attachment_path) }}" target="_blank"
+                                        class="text-[#124375] hover:text-[#0e3560] transition-colors"
+                                        title="عرض الإيصال المرفق">عرض المرفق</a>
                                 </div>
                             </div>
                         @endif

@@ -41,20 +41,20 @@ class MemberService
      */
     public function createMember(array $validated, Request $request, string $nationalId): array
     {
-        // Validate the applicant's age against the system's minimum and maximum allowed limits.
-        $birthDate = $this->dateFromParts($request, 'birth');
-        $age = 0;
-        if ($birthDate) {
-            $age = Carbon::parse($birthDate)->age;
-            $minAge = (int) SystemSetting::get('membership_min_age', 21);
-            $maxAge = (int) SystemSetting::get('membership_max_age', 59);
+        $dates = $this->extractDatesFromNationalId($nationalId);
+        $birthDate = $dates['birth_date'];
+        $retirementDate = $dates['retirement_date'];
 
-            if ($age < $minAge || $age > $maxAge) {
-                throw new Exception("عمر العضو ($age عامًا) غير مطابق للوائح. السن المسموح به من $minAge إلى $maxAge عامًا.");
-            }
+        // Validate the applicant's age against the system's minimum and maximum allowed limits.
+        $age = Carbon::parse($birthDate)->age;
+        $minAge = (int) SystemSetting::get('membership_min_age', 21);
+        $maxAge = (int) SystemSetting::get('membership_max_age', 59);
+
+        if ($age < $minAge || $age > $maxAge) {
+            throw new Exception("عمر العضو ($age عامًا) غير مطابق للوائح. السن المسموح به من $minAge إلى $maxAge عامًا.");
         }
 
-        return DB::transaction(function () use ($request, $validated, $nationalId, $age) {
+        return DB::transaction(function () use ($request, $validated, $nationalId, $age, $birthDate, $retirementDate) {
             $departmentId = $this->resolveDepartmentId($validated);
 
             // Automatically generate a corresponding user account so the member can log into the system.
@@ -70,7 +70,7 @@ class MemberService
             $member = Member::create([
                 'user_id'        => $user->id,
                 'department_id'  => $departmentId,
-                'birth_date'     => $this->dateFromParts($request, 'birth'),
+                'birth_date'     => $birthDate,
                 'phone'          => $this->digitsToString($request, 'phone_digits'),
                 'landline'       => $this->digitsToString($request, 'landline_digits'),
                 'address'        => $validated['address'] ?? null,
@@ -102,7 +102,7 @@ class MemberService
                 'job_title'          => $validated['job_title'],
                 'financial_category' => $validated['financial_category'],
                 'join_date'          => $this->dateFromParts($request, 'hire'),
-                'retirement_date'    => $this->dateFromParts($request, 'retirement'),
+                'retirement_date'    => $retirementDate,
                 'starting_salary'    => $validated['salary'] ?? null,
             ]);
 
@@ -144,7 +144,11 @@ class MemberService
      */
     public function updateMember(Member $member, array $validated, Request $request, string $nationalId): void
     {
-        DB::transaction(function () use ($request, $validated, $nationalId, $member) {
+        $dates = $this->extractDatesFromNationalId($nationalId);
+        $birthDate = $dates['birth_date'];
+        $retirementDate = $dates['retirement_date'];
+
+        DB::transaction(function () use ($request, $validated, $nationalId, $member, $birthDate, $retirementDate) {
             $oldValues = $member->toArray();
 
             $departmentId = $this->resolveDepartmentId($validated);
@@ -156,7 +160,7 @@ class MemberService
 
             $member->update([
                 'department_id'  => $departmentId,
-                'birth_date'     => $this->dateFromParts($request, 'birth'),
+                'birth_date'     => $birthDate,
                 'phone'          => $this->digitsToString($request, 'phone_digits'),
                 'landline'       => $this->digitsToString($request, 'landline_digits'),
                 'address'        => $validated['address'] ?? null,
@@ -171,7 +175,7 @@ class MemberService
                     'job_title'          => $validated['job_title'],
                     'financial_category' => $validated['financial_category'],
                     'join_date'          => $this->dateFromParts($request, 'hire'),
-                    'retirement_date'    => $this->dateFromParts($request, 'retirement'),
+                    'retirement_date'    => $retirementDate,
                     'starting_salary'    => $validated['salary'] ?? null,
                 ]
             );
@@ -261,27 +265,34 @@ class MemberService
 
     public function registerMembership(Member $member, array $validated, Request $request): array
     {
-        $birthDate = $this->dateFromParts($request, 'birth');
-        $age = 0;
-        if ($birthDate) {
-            $age = Carbon::parse($birthDate)->age;
-            $minAge = (int) SystemSetting::get('membership_min_age', 21);
-            $maxAge = (int) SystemSetting::get('membership_max_age', 59);
+        $nationalId = $request->filled('national_id_digits') ? $this->digitsToString($request, 'national_id_digits') : $member->user->national_id;
+        $dates = $this->extractDatesFromNationalId($nationalId);
+        $birthDate = $dates['birth_date'];
+        $retirementDate = $dates['retirement_date'];
 
-            if ($age < $minAge || $age > $maxAge) {
-                throw new Exception("عمر العضو ($age عامًا) غير مطابق للوائح. السن المسموح به من $minAge إلى $maxAge عامًا.");
-            }
+        $age = Carbon::parse($birthDate)->age;
+        $minAge = (int) SystemSetting::get('membership_min_age', 21);
+        $maxAge = (int) SystemSetting::get('membership_max_age', 59);
+
+        if ($age < $minAge || $age > $maxAge) {
+            throw new Exception("عمر العضو ($age عامًا) غير مطابق للوائح. السن المسموح به من $minAge إلى $maxAge عامًا.");
         }
 
-        return DB::transaction(function () use ($request, $validated, $member, $age) {
+        return DB::transaction(function () use ($request, $validated, $member, $age, $birthDate, $retirementDate) {
             $oldValues = $member->toArray();
 
-            $member->user->update([
-                'name' => $validated['full_name'],
-            ]);
+            $userData = ['name' => $validated['full_name']];
+            if (isset($validated['email'])) {
+                $userData['email'] = $validated['email'];
+            }
+            if ($request->filled('national_id_digits')) {
+                $userData['national_id'] = $this->digitsToString($request, 'national_id_digits');
+            }
+            
+            $member->user->update($userData);
 
             $member->update([
-                'birth_date'     => $this->dateFromParts($request, 'birth'),
+                'birth_date'     => $birthDate,
                 'phone'          => $this->digitsToString($request, 'phone_digits'),
                 'landline'       => $this->digitsToString($request, 'landline_digits'),
                 'address'        => $validated['address'] ?? null,
@@ -295,7 +306,7 @@ class MemberService
                     'job_title'          => $validated['job_title'],
                     'financial_category' => $validated['financial_category'],
                     'join_date'          => $this->dateFromParts($request, 'hire'),
-                    'retirement_date'    => $this->dateFromParts($request, 'retirement'),
+                    'retirement_date'    => $retirementDate,
                     'starting_salary'    => $validated['salary'] ?? null,
                 ]
             );
@@ -422,6 +433,29 @@ class MemberService
         }
 
         return sprintf('%04d-%02d-%02d', $year, $month, $day);
+    }
+
+    private function extractDatesFromNationalId(string $nationalId): array
+    {
+        $centuryCode = substr($nationalId, 0, 1);
+        $year = substr($nationalId, 1, 2);
+        $month = substr($nationalId, 3, 2);
+        $day = substr($nationalId, 5, 2);
+
+        $fullYear = ($centuryCode === '2') ? '19' . $year : '20' . $year;
+        
+        $month = $month == '00' ? '01' : $month;
+        $day = $day == '00' ? '01' : $day;
+        
+        $birthDate = sprintf('%04d-%02d-%02d', $fullYear, $month, $day);
+
+        $retirementAge = (int) SystemSetting::get('retirement_age', 60);
+        $retirementDate = Carbon::parse($birthDate)->addYears($retirementAge)->format('Y-m-d');
+
+        return [
+            'birth_date' => $birthDate,
+            'retirement_date' => $retirementDate
+        ];
     }
 
     private function digitsToString(Request $request, string $field): ?string

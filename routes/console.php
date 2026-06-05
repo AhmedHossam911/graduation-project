@@ -19,3 +19,6 @@ Schedule::command('subscriptions:generate-annual')->dailyAt('01:00');
 
 // Check for members who reached retirement age daily at 02:00 AM
 Schedule::command('memberships:check-retirement')->dailyAt('02:00');
+
+// Generate age difference subscriptions for members when their age increases daily at 02:00 AM
+Schedule::command('subscriptions:generate-age-difference')->dailyAt('02:00');

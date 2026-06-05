@@ -35,6 +35,42 @@
 
  <form action="{{ route('member.membership.store') }}" method="POST" enctype="multipart/form-data">
  @csrf
+ @php
+     $dbFullName = $user->member->user->name ?? ($user->name ?? '');
+     $dbEmail = $user->email ?? '';
+     $dbPhone = $user->member->phone ?? '';
+     $dbNid = $user->member->user->national_id ?? ($user->national_id ?? '');
+     $dbEmployer = $user->member->employmentInfo->workplace ?? '';
+     $dbJobTitle = $user->member->employmentInfo->job_title ?? '';
+
+     $calcBirthDay = old('birth_day');
+     $calcBirthMonth = old('birth_month');
+     $calcBirthYear = old('birth_year');
+     $calcRetDay = old('retirement_day');
+     $calcRetMonth = old('retirement_month');
+     $calcRetYear = old('retirement_year');
+
+     if ($dbNid && strlen($dbNid) >= 7) {
+         $century = substr($dbNid, 0, 1);
+         $yr = substr($dbNid, 1, 2);
+         $mo = substr($dbNid, 3, 2);
+         $da = substr($dbNid, 5, 2);
+         $fullYr = ($century === '2') ? '19' . $yr : '20' . $yr;
+         
+         $calcBirthDay = $calcBirthDay ?: $da;
+         $calcBirthMonth = $calcBirthMonth ?: $mo;
+         $calcBirthYear = $calcBirthYear ?: $fullYr;
+
+         try {
+             $retAge = (int) \App\Models\System\SystemSetting::get('retirement_age', 60);
+             $birthDateObj = \Carbon\Carbon::createFromFormat('Y-m-d', sprintf('%04d-%02d-%02d', $fullYr, $mo, $da));
+             $retDateObj = $birthDateObj->copy()->addYears($retAge);
+             $calcRetDay = $calcRetDay ?: $retDateObj->format('d');
+             $calcRetMonth = $calcRetMonth ?: $retDateObj->format('m');
+             $calcRetYear = $calcRetYear ?: $retDateObj->format('Y');
+         } catch (\Exception $e) {}
+     }
+ @endphp
 
  <!-- start Form -->
  <!-- start personalData section -->
@@ -51,9 +87,9 @@
  class="absolute top-[-15px] right-5 @error('full_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
  الأسم رباعي <span class="text-[#D92D20]">*</span></label>
  <input type="text" name="full_name"
- value="{{ old('full_name', $user->member->user->name ?? ($user->name ?? '')) }}"
- placeholder="مثال : أحمد محمد إسماعيل محمود" disabled pattern="^[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,}$" title="يجب إدخال الاسم رباعي باللغة العربية"
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
+ value="{{ old('full_name', $dbFullName) }}"
+ placeholder="مثال : أحمد محمد إسماعيل محمود" {{ $dbFullName ? 'readonly' : 'required' }} pattern="^[\u0600-\u06FF\s]+(?:\s+[\u0600-\u06FF\s]+){3,}$" title="يجب إدخال الاسم رباعي باللغة العربية"
+ class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('full_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 {{ $dbFullName ? 'bg-[#E8EDF2] cursor-not-allowed' : 'bg-[#F4F7F9]' }}">
  @error('full_name')
  <span
  class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
@@ -63,9 +99,9 @@
  <label
  class="absolute top-[-15px] right-5 @error('email') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">
  البريد الإلكتروني <span class="text-[#D92D20]">*</span></label>
- <input type="email" name="email" value="{{ old('email', $user->email ?? '') }}"
- placeholder="ahmed@gmail.com : مثال" disabled
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('email') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
+ <input type="email" name="email" value="{{ old('email', $dbEmail) }}"
+ placeholder="ahmed@gmail.com : مثال" {{ $dbEmail ? 'readonly' : 'required' }}
+ class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('email') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 {{ $dbEmail ? 'bg-[#E8EDF2] cursor-not-allowed' : 'bg-[#F4F7F9]' }}">
  @error('email')
  <span
  class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
@@ -84,14 +120,14 @@
  <div class="grid grid-cols-[repeat(11,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3"
  dir="ltr">
  @php
- $phoneStr = old('phone', $user->member->phone ?? '');
+ $phoneStr = old('phone', $dbPhone);
  $phoneDigits = str_split(str_pad($phoneStr, 11, ' ', STR_PAD_LEFT));
  @endphp
  @for ($i = 0; $i < 11; $i++)
  <input type="tel" name="phone_digits[]"
  value="{{ old('phone_digits.' . $i, trim($phoneDigits[$i] ?? '')) }}"
- placeholder="{{ $i + 1 }}" maxlength="1" disabled
- class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 max-w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ placeholder="{{ $i + 1 }}" maxlength="1" {{ $dbPhone ? 'readonly' : 'required' }}
+ class="phone-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-10 md:w-16 max-w-full text-sm md:text-base min-w-0 py-1 input-shadow text-center {{ $dbPhone ? 'bg-[#E8EDF2] cursor-not-allowed' : 'bg-[#F4F7F9]' }}">
  @endfor
  </div>
  @if ($errors->has('phone_digits') || $errors->has('phone_digits.*'))
@@ -132,14 +168,14 @@
  <div class="grid grid-cols-[repeat(14,minmax(0,max-content))] gap-1 md:gap-3 justify-end py-3 px-2 md:px-3"
  dir="ltr">
  @php
- $nidStr = old('national_id', $user->member->user->national_id ?? '');
+ $nidStr = old('national_id', $dbNid);
  $nidDigits = str_split(str_pad($nidStr, 14, ' ', STR_PAD_LEFT));
  @endphp
  @for ($i = 0; $i < 14; $i++)
  <input type="text" name="national_id_digits[]"
  value="{{ old('national_id_digits.' . $i, trim($nidDigits[$i] ?? '')) }}"
- placeholder="{{ $i + 1 }}" maxlength="1" disabled
- class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-9 md:w-16 max-w-full text-xs md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ placeholder="{{ $i + 1 }}" maxlength="1" {{ $dbNid ? 'readonly' : 'required' }}
+ class="id-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-7 sm:w-9 md:w-16 max-w-full text-xs md:text-base min-w-0 py-1 input-shadow text-center {{ $dbNid ? 'bg-[#E8EDF2] cursor-not-allowed' : 'bg-[#F4F7F9]' }}">
  @endfor
  </div>
  @error('national_id_digits')
@@ -158,15 +194,17 @@
  class="absolute top-[-15px] right-5 @if ($errors->has('birth_day') || $errors->has('birth_month') || $errors->has('birth_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
  الميلاد <span class="text-[#D92D20]">*</span></label>
  <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
- <input type="text" id="birth_day" name="birth_day" value="{{ old('birth_day') }}"
- placeholder="اليوم" maxlength="2"
- class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
- <input type="text" id="birth_month" name="birth_month"
- value="{{ old('birth_month') }}" placeholder="الشهر" maxlength="2"
- class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
- <input type="text" id="birth_year" name="birth_year" value="{{ old('birth_year') }}"
- placeholder="السنة" maxlength="4"
- class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#F4F7F9] text-center">
+ <input type="text" id="birth_day" value="{{ $calcBirthDay }}"
+ placeholder="اليوم" maxlength="2" disabled
+ class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ 
+ <input type="text" id="birth_month"
+ value="{{ $calcBirthMonth }}" placeholder="الشهر" maxlength="2" disabled
+ class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ 
+ <input type="text" id="birth_year" value="{{ $calcBirthYear }}"
+ placeholder="السنة" maxlength="4" disabled
+ class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
  </div>
  @if ($errors->has('birth_year'))
  <span
@@ -230,18 +268,18 @@
  class="absolute top-[-15px] right-5 @error('employer_name') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">جهة
  العمل <span class="text-[#D92D20]">*</span></label>
  <input type="text" name="employer_name"
- value="{{ old('employer_name', $user->member->employmentInfo->workplace ?? '') }}"
- disabled
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('employer_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
+ value="{{ old('employer_name', $dbEmployer) }}"
+ {{ $dbEmployer ? 'readonly' : 'required' }}
+ class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition text-[#6D6D6D] font-medium text-base w-full text-center border @error('employer_name') border-[#D92D20] @else border-[#124375] @enderror outline-none rounded-xl px-16 py-2 {{ $dbEmployer ? 'bg-[#E8EDF2] cursor-not-allowed' : 'bg-[#F4F7F9]' }}">
  </div>
  <div class="w-full relative">
  <label
  class="absolute top-[-15px] right-5 @error('job_title') text-[#D92D20] @else text-[#124375] @enderror text-base font-medium bg-[#F4F7F9] px-1">الوظيفة
  <span class="text-[#D92D20]">*</span></label>
  <input type="text" name="job_title"
- value="{{ old('job_title', $user->member->employmentInfo->job_title ?? '') }}"
- placeholder="مثال : مدرس مساعد مادة المحاسبة" disabled
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('job_title') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 bg-[#E8EDF2] cursor-not-allowed">
+ value="{{ old('job_title', $dbJobTitle) }}"
+ placeholder="مثال : مدرس مساعد مادة المحاسبة" {{ $dbJobTitle ? 'readonly' : 'required' }}
+ class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none text-[#6D6D6D] font-medium text-base w-full text-center border @error('job_title') border-[#D92D20] @else border-[#124375] @enderror rounded-xl px-16 py-2 {{ $dbJobTitle ? 'bg-[#E8EDF2] cursor-not-allowed' : 'bg-[#F4F7F9]' }}">
  @error('job_title')
  <span
  class="absolute bottom-[-11px] right-5 text-[#D92D20] text-sm font-medium bg-[#F4F7F9] px-2">{{ $message }}</span>
@@ -303,16 +341,15 @@
  class="absolute top-[-15px] right-5 @if ($errors->has('retirement_day') || $errors->has('retirement_month') || $errors->has('retirement_year')) text-[#D92D20] @else text-[#124375] @endif text-base font-medium bg-[#F4F7F9] px-1">تاريخ
  الإحالة إلي المعاش <span class="text-[#D92D20]">*</span></label>
  <div class="flex gap-2 md:gap-3 justify-end py-3 px-2 md:px-3">
- <input type="text" id="retirement_day" name="retirement_day"
- value="{{ old('retirement_day') }}" placeholder="اليوم" maxlength="2" readonly
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
- <input type="text" id="retirement_month" name="retirement_month"
- value="{{ old('retirement_month') }}" placeholder="الشهر" maxlength="2"
- readonly
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
- <input type="text" id="retirement_year" name="retirement_year"
- value="{{ old('retirement_year') }}" placeholder="السنة" maxlength="4" readonly
- class="focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ <input type="text" id="retirement_day" value="{{ $calcRetDay }}"
+ placeholder="اليوم" maxlength="2" disabled
+ class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ <input type="text" id="retirement_month" value="{{ $calcRetMonth }}"
+ placeholder="الشهر" maxlength="2" disabled
+ class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-16 sm:w-20 md:w-28 text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
+ <input type="text" id="retirement_year" value="{{ $calcRetYear }}"
+ placeholder="السنة" maxlength="4" disabled
+ class="date-input focus:ring-1 focus:ring-[#124375] focus:shadow-[#124375] focus:shadow transition outline-none rounded-md w-full text-sm md:text-base min-w-0 py-1 input-shadow bg-[#E8EDF2] text-center cursor-not-allowed">
  </div>
  @if ($errors->has('retirement_day') || $errors->has('retirement_month') || $errors->has('retirement_year'))
  <span
