@@ -108,5 +108,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $this->command->info("Seeded Admin, Member Profile, Roles, Departments and System Settings successfully!");
+
+        $this->call(BusinessRulesSeeder::class);
     }
 }
